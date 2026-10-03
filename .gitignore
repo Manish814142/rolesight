@@ -12,6 +12,7 @@ config.json
 
 # Runtime state — personal data
 state/*.json
+data/
 output/
 !output/.gitkeep
 scan.log
@@ -20,6 +21,7 @@ scan.log
 # Personal resume — add your own, never commit
 resume/*.md
 !resume/YOUR_RESUME.md
+*.pdf
 
 # Demo source videos — heavy; commit the generated GIF only
 demo/*.mp4
@@ -44,3 +46,6 @@ demo/*.mov
 
 # graphify knowledge graph
 graphify-out/
+
+# Claude Code session scratch files
+scratchpad/

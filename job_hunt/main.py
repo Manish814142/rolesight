@@ -2,6 +2,9 @@
 """
 Usage:
   autopilot init              — set up working directory (first-time pip install setup)
+  autopilot doctor            — run environment and network sanity checks
+  autopilot validate          — probe and prune 404/403 ATS boards from companies.json
+  autopilot harvest           — probe all ATS engines and rebuild companies.json
   autopilot scan              — run daily job scan
   autopilot draft #1          — draft application for job #1 from last scan
   autopilot draft https://... — draft application for a specific URL
@@ -11,7 +14,6 @@ Usage:
   autopilot export --days 7 --min 60  — combine filters
   autopilot mcp               — run the MCP server over stdio (for Claude Code)
 """
-import csv
 import json
 import os
 import sys
@@ -24,6 +26,7 @@ _PLACEHOLDERS = {
     "YOUR_TINYFISH_API_KEY", "your_tinyfish_api_key_here",
     "YOUR_OPENROUTER_API_KEY", "your_openrouter_api_key_here",
     "YOUR_ANTHROPIC_API_KEY", "your_anthropic_api_key_here",
+    "YOUR_GEMINI_API_KEY", "your_gemini_api_key_here",
 }
 
 
@@ -60,6 +63,8 @@ def load_config() -> dict:
         "CLAUDE_CLI_MODEL": "claude_cli_model",
         "ANTHROPIC_API_KEY": "anthropic_api_key",
         "ANTHROPIC_MODEL": "anthropic_model",
+        "GEMINI_API_KEY": "gemini_api_key",
+        "GEMINI_MODEL": "gemini_model",
     }
 
     for env_key, config_key in env_mapping.items():
@@ -70,15 +75,26 @@ def load_config() -> dict:
             else:
                 config[config_key] = val
 
-    tinyfish_key = config.get("tinyfish_api_key", "")
-    if not tinyfish_key or _is_placeholder(tinyfish_key):
-        sys.exit(
-            "TINYFISH_API_KEY not set.\n"
-            "Add it to your .env file: TINYFISH_API_KEY=sk-tinyfish-...\n"
-            "Get a key at https://agent.tinyfish.ai"
-        )
+    config.setdefault("gemini_model", "gemini-3.5-flash-lite")
+    # Direct-ATS + Gemini is the canonical pipeline; OpenRouter is deprecated.
+    config.setdefault("llm_provider", "gemini")
 
-    tg_token = os.getenv("TELEGRAM_TOKEN") if _use_env(os.getenv("TELEGRAM_TOKEN")) else None
+    # TinyFish is optional: direct ATS adapters need no key. It is only used for
+    # legacy careers_url companies and by `draft` (which checks for it itself).
+    tinyfish_key = config.get("tinyfish_api_key", "")
+    if tinyfish_key and _is_placeholder(tinyfish_key):
+        config.pop("tinyfish_api_key")
+
+    # Telegram is optional. Placeholder values from the templates are dropped so
+    # every downstream check sees "not configured" rather than a bogus chat_id.
+    tg_cfg = config.get("telegram")
+    if isinstance(tg_cfg, dict):
+        for k in ("token", "chat_id"):
+            v = tg_cfg.get(k)
+            if v is not None and not _use_env(str(v)):
+                tg_cfg.pop(k)
+    tg_token_env = os.getenv("TELEGRAM_BOT_TOKEN") or os.getenv("TELEGRAM_TOKEN")
+    tg_token = tg_token_env if _use_env(tg_token_env) else None
     tg_chat_id = os.getenv("TELEGRAM_CHAT_ID") if _use_env(os.getenv("TELEGRAM_CHAT_ID")) else None
     if tg_token or tg_chat_id:
         if "telegram" not in config:
@@ -147,26 +163,9 @@ def init_project() -> None:
 LAST_SCAN_FILE = Path("state/last_scan.json")
 JOB_HISTORY_FILE = Path("state/job_history.json")
 
-EXPORT_FIELDS = [
-    "Company", "Role", "Location", "Application URL",
-    "Score (%)", "Stack", "Region", "Reason", "Worth Applying", "Scan Date",
-]
+from job_hunt.exporter import export_jobs_to_csv, job_to_export_row  # noqa: E402
 
-
-def _job_to_row(j: dict) -> dict:
-    worth = j.get("worth_applying")
-    return {
-        "Company": j.get("company", ""),
-        "Role": j.get("extracted_title") or j.get("title", ""),
-        "Location": j.get("location_remote") or j.get("location", ""),
-        "Application URL": j.get("url", ""),
-        "Score (%)": j.get("score", ""),
-        "Stack": j.get("stack", ""),
-        "Region": j.get("region", ""),
-        "Reason": j.get("reason", ""),
-        "Worth Applying": "Yes" if worth else ("No" if worth is False else ""),
-        "Scan Date": j.get("scan_date", ""),
-    }
+_job_to_row = job_to_export_row
 
 
 def _parse_export_args(argv: list[str]) -> tuple[int, int]:
@@ -211,15 +210,9 @@ def export_jobs(min_score: int = 0, days: int = 0) -> None:
         return
 
     date_str = datetime.now().strftime("%Y-%m-%d")
-    suffix = f"_last{days}d" if days else ""
-    out_path = Path("output") / f"jobs_{date_str}{suffix}.csv"
-    out_path.parent.mkdir(exist_ok=True)
-
-    with out_path.open("w", newline="", encoding="utf-8") as fh:
-        writer = csv.DictWriter(fh, fieldnames=EXPORT_FIELDS)
-        writer.writeheader()
-        for j in filtered:
-            writer.writerow(_job_to_row(j))
+    day_suffix = f"_last{days}d" if days else ""
+    base_name = f"jobs_{date_str}{day_suffix}"
+    out_path = export_jobs_to_csv(filtered, base_name=base_name, out_dir="output")
 
     print(f"Exported {len(filtered)} jobs ({source_label}) → {out_path}")
     if min_score:
@@ -244,6 +237,24 @@ def main() -> None:
         mcp.run()
         return
 
+    # doctor runs diagnostics without requiring TinyFish API key
+    if cmd == "doctor":
+        from job_hunt.doctor import run_doctor
+        success = run_doctor()
+        sys.exit(0 if success else 1)
+
+    # validate probes ATS company boards and prunes inactive/404 entries
+    if cmd == "validate":
+        from job_hunt.validator import validate_and_prune
+        validate_and_prune("companies.json")
+        return
+
+    # harvest rebuilds companies.json by probing all ATS engines across india.yml slugs
+    if cmd == "harvest":
+        from job_hunt.harvester import main as harvest_main
+        harvest_main(sys.argv[2:])
+        return
+
     # export reads local scan state only — no API keys needed, so skip load_config()
     if cmd == "export":
         min_score, days = _parse_export_args(sys.argv)
@@ -253,8 +264,18 @@ def main() -> None:
     config = load_config()
 
     if cmd == "scan":
+        limit = None
+        if "--limit" in sys.argv:
+            try:
+                limit_idx = sys.argv.index("--limit")
+                limit = int(sys.argv[limit_idx + 1])
+            except (IndexError, ValueError):
+                pass
         from job_hunt.scanner import run_scan
-        run_scan(config, load_companies())
+        comps = load_companies()
+        if limit and limit > 0:
+            comps = comps[:limit]
+        run_scan(config, comps)
 
     elif cmd == "draft":
         if len(sys.argv) < 3:
@@ -263,7 +284,10 @@ def main() -> None:
         draft_application(config, sys.argv[2])
 
     else:
-        sys.exit(f"Unknown command: {cmd}\nUse: init | scan | draft | export | mcp")
+        sys.exit(
+            f"Unknown command: {cmd}\n"
+            "Use: init | doctor | validate | harvest | scan | draft | export | mcp"
+        )
 
 
 if __name__ == "__main__":

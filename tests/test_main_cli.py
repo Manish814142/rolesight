@@ -156,11 +156,36 @@ def test_load_config_telegram_and_candidate_env(tmp_path, monkeypatch, clean_env
     assert cfg["openrouter_fallback_models"] == ["a/b:free", "c/d:free"]
 
 
-def test_load_config_missing_tinyfish_key_exits(tmp_path, monkeypatch, clean_env):
+def test_load_config_without_tinyfish_key_does_not_exit(tmp_path, monkeypatch, clean_env):
+    """Direct-ATS scanning needs no TinyFish key; only the legacy careers_url path does."""
     monkeypatch.chdir(tmp_path)
     (tmp_path / "config.json").write_text(json.dumps({"name": "x"}))
-    with pytest.raises(SystemExit):
-        main.load_config()
+    cfg = main.load_config()
+    assert not cfg.get("tinyfish_api_key")
+
+
+def test_load_config_defaults_provider_to_gemini(tmp_path, monkeypatch, clean_env):
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "config.json").write_text(json.dumps({}))
+    assert main.load_config()["llm_provider"] == "gemini"
+
+
+def test_load_config_drops_placeholder_telegram_values(tmp_path, monkeypatch, clean_env):
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "config.json").write_text(json.dumps(
+        {"telegram": {"token": "YOUR_TELEGRAM_BOT_TOKEN", "chat_id": "YOUR_TELEGRAM_CHAT_ID"}}))
+    cfg = main.load_config()
+    assert not cfg["telegram"].get("token")
+    assert not cfg["telegram"].get("chat_id")
+
+
+def test_load_config_accepts_telegram_bot_token_alias(tmp_path, monkeypatch, clean_env):
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "config.json").write_text(json.dumps({}))
+    monkeypatch.setenv("TELEGRAM_BOT_TOKEN", "123:abc")
+    monkeypatch.setenv("TELEGRAM_CHAT_ID", "42")
+    cfg = main.load_config()
+    assert cfg["telegram"] == {"token": "123:abc", "chat_id": "42"}
 
 
 def test_export_jobs_days_with_history(tmp_path, monkeypatch, capsys):
@@ -184,3 +209,20 @@ def test_init_project_scaffolds(tmp_path, monkeypatch, capsys):
     # idempotent — second run skips without error
     main.init_project()
     assert "already exists" in capsys.readouterr().out
+
+
+def test_harvest_dispatch(monkeypatch):
+    called = {}
+    monkeypatch.setattr("job_hunt.harvester.main", lambda args: called.setdefault("ok", True))
+    _argv(monkeypatch, "harvest")
+    main.main()
+    assert called["ok"]
+
+
+def test_main_module_run(monkeypatch):
+    import runpy
+    called = {}
+    monkeypatch.setattr(main, "main", lambda: called.setdefault("ok", True))
+    runpy.run_module("job_hunt.__main__", run_name="__main__")
+    assert called["ok"]
+

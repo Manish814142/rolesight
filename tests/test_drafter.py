@@ -62,3 +62,11 @@ def test_resolve_job_no_scan(tmp_path, monkeypatch):
 
 def test_slug():
     assert drafter._slug("Acme Co, Inc.") == "acme_co_inc"
+
+
+def test_draft_without_tinyfish_key_gives_clear_error(draft_env):
+    """TinyFish is no longer required by load_config, so the drafter (which still
+    fetches the JD through it) must fail with a readable message, not KeyError."""
+    draft_env.pop("tinyfish_api_key")
+    with pytest.raises(RuntimeError, match="TINYFISH_API_KEY"):
+        drafter.draft_application(draft_env, "https://acme.co/jobs/mle")

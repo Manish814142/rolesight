@@ -1,5 +1,5 @@
-import csv
 import json
+import os
 import re
 import time
 from datetime import datetime, timezone
@@ -7,9 +7,14 @@ from pathlib import Path
 
 from tinyfish import RateLimitError, TinyFish
 
+from job_hunt.adapters import fetch_company_jobs
+from job_hunt.db import get_job, init_db, save_job, update_job_status
 from job_hunt.llm_utils import chat_with_llm
 from job_hunt.log import get_logger
-from job_hunt.notifier import send_telegram
+from job_hunt.models import canonical_hash
+from job_hunt.notifier import is_telegram_configured, send_telegram
+from job_hunt.prefilter import should_evaluate_job
+from job_hunt.scorer import score_and_process_job
 
 logger = get_logger()
 
@@ -74,10 +79,7 @@ Scoring: 80-100 near-perfect; 60-79 good fit; 40-59 partial; <40 poor.
 Set worth_applying=true only if score >= {min_score}.
 Include ALL jobs. Output ONLY the JSON array."""
 
-EXPORT_FIELDS = [
-    "Company", "Role", "Location", "Application URL",
-    "Score (%)", "Stack", "Region", "Reason", "Worth Applying", "Scan Date",
-]
+from job_hunt.exporter import export_jobs_to_csv  # noqa: E402
 
 
 def _build_candidate_profile(config: dict) -> str:
@@ -229,9 +231,41 @@ def fetch_job_details(tf: TinyFish, jobs: list[dict]) -> list[dict]:
     return enriched
 
 
+def score_job(job: dict, resume: str, config: dict) -> dict:
+    from job_hunt.llm_utils import score_job_with_gemini
+    return score_job_with_gemini(job, resume, config)
+
+
 def score_jobs(jobs: list[dict], resume: str, config: dict) -> list[dict]:
     if not jobs:
         return []
+
+    if config.get("llm_provider") == "gemini":
+        min_score = config.get("candidate", {}).get("min_score", 55)
+        results = []
+        for idx, job in enumerate(jobs):
+            res = score_job(job, resume, config)
+            score = res.get("score", 0)
+            reason = res.get("reason", "")
+            logger.debug(f"    [{score:3d}] {job.get('title', '?')} — {reason[:80]}")
+            if score >= min_score:
+                j = job.copy()
+                j.update(
+                    {
+                        "score": score,
+                        "extracted_title": job.get("title", "?"),
+                        "stack": "",
+                        "location_remote": job.get("location", ""),
+                        "reason": reason,
+                        "worth_applying": True,
+                    }
+                )
+                results.append(j)
+            if idx < len(jobs) - 1:
+                # Pacing sleep to strictly stay under Gemini free-tier 15 RPM cap (60s / 15 = 4.0s)
+                time.sleep(4.2)
+        return sorted(results, key=lambda x: x["score"], reverse=True)
+
 
     jobs_text = "\n\n".join(
         f"JOB {i + 1}:\nCompany: {j['company']} | Location: {j['location']}\n"
@@ -312,31 +346,7 @@ def format_telegram_message(top_jobs: list[dict], date_str: str) -> str:
 
 
 def _export_to_csv(jobs: list[dict], label: str) -> Path:
-    date_str = datetime.now().strftime("%Y-%m-%d")
-    out_path = Path("output") / f"jobs_{date_str}.csv"
-    out_path.parent.mkdir(exist_ok=True)
-
-    def _row(j: dict) -> dict:
-        worth = j.get("worth_applying")
-        return {
-            "Company": j.get("company", ""),
-            "Role": j.get("extracted_title") or j.get("title", ""),
-            "Location": j.get("location_remote") or j.get("location", ""),
-            "Application URL": j.get("url", ""),
-            "Score (%)": j.get("score", ""),
-            "Stack": j.get("stack", ""),
-            "Region": j.get("region", ""),
-            "Reason": j.get("reason", ""),
-            "Worth Applying": "Yes" if worth else ("No" if worth is False else ""),
-            "Scan Date": j.get("scan_date", ""),
-        }
-
-    with out_path.open("w", newline="", encoding="utf-8") as fh:
-        writer = csv.DictWriter(fh, fieldnames=EXPORT_FIELDS)
-        writer.writeheader()
-        for j in jobs:
-            writer.writerow(_row(j))
-
+    out_path = export_jobs_to_csv(jobs, out_dir="output")
     logger.info(f"Results exported to CSV ({label}): {out_path}")
     return out_path
 
@@ -347,20 +357,23 @@ def run_scan(config: dict, companies: list[dict]) -> None:
     logger.info(f"=== Scan started — {total} companies to check ===")
     logger.info(f"Candidate: {config.get('candidate', {}).get('name', 'unknown')}")
     logger.info(f"Min score: {config.get('candidate', {}).get('min_score', 55)} | Top N: {config.get('candidate', {}).get('top_n', 5)}")
-    provider = config.get("llm_provider") or "openrouter"
+    provider = config.get("llm_provider") or "gemini"
     model_by_provider = {
+        "gemini": config.get("gemini_model") or "gemini-3.5-flash-lite",
         "openrouter": config.get("openrouter_model", "default"),
         "anthropic": config.get("anthropic_model", "default"),
         "claude_cli": config.get("claude_cli_model") or "claude default",
     }
     logger.info(f"LLM provider: {provider} | Model: {model_by_provider.get(provider, 'default')}")
 
-    try:
-        tf = TinyFish(api_key=config["tinyfish_api_key"])
-        logger.debug("TinyFish client initialised")
-    except Exception as e:
-        logger.error(f"TinyFish init error: {e}")
-        return
+    tf = None
+    tf_key = config.get("tinyfish_api_key")
+    if tf_key:
+        try:
+            tf = TinyFish(api_key=tf_key)
+            logger.debug("TinyFish client initialised")
+        except Exception as e:
+            logger.warning(f"TinyFish init warning: {e}")
 
     resume_path = Path(config.get("candidate", {}).get("resume_path", "resume/YOUR_RESUME.md"))
     resume = resume_path.read_text()
@@ -368,6 +381,11 @@ def run_scan(config: dict, companies: list[dict]) -> None:
 
     min_score = config.get("candidate", {}).get("min_score", 55)
     top_n = config.get("candidate", {}).get("top_n", 5)
+
+    init_db()
+    gemini_key = config.get("gemini_api_key") or os.getenv("GEMINI_API_KEY")
+    tg_token = config.get("telegram", {}).get("token")
+    tg_chat_id = config.get("telegram", {}).get("chat_id")
 
     state = load_state()
     seen_urls: set = set(state.get("seen_urls", []))
@@ -377,10 +395,96 @@ def run_scan(config: dict, companies: list[dict]) -> None:
     errors: list[str] = []
     companies_scanned = 0
     companies_with_jobs = 0
+    scoring_failures = 0
 
     for idx, company in enumerate(companies, 1):
         logger.info(f"[{idx}/{total}] Scanning {company['name']}...")
         try:
+            # 1. Check for native direct ATS adapter first
+            direct_jobs = fetch_company_jobs(company)
+            if company.get("ats"):
+                if direct_jobs:
+                    logger.info(f"  Fetched {len(direct_jobs)} job(s) directly via ATS adapter")
+                    scored_direct: list[dict] = []
+                    for job in direct_jobs:
+                        seen_urls.add(job.url)
+                        c_hash = canonical_hash(job.title, job.company, job.location)
+                        # Only scored/notified rows are final. 'skipped' rows are re-run
+                        # through the (cheap, local) pre-filter so filter fixes apply to
+                        # known jobs; 'discovered' rows are ones whose scoring failed.
+                        existing = get_job(c_hash)
+                        prior_status = existing["status"] if existing else None
+                        if prior_status in ("scored", "notified"):
+                            logger.debug(f"  Skipping previously scored job: {job.title}")
+                            continue
+
+                        passed, reason = should_evaluate_job(job)
+                        if not passed:
+                            logger.debug(f"  Pre-filter skipped: {job.title} ({reason})")
+                            if prior_status is None:
+                                save_job(job, status="skipped")
+                            continue
+
+                        if prior_status is None:
+                            save_job(job, status="discovered")
+                        elif prior_status != "discovered":
+                            update_job_status(c_hash, "discovered")
+                        logger.info(f"  Evaluating candidate match for: {job.title}...")
+
+                        if gemini_key:
+                            res = score_and_process_job(
+                                job=job,
+                                resume_text=resume,
+                                gemini_api_key=gemini_key,
+                                telegram_token=tg_token,
+                                telegram_chat_id=tg_chat_id,
+                                min_notify_score=min_score,
+                                config=config,
+                            )
+                            if res["score"] is None:
+                                scoring_failures += 1
+                                continue
+                            scored_job = {
+                                "company": job.company,
+                                "title": job.title,
+                                "extracted_title": job.title,
+                                "location": job.location,
+                                "location_remote": job.location,
+                                "url": job.url,
+                                "score": res["score"],
+                                "reason": res["reason"],
+                                "stack": "",
+                                "worth_applying": res["score"] >= min_score,
+                            }
+                            scored_direct.append(scored_job)
+                        else:
+                            job_dict = {
+                                "company": job.company,
+                                "title": job.title,
+                                "location": job.location,
+                                "url": job.url,
+                                "content": job.description_text,
+                            }
+                            batch_scored = score_jobs([job_dict], resume, config)
+                            scored_direct.extend(batch_scored)
+
+                    if scored_direct:
+                        all_scored_jobs.extend(scored_direct)
+                        companies_with_jobs += 1
+                        titles = [j.get("extracted_title") or j.get("title", "?") for j in scored_direct[:3]]
+                        logger.info(f"  {len(scored_direct)} job(s) saved: {', '.join(titles)}{' ...' if len(scored_direct) > 3 else ''}")
+                else:
+                    logger.info(f"  No open jobs found via {company.get('ats')} adapter")
+
+                companies_scanned += 1
+                continue
+
+            # 2. Fallback to TinyFish for custom portals
+            if not tf or "careers_url" not in company:
+                logger.warning(f"  Skipping {company['name']}: No direct ATS detected and no valid careers_url")
+                companies_scanned += 1
+                continue
+
             new_jobs = discover_job_urls(tf, company, seen_urls, config.get("candidate", {}))
             if not new_jobs:
                 logger.info("  No new job URLs found")
@@ -392,7 +496,7 @@ def run_scan(config: dict, companies: list[dict]) -> None:
             seen_urls.update(j["url"] for j in new_jobs)
 
             logger.info(f"  Scoring {len(new_jobs)} job(s)...")
-            scored: list[dict] = []
+            scored = []
             try:
                 for i in range(0, len(new_jobs), 10):
                     batch = new_jobs[i: i + 10]
@@ -430,8 +534,8 @@ def run_scan(config: dict, companies: list[dict]) -> None:
     )[:top_n]
 
     scan_date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    for job in all_scored_jobs:
-        job["scan_date"] = scan_date
+    for item in all_scored_jobs:
+        item["scan_date"] = scan_date
 
     LAST_SCAN_FILE.parent.mkdir(exist_ok=True)
     LAST_SCAN_FILE.write_text(json.dumps(all_scored_jobs, indent=2))
@@ -449,6 +553,12 @@ def run_scan(config: dict, companies: list[dict]) -> None:
     JOB_HISTORY_FILE.write_text(json.dumps(history, indent=2))
     logger.debug(f"Job history updated: +{len(new_entries)} new entries ({len(history)} total)")
 
+    if scoring_failures:
+        logger.warning(
+            f"{scoring_failures} job(s) could not be scored (LLM error/quota) — "
+            "left as 'discovered' and will be retried next scan"
+        )
+
     elapsed = time.time() - scan_start
     logger.info(
         f"=== Scan complete — {companies_scanned}/{total} companies, "
@@ -463,7 +573,7 @@ def run_scan(config: dict, companies: list[dict]) -> None:
 
     date_str = datetime.now().strftime("%d %b %Y")
     tg = config.get("telegram", {})
-    telegram_configured = bool(tg.get("token") and tg.get("chat_id"))
+    telegram_configured = is_telegram_configured(tg.get("token"), tg.get("chat_id"))
 
     # Always persist results to CSV when there are scored jobs — this is the
     # durable record regardless of whether Telegram is configured.
@@ -492,5 +602,5 @@ def run_scan(config: dict, companies: list[dict]) -> None:
         else:
             logger.warning(f"Telegram send failed — results saved to CSV: {csv_path}")
     else:
-        logger.info(f"Telegram not configured — results saved to CSV: {csv_path}")
-        logger.info("Add telegram.token and telegram.chat_id to config.json to enable notifications.")
+        logger.debug("Telegram not configured — skipping notification")
+        logger.info(f"Results saved to CSV: {csv_path}")

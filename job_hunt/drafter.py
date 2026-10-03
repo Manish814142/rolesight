@@ -36,7 +36,13 @@ def _resolve_job(job_ref: str) -> tuple[str, str]:
 
 
 def draft_application(config: dict, job_ref: str) -> None:
-    tf = TinyFish(api_key=config["tinyfish_api_key"])
+    tf_key = config.get("tinyfish_api_key")
+    if not tf_key:
+        raise RuntimeError(
+            "Drafting fetches the job description via TinyFish, but TINYFISH_API_KEY is not set.\n"
+            "Add it to .env (get a key at https://agent.tinyfish.ai)."
+        )
+    tf = TinyFish(api_key=tf_key)
 
     cand = config.get("candidate", {})
     candidate_name = cand.get("name", "the candidate")

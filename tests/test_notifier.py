@@ -50,3 +50,34 @@ def test_send_whatsapp_http_error(monkeypatch):
 def test_send_whatsapp_exception(monkeypatch):
     monkeypatch.setattr(notifier.requests, "get", lambda *a, **k: (_ for _ in ()).throw(OSError("x")))
     assert notifier.send_whatsapp("123", "key", "hi") is False
+
+
+def test_format_job_alert():
+    msg = notifier.format_job_alert(
+        company="Razorpay",
+        title="Senior Software Engineer",
+        location="Bengaluru, India",
+        url="https://razorpay.com/careers/123",
+        score=88,
+        score_reason="Strong match for backend Python and microservices.",
+        headcount="1,001-5,000 employees",
+    )
+    assert "🎯 <b>New High Match Job (88/100)</b>" in msg
+    assert "🏢 <b>Company:</b> Razorpay 🏷️ <i>[1,001-5,000 employees]</i>" in msg
+    assert "💼 <b>Role:</b> Senior Software Engineer" in msg
+    assert "📍 <b>Location:</b> Bengaluru, India" in msg
+    assert "💡 <b>Match Reason:</b> Strong match for backend Python and microservices." in msg
+    assert '🔗 <a href="https://razorpay.com/careers/123">Apply Here</a>' in msg
+
+
+def test_format_job_alert_unknown_headcount():
+    msg = notifier.format_job_alert(
+        company="Sarvam AI",
+        title="AI Engineer",
+        location="Remote",
+        url="https://sarvam.ai/jobs/1",
+        score=95,
+        score_reason="Direct LLM and generative AI fit.",
+        headcount="Unknown",
+    )
+    assert "🏢 <b>Company:</b> Sarvam AI 🏷️ <i>[Unknown]</i>" in msg

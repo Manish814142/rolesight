@@ -1,16 +1,30 @@
-# TinyFish API — get yours at https://agent.tinyfish.ai
-TINYFISH_API_KEY="your_tinyfish_api_key_here"
+# Google Gemini API — default LLM provider (scoring + drafting)
+# Get a key at https://aistudio.google.com/apikey
+LLM_PROVIDER="gemini"
+GEMINI_API_KEY="your_gemini_api_key_here"
+GEMINI_MODEL="gemini-3.5-flash-lite"
 
-# OpenRouter API — free tier available at https://openrouter.ai
-OPENROUTER_API_KEY="your_openrouter_api_key_here"
-OPENROUTER_MODEL="meta-llama/llama-3.3-70b-instruct:free"
-OPENROUTER_FALLBACK_MODELS="nvidia/nemotron-3-super-120b-a12b:free,google/gemma-4-31b-it:free,qwen/qwen3-coder:free"
+# TinyFish API (optional) — only needed for `autopilot draft` (JD fetch) and
+# legacy companies that have a careers_url instead of an ATS slug.
+# TINYFISH_API_KEY="your_tinyfish_api_key_here"
 
-# Anthropic / Claude (optional — alternative to OpenRouter)
-# Set llm_provider=anthropic in config.json to use Claude instead of OpenRouter
+# OpenRouter API (DEPRECATED — kept for backward compatibility only)
+# OPENROUTER_API_KEY="your_openrouter_api_key_here"
+# OPENROUTER_MODEL="meta-llama/llama-3.3-70b-instruct:free"
+# OPENROUTER_FALLBACK_MODELS="nvidia/nemotron-3-super-120b-a12b:free,google/gemma-4-31b-it:free,qwen/qwen3-coder:free"
+
+# Anthropic / Claude API (optional — alternative to Gemini, requires API key)
+# Set llm_provider=anthropic in config.json to use Anthropic API
 # ANTHROPIC_API_KEY="your_anthropic_api_key_here"
 
+# Claude Code CLI (optional — no API key needed, uses local claude auth)
+# Requires: Claude Code installed (https://claude.ai/code) + claude auth login
+# LLM_PROVIDER="claude_cli"
+# CLAUDE_CLI_MODEL=""   # empty = claude's default; or "sonnet", "opus", "haiku"
+
 # Telegram Notification (optional — create bot via @BotFather)
+# Empty or placeholder values = Telegram skipped; results still go to output/*.csv.
+# TELEGRAM_BOT_TOKEN is accepted as an alias for TELEGRAM_TOKEN.
 TELEGRAM_TOKEN="your_telegram_bot_token_here"
 TELEGRAM_CHAT_ID="your_telegram_chat_id_here"
 
