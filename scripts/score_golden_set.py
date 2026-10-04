@@ -27,6 +27,11 @@ logger = logging.getLogger("golden_set_scorer")
 DEFAULT_GOLDEN_SET_PATH = Path("scripts/golden_set.csv")
 DEFAULT_OUTPUT_PATH = Path("scripts/golden_set_scored.csv")
 
+# The labels in golden_set.csv were assigned by scripts/build_golden_set.py (old score >= 85 ->
+# "apply"; hand-picked edge cases -> "no"), not by Manish, so agreement with them is not an
+# accuracy measure. Set True only after Manish has labelled every row himself (T48 "Done when").
+LABELS_CONFIRMED_BY_MANISH = False
+
 
 def load_golden_set(csv_path: Path | str = DEFAULT_GOLDEN_SET_PATH) -> List[Dict[str, Any]]:
     """Load the golden set CSV containing benchmark jobs, old scores, and human labels."""
@@ -223,8 +228,12 @@ def print_comparison_report(
     new_scores: List[int],
     new_reasons: List[str],
     min_score: int = 60,
+    simulated: bool = False,
 ) -> None:
-    """Print structured comparison table and precision summary."""
+    """Print structured comparison table and precision summary.
+
+    `simulated`: the new scores came from simulate_rubric_scores (--dry-run), not from Gemini.
+    """
     labels = [j["label"] for j in jobs]
     comp = compare_scores(old_scores, new_scores, labels, min_score)
     old_m = comp["old_metrics"]
@@ -233,6 +242,14 @@ def print_comparison_report(
     print("\n" + "=" * 80)
     print(f" GOLDEN SET BENCHMARK EVALUATION (MIN_SCORE = {min_score})")
     print("=" * 80)
+    if not LABELS_CONFIRMED_BY_MANISH or simulated:
+        print("\n !! NOT AN ACCURACY MEASURE !!")
+        if not LABELS_CONFIRMED_BY_MANISH:
+            print(" - The labels were assigned by scripts/build_golden_set.py (old score >= 85 -> apply;")
+            print("   hand-picked edge cases -> no), not by Manish. Precision below only restates the old scores.")
+        if simulated:
+            print(" - The new scores come from a rule-based simulator, not Gemini (--dry-run).")
+        print(" - To measure the prompt: Manish labels scripts/golden_set.csv, then run without --dry-run.")
 
     print("\n1. SCORE COMPARISON SUMMARY:")
     print(f"   Total Evaluated:              {len(jobs)}")
@@ -244,7 +261,7 @@ def print_comparison_report(
     print(f"   Old Top Score Distribution:   {old_m['top_distribution']}")
     print(f"   New Prompt Max Tie:           {new_m['max_tie_count']} jobs tied at {new_m['max_tie_score']}")
     print(f"   New Top Score Distribution:   {new_m['top_distribution']}")
-    tie_status = "SHRUNK (Passed)" if comp["tie_at_top_shrunk"] else "DID NOT SHRINK"
+    tie_status = "SHRUNK" if comp["tie_at_top_shrunk"] else "DID NOT SHRINK"
     print(f"   Tie at Top Status:            {tie_status}")
 
     print("\n3. PRECISION AT MIN_SCORE:")
@@ -252,7 +269,7 @@ def print_comparison_report(
     print(f"   New Strict Precision (apply): {new_m['strict_precision']:.1%} ({new_m['strict_true_positives']}/{new_m['predicted_positives']})")
     print(f"   Old Lenient Precision:        {old_m['lenient_precision']:.1%} ({old_m['lenient_true_positives']}/{old_m['predicted_positives']})")
     print(f"   New Lenient Precision:        {new_m['lenient_precision']:.1%} ({new_m['lenient_true_positives']}/{new_m['predicted_positives']})")
-    prec_status = "MAINTAINED/IMPROVED (Passed)" if comp["precision_improved"] else "DROPPED"
+    prec_status = "MAINTAINED/IMPROVED" if comp["precision_improved"] else "DROPPED"
     print(f"   Precision Status:             {prec_status}")
 
     print("\n4. FALSE POSITIVES (jobs scored >= MIN_SCORE labeled 'no'):")
@@ -298,7 +315,8 @@ def main() -> None:
     new_scores = [r["score"] for r in results]
     new_reasons = [r["reason"] for r in results]
 
-    print_comparison_report(jobs, old_scores, new_scores, new_reasons, min_score=args.min_score)
+    print_comparison_report(jobs, old_scores, new_scores, new_reasons, min_score=args.min_score,
+                            simulated=args.dry_run)
 
     # Save output CSV
     out_path = Path(args.output)

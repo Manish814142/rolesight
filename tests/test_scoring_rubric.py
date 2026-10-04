@@ -151,7 +151,27 @@ def test_golden_set_dry_run_cli(tmp_path):
     )
     assert res.returncode == 0
     assert "GOLDEN SET BENCHMARK EVALUATION" in res.stdout
-    assert "SHRUNK (Passed)" in res.stdout
-    assert "MAINTAINED/IMPROVED (Passed)" in res.stdout
     assert out_csv.exists()
+    # T48 review: the labels are the build script's (old score >= 85 -> apply) and the dry-run
+    # "new" scores come from a rule-based simulator, so no figure here may read as a pass.
+    assert "NOT AN ACCURACY MEASURE" in res.stdout
+    assert "assigned by scripts/build_golden_set.py" in res.stdout
+    assert "simulator, not Gemini" in res.stdout
+    assert "(Passed)" not in res.stdout
+
+
+def test_banner_names_only_the_caveats_that_apply(capsys):
+    """Live scores against confirmed labels are a real measure: no 'not an accuracy measure' banner."""
+    from scripts import score_golden_set as sgs
+
+    jobs = [{"label": "apply", "company": "C", "title": "T", "old_reason": "r"}] * 2
+    sgs.LABELS_CONFIRMED_BY_MANISH = True
+    try:
+        sgs.print_comparison_report(jobs, [80, 70], [80, 70], ["r", "r"], 60, simulated=False)
+    finally:
+        sgs.LABELS_CONFIRMED_BY_MANISH = False
+    assert "NOT AN ACCURACY MEASURE" not in capsys.readouterr().out
+    sgs.print_comparison_report(jobs, [80, 70], [80, 70], ["r", "r"], 60, simulated=False)
+    out = capsys.readouterr().out
+    assert "NOT AN ACCURACY MEASURE" in out and "simulator, not Gemini" not in out
 
