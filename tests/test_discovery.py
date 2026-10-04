@@ -327,3 +327,32 @@ def test_add_mode_accepts_seed_format_lines_including_workday(tmp_path, monkeypa
     assert by_name["Jupiter"]["url"] == "https://jobs.lever.co/jupiter"
     assert "Plane" in by_name
     assert "Medtronic | workday | medtronic | wd1 | MedtronicCareers" in seeds.read_text()
+
+
+def test_recheck_replaces_moved_boards_and_removes_dead_ones(tmp_path, monkeypatch):
+    """Periodic re-check: a company whose board stopped verifying is re-discovered by
+    name (e.g. it moved ATS); if nothing verifies it is removed and reported."""
+    target = tmp_path / "companies.json"
+    target.write_text(json.dumps([
+        {"name": "Alive", "ats": "greenhouse", "slug": "alive", "headcount": "51-200 employees"},
+        {"name": "Moved", "ats": "lever", "slug": "moved", "headcount": "1,001-5,000 employees"},
+        {"name": "Gone", "ats": "smartrecruiters", "slug": "gone"},
+    ]))
+    monkeypatch.setattr(disc, "evaluate_board", lambda name, ats, slug, from_url=False: {
+        "seed": name, "accepted": slug == "alive", "verdict": "verified" if slug == "alive" else "no open jobs",
+        "ats": ats, "board": slug})
+
+    def fake_discover(seeds, workers=40):
+        assert sorted(s["name"] for s in seeds) == ["Gone", "Moved"]
+        return ([{"name": "Moved", "ats": "ashby", "slug": "moved", "headcount": "Unknown"}],
+                [{"seed": "Moved", "verdict": "verified", "ats": "ashby", "board": "moved"}])
+    monkeypatch.setattr(disc, "discover", fake_discover)
+    report = tmp_path / "r.csv"
+
+    disc.main(["--recheck", "--merge", str(target), "--report", str(report), "--out", str(tmp_path / "v.json")])
+
+    out = {c["name"]: c for c in json.loads(target.read_text())}
+    assert set(out) == {"Alive", "Moved"}
+    assert (out["Moved"]["ats"], out["Moved"]["headcount"]) == ("ashby", "1,001-5,000 employees")
+    text = report.read_text()
+    assert "Gone" in text and "Moved" in text

@@ -237,3 +237,15 @@ def test_discover_command_dispatches_without_config(tmp_path, monkeypatch):
     monkeypatch.setattr(main.sys, "argv", ["autopilot", "discover", "--seeds", "s.txt"])
     main.main()
     assert seen["argv"] == ["--seeds", "s.txt"]
+
+
+def test_scan_posted_within_flag_sets_config(tmp_path, monkeypatch, clean_env):
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "config.json").write_text(json.dumps({"candidate": {"name": "x"}}))
+    (tmp_path / "companies.json").write_text("[]")
+    seen = {}
+    import job_hunt.scanner as scanner_mod
+    monkeypatch.setattr(scanner_mod, "run_scan", lambda cfg, comps: seen.setdefault("cfg", cfg))
+    monkeypatch.setattr(main.sys, "argv", ["autopilot", "scan", "--posted-within", "3"])
+    main.main()
+    assert seen["cfg"]["candidate"]["max_posted_age_days"] == 3

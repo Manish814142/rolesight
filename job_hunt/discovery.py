@@ -14,6 +14,9 @@ Usage:
     # new names are appended to the seeds file for the record
     python -m job_hunt discover --add-file /tmp/paste.txt --merge companies.json [--no-recheck]
     python -m job_hunt discover --add "Plane, BitGo, Groww" --merge companies.json
+    # periodic health check of the existing list (run monthly/quarterly): re-verify every
+    # entry; boards that fail are re-discovered by name (ATS migration) or removed
+    python -m job_hunt discover --recheck --merge companies.json --report /tmp/recheck.csv
 
 Seeds file, one company per line ('#' comments allowed):
     Stripe
@@ -415,6 +418,32 @@ def reverify_existing(entries: List[Dict[str, Any]], workers: int = 12) -> Tuple
     return kept, rows
 
 
+def recheck_companies(entries: List[Dict[str, Any]]) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
+    """Re-verify every entry; re-discover failures by name (handles ATS migrations).
+
+    Returns (new company list, report rows). A failing entry is replaced when its
+    company verifies on another board (headcount kept), otherwise it is removed — the
+    name stays in scripts/company_seeds.txt, so a later full discover can re-add it.
+    """
+    kept, rows = reverify_existing(entries)
+    failed = [(c, r) for c, r in zip(entries, rows) if not r["accepted"]]
+    found, disc_rows = discover([{"name": c["name"]} for c, _ in failed]) if failed else ([], [])
+    by_name = {f["name"].lower(): f for f in found}
+    replacements: List[Dict[str, Any]] = []
+    summary: List[Dict[str, Any]] = []
+    for c, r in failed:
+        new = by_name.get(display_name(c["name"]).lower()) or by_name.get(c["name"].lower())
+        old_board = f"{c['ats']}/{c.get('slug') or c.get('tenant')}"
+        if new:
+            new = {**new, "name": c["name"], "headcount": c.get("headcount", new.get("headcount", "Unknown"))}
+            replacements.append(new)
+            summary.append({"seed": c["name"], "verdict": f"REPLACED {old_board} ({r['verdict']}) -> "
+                                                          f"{new['ats']}/{new.get('slug') or new.get('tenant')}"})
+        else:
+            summary.append({"seed": c["name"], "verdict": f"REMOVED {old_board}: {r['verdict']}"})
+    return merge_companies(kept, replacements), summary + rows + disc_rows
+
+
 def write_report(rows: List[Dict[str, Any]], path: str) -> None:
     with open(path, "w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, fieldnames=REPORT_FIELDS, extrasaction="ignore")
@@ -451,6 +480,20 @@ def main(argv: Optional[List[str]] = None) -> None:
         if a in opts and i + 1 < len(argv):
             opts[a] = argv[i + 1]
     recheck = "--no-recheck" not in argv
+
+    if "--recheck" in argv:
+        target = Path(opts["--merge"] or "companies.json")
+        existing = json.loads(target.read_text(encoding="utf-8"))
+        updated, report_rows = recheck_companies(existing)
+        write_report(report_rows, opts["--report"])
+        changes = [r for r in report_rows if r["verdict"].startswith(("REPLACED", "REMOVED"))]
+        Path(opts["--out"]).write_text(json.dumps(changes, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        target.write_text(json.dumps(updated, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        for r in changes:
+            print(f"  {r['seed']}: {r['verdict']}")
+        print(f"Recheck: {len(existing)} -> {len(updated)} companies ({len(changes)} changed). "
+              f"Review with: git diff {target}")
+        return
 
     seeds_path = Path(opts["--seeds"])
     add_text = opts["--add"].replace(",", "\n")

@@ -76,3 +76,10 @@ def test_export_jobs_to_csv_no_overwrite(tmp_path: Path) -> None:
         assert len(reader) == 1
         assert reader[0]["Company"] == "Beta"
         assert list(reader[0].keys()) == EXPORT_FIELDS
+
+
+def test_export_row_includes_posted_date():
+    from job_hunt.exporter import job_to_export_row
+    assert job_to_export_row({"posted_at": "2026-09-03T13:30:34-04:00"})["Posted"] == "2026-09-03"
+    assert job_to_export_row({"posted_at": "Posted 5 Days Ago"})["Posted"] == "Posted 5 Days Ago"
+    assert job_to_export_row({})["Posted"] == ""

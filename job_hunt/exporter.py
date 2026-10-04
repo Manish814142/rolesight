@@ -10,6 +10,7 @@ EXPORT_FIELDS: List[str] = [
     "Company",
     "Role",
     "Location",
+    "Posted",
     "Application URL",
     "Score (%)",
     "Stack",
@@ -20,6 +21,12 @@ EXPORT_FIELDS: List[str] = [
 ]
 
 
+def _posted_display(posted_at: str) -> str:
+    """ISO timestamps -> YYYY-MM-DD; relative text (Workday "Posted 5 Days Ago") as-is."""
+    s = (posted_at or "").strip()
+    return s[:10] if len(s) >= 10 and s[4] == "-" and s[7] == "-" else s
+
+
 def job_to_export_row(j: Dict[str, Any]) -> Dict[str, Any]:
     """Convert an internal job dictionary to a canonical export CSV row."""
     worth = j.get("worth_applying")
@@ -27,6 +34,7 @@ def job_to_export_row(j: Dict[str, Any]) -> Dict[str, Any]:
         "Company": j.get("company", ""),
         "Role": j.get("extracted_title") or j.get("title", ""),
         "Location": j.get("location_remote") or j.get("location", ""),
+        "Posted": _posted_display(j.get("posted_at", "")),
         "Application URL": j.get("url", ""),
         "Score (%)": j.get("score", ""),
         "Stack": j.get("stack", ""),

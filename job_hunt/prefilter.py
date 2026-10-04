@@ -2,7 +2,8 @@
 from __future__ import annotations
 
 import re
-from typing import Tuple
+from datetime import date, datetime, timezone
+from typing import Optional, Tuple
 
 from job_hunt.models import JobPosting
 
@@ -48,6 +49,42 @@ LOCATION_EXCLUDE_PATTERN = re.compile(
 )
 
 REMOTE_PATTERN = re.compile(r"\bremote\b", re.IGNORECASE)
+
+# Workday gives relative text: "Posted Today", "Posted Yesterday", "Posted 5 Days Ago",
+# "Posted 30+ Days Ago" (a lower bound).
+_WORKDAY_POSTED_RE = re.compile(r"posted\s+(today|yesterday|(\d+)\+?\s+days?\s+ago)", re.IGNORECASE)
+
+
+def posted_age_days(posted_at: str, today: Optional[date] = None) -> Optional[int]:
+    """Days since a job was posted, from any adapter's posted_at; None if unknown."""
+    s = (posted_at or "").strip()
+    if not s:
+        return None
+    today = today or date.today()
+    m = _WORKDAY_POSTED_RE.search(s)
+    if m:
+        word = m.group(1).lower()
+        return 0 if word == "today" else 1 if word == "yesterday" else int(m.group(2))
+    try:
+        if s.isdigit() and len(s) >= 10:  # epoch seconds / milliseconds
+            ts = int(s) / (1000 if len(s) >= 13 else 1)
+            posted = datetime.fromtimestamp(ts, tz=timezone.utc).date()
+        else:
+            posted = date.fromisoformat(s[:10])
+    except (ValueError, OverflowError, OSError):
+        return None
+    return max(0, (today - posted).days)
+
+
+def is_too_old(posted_at: str, max_age_days: Optional[int], today: Optional[date] = None) -> bool:
+    """True only when the posted date is KNOWN and older than max_age_days.
+
+    Undated jobs are never filtered — they are kept for manual review.
+    """
+    if max_age_days is None:
+        return False
+    age = posted_age_days(posted_at, today)
+    return age is not None and age > max_age_days
 
 
 def should_evaluate_job(job: JobPosting) -> Tuple[bool, str]:

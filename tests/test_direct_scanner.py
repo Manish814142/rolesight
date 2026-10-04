@@ -222,3 +222,27 @@ def test_scanner_fetches_companies_in_parallel(mock_single, direct_scan_env):
         scanner.run_scan(cfg, companies)
 
     assert [c.kwargs["job"].url.rsplit("/", 1)[-1] for c in mock_single.call_args_list] == ["co0", "co1", "co2", "co3"]
+
+
+@patch("job_hunt.scanner.fetch_company_jobs")
+@patch("job_hunt.scanner.score_and_process_job")
+def test_posted_within_filter_keeps_fresh_and_undated_jobs(mock_single, mock_fetch, direct_scan_env):
+    from datetime import date, timedelta
+    cfg, db_path = direct_scan_env
+    cfg.pop("gemini_scoring_mode")
+    cfg["candidate"]["max_posted_age_days"] = 3
+    old, fresh, undated = _backend_job("old"), _backend_job("fresh"), _backend_job("undated")
+    old.title, fresh.title, undated.title = "Backend Engineer A", "Backend Engineer B", "Backend Engineer C"
+    old.posted_at = (date.today() - timedelta(days=10)).isoformat()
+    fresh.posted_at = (date.today() - timedelta(days=1)).isoformat()
+    undated.posted_at = ""
+    mock_fetch.return_value = [old, fresh, undated]
+    mock_single.side_effect = lambda **kw: {"score": 70, "reason": "ok", "status": "scored"}
+
+    scanner.run_scan(cfg, [{"name": "Acme", "ats": "greenhouse", "slug": "acme"}])
+
+    assert sorted(c.kwargs["job"].title for c in mock_single.call_args_list) == ["Backend Engineer B", "Backend Engineer C"]
+    rec = get_job(canonical_hash(old.title, old.company, old.location), db_path=db_path)
+    assert rec["status"] == "skipped"            # re-evaluated if the window is widened later
+    saved = json.loads(scanner.LAST_SCAN_FILE.read_text())
+    assert {j["posted_at"] for j in saved} == {fresh.posted_at, ""}

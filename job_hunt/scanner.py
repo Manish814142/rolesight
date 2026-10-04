@@ -14,7 +14,7 @@ from job_hunt.llm_utils import chat_with_llm
 from job_hunt.log import get_logger
 from job_hunt.models import canonical_hash
 from job_hunt.notifier import is_telegram_configured, send_telegram
-from job_hunt.prefilter import should_evaluate_job
+from job_hunt.prefilter import is_too_old, should_evaluate_job
 from job_hunt.scorer import score_and_process_batch, score_and_process_job
 
 logger = get_logger()
@@ -424,6 +424,11 @@ def run_scan(config: dict, companies: list[dict]) -> None:
     # Gemini batches fill up (most companies contribute only 0-3 jobs).
     pending_direct: list = []
 
+    max_age = config.get("candidate", {}).get("max_posted_age_days")
+    if max_age is not None:
+        logger.info(f"Posted-date filter: last {max_age} day(s) only (jobs without a posted date are kept)")
+    too_old = 0
+
     workers = int(config.get("fetch_workers", DEFAULT_FETCH_WORKERS))
     logger.info(f"Fetching {total} companies with {workers} parallel workers...")
     fetch_start = time.time()
@@ -458,6 +463,13 @@ def run_scan(config: dict, companies: list[dict]) -> None:
                             logger.debug(f"  Pre-filter skipped: {job.title} ({reason})")
                             if prior_status is None:
                                 save_job(job, status="skipped")
+                            continue
+
+                        if is_too_old(job.posted_at, max_age):
+                            logger.debug(f"  Older than {max_age} day(s): {job.title} (posted {job.posted_at})")
+                            too_old += 1
+                            if prior_status is None:
+                                save_job(job, status="skipped")  # re-evaluated if the window widens
                             continue
 
                         if prior_status is None:
@@ -567,6 +579,7 @@ def run_scan(config: dict, companies: list[dict]) -> None:
                     "reason": res["reason"],
                     "stack": "",
                     "worth_applying": res["score"] >= min_score,
+                    "posted_at": job.posted_at,
                 })
         else:
             # Deprecated non-Gemini providers: score_jobs already batches 10 per prompt.
@@ -607,6 +620,9 @@ def run_scan(config: dict, companies: list[dict]) -> None:
     history.extend(new_entries)
     JOB_HISTORY_FILE.write_text(json.dumps(history, indent=2))
     logger.debug(f"Job history updated: +{len(new_entries)} new entries ({len(history)} total)")
+
+    if too_old:
+        logger.info(f"{too_old} job(s) skipped as posted more than {max_age} day(s) ago")
 
     if scoring_failures:
         logger.warning(

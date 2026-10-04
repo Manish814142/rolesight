@@ -313,3 +313,17 @@ def test_fetch_workday_resolves_multi_location_jobs(mock_post, mock_get):
     assert jobs[0].location == "India, Remote; India, Mumbai; India, Pune"
     assert jobs[0].is_remote is True
     assert "Node.js" in jobs[0].description_text
+
+
+@patch("requests.get")
+def test_greenhouse_posted_at_prefers_first_published(mock_get):
+    """updated_at moves on every edit (182/200 Stripe jobs differed on 2026-10-04);
+    first_published is the real posting date."""
+    mock_resp = MagicMock()
+    mock_resp.status_code = 200
+    mock_resp.json.return_value = {"jobs": [{
+        "id": 7, "title": "Backend Engineer", "location": {"name": "Bengaluru"},
+        "absolute_url": "https://x/7", "content": "",
+        "first_published": "2026-09-03T13:30:34-04:00", "updated_at": "2026-09-25T16:45:00-04:00"}]}
+    mock_get.return_value = mock_resp
+    assert fetch_greenhouse("stripe")[0].posted_at == "2026-09-03T13:30:34-04:00"

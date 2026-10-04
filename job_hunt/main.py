@@ -7,6 +7,7 @@ Usage:
   autopilot harvest           — probe all ATS engines and rebuild companies.json
   autopilot discover          — verify company names against ATS boards (see job_hunt/discovery.py)
   autopilot scan              — run daily job scan
+  autopilot scan --posted-within 3  — only score jobs posted in the last 3 days (undated jobs kept)
   autopilot draft #1          — draft application for job #1 from last scan
   autopilot draft https://... — draft application for a specific URL
   autopilot export            — export last scan to CSV (output/jobs_YYYY-MM-DD.csv)
@@ -278,6 +279,12 @@ def main() -> None:
                 limit = int(sys.argv[limit_idx + 1])
             except (IndexError, ValueError):
                 pass
+        if "--posted-within" in sys.argv:
+            try:
+                days = int(sys.argv[sys.argv.index("--posted-within") + 1])
+            except (IndexError, ValueError):
+                sys.exit("--posted-within requires an integer number of days, e.g. --posted-within 3")
+            config.setdefault("candidate", {})["max_posted_age_days"] = days
         from job_hunt.scanner import run_scan
         comps = load_companies()
         if limit and limit > 0:

@@ -43,7 +43,8 @@ def fetch_greenhouse(slug: str, eu: bool = False) -> List[JobPosting]:
         content = item.get("content", "")
         desc_text = strip_html(content)
         job_url = item.get("absolute_url") or f"https://boards.greenhouse.io/{slug}/jobs/{job_id}"
-        posted_at = item.get("updated_at") or ""
+        # first_published is the posting date; updated_at moves on every edit.
+        posted_at = item.get("first_published") or item.get("updated_at") or ""
 
         jobs.append(
             JobPosting(
