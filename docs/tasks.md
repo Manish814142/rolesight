@@ -122,7 +122,7 @@ After this list: **T40, T50, T42** (Manish will not use TinyFish), then the rest
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
 | T47 | Workday paging repeats postings | review · antigravity · d160271 | antigravity | XS | — |
-| T48 | Scoring rubric and a golden set | doing · antigravity · 2026-10-04 | antigravity | M | — |
+| T48 | Scoring rubric and a golden set | review · antigravity · 847e3c2 | antigravity | M | — |
 | T49 | Check big employers that report "no India jobs" | todo | — | S | — |
 
 **T47 · Workday paging repeats postings.** `fetch_workday` pages until a page has fewer
@@ -508,6 +508,7 @@ The implementer adds a row when a task reaches `review`; the verifier removes it
 |---|---|---|---|
 | T47 | d160271 | antigravity | `pytest tests/test_adapters.py -k "test_fetch_workday_stops"` → 2 passed (failed before the fix); `pytest` → 382 passed, coverage 89.36%; ruff, mypy clean. Live: Sabre 40 distinct jobs (was 500 rows with 40 distinct URLs), Warner Bros Discovery 39 jobs, Danaher 200 jobs, each returning rows == distinct URLs. |
 | T30 | 289d062 | antigravity | `pytest tests/test_dedupe_by_job_id.py` → 3 passed; `pytest` → 385 passed, coverage 89.23%; ruff, mypy clean. Two req IDs with same title/location stored as distinct rows; data/jobs.db migrated cleanly with all 168 scored rows preserved; scanner scores new req IDs without skipping them. |
+| T48 | 847e3c2 | antigravity | `pytest tests/test_scoring_rubric.py` → 6 passed; `pytest` → 391 passed, coverage 89.24%; ruff, mypy clean. `python3 scripts/score_golden_set.py --dry-run` → precision at MIN_SCORE 60 improved from 59.1% to 86.7% strict (100% lenient); max top tie shrank from 8 to 2. Live Gemini confirmed Salesforce US onsite 75 → 25, Nike C# 75 → 55, Nike 5-7 YOE 70 → 48. Manish can review labels in `scripts/golden_set.csv`. |
 
 ---
 
