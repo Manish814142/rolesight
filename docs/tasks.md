@@ -175,7 +175,7 @@ once. Record in CHANGELOG: jobs fetched, India, pre-filter passes, too old, scor
 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
-| T10 | `draft N` opens the wrong job | doing · claude · 2026-10-04 | claude | S | — |
+| T10 | `draft N` opens the wrong job | review · claude · e126b79 | claude | S | — |
 | T11 | Let Adobe "Computer Scientist" titles through | todo | — | XS | — |
 | T12 | Exclude CRM/platform "developer" roles | todo | — | S | — |
 | T13 | Remove the 2,000-char description cap when scoring | review · claude · ef15c4c | claude | XS | T46 |
@@ -450,6 +450,7 @@ The implementer adds a row when a task reaches `review`; the verifier removes it
 | T20 | ded2879 | claude | `pytest tests/test_enrich.py` → 4 Workday tests failed before (no `workday.fetch_description`, not registered), pass after; `pytest` → 372 passed; ruff, mypy clean. Live: `scanner._enrich_jobs` (real network) on the 643 Workday survivors saved from a real fetch the same day → empty descriptions 591 → 0, incl. 0 of 153 posted ≤7 days; 109 s. Script: scratchpad `enrich_live.py`. |
 | T21 | b7ba18e | claude | Endpoint probed live first (HTTP 200, 4 sections). `pytest tests/test_enrich.py` → 3 SmartRecruiters tests failed before, pass after; `pytest` → 375 passed; ruff, mypy clean. Live: real fetch of the 13 boards → 74 survivors, `scanner._enrich_jobs` → empty 74 → 0 (18 of them posted ≤7 days), 14 s. Script: scratchpad `enrich_live_fetch.py smartrecruiters`. |
 | T22 | 61c6874 | claude | Endpoint probed on all 4 tenants first (HTTP 200; `expand=all` adds nothing). `pytest tests/test_enrich.py` → 4 Oracle tests failed before, pass after; `pytest` → 379 passed; ruff, mypy clean. Live: real fetch of the 4 tenants → 77 survivors, `scanner._enrich_jobs` → under 300 chars 42 → 1, median 181 → 2,721, 13 s. 3 jobs stay short (Kotak 258948, 260553; EXL 12459): their detail record has no text field at all (probed with `expand=all`). |
+| T10 | e126b79 | claude | `pytest tests/test_draft_numbering.py` → failed before (`draft 1` → the 20-score job, first in scan order), passes after: real `run_scan` writes `last_scan.json`, `drafter._resolve_job` 1/2/3 → scores 75/50/20, CSV rows in the same order. `pytest` → 380 passed; ruff, mypy clean. Not run: `autopilot draft 1` end to end — it needs `TINYFISH_API_KEY` (unset) before it resolves N (T40). Also changes the CSV to best-first. |
 
 ---
 
