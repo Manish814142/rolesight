@@ -9,6 +9,9 @@ Telegram is optional. The primary output is the CSV in `output/`.
 
 **Invariant: drafts only — never auto-apply/submit anything.**
 
+**Task board: [`docs/tasks.md`](docs/tasks.md)** — pending work by priority, shared with other
+agents. Follow its Working loop (claim → implement → review queue) or its Verifying section.
+
 ## Key commands
 
 ```bash

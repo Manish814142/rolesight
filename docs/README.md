@@ -20,6 +20,7 @@ drafts for you to review — it **never applies or submits** on your behalf.
 | 07 | [Config & scoring](07-config-and-scoring.md) | Candidate profile, `min_score`, `top_n`, provider selection |
 | 08 | [Troubleshooting](08-troubleshooting.md) | Every error we've hit, and the fix |
 | 09 | [Testing checklist](09-testing-checklist.md) | Reproducible independent test — install, gating, every provider |
+| — | [Task board](tasks.md) | Pending work by priority; how agents claim, finish and verify tasks |
 
 ## Provider matrix
 
