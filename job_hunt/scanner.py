@@ -613,10 +613,10 @@ def run_scan(config: dict, companies: list[dict]) -> None:
     save_state(state)
     logger.debug("State saved")
 
-    top_jobs = sorted(
-        [j for j in all_scored_jobs if j.get("score", 0) >= min_score],
-        key=lambda x: x.get("score", 0), reverse=True
-    )[:top_n]
+    # Best first. The digest, state/last_scan.json (read by `draft N`) and the CSV all
+    # use this order, so digest #N = `draft N` = CSV row N.
+    all_scored_jobs.sort(key=lambda x: x.get("score") or 0, reverse=True)
+    top_jobs = [j for j in all_scored_jobs if (j.get("score") or 0) >= min_score][:top_n]
 
     scan_date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     for item in all_scored_jobs:
