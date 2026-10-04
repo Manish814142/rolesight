@@ -178,7 +178,7 @@ once. Record in CHANGELOG: jobs fetched, India, pre-filter passes, too old, scor
 | T10 | `draft N` opens the wrong job | todo | — | S | — |
 | T11 | Let Adobe "Computer Scientist" titles through | todo | — | XS | — |
 | T12 | Exclude CRM/platform "developer" roles | todo | — | S | — |
-| T13 | Remove the 2,000-char description cap when scoring | doing · claude · 2026-10-04 | claude | XS | T46 |
+| T13 | Remove the 2,000-char description cap when scoring | review · claude · ef15c4c | claude | XS | T46 |
 | T14 | Send the full resume to `draft` | todo | — | XS | — |
 | T15 | Stop tests writing to the real `scan.log` | todo | — | S | — |
 | T16 | Put the logs in `data/` with rotation | todo | — | S | T15 |
@@ -445,6 +445,7 @@ The implementer adds a row when a task reaches `review`; the verifier removes it
 | ID | Commit(s) | Implementer | Evidence (command → result) |
 |---|---|---|---|
 | T46 | 95b2002 | claude | `pytest tests/test_strip_html.py` → 6 passed (4 failed before the fix); `pytest` → 361 passed; ruff, mypy clean. Live: `_prefetch_jobs` on the 74 Greenhouse boards → 154 survivors, 0 containing `&lt;`, `<div` or `&quot;` (was 154/154). |
+| T13 | ef15c4c | claude | `pytest tests/test_gemini_provider.py` → 3 new tests failed before the change (6,000-char description cut in single and batch prompts; no bound), pass after; `pytest` → 364 passed, coverage 89.16%; ruff, mypy clean. Deviation: a 20,000-char runaway bound kept (measured clean max 10,180). Live: 16 real Gemini calls with 1,001–7,638-char descriptions all returned valid scores (A/B in CHANGELOG). |
 
 ---
 
