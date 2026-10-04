@@ -8,7 +8,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from job_hunt import adapters, scanner
-from job_hunt.adapters import workday
+from job_hunt.adapters import smartrecruiters, workday
 from job_hunt.db import init_db, save_job, update_job_status
 from job_hunt.models import JobPosting, canonical_hash
 
@@ -61,6 +61,44 @@ def test_workday_url_without_job_path_is_skipped(mock_get):
 
 def test_workday_enricher_is_registered():
     assert adapters.ENRICHERS["workday"] is workday.fetch_description
+
+
+# --- SmartRecruiters (T21) -------------------------------------------------
+
+def _sr_job():
+    return JobPosting(global_id="smartrecruiters:BoschGroup:744000083912345", ats="smartrecruiters",
+                      company="Bosch", title="Software Developer", location="Bengaluru, KA, in",
+                      is_remote=False, url="https://jobs.smartrecruiters.com/BoschGroup/744000083912345")
+
+
+@patch("requests.get")
+def test_smartrecruiters_description_from_posting_detail(mock_get):
+    # Shape of GET /v1/companies/{slug}/postings/{id}, probed live 2026-10-04.
+    mock_get.return_value = _resp({"jobAd": {"sections": {
+        "companyDescription": {"title": "Company Description", "text": "<p>Bosch is big.</p>"},
+        "jobDescription": {"title": "Job Description", "text": "<ul><li>Build SAP ABAP reports</li></ul>"},
+        "qualifications": {"title": "Qualifications", "text": "<p>5+ years SAP &amp; ABAP</p>"},
+        "additionalInformation": {"title": "Additional Information", "text": ""},
+    }}})
+
+    desc = smartrecruiters.fetch_description(_sr_job())
+
+    assert mock_get.call_args.args[0] == (
+        "https://api.smartrecruiters.com/v1/companies/BoschGroup/postings/744000083912345")
+    assert "Build SAP ABAP reports" in desc and "5+ years SAP & ABAP" in desc
+    assert "<" not in desc
+    # The role comes before the company blurb.
+    assert desc.index("Build SAP ABAP") < desc.index("Bosch is big")
+
+
+@patch("requests.get")
+def test_smartrecruiters_detail_error_gives_empty(mock_get):
+    mock_get.return_value = _resp({}, status=404)
+    assert smartrecruiters.fetch_description(_sr_job()) == ""
+
+
+def test_smartrecruiters_enricher_is_registered():
+    assert adapters.ENRICHERS["smartrecruiters"] is smartrecruiters.fetch_description
 
 
 def _job(title, ats="workday", location="Bengaluru, India", posted_at="", desc=""):

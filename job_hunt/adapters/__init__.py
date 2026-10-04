@@ -12,6 +12,7 @@ from job_hunt.adapters.lever import fetch_lever
 from job_hunt.adapters.oracle_hcm import fetch_oracle_hcm
 from job_hunt.adapters.personio import fetch_personio
 from job_hunt.adapters.recruitee import fetch_recruitee
+from job_hunt.adapters.smartrecruiters import fetch_description as smartrecruiters_description
 from job_hunt.adapters.smartrecruiters import fetch_smartrecruiters
 from job_hunt.adapters.workable import fetch_workable
 from job_hunt.adapters.workday import fetch_description as workday_description
@@ -172,6 +173,7 @@ def fetch_company_jobs(company_info: Dict[str, Any]) -> List[JobPosting]:
 # list API gave. Only pre-filter survivors are enriched, just before scoring, so detail
 # calls are paid for jobs Gemini will actually read.
 ENRICHERS: Dict[str, Callable[[JobPosting], str]] = {
+    "smartrecruiters": smartrecruiters_description,
     "workday": workday_description,
 }
 

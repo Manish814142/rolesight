@@ -4,7 +4,7 @@ from __future__ import annotations
 import logging
 from typing import List
 
-from job_hunt.adapters.base import DEFAULT_HEADERS, http_get
+from job_hunt.adapters.base import DEFAULT_HEADERS, http_get, strip_html
 from job_hunt.models import JobPosting
 
 logger = logging.getLogger(__name__)
@@ -35,6 +35,31 @@ def _fetch_all_postings(url: str, slug: str) -> List[dict]:
         if len(page) < PAGE_SIZE or offset >= int(data.get("totalFound") or 0):
             break
     return items
+
+
+# Role first, company blurb last.
+_SECTION_ORDER = ("jobDescription", "qualifications", "additionalInformation", "companyDescription")
+
+
+def fetch_description(job: JobPosting) -> str:
+    """Full description of one posting (the list endpoint has none).
+
+    GET https://api.smartrecruiters.com/v1/companies/{slug}/postings/{id}; job.global_id
+    is "smartrecruiters:{slug}:{id}".
+    """
+    _, slug, job_id = job.global_id.split(":", 2)
+    url = f"https://api.smartrecruiters.com/v1/companies/{slug}/postings/{job_id}"
+    resp = http_get(url, headers=DEFAULT_HEADERS, timeout=15)
+    if resp.status_code != 200:
+        return ""
+    sections = (resp.json().get("jobAd") or {}).get("sections") or {}
+    parts = []
+    for key in _SECTION_ORDER:
+        sec = sections.get(key) or {}
+        text = strip_html(sec.get("text") or "")
+        if text:
+            parts.append(f"{sec.get('title') or key}:\n{text}")
+    return "\n\n".join(parts)
 
 
 def fetch_smartrecruiters(slug: str) -> List[JobPosting]:
