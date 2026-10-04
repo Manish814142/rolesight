@@ -198,6 +198,16 @@ def _candidate_info(config: dict) -> str:
     return info
 
 
+# The whole description is sent: requirements usually follow the company blurb, past the
+# old 2,000-char cut. Clean survivor descriptions measured ≤10,180 chars (2026-10-04);
+# this bound only stops a runaway page (≈5k tokens) from eating the 250k-TPM budget.
+MAX_DESCRIPTION_CHARS = 20_000
+
+
+def _description(job: dict) -> str:
+    return str(job.get("content", job.get("snippet", "")))[:MAX_DESCRIPTION_CHARS]
+
+
 def score_job_with_gemini(job: dict, resume: str, config: dict, raise_on_error: bool = False) -> dict:
     """Score an individual job against a resume using Gemini.
 
@@ -223,7 +233,7 @@ def score_job_with_gemini(job: dict, resume: str, config: dict, raise_on_error: 
             f"Company: {job.get('company', '')}\n"
             f"Title: {job.get('title', '')}\n"
             f"Location: {job.get('location', '')}\n"
-            f"Description:\n{job.get('content', job.get('snippet', ''))[:2000]}\n"
+            f"Description:\n{_description(job)}\n"
         )
 
         cfg = types.GenerateContentConfig(
@@ -277,7 +287,7 @@ def score_jobs_batch_with_gemini(jobs: list[dict], resume: str, config: dict) ->
         f"Company: {j.get('company', '')}\n"
         f"Title: {j.get('title', '')}\n"
         f"Location: {j.get('location', '')}\n"
-        f"Description:\n{j.get('content', j.get('snippet', ''))[:2000]}"
+        f"Description:\n{_description(j)}"
         for j in jobs
     )
     prompt = (

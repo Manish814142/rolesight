@@ -259,6 +259,41 @@ def test_single_scoring_prompt_contains_full_resume(monkeypatch):
     assert "UNIQUE_TAIL_MARKER" in prompt
 
 
+# Real survivors' clean descriptions run to ~10k chars (median 5.6k, 2026-10-04); the
+# requirements usually come after the company blurb, past the old 2,000-char cut.
+LONG_DESCRIPTION = "About us. " * 590 + "REQUIREMENTS_TAIL_MARKER Node.js, Kafka"
+
+
+def test_single_scoring_prompt_contains_full_description(monkeypatch):
+    assert len(LONG_DESCRIPTION) > 5900
+    client = _capturing_client('{"score": 70, "reason": "ok"}')
+    monkeypatch.setattr(llm_utils, "_get_genai_client_and_types",
+                        lambda api_key: (client, types.SimpleNamespace(GenerateContentConfig=MagicMock())))
+    llm_utils.score_job_with_gemini({"title": "Backend Engineer", "content": LONG_DESCRIPTION},
+                                    "resume", {"gemini_api_key": "k"})
+    prompt = client.models.generate_content.call_args.kwargs["contents"]
+    assert LONG_DESCRIPTION in prompt
+
+
+def test_batch_scoring_prompt_contains_full_descriptions(monkeypatch):
+    client = _capturing_client('[{"job_id": "a", "score": 50, "reason": "ok"}]')
+    monkeypatch.setattr(llm_utils, "_get_genai_client_and_types",
+                        lambda api_key: (client, types.SimpleNamespace(GenerateContentConfig=MagicMock())))
+    llm_utils.score_jobs_batch_with_gemini([{"id": "a", "title": "t", "content": LONG_DESCRIPTION}],
+                                           "resume", {"gemini_api_key": "k"})
+    prompt = client.models.generate_content.call_args.kwargs["contents"]
+    assert LONG_DESCRIPTION in prompt
+
+
+def test_runaway_description_is_bounded(monkeypatch):
+    client = _capturing_client('{"score": 70, "reason": "ok"}')
+    monkeypatch.setattr(llm_utils, "_get_genai_client_and_types",
+                        lambda api_key: (client, types.SimpleNamespace(GenerateContentConfig=MagicMock())))
+    llm_utils.score_job_with_gemini({"title": "t", "content": "x" * 200_000}, "resume", {"gemini_api_key": "k"})
+    prompt = client.models.generate_content.call_args.kwargs["contents"]
+    assert llm_utils.MAX_DESCRIPTION_CHARS <= prompt.count("x") <= llm_utils.MAX_DESCRIPTION_CHARS + 10
+
+
 def test_batch_scoring_maps_ids_and_uses_json_schema(monkeypatch):
     client = _capturing_client(json.dumps([
         {"job_id": "j2", "score": 40, "reason": "partial"},
