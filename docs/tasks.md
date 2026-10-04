@@ -94,19 +94,20 @@ before everything else. **Division of work:** Antigravity implements; Claude rev
 (see [Verifying](#verifying)). Claude's own tasks in the Review queue should be verified
 by Antigravity.
 
-Pick from this list top to bottom (T47, T30 and T24 are done: see the Done log). Status lives in the task's own row (below, or in its
+Pick from this list top to bottom (T47, T30 and T24 are done: see the Done log; T48 is in review). Status lives in the task's own row (below, or in its
 P-table); this list only sets the order.
 
 | # | Task | Why it changes the score or the accuracy | Evidence |
 |---|---|---|---|
-| 1 | **T48** Scoring rubric and a golden set (**blocked**: needs Manish's labels, skip) | 21 of 203 jobs tie at exactly 90, so the top can't be ranked; no precision was ever measured | measured |
-| 2 | **T12** CRM / platform "developer" titles | Wastes scoring calls on Salesforce / Dynamics / ServiceNow roles | measured on the old list, inferred for 215 boards |
-| 3 | **T11** "Computer Scientist" titles | 16 of 19 were skipped by the pre-filter | measured |
-| 4 | **T17** Cost of the python/java/golang title exclusions (measure only) | Manish's resume has Python, yet a "Python" title word is excluded | measured: exclusion list in `prefilter.py` |
-| 5 | **T49** Big employers that report "no India jobs" | Possible missed jobs at Accenture, Sony, Western Digital | assumed, not investigated |
-| 6 | **T03**, **T04** Quota breaker, newest-first cap | Decide which jobs get scored when the daily quota runs out | inferred |
-| 7 | **T41** Structured sub-scores | Breaks ties by stack / seniority / location | inferred |
-| 8 | **T29**, **T35** Store the job text; funnel log line | Needed to audit and re-score; not accuracy by themselves | inferred |
+| 1 | **T57** Amazon descriptions are a 202-character stub | Amazon is the biggest source and is scored without the role description | measured |
+| 2 | **T58** Fresher-level roles score 88–90 | Too-junior roles pass the filter and the score | measured (1 job) |
+| 3 | **T12** CRM / platform "developer" titles | Wastes scoring calls on Salesforce / Dynamics / ServiceNow roles | measured on the old list, inferred for 215 boards |
+| 4 | **T11** "Computer Scientist" titles | 16 of 19 were skipped by the pre-filter | measured |
+| 5 | **T17** Cost of the python/java/golang title exclusions (measure only) | Manish's resume has Python, yet a "Python" title word is excluded | measured: exclusion list in `prefilter.py` |
+| 6 | **T49** Big employers that report "no India jobs" | Possible missed jobs at Accenture, Sony, Western Digital | assumed, not investigated |
+| 7 | **T03**, **T04** Quota breaker, newest-first cap | Decide which jobs get scored when the daily quota runs out | inferred |
+| 8 | **T41** Structured sub-scores | Breaks ties by stack / seniority / location. Prompt wording can't (T48: two versions moved calibration, not ranking) | measured (T48) |
+| 9 | **T29**, **T35** Store the job text; funnel log line | Needed to audit and re-score; not accuracy by themselves | inferred |
 
 Decisions that change what Manish sees: **T05** (MIN_SCORE 60 or 70) and **T02** (posted-date
 window). On the first real scan (203 distinct jobs, 2026-10-04) 74 scored ≥ 60, 67 ≥ 70
@@ -118,7 +119,10 @@ After this list: **T40, T50, T42** (Manish will not use TinyFish), then the rest
 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
-| T48 | Scoring rubric and a golden set | blocked · Manish's labels | antigravity | M | — |
+| T48 | Scoring rubric and a golden set | review · claude · 4ca2e17 | claude | M | — |
+| T57 | Amazon descriptions are a 202-character stub | todo | — | XS | — |
+| T58 | Fresher-level roles score 88–90 | todo | — | S | — |
+| T59 | Confirm the golden-set labels | manish | — | S | T48 |
 | T49 | Check big employers that report "no India jobs" | todo | — | S | — |
 
 **T48 · Scoring rubric and a golden set.** The prompt (`llm_utils.score_job_with_gemini`)
@@ -138,24 +142,60 @@ prints agreement and the precision at MIN_SCORE. Manish's labelling takes about 
 labelled jobs. Keep the new prompt only if precision at MIN_SCORE doesn't drop and the
 tie at the top shrinks.
 
-**Review notes (2026-10-04, claude):** rubric kept, but this task is **not done**: its
-*Done when* needs Manish's labels, and the evidence offered was circular. Checked by reading
-`scripts/build_golden_set.py` and `score_golden_set.py`:
-- the 40 labels were assigned by the build script (old score ≥ 85 → `apply`; hand-picked edge
-  cases → `no`), not by Manish;
-- `--dry-run` "new" scores come from a rule-based simulator (hardcoded tie-breaking list), not
-  from Gemini. So "precision 59.1% → 86.7%" and "top tie 8 → 2" only restate the old scores
-  and were withdrawn (CHANGELOG and the report now say so; commit 0448ea6).
-Measured instead (real Gemini, rubric off vs on, 26 jobs from 9 companies the rubric's author
-did not pick): ≥ 70 went 10 → 8, mean change 11.8 points (noise about 3.3); mismatch roles
-fell as intended (Mastercard C#/.NET 85 → 58, Nike Java/Spring 85 → 55); ServiceNow's own
-engineers were not capped (85 → 88, 85 → 92); Salesforce untested; one probable misfire
-(Hotstar Senior SDE accepts Python, which is on the resume, 75 → 55).
-**Next (Manish):** open `scripts/golden_set.csv`, set each row's `label` to apply / maybe / no,
-then set `LABELS_CONFIRMED_BY_MANISH = True` in `scripts/score_golden_set.py` and run it
-without `--dry-run`. **Then (antigravity):** if precision at MIN_SCORE drops against the old
-prompt, adjust the rubric (and re-check the Python case). Hand-written tie-breaking in the
-prompt ("avoid clustering at 90") is unproven; judge it on the labelled run.
+**Result (2026-10-04, claude; commits 0448ea6, 4ca2e17).** Antigravity's version was sent back:
+its labels came from the build script (old score ≥ 85 → `apply`) and its `--dry-run` scores
+from a rule-based simulator, so "precision 59.1% → 86.7%" was circular; its builder also stored
+one wrong Amazon description on 6 jobs. Claude replaced the instrument and fixed rubric rule 4:
+- `scripts/golden_set.csv`: 75 real postings (59 `dev`, 16 `held-out`), Claude's labels with
+  `label_source` and `label_reason` per row. **Single rater, not confirmed by Manish (T59);**
+  the report prints a banner until every row says `manish`. Labels were read from the job text
+  against the resume, but not strictly blind: Claude had seen first-scan scores earlier.
+- `scripts/score_golden_set.py`: live mode scores each job with the rubric off and on; failed
+  calls are `None`, never 0; prints precision, recall, AUC, ties and a bootstrap CI;
+  `--from-scores` re-analyses saved scores.
+- Rule 4 capped postings that accept a language on the resume (Hotstar "Java, Golang, or
+  Python"; Toast "…or another OO language": 2 of 11 `apply` jobs lost). It now states its
+  exceptions. The "avoid clustering at 90" text did nothing measurable and is gone.
+Measured on all 75 (real Gemini, same text, rubric off → current): at MIN_SCORE 70 false
+positives 7 → 4 and precision 77% → 85%; `apply` recall 13/13 both; `apply+maybe` recall
+92% → 88%; **AUC 0.955 vs 0.956 (95% CI of the difference [-0.028, +0.029]), so ranking is
+unchanged**; biggest tie among scores ≥ 85: 11 → 10. On the 16 held-out jobs (4 positives)
+the revised prompt is not distinguishable from none. Conclusion: the rubric is a calibration
+shift, not an accuracy gain. Two prompt versions (v1 by Antigravity, v2 by Claude) traded
+recall against false positives without moving ranking, so further wording tweaks are the wrong
+lever: ties and calibration need structured sub-scores (T41), a threshold choice (T05), and
+the gaps in T57 and T58.
+**For the verifier:** run `pytest tests/test_scoring_rubric.py`; run
+`python scripts/score_golden_set.py --limit 3` (needs the Gemini key; 6 calls); then read the
+CSV: do 5 `label_reason` lines match their descriptions?
+
+**T57 · Amazon descriptions are a 202-character stub.** `adapters/amazon.py` builds the
+description from `description_short`, which Amazon cuts mid-sentence at 202 characters, plus
+the qualification bullets. The search API's `description` field holds the full text (2,796
+characters on the first record; measured 2026-10-04). Amazon is the biggest source (245 of
+1,271 pre-filter passes; 22 of the 74 jobs scoring ≥ 60 in the first scan), so its jobs were
+scored without what the team builds or which stack it uses. Put `description` (through
+`strip_html`) before the qualifications. After the fix, set the already `scored` Amazon rows
+in `data/jobs.db` back to `discovered` so they are scored on the full text.
+*Done when:* a unit test shows the full `description` in `JobPosting.description_text`; a live
+`fetch_amazon` has median description length ≥ 2,500 characters (it was 1,244).
+
+**T58 · Fresher-level roles score 88–90.** A held-out job, Hevo "Associate Software
+Development Engineer" ("Freshers with experience in software development, ideally with
+internships"), scored 90 with no rubric, 88 with the committed rubric and 90 with the
+revised one (measured, one job). The rubric only caps roles that are too senior. Add a rule
+for roles aimed at fewer than 2 years of experience, or a pre-filter pattern for
+Associate / Graduate / Trainee / Fresher titles. Check on more than one example before
+choosing the rule.
+*Done when:* that job scores ≤ 50 and `score_golden_set.py` shows no new missed `apply` jobs
+among the other 74.
+
+**T59 · Confirm the golden-set labels (Manish).** The 75 labels are Claude's, with one line of
+reasoning each in `label_reason`. Sort `scripts/golden_set.csv` by `label`, fix any you
+disagree with, and set `label_source` to `manish` on rows you checked (about 15 minutes,
+assumed). Then run `python scripts/score_golden_set.py` (live: about 150 Gemini calls, 14
+minutes).
+*Done when:* the report prints no "NOT CONFIRMED BY MANISH" banner.
 
 **T49 · Big employers that report "no India jobs".** `discover` rejected Accenture, Sony
 and Western Digital because the first page of their Workday India search had no India
@@ -463,7 +503,7 @@ CLAUDE.md), and `discover` has become the main way to add companies.
 
 ## Inbox
 
-New findings go here with the next free ID (next: **T57**), an evidence tag and the
+New findings go here with the next free ID (next: **T60**), an evidence tag and the
 file:line. Manish or the triaging agent moves each one into a priority table.
 
 | ID | Finding | Evidence | Added by |
@@ -483,7 +523,7 @@ The implementer adds a row when a task reaches `review`; the verifier removes it
 
 | ID | Commit(s) | Implementer | Evidence (command → result) |
 |---|---|---|---|
-| — | — | — | — |
+| T48 | 0448ea6, 4ca2e17 | claude (fixing antigravity's 847e3c2) | `pytest` → 404 passed, coverage 89.99%, ruff and mypy clean; 3 mutations of the new code/data (AUC ties, failed call = 0, one description copied onto 6 rows) each make a test fail, then restored. Live Gemini, 75 labelled jobs × rubric off / committed / revised, 0 failures, `score_golden_set.py --from-scores` → at MIN_SCORE 70 false positives 7 → 4, `apply` recall 13/13, AUC 0.955 vs 0.956 (CI includes 0). Script's own live mode run on 3 jobs (6 calls). **Not done:** labels are Claude's, not Manish's (T59); held-out set has 4 positives. |
 
 ---
 
