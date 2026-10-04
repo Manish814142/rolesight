@@ -4,9 +4,7 @@ from __future__ import annotations
 import logging
 from typing import List
 
-import requests
-
-from job_hunt.adapters.base import DEFAULT_HEADERS, strip_html
+from job_hunt.adapters.base import DEFAULT_HEADERS, http_get, strip_html
 from job_hunt.models import JobPosting
 
 logger = logging.getLogger(__name__)
@@ -23,7 +21,7 @@ def fetch_greenhouse(slug: str, eu: bool = False) -> List[JobPosting]:
     url = f"https://{domain}/v1/boards/{slug}/jobs?content=true"
 
     try:
-        resp = requests.get(url, headers=DEFAULT_HEADERS, timeout=15)
+        resp = http_get(url, headers=DEFAULT_HEADERS, timeout=15)
         if resp.status_code == 404:
             logger.debug("Greenhouse board not found for %s (HTTP 404)", slug)
             return []

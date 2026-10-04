@@ -199,3 +199,26 @@ def test_default_mode_scores_one_job_per_call(mock_single, mock_batch, mock_fetc
     assert mock_single.call_args.kwargs["config"] is cfg
     saved = json.loads(scanner.LAST_SCAN_FILE.read_text())
     assert [j["score"] for j in saved] == [80]          # failed job not reported
+
+
+@patch("job_hunt.scanner.score_and_process_job")
+def test_scanner_fetches_companies_in_parallel(mock_single, direct_scan_env):
+    """All four fetches must be in flight at once (a Barrier only releases when 4
+    threads wait), and processing order still follows companies.json."""
+    import threading
+
+    cfg, _ = direct_scan_env
+    cfg.pop("gemini_scoring_mode")
+    cfg["fetch_workers"] = 4
+    barrier = threading.Barrier(4, timeout=5)
+
+    def fake_fetch(company):
+        barrier.wait()
+        return [_backend_job(company["slug"])]
+
+    mock_single.side_effect = lambda **kw: {"score": 70, "reason": "ok", "status": "scored"}
+    companies = [{"name": f"Co{i}", "ats": "greenhouse", "slug": f"co{i}"} for i in range(4)]
+    with patch("job_hunt.scanner.fetch_company_jobs", side_effect=fake_fetch):
+        scanner.run_scan(cfg, companies)
+
+    assert [c.kwargs["job"].url.rsplit("/", 1)[-1] for c in mock_single.call_args_list] == ["co0", "co1", "co2", "co3"]

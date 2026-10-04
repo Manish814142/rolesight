@@ -3,11 +3,10 @@ from __future__ import annotations
 
 import logging
 import re
+import time
 from typing import Any, List, Tuple
 
-import requests
-
-from job_hunt.adapters.base import DEFAULT_HEADERS, strip_html
+from job_hunt.adapters.base import DEFAULT_HEADERS, http_get, http_post, strip_html
 from job_hunt.models import JobPosting
 
 logger = logging.getLogger(__name__)
@@ -18,6 +17,10 @@ PAGE_SIZE = 20
 MAX_JOBS = 100
 SEARCH_TEXT = "India"
 
+# Per-tenant wall-clock budget. Detail calls dominate (~100 s for Nvidia/Salesforce);
+# once spent, remaining multi-location items keep their list text and paging stops.
+BOARD_BUDGET_SECONDS = 600.0
+
 # List items with several locations show "5 Locations" instead of cities.
 _MULTI_LOCATION_RE = re.compile(r"^\d+\s+Locations?$", re.IGNORECASE)
 
@@ -25,7 +28,7 @@ _MULTI_LOCATION_RE = re.compile(r"^\d+\s+Locations?$", re.IGNORECASE)
 def _fetch_detail(cxs_base: str, external_path: str) -> Tuple[str, str]:
     """Return (locations, description_text) from the job detail endpoint, or ("", "")."""
     try:
-        resp = requests.get(f"{cxs_base}{external_path}", headers=DEFAULT_HEADERS, timeout=15)
+        resp = http_get(f"{cxs_base}{external_path}", headers=DEFAULT_HEADERS, timeout=15)
         if resp.status_code != 200:
             return "", ""
         info = resp.json().get("jobPostingInfo", {})
@@ -36,17 +39,21 @@ def _fetch_detail(cxs_base: str, external_path: str) -> Tuple[str, str]:
     return "; ".join(loc for loc in locs if loc), strip_html(info.get("jobDescription", ""))
 
 
-def fetch_workday(tenant: str, dc: str, site: str) -> List[JobPosting]:
+def fetch_workday(tenant: str, dc: str, site: str, budget: float = BOARD_BUDGET_SECONDS) -> List[JobPosting]:
     """Fetch open India-matching jobs from Workday JSON CXS endpoint.
 
     Endpoint: POST https://{tenant}.{dc}.myworkdayjobs.com/wday/cxs/{tenant}/{site}/jobs
     """
+    start = time.monotonic()
     base_domain = f"{tenant}.{dc}.myworkdayjobs.com"
     cxs_base = f"https://{base_domain}/wday/cxs/{tenant}/{site}"
     url = f"{cxs_base}/jobs"
 
     jobs: List[JobPosting] = []
     for offset in range(0, MAX_JOBS, PAGE_SIZE):
+        if time.monotonic() - start > budget:
+            logger.warning("Workday %s/%s: %.0fs budget spent, stopping at %d jobs", tenant, site, budget, len(jobs))
+            break
         payload: dict[str, Any] = {
             "appliedFacets": {},
             "limit": PAGE_SIZE,
@@ -54,7 +61,7 @@ def fetch_workday(tenant: str, dc: str, site: str) -> List[JobPosting]:
             "searchText": SEARCH_TEXT,
         }
         try:
-            resp = requests.post(url, headers=DEFAULT_HEADERS, json=payload, timeout=15)
+            resp = http_post(url, headers=DEFAULT_HEADERS, json=payload, timeout=15)
             if resp.status_code == 404:
                 logger.debug("Workday board not found for %s/%s (HTTP 404)", tenant, site)
                 break
@@ -72,7 +79,7 @@ def fetch_workday(tenant: str, dc: str, site: str) -> List[JobPosting]:
             posted_on = item.get("postedOn", "")
             description = ""
 
-            if external_path and _MULTI_LOCATION_RE.match(location):
+            if external_path and _MULTI_LOCATION_RE.match(location) and time.monotonic() - start <= budget:
                 detail_locs, description = _fetch_detail(cxs_base, external_path)
                 location = detail_locs or location
 

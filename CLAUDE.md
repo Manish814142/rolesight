@@ -30,7 +30,8 @@ Tests must make **no network calls** — stub `send_telegram`, adapters, and Gem
 ## Pipeline (`scanner.run_scan`)
 
 1. `companies.json` entries carry `ats` + `slug` (or `tenant`/`dc`/`site` for Workday).
-2. `adapters.fetch_company_jobs` → `JobPosting`s from public ATS JSON APIs
+2. `adapters.fetch_company_jobs` → `JobPosting`s from public ATS JSON APIs, fetched in parallel
+   (`fetch_workers`, 8) with a 900 s total deadline per HTTP call and 600 s per Workday tenant
    (greenhouse, lever, ashby, smartrecruiters, workday, recruitee, personio, workable).
 3. Dedupe by `canonical_hash(title, company, location)` in `data/jobs.db`.
 4. `prefilter.should_evaluate_job` — word-bounded title include/exclude + location regex.
@@ -81,8 +82,11 @@ Headcount is badge metadata only — **not** a filter (the cache is stale).
 A board counts as active only with HTTP 200 **and** ≥1 job; each company appears once.
 Matches on a non-declared ATS are tagged `ats_fallback_from`.
 
-**Adding companies:** append names to `scripts/company_seeds.txt` and run `autopilot discover
-... --merge companies.json`. Accepted only with live jobs, confirmed identity, ≥1 India job and
+**Adding companies (the company list is the core of this project — reuse this, never rebuild):**
+paste names into a file in any format and run
+`autopilot discover --add-file paste.txt --report /tmp/r.csv --out /tmp/v.json --merge companies.json`
+(or `--add "A, B, C"`). New names are appended to `scripts/company_seeds.txt`; Workday tenants go
+in as `Name | workday | tenant | dc | site` lines. Back up `companies.json` and read the report first. Accepted only with live jobs, confirmed identity, ≥1 India job and
 a posting ≤180 days old (abandoned SmartRecruiters boards from 2015–2020 exist). Custom portals
 (Google, Flipkart, Swiggy careers sites, Darwinbox/Freshteam/Zoho Recruit…) are not reachable.
 

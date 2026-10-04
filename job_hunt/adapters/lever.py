@@ -5,9 +5,7 @@ import logging
 from datetime import datetime, timezone
 from typing import List
 
-import requests
-
-from job_hunt.adapters.base import DEFAULT_HEADERS, strip_html
+from job_hunt.adapters.base import DEFAULT_HEADERS, http_get, strip_html
 from job_hunt.models import JobPosting
 
 logger = logging.getLogger(__name__)
@@ -21,7 +19,7 @@ def fetch_lever(slug: str) -> List[JobPosting]:
     url = f"https://api.lever.co/v0/postings/{slug}?mode=json"
 
     try:
-        resp = requests.get(url, headers=DEFAULT_HEADERS, timeout=15)
+        resp = http_get(url, headers=DEFAULT_HEADERS, timeout=15)
         if resp.status_code == 404:
             logger.debug("Lever board not found for %s (HTTP 404)", slug)
             return []

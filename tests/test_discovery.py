@@ -232,3 +232,98 @@ def test_main_writes_outputs_and_merges(tmp_path, monkeypatch):
     assert json.loads(out.read_text())[0]["name"] == "Plane"
     assert [c["name"] for c in json.loads(target.read_text())] == ["Plane", "Stripe"]
     assert "[existing] Stale Co" in report.read_text()
+
+
+# ── paste parsing & legal-name variants (formats seen in real pastes) ─────────
+
+from job_hunt.discovery import extract_company_names, name_variants  # noqa: E402
+
+PASTE = """
+F = Facebook = http://bit.ly/2Ni3PTr
+10. Codenation = http://bit.ly/3p4BZrN
+40. Toppr = https://apply.workable.com/toppr/?lng=en
+Sahaj August/sept
+Amazon(intern)    september
+𝐃𝐢𝐫𝐞𝐜𝐭𝐢:  Basic 16.4L / CTC 27.45L - (𝗦𝗗𝗘1)
+Company\tRole\tCTC\tTC(First Year)
+Squarepoint Capital\tInfrastructure Engineer\t₹ 66,13,882\t₹60,83,882
+Index No\tCompany Name\tRole\tCTC (In Lakh)
+1\tTower Research\t\t44\t4,00,000\tSalary: 3,000,000 INR
+<li><a href="https://jobs.lever.co/jupiter">Jupiter money</a>  </li>
+OLA (ANI Technologies Private Limited)
+FASHNEAR TECHNOLOGIES PRIVATE LTD (Meesho)
+Squarepoint Capital
+"""
+
+
+def test_extract_company_names_handles_real_paste_formats():
+    got = extract_company_names(PASTE)
+    names = [n for n, _ in got]
+    assert names == ["Facebook", "Codenation", "Toppr", "Sahaj", "Amazon", "Directi",
+                     "Squarepoint Capital", "Tower Research", "Jupiter money",
+                     "OLA (ANI Technologies Private Limited)",
+                     "FASHNEAR TECHNOLOGIES PRIVATE LTD (Meesho)"]
+    urls = dict(got)
+    assert urls["Toppr"] == "https://apply.workable.com/toppr/?lng=en"
+    assert urls["Jupiter money"] == "https://jobs.lever.co/jupiter"
+    assert urls["Facebook"] == "http://bit.ly/2Ni3PTr"
+
+
+def test_name_variants_and_display_name():
+    assert name_variants("OLA (ANI Technologies Private Limited)") == ["OLA", "ANI Technologies Private Limited"]
+    assert disc.display_name("FASHNEAR TECHNOLOGIES PRIVATE LTD (Meesho)") == "Meesho"
+    assert disc.display_name("Quadeye (QE Securities LLP)") == "Quadeye"
+    assert disc.display_name("Stripe") == "Stripe"
+
+
+def test_slug_candidates_cover_brand_in_parentheses_and_llp():
+    assert "meesho" in slug_candidates("FASHNEAR TECHNOLOGIES PRIVATE LTD (Meesho)")
+    assert "ola" in slug_candidates("OLA (ANI Technologies Private Limited)")  # a variant is the whole brand
+    assert "gravitonresearchcapital" in slug_candidates("Graviton Research Capital LLP")
+
+
+def test_identity_accepts_brand_variant():
+    assert name_matches("FASHNEAR TECHNOLOGIES PRIVATE LTD (Meesho)", "Meesho")
+
+
+def test_main_add_mode_verifies_only_new_names_and_appends_seeds(tmp_path, monkeypatch):
+    seeds = tmp_path / "seeds.txt"
+    seeds.write_text("Stripe\n")
+    add = tmp_path / "paste.txt"
+    add.write_text("Plane\nstripe\nFASHNEAR TECHNOLOGIES PRIVATE LTD (Meesho)\n")
+    seen = {}
+
+    def fake_discover(s, workers=40):
+        seen["names"] = [x["name"] for x in s]
+        return [], []
+    monkeypatch.setattr(disc, "discover", fake_discover)
+
+    disc.main(["--seeds", str(seeds), "--add-file", str(add), "--out", str(tmp_path / "v.json"),
+               "--report", str(tmp_path / "r.csv")])
+
+    assert seen["names"] == ["Plane", "stripe", "FASHNEAR TECHNOLOGIES PRIVATE LTD (Meesho)"]  # all pasted names verified
+    text = seeds.read_text()
+    assert "Plane" in text and "FASHNEAR TECHNOLOGIES PRIVATE LTD (Meesho)" in text
+    assert text.lower().count("stripe") == 1                                                    # not re-appended
+
+
+def test_add_mode_accepts_seed_format_lines_including_workday(tmp_path, monkeypatch):
+    seeds = tmp_path / "seeds.txt"
+    seeds.write_text("Stripe\n")
+    add = tmp_path / "paste.txt"
+    add.write_text("Medtronic | workday | medtronic | wd1 | MedtronicCareers\nJupiter | https://jobs.lever.co/jupiter\nPlane\n")
+    seen = {}
+
+    def fake_discover(s, workers=40):
+        seen["seeds"] = s
+        return [], []
+    monkeypatch.setattr(disc, "discover", fake_discover)
+
+    disc.main(["--seeds", str(seeds), "--add-file", str(add), "--out", str(tmp_path / "v.json"),
+               "--report", str(tmp_path / "r.csv")])
+
+    by_name = {s["name"]: s for s in seen["seeds"]}
+    assert by_name["Medtronic"]["workday"] == {"tenant": "medtronic", "dc": "wd1", "site": "MedtronicCareers"}
+    assert by_name["Jupiter"]["url"] == "https://jobs.lever.co/jupiter"
+    assert "Plane" in by_name
+    assert "Medtronic | workday | medtronic | wd1 | MedtronicCareers" in seeds.read_text()

@@ -2,6 +2,7 @@ import json
 import os
 import re
 import time
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -125,6 +126,23 @@ _FETCH_URL_DELAY = 2.5
 # Not the default: measured 2026-10-04 on 10 live jobs, batch scores differed from
 # single-job scores by 15.5 points on average (run-to-run noise: 1.0), inflating weak fits.
 DEFAULT_GEMINI_BATCH_SIZE = 10
+
+# Companies fetched concurrently (config "fetch_workers"). Fetching is network-bound;
+# DB writes and scoring stay sequential. Each HTTP call has a hard total deadline
+# (adapters/base.py) and Workday tenants a per-board budget, so no board can stall a scan.
+DEFAULT_FETCH_WORKERS = 8
+
+
+def _prefetch_jobs(companies: list[dict], workers: int) -> list[tuple[list, str | None]]:
+    """Fetch every company's ATS jobs concurrently; returns (jobs, error) in input order."""
+    def one(company: dict) -> tuple[list, str | None]:
+        try:
+            return fetch_company_jobs(company), None
+        except Exception as e:
+            return [], str(e)
+
+    with ThreadPoolExecutor(max_workers=max(1, workers)) as ex:
+        return list(ex.map(one, companies))
 
 
 def _fetch_with_ratelimit(tf: TinyFish, urls: list[str], **kwargs):
@@ -406,11 +424,19 @@ def run_scan(config: dict, companies: list[dict]) -> None:
     # Gemini batches fill up (most companies contribute only 0-3 jobs).
     pending_direct: list = []
 
+    workers = int(config.get("fetch_workers", DEFAULT_FETCH_WORKERS))
+    logger.info(f"Fetching {total} companies with {workers} parallel workers...")
+    fetch_start = time.time()
+    prefetched = _prefetch_jobs(companies, workers)
+    logger.info(f"Fetch complete in {(time.time() - fetch_start) / 60:.1f} min")
+
     for idx, company in enumerate(companies, 1):
         logger.info(f"[{idx}/{total}] Scanning {company['name']}...")
         try:
-            # 1. Check for native direct ATS adapter first
-            direct_jobs = fetch_company_jobs(company)
+            # 1. Native direct ATS adapter results (fetched above)
+            direct_jobs, fetch_error = prefetched[idx - 1]
+            if fetch_error:
+                raise RuntimeError(fetch_error)
             if company.get("ats"):
                 if direct_jobs:
                     logger.info(f"  Fetched {len(direct_jobs)} job(s) directly via ATS adapter")

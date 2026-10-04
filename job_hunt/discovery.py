@@ -7,8 +7,13 @@ India — at least one job located in India. This avoids the failure modes seen 
 empty boards, and same-slug boards that belong to a different company (Navi, Bounce).
 
 Usage:
+    # whole seed list (slow: ~800 names, 5-20 min)
     python -m job_hunt discover --seeds scripts/company_seeds.txt \\
         --report /tmp/discovery.csv --out /tmp/verified.json [--merge companies.json]
+    # verify only a pasted list (any format: plain, "Name = url", tables, legal names);
+    # new names are appended to the seeds file for the record
+    python -m job_hunt discover --add-file /tmp/paste.txt --merge companies.json [--no-recheck]
+    python -m job_hunt discover --add "Plane, BitGo, Groww" --merge companies.json
 
 Seeds file, one company per line ('#' comments allowed):
     Stripe
@@ -22,6 +27,7 @@ import json
 import logging
 import re
 import sys
+import unicodedata
 from concurrent.futures import ThreadPoolExecutor
 from datetime import date, datetime, timezone
 from pathlib import Path
@@ -66,22 +72,102 @@ def _words(name: str) -> List[str]:
     return re.findall(r"[a-z0-9]+", name.lower())
 
 
+_LEGAL_SUFFIX_RE = re.compile(r"\b(llp|llc|co|company|group|holdings)\b", re.IGNORECASE)
+
+
 def _core_words(name: str) -> List[str]:
-    stripped = CORPORATE_SUFFIX_RE.sub(" ", name.lower())
+    stripped = _LEGAL_SUFFIX_RE.sub(" ", CORPORATE_SUFFIX_RE.sub(" ", name.lower()))
     return _words(stripped) or _words(name)
+
+
+def name_variants(name: str) -> List[str]:
+    """Outside-parentheses name plus each parenthesised part.
+
+    Pasted lists mix brands and legal entities: "OLA (ANI Technologies Private Limited)",
+    "FASHNEAR TECHNOLOGIES PRIVATE LTD (Meesho)". Either side may be the ATS brand.
+    """
+    parts = [re.sub(r"\([^)]*\)", " ", name)] + re.findall(r"\(([^)]*)\)", name)
+    out: List[str] = []
+    for v in parts:
+        v = " ".join(v.split()).strip(" -,")
+        if v and v.lower() not in ("intern", "fte", "intern + fte") and v not in out:
+            out.append(v)
+    return out or [name]
+
+
+def display_name(name: str) -> str:
+    """Variant with the fewest words — the brand, not the legal entity
+    ("Meesho" over "FASHNEAR TECHNOLOGIES PRIVATE LTD", "OLA", "Quadeye")."""
+    return min(name_variants(name), key=lambda v: len(_words(v)))
 
 
 def slug_candidates(name: str) -> List[str]:
     """Likely ATS slugs for a company name, most specific first, no duplicates."""
-    full, core = _words(name), _core_words(name)
-    cands = ["".join(full), "-".join(full), "".join(core), "-".join(core)]
-    if len(core) > 1 and len(core[0]) >= 5:
-        cands.append(core[0])  # "Tower Research Capital" -> "tower"; short words collide too often
+    cands: List[str] = []
+    for variant in name_variants(name):
+        full, core = _words(variant), _core_words(variant)
+        cands += ["".join(full), "-".join(full), "".join(core), "-".join(core)]
+        if len(core) > 1 and len(core[0]) >= 5:
+            cands.append(core[0])  # "Tower Research Capital" -> "tower"; short words collide too often
     seen: List[str] = []
     for c in cands:
         if c and c not in seen:
             seen.append(c)
     return seen
+
+
+_MONTH_TAIL_RE = re.compile(
+    r"\s+(jan(uary)?|feb(ruary)?|mar(ch)?|apr(il)?|may|june?|july?|aug(ust)?|sep(t(ember)?)?"
+    r"|oct(ober)?|nov(ember)?|dec(ember)?)\b([/ ].*)?$",
+    re.IGNORECASE,
+)
+_HEADER_CELLS = {"company", "company name", "index no", "name", "s.no", "sr no"}
+
+
+def extract_company_names(text: str) -> List[Tuple[str, str]]:
+    """Pull (company, url) pairs out of a free-form paste.
+
+    Handles plain names, "F = Facebook = url", "10. Codenation = url", campus-calendar
+    lines ("Sahaj August/sept", "Amazon(intern)    september"), "𝐃𝐢𝐫𝐞𝐜𝐭𝐢: Basic …"
+    salary lines, tab-separated tables (with or without an index column), and HTML
+    <a href=…>Name</a> list items. Duplicates (case-insensitive) are dropped.
+    """
+    out: List[Tuple[str, str]] = []
+    seen = set()
+    for raw in text.splitlines():
+        line = unicodedata.normalize("NFKC", raw).strip()
+        if not line or line.startswith("#"):
+            continue
+        url = ""
+        link = re.search(r'href="([^"]+)"[^>]*>([^<]+)</a>', line)
+        if link:
+            url, name = link.group(1), link.group(2)
+        elif line.startswith("<"):
+            continue
+        elif "\t" in line:
+            cells = [c.strip() for c in line.split("\t") if c.strip()]
+            if cells and re.fullmatch(r"\d+", cells[0]):
+                cells = cells[1:]
+            if not cells or cells[0].lower() in _HEADER_CELLS:
+                continue
+            name = cells[0]
+        else:
+            parts = re.split(r"\s+=\s+", line)
+            if len(parts) >= 2 and re.match(r"https?://", parts[-1]):
+                url, parts = parts[-1], parts[:-1]
+            if len(parts) >= 2 and len(parts[0]) <= 2:
+                parts = parts[1:]  # "F = Facebook"
+            name = re.sub(r"^\d+[\.\)]\s*", "", parts[0])
+            name = name.split(":")[0]
+            name = re.split(r"\s{2,}|\s+-+>", name)[0]
+            name = re.sub(r"\((intern|fte)[^)]*\)", "", name, flags=re.IGNORECASE)
+            name = _MONTH_TAIL_RE.sub("", name)
+        name = " ".join(name.split()).strip(" -:,")
+        if not name or name.lower() in seen:
+            continue
+        seen.add(name.lower())
+        out.append((name, url))
+    return out
 
 
 def parse_seeds(text: str) -> List[Dict[str, Any]]:
@@ -108,12 +194,17 @@ def parse_seeds(text: str) -> List[Dict[str, Any]]:
 
 
 def name_matches(seed_name: str, board_name: str) -> bool:
-    """True when one name's core words are a leading run of the other's."""
-    a, b = _core_words(seed_name), _core_words(board_name)
-    if not a or not b:
-        return False
-    short, long_ = (a, b) if len(a) <= len(b) else (b, a)
-    return long_[: len(short)] == short
+    """True when, for some variant of the seed, one name's core words are a leading
+    run of the other's."""
+    b = _core_words(board_name)
+    for variant in name_variants(seed_name):
+        a = _core_words(variant)
+        if not a or not b:
+            continue
+        short, long_ = (a, b) if len(a) <= len(b) else (b, a)
+        if long_[: len(short)] == short:
+            return True
+    return False
 
 
 def newest_age_days(jobs: List[JobPosting], now: Optional[datetime] = None) -> Optional[int]:
@@ -198,9 +289,11 @@ def _identity(seed_name: str, ats: str, slug: str, jobs: List[JobPosting], from_
     board = _board_name(ats, slug)
     if board:
         return name_matches(seed_name, board), f"board name '{board}'"
-    core = " ".join(_core_words(seed_name))
-    pattern = re.compile(r"\b" + re.escape(core).replace(r"\ ", r"[\s\-]?") + r"\b", re.IGNORECASE)
-    mentions = sum(1 for j in jobs if pattern.search(f"{j.title}\n{j.description_text}"))
+    patterns = [
+        re.compile(r"\b" + re.escape(" ".join(_core_words(v))).replace(r"\ ", r"[\s\-]?") + r"\b", re.IGNORECASE)
+        for v in name_variants(seed_name)
+    ]
+    mentions = sum(1 for j in jobs if any(p.search(f"{j.title}\n{j.description_text}") for p in patterns))
     return mentions > 0, f"named in {mentions}/{len(jobs)} job descriptions"
 
 
@@ -295,7 +388,7 @@ def discover(seeds: List[Dict[str, Any]], workers: int = 40) -> Tuple[List[Dict[
         if good:
             best = max(good, key=lambda r: (r["identity"].startswith("slug from"), r["india_jobs"], r["prefilter_pass"]))
             verified.append({
-                "name": seed["name"], "ats": best["ats"], "slug": best["board"],
+                "name": display_name(seed["name"]), "ats": best["ats"], "slug": best["board"],
                 "headcount": match_headcount(seed["name"], best["board"], company_cache, slug_cache),
             })
     for r in wd_rows:
@@ -330,14 +423,50 @@ def write_report(rows: List[Dict[str, Any]], path: str) -> None:
             w.writerow({k: r.get(k, "") for k in REPORT_FIELDS})
 
 
+def append_seeds(seeds_path: Path, pasted: List[Tuple[str, str]], raw_lines: Optional[List[str]] = None) -> int:
+    """Append pasted names (and raw seed-format lines) not already in the seeds file;
+    returns how many lines were added."""
+    text = seeds_path.read_text(encoding="utf-8") if seeds_path.exists() else ""
+    existing = parse_seeds(text)
+    known = {s["name"].lower() for s in existing}
+    present = {ln.strip() for ln in text.splitlines()}
+    new_lines = [ln.strip() for ln in (raw_lines or []) if ln.strip() and ln.strip() not in present]
+    for name, url in pasted:
+        if name.lower() in known:
+            continue
+        known.add(name.lower())
+        new_lines.append(f"{name} | {url}" if url and detect_ats(url) else name)
+    if new_lines:
+        with seeds_path.open("a", encoding="utf-8") as fh:
+            fh.write(f"\n# ── added via discover --add ({date.today().isoformat()}) ──\n" + "\n".join(new_lines) + "\n")
+    return len(new_lines)
+
+
 def main(argv: Optional[List[str]] = None) -> None:
     argv = list(sys.argv[1:] if argv is None else argv)
     opts = {"--seeds": "scripts/company_seeds.txt", "--report": "discovery_report.csv",
-            "--out": "verified_companies.json", "--merge": "", "--workers": "40"}
+            "--out": "verified_companies.json", "--merge": "", "--workers": "40",
+            "--add": "", "--add-file": ""}
     for i, a in enumerate(argv):
         if a in opts and i + 1 < len(argv):
             opts[a] = argv[i + 1]
-    seeds = parse_seeds(Path(opts["--seeds"]).read_text(encoding="utf-8"))
+    recheck = "--no-recheck" not in argv
+
+    seeds_path = Path(opts["--seeds"])
+    add_text = opts["--add"].replace(",", "\n")
+    if opts["--add-file"]:
+        add_text += "\n" + Path(opts["--add-file"]).read_text(encoding="utf-8")
+    if add_text.strip():
+        # "Name | url" / "Name | workday | tenant | dc | site" lines are already seed format.
+        seed_lines = [ln for ln in add_text.splitlines() if "|" in ln and not ln.strip().startswith("<")]
+        free_text = "\n".join(ln for ln in add_text.splitlines() if ln not in seed_lines)
+        pasted = extract_company_names(free_text)
+        added = append_seeds(seeds_path, pasted, raw_lines=seed_lines)
+        seeds = parse_seeds("\n".join(seed_lines)) + [
+            {"name": n, **({"url": u} if u and detect_ats(u) else {})} for n, u in pasted]
+        print(f"{len(seeds)} companies parsed from paste; {added} new line(s) appended to {seeds_path}")
+    else:
+        seeds = parse_seeds(seeds_path.read_text(encoding="utf-8"))
     verified, rows = discover(seeds, workers=int(opts["--workers"]))
     write_report(rows, opts["--report"])
     Path(opts["--out"]).write_text(json.dumps(verified, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
@@ -345,7 +474,10 @@ def main(argv: Optional[List[str]] = None) -> None:
     if opts["--merge"]:
         target = Path(opts["--merge"])
         existing = json.loads(target.read_text(encoding="utf-8")) if target.exists() else []
-        kept, recheck_rows = reverify_existing(existing)
+        if recheck:
+            kept, recheck_rows = reverify_existing(existing)
+        else:
+            kept, recheck_rows = existing, [{"seed": c["name"], "accepted": True, "verdict": "not rechecked"} for c in existing]
         for c, r in zip(existing, recheck_rows):
             if not r["accepted"]:
                 print(f"  dropping existing {c['name']} ({c['ats']}): {r['verdict']}")

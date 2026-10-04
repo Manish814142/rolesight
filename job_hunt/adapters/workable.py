@@ -4,9 +4,7 @@ from __future__ import annotations
 import logging
 from typing import Any, Dict, List
 
-import requests
-
-from job_hunt.adapters.base import DEFAULT_HEADERS, strip_html
+from job_hunt.adapters.base import DEFAULT_HEADERS, http_get, strip_html
 from job_hunt.models import JobPosting
 
 logger = logging.getLogger(__name__)
@@ -20,7 +18,7 @@ def fetch_workable(slug: str) -> List[JobPosting]:
     url = f"https://apply.workable.com/api/v1/widget/accounts/{slug}?details=true"
 
     try:
-        resp = requests.get(url, headers=DEFAULT_HEADERS, timeout=15)
+        resp = http_get(url, headers=DEFAULT_HEADERS, timeout=15)
         if resp.status_code in (404, 429):
             logger.debug("Workable fetch returned %s for %s", resp.status_code, slug)
             return []

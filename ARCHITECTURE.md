@@ -54,7 +54,7 @@ Companies with no `ats` field fall back to the legacy TinyFish careers-page path
 | [`scanner.py`](job_hunt/scanner.py) | `run_scan()` orchestration, state files, CSV export, scan-level Telegram digest. |
 | [`notifier.py`](job_hunt/notifier.py) | `send_telegram`, `is_telegram_configured` (empty/placeholder ⇒ off), `format_job_alert` with headcount badge. |
 | [`exporter.py`](job_hunt/exporter.py) | CSV writer that never overwrites (`jobs_DATE.csv`, `jobs_DATE_1.csv`, …). |
-| [`discovery.py`](job_hunt/discovery.py) | `autopilot discover`: name → slug candidates → probe 7 ATSs (+ curated Workday tenants) → accept only boards with live jobs, confirmed identity, ≥1 India job, newest posting ≤180 days; `--merge` re-verifies existing entries. Seeds in `scripts/company_seeds.txt`. |
+| [`discovery.py`](job_hunt/discovery.py) | `autopilot discover` (`--add-file` for pasted lists in any format): name → slug candidates → probe 7 ATSs (+ curated Workday tenants) → accept only boards with live jobs, confirmed identity, ≥1 India job, newest posting ≤180 days; `--merge` re-verifies existing entries. Seeds in `scripts/company_seeds.txt`. |
 | [`harvester.py`](job_hunt/harvester.py) | Builds a company list from `india.yml`: probes the declared ATS first, then the other 6; active = HTTP 200 **and** ≥1 job; tags off-declared matches `ats_fallback_from`. Applies `validator.KNOWN_CORRECTIONS`. Headcount is metadata only. |
 | [`validator.py`](job_hunt/validator.py) | `autopilot validate` pruner. Caveat: its probe accepts HTTP 200 with 0 jobs and it auto-adds BrowserStack — prefer `harvest` + manual diff. |
 | [`company_builder.py`](job_hunt/company_builder.py) | LinkedIn headcount matching (`match_headcount`). Its `build_companies_dataset` / blocklist is legacy and not used by the CLI. |
@@ -138,9 +138,9 @@ mypy
 - **Volume is title-bound:** of 455 Workday jobs (301 India), 7 passed the pre-filter;
   Target/BrowserStack India roles are mostly non-engineering or senior.
 - **Walmart Workday** (`walmart/wd5/WalmartExternal`) returns HTTP 422; not in the list.
-- **Scan length grows with the list:** 139 companies are fetched sequentially; summed
-  per-company fetch time on 2026-10-04 was ~45 min (Lever ~29 min that day, Workday ~13 min).
-  `requests` timeouts are per read, not per download, so one slow board is unbounded.
+- **Scan length:** companies are fetched 8 at a time (measured 6.4 min for 139 boards on
+  2026-10-04 vs ~45 min sequential). Every HTTP call has a 900 s total deadline and Workday
+  tenants a 600 s budget; a board that exceeds it is skipped for that scan (logged as a warning).
 - **Batch scoring is opt-in only:** measured mean |Δ| of 15.5 points vs single-job scores
   (noise 1.0); weak fits inflated. Single-job scoring costs ~4.2 s per new job.
 - **SmartRecruiters** list API has no descriptions (title-only scoring) and the adapter
