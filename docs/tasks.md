@@ -257,7 +257,7 @@ Greenhouse survivor in a live fetch contains `&lt;` or `<div`.
 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
-| T19 | Add an "enrich survivors" step to the scanner | todo | — | S | — |
+| T19 | Add an "enrich survivors" step to the scanner | doing · claude · 2026-10-04 | claude | S | — |
 | T20 | Workday: fetch descriptions for single-location survivors | todo | — | S | T19 |
 | T21 | SmartRecruiters: fetch descriptions for survivors | todo | — | S | T19 |
 | T22 | Oracle HCM: fetch full descriptions for survivors | todo | — | S | T19 |
