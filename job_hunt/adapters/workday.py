@@ -67,7 +67,12 @@ def fetch_workday(tenant: str, dc: str, site: str, budget: float = BOARD_BUDGET_
     url = f"{cxs_base}/jobs"
 
     jobs: List[JobPosting] = []
+    seen_paths: set[str] = set()
+    total: int | None = None
+
     for offset in range(0, MAX_JOBS, PAGE_SIZE):
+        if total is not None and offset >= total:
+            break
         if time.monotonic() - start > budget:
             logger.warning("Workday %s/%s: %.0fs budget spent, stopping at %d jobs", tenant, site, budget, len(jobs))
             break
@@ -83,16 +88,32 @@ def fetch_workday(tenant: str, dc: str, site: str, budget: float = BOARD_BUDGET_
                 logger.debug("Workday board not found for %s/%s (HTTP 404)", tenant, site)
                 break
             resp.raise_for_status()
-            postings = resp.json().get("jobPostings", [])
+            data = resp.json()
+            if total is None and "total" in data:
+                try:
+                    total = int(data["total"])
+                except (ValueError, TypeError):
+                    total = None
+            postings = data.get("jobPostings", [])
         except Exception as e:
             # Keep whatever earlier pages returned.
             logger.warning("Workday fetch failed for %s/%s at offset %d: %s", tenant, site, offset, e)
             break
 
+        if not postings:
+            break
+
+        new_in_page = 0
         for item in postings:
+            external_path = item.get("externalPath", "")
+            if external_path:
+                if external_path in seen_paths:
+                    continue
+                seen_paths.add(external_path)
+            new_in_page += 1
+
             title = item.get("title", "").strip()
             location = item.get("locationsText", "Not specified") or "Not specified"
-            external_path = item.get("externalPath", "")
             posted_on = item.get("postedOn", "")
             description = ""
 
@@ -125,6 +146,9 @@ def fetch_workday(tenant: str, dc: str, site: str, budget: float = BOARD_BUDGET_
                     posted_at=posted_on,
                 )
             )
+
+        if new_in_page == 0:
+            break
 
         if len(postings) < PAGE_SIZE:
             break

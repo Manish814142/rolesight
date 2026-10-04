@@ -281,7 +281,7 @@ def test_fetch_workday_searches_india_and_paginates(mock_post):
 def test_fetch_workday_caps_at_max_jobs(mock_post):
     from job_hunt.adapters import workday
     pages = workday.MAX_JOBS // workday.PAGE_SIZE
-    mock_post.side_effect = [_wd_post(f"p{k}", 20) for k in range(pages + 5)]
+    mock_post.side_effect = [_wd_post(f"p{k}_", 20) for k in range(pages + 5)]
     jobs = fetch_workday("nvidia", "wd5", "site")
     assert len(jobs) == workday.MAX_JOBS
     assert mock_post.call_count == pages
@@ -315,6 +315,35 @@ def test_fetch_workday_resolves_multi_location_jobs(mock_post, mock_get):
     assert jobs[0].location == "India, Remote; India, Mumbai; India, Pune"
     assert jobs[0].is_remote is True
     assert "Node.js" in jobs[0].description_text
+
+
+@patch("requests.post")
+def test_fetch_workday_stops_when_pages_repeat(mock_post):
+    """Tenants like Sabre return the same jobs once offset exceeds their count.
+    Verify that an identical page served at every offset stops within 2 requests
+    and returns each posting exactly once."""
+    mock_post.return_value = _wd_post("repeat", 20)
+    jobs = fetch_workday("sabre", "wd5", "external")
+    assert len(jobs) == 20
+    assert mock_post.call_count <= 2
+    urls = [j.url for j in jobs]
+    assert len(urls) == len(set(urls))
+
+
+@patch("requests.post")
+def test_fetch_workday_stops_at_total(mock_post):
+    """When total is provided, stop paging once offset >= total."""
+    resp1 = _wd_post("p1", 20)
+    resp1.json.return_value["total"] = 25
+    resp2 = _wd_post("p2", 20)
+    resp2.json.return_value["total"] = 25
+    # If it kept paging past offset 20, it would request offset 40
+    resp3 = _wd_post("p3", 20)
+    resp3.json.return_value["total"] = 25
+    mock_post.side_effect = [resp1, resp2, resp3]
+    jobs = fetch_workday("company", "wd5", "site")
+    assert len(jobs) == 40
+    assert mock_post.call_count == 2
 
 
 @patch("requests.get")
