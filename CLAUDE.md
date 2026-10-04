@@ -16,7 +16,8 @@ autopilot scan              # full scan of companies.json (alias: python -m job_
 autopilot scan --limit 5    # only the first 5 companies
 autopilot scan --posted-within 7   # only jobs posted in the last 7 days (undated jobs kept)
 autopilot discover --recheck --merge companies.json --report /tmp/r.csv   # monthly list health check
-autopilot discover --census scripts/careers_urls.txt --report /tmp/c.csv   # which ATS do careers pages use?
+autopilot discover --census scripts/careers_urls.txt --report /tmp/c.csv --emit-seeds /tmp/s.txt
+                            # which ATS do careers pages use? --emit-seeds -> verify with discover --add-file
 ./run_daily.sh              # cron runner: timestamps into data/scan.log, MIN_SCORE defaults to 70
 autopilot harvest           # rebuild companies.json from india.yml + LinkedIn headcount cache
 autopilot validate          # probe boards in companies.json, prune dead ones (accepts empty boards — prefer discover)
@@ -35,7 +36,8 @@ Tests must make **no network calls** — stub `send_telegram`, adapters, and Gem
 1. `companies.json` entries carry `ats` + `slug` (or `tenant`/`dc`/`site` for Workday).
 2. `adapters.fetch_company_jobs` → `JobPosting`s from public ATS JSON APIs, fetched in parallel
    (`fetch_workers`, 8) with a 900 s total deadline per HTTP call and 600 s per Workday tenant
-   (greenhouse, lever, ashby, smartrecruiters, workday, recruitee, personio, workable).
+   (greenhouse, lever, ashby, smartrecruiters, workday, recruitee, personio, workable, oracle_hcm,
+   amazon). Oracle HCM entries carry `host` + `site`; Amazon is `{"ats": "amazon"}`.
 3. Dedupe by `canonical_hash(title, company, location)` in `data/jobs.db`.
 4. `prefilter.should_evaluate_job` — word-bounded title include/exclude + location regex.
 5. After all companies are fetched, survivors are scored: default one job per Gemini call

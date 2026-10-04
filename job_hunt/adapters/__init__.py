@@ -5,9 +5,11 @@ import logging
 import re
 from typing import Any, Dict, List, Optional, Tuple
 
+from job_hunt.adapters.amazon import fetch_amazon
 from job_hunt.adapters.ashby import fetch_ashby
 from job_hunt.adapters.greenhouse import fetch_greenhouse
 from job_hunt.adapters.lever import fetch_lever
+from job_hunt.adapters.oracle_hcm import fetch_oracle_hcm
 from job_hunt.adapters.personio import fetch_personio
 from job_hunt.adapters.recruitee import fetch_recruitee
 from job_hunt.adapters.smartrecruiters import fetch_smartrecruiters
@@ -34,6 +36,11 @@ def detect_ats(careers_url: str) -> Optional[Tuple[str, str]]:
     if m_gh_eu:
         return "greenhouse_eu", m_gh_eu.group(1)
 
+    # Greenhouse embed: boards.greenhouse.io/embed/job_board?for={slug}
+    m_gh_embed = re.search(r"greenhouse\.io/embed/job_board(?:/js)?\?(?:[^#]*&)?for=([^&#]+)", url)
+    if m_gh_embed:
+        return "greenhouse", m_gh_embed.group(1)
+
     # Greenhouse US
     m_gh = re.search(r"(?:boards|boards-api)\.greenhouse\.io/(?:v1/boards/)?([^/?#]+)", url)
     if m_gh:
@@ -54,13 +61,18 @@ def detect_ats(careers_url: str) -> Optional[Tuple[str, str]]:
     if m_sr:
         return "smartrecruiters", m_sr.group(1)
 
-    # Workday: {tenant}.{dc}.myworkdayjobs.com/{site}
-    m_wd = re.search(r"https?://([^.]+)\.([^.]+)\.myworkdayjobs\.com/([^/?#]+)", url)
+    # Workday: {tenant}.{dc}.myworkdayjobs.com/[{locale}/]{site}
+    m_wd = re.search(r"https?://([^.]+)\.([^.]+)\.myworkdayjobs\.com/(?:[a-z]{2}-[A-Z]{2}/)?([^/?#&]+)", url)
     if m_wd:
         tenant = m_wd.group(1)
         dc = m_wd.group(2)
         site = m_wd.group(3)
         return "workday", f"{tenant}:{dc}:{site}"
+
+    # Oracle HCM candidate site: {host}/hcmUI/CandidateExperience/{lang}/sites/{site}
+    m_ohcm = re.search(r"https?://([^/]+\.oraclecloud\.com)/hcmUI/CandidateExperience/[^/]+/sites/([^/?#]+)", url)
+    if m_ohcm:
+        return "oracle_hcm", f"{m_ohcm.group(1)}:{m_ohcm.group(2)}"
 
     # Recruitee: {slug}.recruitee.com
     m_recruitee = re.search(r"https?://([^.]+)\.recruitee\.com", url)
@@ -99,6 +111,14 @@ def fetch_company_jobs(company_info: Dict[str, Any]) -> List[JobPosting]:
 
     if not ats:
         return []
+
+    if ats == "amazon":
+        return fetch_amazon()
+    if ats == "oracle_hcm":
+        host, site = company_info.get("host"), company_info.get("site")
+        if not (host and site) and slug and ":" in str(slug):
+            host, site = str(slug).rsplit(":", 1)
+        return fetch_oracle_hcm(host, site, company=company_name) if host and site else []
 
     if ats == "workday":
         if not (company_info.get("tenant") and company_info.get("dc") and company_info.get("site")) and not slug:
@@ -158,4 +178,6 @@ __all__ = [
     "fetch_recruitee",
     "fetch_personio",
     "fetch_workable",
+    "fetch_amazon",
+    "fetch_oracle_hcm",
 ]

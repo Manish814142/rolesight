@@ -401,7 +401,8 @@ def test_census_fetches_pages_and_reports_platform(mock_get, tmp_path):
     mock_get.return_value = page
     rows = disc.ats_census([{"name": "Acme", "url": "https://careers.acme.com"}], workers=2)
     assert rows == [{"seed": "Acme", "url": "https://careers.acme.com", "platform": "lever",
-                     "all_platforms": "lever", "final_url": "https://careers.acme.com/", "verdict": "HTTP 200"}]
+                     "all_platforms": "lever", "board_url": "https://jobs.lever.co/acme",
+                     "final_url": "https://careers.acme.com/", "verdict": "HTTP 200"}]
     mock_get.side_effect = Exception("blocked")
     assert disc.ats_census([{"name": "B", "url": "https://b"}])[0]["platform"] == "fetch failed"
 
@@ -425,3 +426,67 @@ def test_census_follows_job_links_one_level_when_landing_page_is_silent(mock_get
     assert row["platform"] == "phenom"
     assert row["verdict"].endswith("via https://acme.com/careers/open-positions")
     assert all("/about" not in c.args[0] for c in mock_get.call_args_list)
+
+
+# ── census evidence → seeds; Workday/Oracle URL seeds; Oracle/Amazon verification ──
+
+def test_parse_seeds_converts_workday_and_oracle_urls():
+    seeds = parse_seeds("Visa | https://visa.wd1.myworkdayjobs.com/en-US/Visa\n"
+                        "DP World | https://ehpv.fa.em2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/requisitions\n"
+                        "Upstox | https://jobs.lever.co/upstox\n")
+    assert seeds[0]["workday"] == {"tenant": "visa", "dc": "wd1", "site": "Visa"}
+    assert seeds[1]["oracle_hcm"] == {"host": "ehpv.fa.em2.oraclecloud.com", "site": "CX_1"}
+    assert seeds[2]["url"] == "https://jobs.lever.co/upstox"
+
+
+def test_census_records_board_url_evidence():
+    text = '<a href="https://boards.greenhouse.io/twitter?gh_src=x">Jobs</a> <a href="https://x.com">X</a>'
+    assert disc.evidence_url(text, "greenhouse") == "https://boards.greenhouse.io/twitter?gh_src=x"
+    assert disc.evidence_url(text, "lever") == ""
+
+
+def test_census_rows_to_seed_lines_only_for_supported_platforms():
+    rows = [
+        {"seed": "Twitter", "platform": "greenhouse", "board_url": "https://boards.greenhouse.io/twitter"},
+        {"seed": "Visa", "platform": "workday", "board_url": "https://visa.wd1.myworkdayjobs.com/Visa"},
+        {"seed": "DP World", "platform": "oracle_hcm",
+         "board_url": "https://ehpv.fa.em2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1"},
+        {"seed": "eBay", "platform": "phenom", "board_url": "https://cdn.phenompeople.com/x.js"},
+        {"seed": "Odd", "platform": "lever", "board_url": ""},
+    ]
+    assert disc.census_seed_lines(rows) == [
+        "Twitter | https://boards.greenhouse.io/twitter",
+        "Visa | https://visa.wd1.myworkdayjobs.com/Visa",
+        "DP World | https://ehpv.fa.em2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1",
+    ]
+
+
+def test_discover_verifies_oracle_seeds_with_real_adapter(monkeypatch):
+    monkeypatch.setattr(disc, "load_linkedin_cache", lambda path: ({}, {}))
+    monkeypatch.setattr(disc, "fetch_company_jobs", lambda c: [
+        _jp("Software Engineer III", "Bengaluru, India", posted="2026-09-30")] if c.get("ats") == "oracle_hcm" else [])
+    seeds = parse_seeds("DP World | https://ehpv.fa.em2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1\n")
+    verified, rows = disc.discover(seeds, workers=2)
+    assert verified == [{"name": "DP World", "ats": "oracle_hcm", "host": "ehpv.fa.em2.oraclecloud.com",
+                         "site": "CX_1", "headcount": "Unknown"}]
+
+
+def test_merge_treats_oracle_boards_by_host_and_site():
+    existing = [{"name": "DP World", "ats": "oracle_hcm", "host": "ehpv.fa.em2.oraclecloud.com", "site": "CX_1"}]
+    new = [{"name": "JPMorgan Chase", "ats": "oracle_hcm", "host": "jpmc.fa.oraclecloud.com", "site": "CX_1001"},
+           {"name": "DP World Logistics", "ats": "oracle_hcm", "host": "ehpv.fa.em2.oraclecloud.com", "site": "CX_1"},
+           {"name": "Texas Instruments", "ats": "oracle_hcm", "host": "edbz.fa.us2.oraclecloud.com", "site": "CX_1"}]
+    assert [c["name"] for c in merge_companies(existing, new)] == ["DP World", "JPMorgan Chase", "Texas Instruments"]
+
+
+def test_reverify_existing_uses_real_adapter_for_amazon_and_oracle(monkeypatch):
+    monkeypatch.setattr(disc, "fetch_company_jobs", lambda c: [_jp(posted="2026-10-01")])
+    kept, rows = disc.reverify_existing([
+        {"name": "Amazon", "ats": "amazon"},
+        {"name": "DP World", "ats": "oracle_hcm", "host": "h.oraclecloud.com", "site": "CX_1"}])
+    assert [c["name"] for c in kept] == ["Amazon", "DP World"]
+
+
+def test_evidence_url_drops_json_escape_backslash():
+    text = '{"link":"https:\\/\\/x"} <script>var u="https://jobs.lever.co/dreamsports\\";</script>'
+    assert disc.evidence_url(text, "lever") == "https://jobs.lever.co/dreamsports"

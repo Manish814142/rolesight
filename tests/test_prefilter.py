@@ -37,7 +37,7 @@ def test_prefilter_rejects_excluded_seniority():
         global_id="gh:test:3",
         ats="greenhouse",
         company="Acme",
-        title="Senior Backend Engineer",
+        title="Staff Backend Engineer",
         location="Bangalore",
         is_remote=False,
         url="https://example.com/3",
@@ -129,7 +129,6 @@ def test_prefilter_word_boundaries_accept(title):
     ".NET Developer",
     "ASP.NET Backend Developer",
     "C# Developer",
-    "Sr. Software Engineer",
     "Software Engineer Intern",
     "Software Engineering Internship - Backend",
     "Front-end Developer",
@@ -169,7 +168,7 @@ def test_prefilter_accepts_startup_backend_titles(title):
     assert passed is True, f"{title!r} rejected: {reason}"
 
 
-@pytest.mark.parametrize("title", ["Senior Product Engineer", "Product Manager", "Product Designer"])
+@pytest.mark.parametrize("title", ["Staff Product Engineer", "Product Manager", "Product Designer"])
 def test_prefilter_new_include_terms_do_not_bypass_rules(title):
     passed, _ = should_evaluate_job(_job(title))
     assert passed is False
@@ -240,3 +239,41 @@ def test_prefilter_accepts_delhi_kolkata_and_in_country_code(location):
 def test_prefilter_indiana_state_code_is_not_india(location):
     passed, _ = should_evaluate_job(_job("Software Engineer", location=location))
     assert passed is False
+
+
+@pytest.mark.parametrize("title", [
+    "Senior Software Engineer",
+    "Senior Backend Engineer, Vision",
+    "Sr. Software Engineer",
+    "Sr Backend Developer",
+])
+def test_prefilter_lets_senior_titles_through_for_gemini_to_judge(title):
+    """At Indian companies "Senior" often means 3-6 YOE; 2026-10-05 measurement: 227 India
+    jobs (38 in 7 days) were blocked by this word alone. Gemini scores them against the
+    resume's experience instead of a regex dropping them."""
+    passed, reason = should_evaluate_job(_job(title))
+    assert passed is True, f"{title!r} rejected: {reason}"
+
+
+@pytest.mark.parametrize("title", ["Staff Software Engineer", "Lead Backend Engineer",
+                                   "Principal Engineer, Platform", "Senior Staff Software Engineer"])
+def test_prefilter_still_blocks_staff_lead_principal(title):
+    assert should_evaluate_job(_job(title))[0] is False
+
+
+@pytest.mark.parametrize("title", [
+    "Software Development Engineer II, Prime Video",   # Amazon: 202/202 India SDE titles were rejected
+    "Senior Software Development Engineer",
+    "Member of Technical Staff",                       # Salesforce/Oracle-style engineer title
+    "Senior Member of Technical Staff - Backend",
+    "MTS 2, Platform",
+])
+def test_prefilter_accepts_sde_and_mts_titles(title):
+    passed, reason = should_evaluate_job(_job(title))
+    assert passed is True, f"{title!r} rejected: {reason}"
+
+
+@pytest.mark.parametrize("title", ["Principal Member of Technical Staff", "Lead Member of Technical Staff",
+                                   "Staff Software Development Engineer"])
+def test_prefilter_mts_rules_keep_principal_lead_staff_blocked(title):
+    assert should_evaluate_job(_job(title))[0] is False

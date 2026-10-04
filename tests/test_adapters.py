@@ -278,11 +278,13 @@ def test_fetch_workday_searches_india_and_paginates(mock_post):
 
 
 @patch("requests.post")
-def test_fetch_workday_caps_at_100_jobs(mock_post):
-    mock_post.side_effect = [_wd_post(f"p{k}", 20) for k in range(10)]
+def test_fetch_workday_caps_at_max_jobs(mock_post):
+    from job_hunt.adapters import workday
+    pages = workday.MAX_JOBS // workday.PAGE_SIZE
+    mock_post.side_effect = [_wd_post(f"p{k}", 20) for k in range(pages + 5)]
     jobs = fetch_workday("nvidia", "wd5", "site")
-    assert len(jobs) == 100
-    assert mock_post.call_count == 5
+    assert len(jobs) == workday.MAX_JOBS
+    assert mock_post.call_count == pages
 
 
 @patch("requests.post")

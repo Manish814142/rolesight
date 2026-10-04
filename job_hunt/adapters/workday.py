@@ -12,9 +12,9 @@ from job_hunt.models import JobPosting
 logger = logging.getLogger(__name__)
 
 # Workday caps a page at 20. Unfiltered, big tenants return their newest ~20 global
-# (mostly US) postings, so we full-text search for India and page up to 100 jobs.
+# (mostly US) postings, so we full-text search for India and page up to MAX_JOBS.
 PAGE_SIZE = 20
-MAX_JOBS = 100
+MAX_JOBS = 500  # Target had 302, Nvidia 276 India-search results (2026-10-05)
 SEARCH_TEXT = "India"
 
 # Per-tenant wall-clock budget. Detail calls dominate (~100 s for Nvidia/Salesforce);

@@ -18,7 +18,8 @@ Usage:
     # entry; boards that fail are re-discovered by name (ATS migration) or removed
     python -m job_hunt discover --recheck --merge companies.json --report /tmp/recheck.csv
     # ATS census: which platform do careers pages use? ("Name | careers URL" lines)
-    python -m job_hunt discover --census scripts/careers_urls.txt --report /tmp/census.csv
+    python -m job_hunt discover --census scripts/careers_urls.txt --report /tmp/census.csv \\
+        [--emit-seeds /tmp/census_seeds.txt]   # then: discover --add-file /tmp/census_seeds.txt --merge ...
 
 Seeds file, one company per line ('#' comments allowed):
     Stripe
@@ -194,7 +195,15 @@ def parse_seeds(text: str) -> List[Dict[str, Any]]:
         if is_workday:
             seed["workday"] = {"tenant": parts[2], "dc": parts[3], "site": parts[4]}
         elif len(parts) >= 2 and parts[1]:
-            seed["url"] = parts[1]
+            detected = detect_ats(parts[1])
+            if detected and detected[0] == "workday":
+                tenant, dc, site = detected[1].split(":")
+                seed["workday"] = {"tenant": tenant, "dc": dc, "site": site}
+            elif detected and detected[0] == "oracle_hcm":
+                host, site = detected[1].rsplit(":", 1)
+                seed["oracle_hcm"] = {"host": host, "site": site}
+            else:
+                seed["url"] = parts[1]
         seeds.append(seed)
     return seeds
 
@@ -245,8 +254,7 @@ def accept_board(
 def merge_companies(existing: List[Dict[str, Any]], new: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """Existing entries win; a new entry is dropped if its name or board is already present."""
     def board_key(c: Dict[str, Any]) -> Tuple[str, str]:
-        ident = c.get("slug") or f"{c.get('tenant')}:{c.get('dc')}:{c.get('site')}"
-        return c.get("ats", ""), str(ident).lower()
+        return c.get("ats", ""), _board_ident(c).lower()
 
     def name_key(c: Dict[str, Any]) -> str:
         return " ".join(_core_words(c["name"]))  # "Mindtickle India" == "Mindtickle"
@@ -261,6 +269,17 @@ def merge_companies(existing: List[Dict[str, Any]], new: List[Dict[str, Any]]) -
         names.add(name_key(c))
         boards.add(board_key(c))
     return sorted(out, key=lambda c: (c.get("ats", ""), c["name"].lower()))
+
+
+def _board_ident(c: Dict[str, Any]) -> str:
+    """Stable board identifier across ATS kinds (slug, Workday tenant:dc:site, Oracle host:site)."""
+    if c.get("slug"):
+        return str(c["slug"])
+    if c.get("ats") == "oracle_hcm":
+        return f"{c.get('host')}:{c.get('site')}"
+    if c.get("ats") == "workday":
+        return f"{c.get('tenant')}:{c.get('dc')}:{c.get('site')}"
+    return str(c.get("ats", ""))
 
 
 def _is_india(location: str) -> bool:
@@ -318,6 +337,24 @@ def evaluate_board(seed_name: str, ats: str, slug: str, from_url: bool = False) 
     }
 
 
+def evaluate_entry(seed_name: str, entry: Dict[str, Any]) -> Dict[str, Any]:
+    """Verify a board that needs no slug probing (Oracle HCM, Amazon, ...) through its real
+    adapter. Identity is trusted: the entry came from the company's own careers URL."""
+    jobs = fetch_company_jobs({**entry, "name": seed_name})
+    india = sum(1 for j in jobs if _is_india(j.location))
+    passing = [j for j in jobs if should_evaluate_job(j)[0]]
+    age = newest_age_days(jobs)
+    ident = _board_ident(entry)
+    ok, verdict = accept_board(entry["ats"], ident, len(jobs), india, True, age)
+    return {
+        "seed": seed_name, "verdict": verdict, "accepted": ok, "ats": entry["ats"], "board": ident,
+        "jobs": len(jobs), "india_jobs": india, "prefilter_pass": len(passing),
+        "newest_age_days": "" if age is None else age, "identity": "careers URL / curated entry",
+        "sample_titles": "; ".join(j.title[:50] for j in passing[:3]),
+        "entry": {"name": seed_name, **entry},
+    }
+
+
 def evaluate_workday(seed_name: str, tenant: str, dc: str, site: str) -> Dict[str, Any]:
     """Light check: first page of the India search (the adapter itself paginates to 100)."""
     url = f"https://{tenant}.{dc}.myworkdayjobs.com/wday/cxs/{tenant}/{site}/jobs"
@@ -363,7 +400,7 @@ def _probe_one(args: Tuple[Dict[str, Any], str, str, bool]) -> Optional[Tuple[Di
 
 def discover(seeds: List[Dict[str, Any]], workers: int = 40) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
     """Return (verified companies.json entries, report rows for every seed)."""
-    board_seeds = [s for s in seeds if "workday" not in s]
+    board_seeds = [s for s in seeds if "workday" not in s and "oracle_hcm" not in s]
     tasks = [(s, ats, slug, fu) for s in board_seeds for ats, slug, fu in _probe_pairs(s)]
     print(f"Phase 1/3 — probing {len(tasks)} (ATS, slug) pairs for {len(board_seeds)} companies...")
     with ThreadPoolExecutor(max_workers=workers) as ex:
@@ -375,9 +412,12 @@ def discover(seeds: List[Dict[str, Any]], workers: int = 40) -> Tuple[List[Dict[
         evaluated = list(ex.map(lambda h: evaluate_board(h[0]["name"], h[1], h[2], h[3]), hits))
 
     wd_seeds = [s for s in seeds if "workday" in s]
-    print(f"Phase 3/3 — checking {len(wd_seeds)} curated Workday tenants...")
+    oracle_seeds = [s for s in seeds if "oracle_hcm" in s]
+    print(f"Phase 3/3 — checking {len(wd_seeds)} Workday tenants and {len(oracle_seeds)} Oracle HCM sites...")
     with ThreadPoolExecutor(max_workers=8) as ex:
         wd_rows = list(ex.map(lambda s: evaluate_workday(s["name"], **s["workday"]), wd_seeds))
+        wd_rows += list(ex.map(lambda s: evaluate_entry(s["name"], {"ats": "oracle_hcm", **s["oracle_hcm"]}),
+                               oracle_seeds))
 
     company_cache, slug_cache = load_linkedin_cache(DEFAULT_LINKEDIN)
     verified: List[Dict[str, Any]] = []
@@ -400,7 +440,8 @@ def discover(seeds: List[Dict[str, Any]], workers: int = 40) -> Tuple[List[Dict[
     for r in wd_rows:
         rows.append(r)
         if r["accepted"]:
-            verified.append({**r["entry"], "headcount": match_headcount(r["seed"], r["entry"]["tenant"], company_cache, slug_cache)})
+            ident = r["entry"].get("tenant") or r["entry"].get("host", "").split(".")[0]
+            verified.append({**r["entry"], "headcount": match_headcount(r["seed"], ident, company_cache, slug_cache)})
     return verified, rows
 
 
@@ -413,6 +454,8 @@ def reverify_existing(entries: List[Dict[str, Any]], workers: int = 12) -> Tuple
     def check(c: Dict[str, Any]) -> Dict[str, Any]:
         if c.get("ats") == "workday":
             return evaluate_workday(c["name"], c["tenant"], c["dc"], c["site"])
+        if c.get("ats") in ("oracle_hcm", "amazon"):
+            return evaluate_entry(c["name"], {k: v for k, v in c.items() if k not in ("name", "headcount")})
         return evaluate_board(c["name"], c["ats"], c["slug"], from_url=True)
 
     with ThreadPoolExecutor(max_workers=workers) as ex:
@@ -528,7 +571,8 @@ def ats_census(entries: List[Dict[str, Any]], workers: int = 16) -> List[Dict[st
         row = {"seed": e["name"], "url": e.get("url", "")}
         try:
             r = requests.get(e["url"], headers=headers, timeout=20, allow_redirects=True)
-            found = fingerprint_ats(f"{r.url}\n{r.text[:3_000_000]}")
+            page_text = f"{r.url}\n{r.text[:3_000_000]}"
+            found = fingerprint_ats(page_text)
             verdict = f"HTTP {r.status_code}"
             if not [f for f in found if not f.startswith("job_board:")] and r.status_code == 200:
                 for link in _job_links(r.url, r.text):
@@ -536,22 +580,49 @@ def ats_census(entries: List[Dict[str, Any]], workers: int = 16) -> List[Dict[st
                         r2 = requests.get(link, headers=headers, timeout=15, allow_redirects=True)
                     except Exception:
                         continue
-                    deeper = [f for f in fingerprint_ats(f"{r2.url}\n{r2.text[:3_000_000]}") if not f.startswith("job_board:")]
+                    deeper_text = f"{r2.url}\n{r2.text[:3_000_000]}"
+                    deeper = [f for f in fingerprint_ats(deeper_text) if not f.startswith("job_board:")]
                     if deeper:
                         found = deeper + found
+                        page_text = deeper_text
                         verdict += f" via {link}"
                         break
-            row.update({"platform": found[0] if found else "unknown/custom", "all_platforms": ",".join(found),
+            platform = found[0] if found else "unknown/custom"
+            row.update({"platform": platform, "all_platforms": ",".join(found),
+                        "board_url": evidence_url(page_text, platform),
                         "final_url": r.url, "verdict": verdict})
         except Exception as ex:
-            row.update({"platform": "fetch failed", "all_platforms": "", "final_url": "", "verdict": str(ex)[:80]})
+            row.update({"platform": "fetch failed", "all_platforms": "", "board_url": "", "final_url": "",
+                        "verdict": str(ex)[:80]})
         return row
 
     with ThreadPoolExecutor(max_workers=workers) as ex:
         return list(ex.map(one, entries))
 
 
-CENSUS_FIELDS = ["seed", "platform", "all_platforms", "url", "final_url", "verdict"]
+CENSUS_FIELDS = ["seed", "platform", "all_platforms", "board_url", "url", "final_url", "verdict"]
+
+# Platforms with an adapter: census hits on these can be fed straight into discover.
+SEEDABLE_PLATFORMS = {"greenhouse", "lever", "ashby", "smartrecruiters", "workable", "recruitee",
+                      "personio", "workday", "oracle_hcm"}
+_URL_RE = re.compile(r"""https?://[^\s"'<>\\]+""")  # stops at JSON-escape backslashes
+
+
+def evidence_url(text: str, platform: str) -> str:
+    """First absolute URL in `text` that matches `platform`'s fingerprint ("" if none)."""
+    rx = dict(ATS_FINGERPRINTS).get(platform)
+    if rx is None:
+        return ""
+    for m in _URL_RE.finditer(text):
+        if rx.search(m.group(0)):
+            return m.group(0).rstrip(".,;)")
+    return ""
+
+
+def census_seed_lines(rows: List[Dict[str, Any]]) -> List[str]:
+    """"Name | board URL" seed lines for census hits on platforms we have adapters for."""
+    return [f"{r['seed']} | {r['board_url']}" for r in rows
+            if r.get("platform") in SEEDABLE_PLATFORMS and r.get("board_url") and detect_ats(r["board_url"])]
 
 
 def write_report(rows: List[Dict[str, Any]], path: str) -> None:
@@ -603,6 +674,12 @@ def main(argv: Optional[List[str]] = None) -> None:
         for platform, n in Counter(r["platform"] for r in rows).most_common():
             print(f"  {platform:<24}{n:>4}")
         print(f"Census of {len(rows)} careers pages -> {opts['--report']}")
+        if "--emit-seeds" in argv:
+            out_path = Path(argv[argv.index("--emit-seeds") + 1])
+            lines = census_seed_lines(rows)
+            out_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+            print(f"{len(lines)} seed line(s) for supported platforms -> {out_path} "
+                  f"(verify with: discover --add-file {out_path} --merge companies.json)")
         return
 
     if "--recheck" in argv:

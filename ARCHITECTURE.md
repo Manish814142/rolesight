@@ -44,7 +44,7 @@ Companies with no `ats` field fall back to the legacy TinyFish careers-page path
 
 | Module | Responsibility |
 |---|---|
-| [`adapters/`](job_hunt/adapters/) | One fetcher per ATS returning `JobPosting`s; `detect_ats()` from URLs; `fetch_company_jobs()` dispatch. 404 → `[]`, never raises. |
+| [`adapters/`](job_hunt/adapters/) | One fetcher per ATS (incl. Amazon and Oracle HCM) returning `JobPosting`s; `detect_ats()` from URLs; `fetch_company_jobs()` dispatch. 404 → `[]`, never raises. |
 | [`adapters/workday.py`](job_hunt/adapters/workday.py) | CXS `POST …/wday/cxs/{tenant}/{site}/jobs` with `searchText="India"`, offsets 0–80 (Workday caps pages at 20), stop on a short page, keep earlier pages if a later one fails. Items showing `"N Locations"` get one `GET …{externalPath}` detail call for real locations + description. |
 | [`models.py`](job_hunt/models.py) | `JobPosting` dataclass; `canonical_hash(title, company, location)` (MD5) is the dedupe key. |
 | [`db.py`](job_hunt/db.py) | SQLite `data/jobs.db`, table `jobs`: `init_db`, `get_job`, `save_job`, `update_job_status`. Location is **not** stored. |
@@ -145,6 +145,10 @@ mypy
 - **Scan length:** companies are fetched 8 at a time (measured 6.4 min for 139 boards on
   2026-10-04 vs ~45 min sequential). Every HTTP call has a 900 s total deadline and Workday
   tenants a 600 s budget; a board that exceeds it is skipped for that scan (logged as a warning).
+- **Gemini daily quota vs volume:** ~1,270 jobs pass the pre-filter across 215 companies,
+  but the free tier allows ~1,000 calls/day (2 Flash Lite models × 500). The first full
+  scan should use `--posted-within 7` (~226 calls); unscored jobs stay `discovered` and
+  retry the next day, so nothing is lost either way.
 - **Batch scoring is opt-in only:** measured mean |Δ| of 15.5 points vs single-job scores
   (noise 1.0); weak fits inflated. Single-job scoring costs ~4.2 s per new job.
 - **SmartRecruiters** list API has no descriptions (title-only scoring) and the adapter

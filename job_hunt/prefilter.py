@@ -11,7 +11,8 @@ from job_hunt.models import JobPosting
 # "Latest"/"Contest", 'intern' does not hit "Internal", 'india' does not hit "Indianapolis".
 # Product startups often title backend roles "Product/Platform/Infrastructure Engineer".
 TITLE_INCLUDE_PATTERN = re.compile(
-    r"\b(back[\s-]?end|node(\.?js)?|sde\d*|software\s*engineer|developer|full[\s-]*stack"
+    r"\b(back[\s-]?end|node(\.?js)?|sde\d*|software\s*engineer|software\s+development\s+engineer"
+    r"|member\s+of\s+technical\s+staff|mts|developer|full[\s-]*stack"
     r"|api|distributed(\s*systems)?|platform\s*engineer|product\s*engineer"
     r"|infrastructure\s*engineer|systems\s*engineer)\b",
     re.IGNORECASE,
@@ -19,8 +20,12 @@ TITLE_INCLUDE_PATTERN = re.compile(
 
 # '.net' and 'c#' start/end with non-word chars, where \b does not apply,
 # so they get their own boundary handling.
+# "Senior"/"Sr." are deliberately NOT excluded: at Indian companies they often mean 3-6 YOE,
+# so Gemini judges them against the resume (2026-10-05: 227 India jobs were blocked by
+# that word alone). Staff/Principal/Lead/Manager stay excluded, except "Member of Technical
+# Staff" (MTS), a standard mid-level engineer title.
 TITLE_EXCLUDE_PATTERN = re.compile(
-    r"\b(senior|sr|lead|principal|staff|manager|director|architect|front[\s-]?end"
+    r"\b(lead|principal|(?<!technical\s)staff|manager|director|architect|front[\s-]?end"
     r"|react(\.?js)?|angular(js)?|vue(\.?js)?|ios|android|flutter|qa|test(er|ers|ing)?"
     r"|intern(s|ship)?|devops|sre|java|golang|python)\b"
     r"|\.net\b|\bc#(?!\w)",

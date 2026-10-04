@@ -1394,3 +1394,84 @@ Netmagic
 Yotta Infrastructure
 E2E Networks
 Neysa
+
+# ── added via discover --add (2026-10-04) ──
+JPMorgan Chase | https://jpmc.fa.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1001/requisitions&#34;,&#34;ctaTitle&#34;:&#34;&#34;,&#34;ctaComponentName&#34;:&#34;Primary
+InMobi | https://job-boards.greenhouse.io/glance/jobs/7528886
+Paytm | https://jobs.lever.co/paytm
+Gojek | https://jobs.lever.co/GoToGroup/ef836b64-d5cb-4202-bf98-51d89c91bd02
+Mindtickle | https://jobs.lever.co/mindtickle
+Razorpay | https://job-boards.greenhouse.io/razorpaysoftwareprivatelimited
+Expedia | https://expedia.wd108.myworkdayjobs.com/en-US/search/introduceYourself
+Sprinklr | https://sprinklr.wd1.myworkdayjobs.com/careers?_gl=1*zwwtok*_ga*MjE0MDMwOTMyMC4xNzExMjkwMTcz*_ga_GD43S3NXZ0*MTcxNTg0Njg2Ni4xNTguMC4xNzE1ODQ2ODY4LjU4LjAuMA
+Toppr | https://apply.workable.com/toppr/?lng=en
+Directi | https://jobs.lever.co/directi
+Innovaccer | https://apply.workable.com/j/D5A5B6DF59
+Visa | https://visa.wd5.myworkdayjobs.com/Visa
+Accenture | https://accenture.wd103.myworkdayjobs.com/AccentureCareers/userHome&#34;,&#34;analytics-engagement&#34;:&#34;true&#34;,&#34;analytics-link-type&#34;:&#34;engagement&#34;,&#34;analytics-link-name&#34;:&#34;Access
+Able | https://job-boards.greenhouse.io/able/jobs/8390893002
+Affinidi | https://boards.greenhouse.io/affinidi
+Alphonso | https://jobs.ashbyhq.com/lgads/embed
+Barclays | https://barclays.wd3.myworkdayjobs.com/External_Career_Site_Barclays/login?redirect=%2FExternal_Career_Site_Barclays#
+Better | https://jobs.ashbyhq.com/better-mortgage
+Bidgely | https://jobs.ashbyhq.com/bidgely-inc/embed?version=2
+Bosch | https://careers.smartrecruiters.com/BoschGroup/chinahongkong
+BrowserStack | https://browserstack.wd3.myworkdayjobs.com/External
+Cadence | https://cadence.wd1.myworkdayjobs.com/External_Careers
+Celigo | https://boards.greenhouse.io/embed/job_board/js?for=celigo
+Cerner | https://eeho.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/jobsearch/jobs?selectedFlexFieldsFacets=%22AttributeChar15%7COCI%7C%7CAttributeChar16%7CJoinOCI-Ns2%22
+ClearGlass | https://careers.smartrecruiters.com/ClearGlassAnalyticsLimited
+Cloudera | https://cloudera.wd5.myworkdayjobs.com/External_Career
+Contra | https://jobs.ashbyhq.com/contra/8688ee62-1a8f-4535-bde8-db6959521cd8
+CrowdStrike | https://crowdstrike.wd5.myworkdayjobs.com/crowdstrikecareers
+DBS | https://dbs.wd3.myworkdayjobs.com/DBS_Careers
+Dialpad | https://job-boards.greenhouse.io/dialpad/jobs/8610910002
+Directi Careers | https://jobs.lever.co/directi
+Dream11 | https://jobs.lever.co/dreamsports
+Druva | https://boards-api.greenhouse.io/v1/boards/druva/jobs
+EXL | https://fa-ewjt-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_2/requisitions?location=Australia&locationId=300000000458927&locationLevel=country&mode=job-location
+Expedia Group | https://expedia.wd108.myworkdayjobs.com/en-US/search/introduceYourself
+F5 | https://ffive.wd5.myworkdayjobs.com/f5jobs
+FireEye | https://trellix.wd1.myworkdayjobs.com/EnterpriseCareers/job/Ireland-Cork/Compensation-Partner---EMEA_JR0037988/apply
+Flexport | https://job-boards.greenhouse.io/flexport/jobs/7559949
+Fractal | https://fractal.wd1.myworkdayjobs.com/Careers
+FICO | https://fico.wd1.myworkdayjobs.com/External
+Genpact | https://genpact.wd108.myworkdayjobs.com/External_Careers&#34;}}
+Hotstar | https://jiostar.wd102.myworkdayjobs.com/JioStar
+IHS Markit | https://ihsmarkit.wd1.myworkdayjobs.com/en-US/Careers
+InMobi Careers | https://job-boards.greenhouse.io/glance/jobs/7528886
+Innovaccer Careers | https://apply.workable.com/j/D5A5B6DF59
+JPMorgan India | https://jpmc.fa.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1001/requisitions&#34;,&#34;ctaTitle&#34;:&#34;&#34;,&#34;ctaComponentName&#34;:&#34;Primary
+KLA | https://kla.wd1.myworkdayjobs.com/Search
+Kotak Mahindra Bank | https://hcbt.fa.em2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX
+LogicMonitor | https://boards.greenhouse.io/embed/job_board/js?for=logicmonitor
+NASDAQ | https://nasdaq.wd1.myworkdayjobs.com/Global_External_Site
+National Instruments | https://hdjq.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs
+NCR | https://ncr.wd1.myworkdayjobs.com/ext_apac
+Nike | https://nike.wd1.myworkdayjobs.com/nke/job/Westfield-White-City-Shepherds-Bush-London/Service-Lead_R-92440/apply
+Ocrolus | https://boards-api.greenhouse.io/v1/boards/
+Observe.AI | https://boards.greenhouse.io/embed/job_board/js?for=observeai
+OpenAI | https://jobs.ashbyhq.com/openai/form/openai-emt-talent-community
+Palo Alto Networks | https://paloaltonetworks.wd5.myworkdayjobs.com/en-US/panwexternalcareers/introduceYourself?clientRequestID=06f06ca6dae2441d99391ed600fc2265
+Paytm Careers | https://jobs.lever.co/paytm
+Protegrity | https://jobs.lever.co/protegrity?location=Bengaluru
+Proximity Labs | https://apply.workable.com/prox-works/j/6DB08E6D71/apply/
+Quantiphi | https://quantiphi.wd1.myworkdayjobs.com/Careers_at_Quantiphi
+Razorpay Careers | https://job-boards.greenhouse.io/razorpaysoftwareprivatelimited
+Red Hat | https://redhat.wd5.myworkdayjobs.com/jobs/
+Reprise | https://jobs.ashbyhq.com/reprise/embed?version=2
+Sabre | https://sabre.wd1.myworkdayjobs.com/SabreJobs
+SendinBlue | https://jobs.lever.co/brevo/9a76fc13-efb6-4066-a675-c226fb276aa2
+SerpApi | https://peets.wd12.myworkdayjobs.com/en-US/Peets/job/Barista---Lyon-Village_R630?utm_campaign=google_jobs_apply&amp;utm_source=google_jobs_apply&amp;utm_medium=organic&quot
+Shell | https://shell.wd3.myworkdayjobs.com/ShellCareers?source=APPLICANT_SOURCE_Global_Page
+Sigmoid | https://job-boards.greenhouse.io/sigmoid/jobs/5481479002
+Sony | https://sonyglobal.wd1.myworkdayjobs.com/SonyGlobalCareers
+Sprinklr Careers | https://sprinklr.wd1.myworkdayjobs.com/careers?_gl=1*zwwtok*_ga*MjE0MDMwOTMyMC4xNzExMjkwMTcz*_ga_GD43S3NXZ0*MTcxNTg0Njg2Ni4xNTguMC4xNzE1ODQ2ODY4LjU4LjAuMA
+Sureify | https://boards-api.greenhouse.io/v1/boards/${BOARD_TOKEN}/departments`
+Target | https://target.wd5.myworkdayjobs.com/targetcareers/login?redirect=%2Ftargetcareers%2FuserHome
+ThoughtSpot | https://thoughtspot.wd5.myworkdayjobs.com/careers
+Twitter | https://job-boards.greenhouse.io/xai/jobs/5242789007
+Unisys | https://unisys.wd5.myworkdayjobs.com/en-US/External/?q=
+Visa Careers | https://visa.wd5.myworkdayjobs.com/Visa
+Western Digital | https://careers.smartrecruiters.com/WesternDigital
+Yugabyte | https://boards.greenhouse.io/yugabyte
