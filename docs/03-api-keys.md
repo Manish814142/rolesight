@@ -1,59 +1,49 @@
 # 03 — API keys
 
-Two keys get you scanning. Both have free tiers.
+| Key | Needed for | Required? | Get it |
+|---|---|---|---|
+| `GEMINI_API_KEY` | Scoring (and `doctor`'s Gemini check) | **Yes** | [aistudio.google.com/apikey](https://aistudio.google.com/apikey), free |
+| `TELEGRAM_TOKEN` + `TELEGRAM_CHAT_ID` | Alerts | No | [@BotFather](https://t.me/BotFather); see [05](05-outputs-and-notifications.md#telegram-optional) |
+| `ANTHROPIC_API_KEY` | Drafting with `llm_provider: anthropic` | No | [console.anthropic.com](https://console.anthropic.com) |
+| `TINYFISH_API_KEY` | Currently only `autopilot draft` (fetching the job description), plus the legacy careers-page path | No: not used in this fork; `draft` will stop needing it (T40) | — |
+| `OPENROUTER_API_KEY` | Deprecated provider | No | — |
 
-## TinyFish (required · free)
+The ATS APIs themselves need **no keys**. They are public job-board endpoints.
 
-TinyFish fetches careers-page content and runs the search queries. **Every scan uses
-it**, whatever LLM provider you pick.
+## Where keys go
 
-1. Sign up at [agent.tinyfish.ai](https://agent.tinyfish.ai) (no credit card).
-2. Dashboard → **API Keys** → **Create key**.
-3. Copy the key (starts with `sk-tinyfish-…`).
-
-> Free-tier throughput is generous. The scanner auto-paces to ~5 searches/min and
-> ~25 URL fetches/min, so a full 130-company scan takes 30–90 min **by design** — not
-> because of a tight cap. See [04 — Companies & scanning](04-companies-and-scanning.md).
-
-## OpenRouter (required unless using Claude CLI · free)
-
-Provides the scoring/drafting models (default backend). Skip this if you use
-`llm_provider: claude_cli` — see [02 — Providers](02-providers.md).
-
-1. Sign up at [openrouter.ai](https://openrouter.ai).
-2. **Keys** → **Create key**.
-3. Copy the key (starts with `sk-or-v1-…`).
-
-## Where the keys go
-
-Put keys in `.env` (gitignored), or directly in `config.json` (also gitignored). `.env`
-values override `config.json` — but a placeholder like `your_..._here` never clobbers a
-real value in `config.json`.
+Put them in **`.env`** in the repo root (gitignored):
 
 ```bash
-# .env
-TINYFISH_API_KEY=sk-tinyfish-your-key-here
-OPENROUTER_API_KEY=sk-or-v1-your-key-here
-
-# optional — Telegram (see 05-integrations.md)
-TELEGRAM_TOKEN=your_bot_token_here
-TELEGRAM_CHAT_ID=your_numeric_chat_id_here
+GEMINI_API_KEY=your-key
+# TELEGRAM_TOKEN=123456:ABC...      # TELEGRAM_BOT_TOKEN also works
+# TELEGRAM_CHAT_ID=123456789
 ```
 
-> **`.env` and `config.json` are gitignored — never commit them.** If a key is ever
-> exposed, rotate it immediately from the service dashboard. Secrets are also scanned in
-> CI (gitleaks). See [SECURITY.md](../SECURITY.md).
+You can also put them in `config.json` (`gemini_api_key`, `telegram.token`,
+`telegram.chat_id`, …), which is also gitignored.
+
+## Precedence
+
+1. `config.json` is read first.
+2. Values from `.env` then override it, and also override variables already exported in
+   your shell (`load_dotenv(override=True)`).
+3. A value that is still a template placeholder (`YOUR_…`, `…_here`, `…_HERE`) is
+   ignored. A placeholder Telegram value counts as "not configured".
+
+Rule 2 has a visible side effect: if `.env` sets `MIN_SCORE`, it beats the
+`MIN_SCORE=70` that `run_daily.sh` exports (T05). Check the `Min score:` line at the top
+of a scan's log to see which value was used.
 
 ## Verify
 
 ```bash
-autopilot scan
+autopilot doctor
 ```
 
-If a key is missing you get a clear message (e.g. `TINYFISH_API_KEY not set`) — not a
-traceback. Fill it in and re-run.
+`[PASS] Gemini Quota` means the key works. Telegram shows `WARN` when it isn't
+configured, which is fine, and `FAIL` when it is configured but rejected.
 
 ## Next
 
 - [04 — Companies & scanning](04-companies-and-scanning.md)
-- [07 — Config & scoring](07-config-and-scoring.md)

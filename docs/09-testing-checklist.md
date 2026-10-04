@@ -1,78 +1,100 @@
 # 09 — Testing checklist
 
-A reproducible pass to confirm autopilot-jobhunt works end-to-end — clean install, key
-gating, each provider. Related: the committed
-`skills/verify-package-install` skill automates the packaging half of this.
+How to confirm a change works: first the offline gates, then a real run through the
+program itself.
 
-## 1. Clean-environment install
-
-```bash
-python3 -m venv /tmp/apj-check
-/tmp/apj-check/bin/pip install --upgrade pip
-/tmp/apj-check/bin/pip install -e '.[dev]'      # from the repo root
-```
-
-## 2. Lint, types, tests (dev flow)
+## 1. Gates (offline, run before every commit)
 
 ```bash
-/tmp/apj-check/bin/ruff check job_hunt/          # expect: no issues
-/tmp/apj-check/bin/mypy                           # expect: No issues found
-/tmp/apj-check/bin/pytest --cov=job_hunt          # expect: pass, coverage >= 85%
+pytest                    # whole suite; coverage gate 85% (pyproject.toml)
+ruff check job_hunt       # CI also lints tests/ and conftest.py: ruff check job_hunt/ tests/ conftest.py
+mypy                      # checks job_hunt/
 ```
 
-These mirror CI (`.github/workflows/ci.yml`), which runs the same three on Python 3.11,
-3.12, and 3.13 plus a gitleaks secret scan.
+Last recorded: 398 tests passing, coverage 89.99%, after the T30 review fix (2026-10-04).
 
-## 3. CLI smoke tests (no API keys)
+**Tests must never touch the network.**
 
-Run in a scratch dir so `init` scaffolding is exercised for real:
+- `conftest.py` stubs `scanner.enrich_job` for every test and provides the `fake_llm`,
+  `clean_env`, `sample_config` and `sample_job` fixtures.
+- Stub `requests.get` / `requests.post` (or `adapters.base.http_get` / `http_post`) for
+  adapters, `score_job_with_gemini` / `_get_genai_client_and_types` for Gemini, and
+  `scanner.send_telegram` for Telegram.
+- Known side effect: tests still write to the real `./scan.log` (T15).
+
+**CI.** `.github/workflows/ci.yml` runs the same gates on Python 3.11, 3.12 and 3.13, plus a
+gitleaks secret scan. This fork isn't pushed anywhere yet (T01), so **CI doesn't run for
+it**. The local gates are the only check.
+
+## 2. CLI smoke tests (no keys needed)
 
 ```bash
-mkdir -p /tmp/apj-work && cd /tmp/apj-work
-/tmp/apj-check/bin/autopilot --help              # usage, exit 0
-/tmp/apj-check/bin/autopilot init                # creates companies.json, config.json, .env, resume/
-/tmp/apj-check/bin/autopilot export ; echo $?    # "No scan found. Run: autopilot scan", exit nonzero (no traceback)
+autopilot --help                       # command list, exit 0
+autopilot export --min 101; echo $?    # "No jobs with score >= 101 in last scan", no traceback
 ```
 
-Key-gating check — proves a missing key fails cleanly, not with a stack trace:
+## 3. Environment
 
 ```bash
-/tmp/apj-check/bin/autopilot scan ; echo $?
-# Expect: "TINYFISH_API_KEY not set" message, not a traceback.
+autopilot doctor
 ```
 
-## 4. MCP server
+Expect `[PASS]` for SQLite, Gemini and the ATS egress checks. Telegram is `WARN` when
+it isn't configured.
+
+## 4. A real, small scan
+
+This costs a few Gemini calls and writes to the real `data/jobs.db`, `state/` and
+`output/`:
 
 ```bash
-/tmp/apj-check/bin/autopilot mcp                 # starts the stdio server (Ctrl-C to stop)
-# or: /tmp/apj-check/bin/python -m job_hunt.mcp_server
+autopilot scan --limit 3 --posted-within 7
 ```
 
-Then from Claude Code, confirm `scan_jobs`, `draft_application`, `export_jobs` are
-listed ([06](06-mcp-and-skill.md)).
+Check, in order:
+1. The first log lines show the expected `Min score`, provider and model.
+2. Each company logs `Fetched N job(s)` or `No open jobs found`.
+3. `Full descriptions fetched for K of N survivor(s)` appears when Workday,
+   SmartRecruiters or Oracle HCM jobs survived.
+4. A new `output/jobs_*.csv`, best first, with Reason filled.
+5. The DB status counts moved
+   ([05](05-outputs-and-notifications.md#the-seen-job-database-datajobsdb)).
 
-## 5. Provider matrix (with real keys)
+For a change that only affects fetching, call the adapter directly. That makes no Gemini
+calls and writes no state:
 
-For each backend you support, set `llm_provider` and run a small scan (or a single
-`autopilot draft <url>`), confirming a scored result / drafted file appears:
+```bash
+.venv/bin/python -c "from job_hunt.adapters import fetch_company_jobs; \
+jobs = fetch_company_jobs({'name':'Adyen','ats':'greenhouse','slug':'adyen'}); \
+print(len(jobs), jobs[0].title if jobs else '-')"
+```
 
-| `llm_provider` | Prereq |
-|---|---|
-| `openrouter` | `OPENROUTER_API_KEY` set |
-| `claude_cli` | `claude auth login` done; `claude --print "hi"` works |
-| `anthropic` | `pip install '.[claude]'`; `ANTHROPIC_API_KEY` set |
+## 5. MCP server
+
+The server should list `scan_jobs`, `draft_application` and `export_jobs`
+([06](06-mcp-and-skill.md)). Check it with a real client:
+
+```bash
+.venv/bin/python - <<'EOF'
+import asyncio
+from mcp import ClientSession, StdioServerParameters
+from mcp.client.stdio import stdio_client
+async def main():
+    p = StdioServerParameters(command="bash", args=["-c", "cd /home/user/codes/random_projects/JobNotify && .venv/bin/autopilot mcp"])
+    async with stdio_client(p) as (r, w), ClientSession(r, w) as s:
+        await s.initialize()
+        print([t.name for t in (await s.list_tools()).tools])
+asyncio.run(main())
+EOF
+```
 
 ## 6. Drafts-only invariant
 
-Confirm `autopilot draft <url>` writes files under `output/<company>-<date>/`
-(tailored resume, cover letter, application info) and **never** submits anywhere. Review
-the drafts; you send applications yourself.
+Any change near `drafter.py`, `tools.py` or `mcp_server.py` must still only write files
+under `output/`. Nothing may submit, apply or fill in a form. Reviewers check this on
+every diff ([SECURITY.md](../SECURITY.md)).
 
-## 7. Tear down
+## 7. Recording results
 
-```bash
-rm -rf /tmp/apj-check /tmp/apj-work
-```
-
-Report: install source, lint/type/test results, smoke + gating outcomes, MCP tool
-listing, and which providers you exercised.
+When a task is finished, record the exact commands and their output in the task board's
+Review queue ([tasks.md](tasks.md#review-queue)). The verifier re-runs them.

@@ -1,39 +1,148 @@
-# 05 — Integrations
+# 05 — Outputs & notifications
 
-## Telegram notifications (optional)
+Everything a scan writes, how to read it, and the optional channels on top. All of these
+paths are gitignored.
 
-After each scan, autopilot can message you the top matches. **Entirely optional** — if
-you skip it, results still save to CSV and print to the terminal; nothing crashes.
+## The CSV (primary output)
+
+`output/jobs_YYYY-MM-DD.csv`. One file per scan; if the name is taken, the scan writes
+`_1`, `_2`, … and never overwrites. Rows are **sorted best score first**. Row N of the CSV
+is job N of `state/last_scan.json`, which `draft N` reads.
+
+| Column | Meaning |
+|---|---|
+| Company | `name` from `companies.json` |
+| Role | Job title as the ATS gives it |
+| Location | Raw location string from the ATS |
+| Posted | `YYYY-MM-DD`, or Workday's relative text ("Posted 5 Days Ago") |
+| Application URL | The company's own posting. Apply there |
+| Score (%) | Gemini's 0–100 fit score |
+| Stack | Always empty for now (T36) |
+| Region | Always empty for now (T36) |
+| Reason | Gemini's one sentence on why it scored that way. **Read this before trusting the number** |
+| Worth Applying | `Yes` if score ≥ `min_score` |
+| Scan Date | UTC date of the scan |
+
+A CSV contains only jobs scored in that scan. Jobs scored on earlier days are in earlier
+CSVs and in `state/job_history.json`.
+
+**Reading it:** sort or filter on Score, read the Reason, then open the URL. The first real
+scan (2026-10-04) had 74 rows ≥ 60, 67 ≥ 70 and 38 ≥ 80, and 21 jobs tied at exactly 90
+(before the rubric; ties remain, T41). Treat the number as a ranking hint, not a verdict.
+
+## `autopilot export`
+
+Writes a fresh CSV from saved results. It needs no API keys.
+
+```bash
+autopilot export                    # last scan            → output/jobs_DATE.csv
+autopilot export --min 70           # last scan, score ≥ 70
+autopilot export --days 7 --min 70  # every job scored in the last 7 days → output/jobs_DATE_last7d.csv
+```
+
+It reads `state/last_scan.json` / `state/job_history.json`, not the DB (T32).
+
+## The seen-job database: `data/jobs.db`
+
+SQLite, table `jobs`. Columns: `global_id` (the ATS's job ID; with `ats` it is the unique
+key), `canonical_hash` (MD5 of title + company + location; fallback key and an index),
+`url_hash`, `title`, `company`, `ats`,
+`url`, `score`, `score_reason`, `status`, `discovered_at`, `scored_at`. Location,
+description and posted date are **not** stored (T29).
+
+| status | meaning | next scan |
+|---|---|---|
+| `skipped` | Rejected by the pre-filter or outside the posted-date window | Re-checked (cheap, local), so filter fixes and a wider window apply retroactively |
+| `discovered` | Passed, not scored yet, **or scoring failed** | Scored again |
+| `scored` | Gemini score stored | Final: never re-scored |
+| `notified` | Scored **and** a Telegram alert was accepted (HTTP 200) | Final |
+
+To look inside it (the `sqlite3` CLI may not be installed):
+
+```bash
+.venv/bin/python -c "import sqlite3; c=sqlite3.connect('data/jobs.db'); print(c.execute('select status,count(*) from jobs group by status').fetchall())"
+```
+
+Deleting `data/jobs.db` makes the next scan treat every job as new, so all of them are
+scored again. That costs Gemini quota; use `--posted-within`.
+
+**Keys (T30):** a posting is identified by `(ats, global_id)`, so two openings with the
+same title, company and location are separate rows and both reach Gemini. The first real
+scan had 22 such groups (34 extra rows) that the old title-based key had merged.
+`PRAGMA user_version` records that Workday ids were re-derived from job URLs; this runs
+once per database.
+
+## State files: `state/`
+
+| File | Contents | Used by |
+|---|---|---|
+| `last_scan.json` | Jobs scored in the latest scan, best first | `draft N`, `export` (no `--days`), MCP `scan_jobs` summary |
+| `job_history.json` | Every job ever scored (deduplicated by URL), with `scan_date` | `export --days N` |
+| `seen_jobs.json` | URLs seen, for the legacy TinyFish path | legacy path only |
+
+These overlap with the DB; consolidating them into SQLite is planned (T31–T34).
+
+## Logs
+
+| File | Contents |
+|---|---|
+| `scan.log` (repo root) | Every run's full DEBUG log: each job's pre-filter decision, score and reason. It grows without limit, and the test suite writes to it too (T15, T16) |
+| `data/scan.log` | Timestamped console output of `./run_daily.sh` runs, with start and end banners and the exit code |
+
+`LOG_LEVEL=DEBUG autopilot scan` shows the per-job detail on the console as well.
+
+## Drafts: `autopilot draft`
+
+```bash
+autopilot draft 1          # job #1 of the last scan (= CSV row 1)
+autopilot draft https://…  # any posting URL
+```
+
+It writes `output/<company>-<date>/`: `resume_<company>.md` (a tailored resume),
+`cover_letter_<company>.md` and `application_info.txt`. **It never submits anything.**
+
+Current limits:
+- **It needs `TINYFISH_API_KEY`**, which this fork doesn't use, to fetch the job
+  description. Without it, `draft` stops with an error (T40).
+- **It sends only the first 2,500 characters of the resume** (T14).
+- **It uses `llm_provider`** for the LLM ([02](02-providers.md)).
+
+## Telegram (optional)
+
+The CSV is complete without it. Telegram only adds push alerts.
+
+**Status:** the last sends (2026-10-03) failed with HTTP 404, which usually means a bad
+bot token. Treat Telegram as off until `autopilot doctor` passes (T06).
 
 ### Set it up
 
-1. Open Telegram, message **@BotFather**, send `/newbot`, follow the prompts.
-2. Copy the **bot token** (looks like `8024470769:AAFw…`).
-3. Message **@userinfobot** to get your numeric **chat_id** (e.g. `123456789`).
+1. Message [@BotFather](https://t.me/BotFather) → `/newbot` → copy the token.
+2. Send your bot any message, then open
+   `https://api.telegram.org/bot<TOKEN>/getUpdates` and copy `chat.id`.
+3. Add to `.env`:
 
-### Configure
+   ```bash
+   TELEGRAM_TOKEN=123456:ABC...     # TELEGRAM_BOT_TOKEN also works
+   TELEGRAM_CHAT_ID=123456789
+   ```
 
-Add both to `.env` (or the `telegram` block in `config.json`):
+4. Run `autopilot doctor` and look for `[PASS] Telegram Bot`.
 
-```bash
-TELEGRAM_TOKEN=your_bot_token_here
-TELEGRAM_CHAT_ID=your_numeric_chat_id_here
-```
+Empty or placeholder values (`YOUR_…`, `…_here`) count as "not configured". The scan
+then skips Telegram quietly.
 
-Only when **both** are present are notifications enabled. What gets sent: the top `top_n`
-matches — company, title, location/remote, stack, one-line reason, and the apply link.
-Scan errors (if any) are sent as a separate message.
+### What gets sent
 
-> **What leaves your machine:** match summaries go to Telegram's servers, into your own
-> chat. It's a notification only — autopilot never applies to anything. See
-> [PRIVACY.md](../PRIVACY.md).
+- **During scoring:** one alert **per job** with score ≥ `min_score`. It shows the
+  company with its headcount badge, role, location, score, reason and link. A job whose
+  alert is accepted is marked `notified`.
+- **After the scan:** a digest of the top `top_n` matches. It sends "No new matches today"
+  if there are none, and a separate message if some companies failed.
 
-### Verify
-
-Run a scan with Telegram configured — you should receive a "Job Hunt — <date>" message.
-If not, check [08 — Troubleshooting](08-troubleshooting.md); a missing/incorrect token
-just means the scan completes without a notification (results still in the CSV).
+With `min_score` 60, the first real scan would have sent about 74 individual alerts
+(*inferred* from its CSV). Set `min_score` with that in mind (T05).
 
 ## Next
 
-- [06 — MCP server & Skill](06-mcp-and-skill.md)
+- [06 — MCP server & skill](06-mcp-and-skill.md)
+- [08 — Troubleshooting](08-troubleshooting.md)

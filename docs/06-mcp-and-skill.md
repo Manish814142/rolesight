@@ -1,87 +1,61 @@
-# 06 — MCP server & Skill
+# 06 — MCP server & skill
 
-autopilot ships an MCP server so you can run the whole hunt from inside Claude Code
-(or any MCP client) in natural language.
+JobNotify includes an MCP server, so an MCP client such as Claude Code can run a scan,
+export results or draft an application in plain language. It's optional: the CLI does
+everything the server does.
+
+## Install
+
+```bash
+pip install -e '.[gemini,mcp]'
+```
 
 ## Register with Claude Code
 
-The server reads `config.json` and `companies.json` from its **working directory**, so
-you must point it at your repo with `cwd`.
-
-### Option A — one command, then add `cwd`
-
-```bash
-claude mcp add autopilot-jobhunt \
-  --env TINYFISH_API_KEY=sk-tinyfish-your-key \
-  --env OPENROUTER_API_KEY=sk-or-v1-your-key \
-  --env TELEGRAM_TOKEN=your_token \
-  --env TELEGRAM_CHAT_ID=your_chat_id \
-  -- autopilot mcp
-```
-
-Then open `~/.claude.json`, find the `autopilot-jobhunt` entry, and add:
-
-```json
-"cwd": "/absolute/path/to/your/working-dir"
-```
-
-(Omit the two Telegram `--env` lines if you're not using Telegram.)
-
-### Option B — edit `~/.claude.json` directly
-
-```json
-{
-  "mcpServers": {
-    "autopilot-jobhunt": {
-      "command": "autopilot",
-      "args": ["mcp"],
-      "cwd": "/absolute/path/to/your/working-dir",
-      "env": {
-        "TINYFISH_API_KEY": "sk-tinyfish-your-key",
-        "OPENROUTER_API_KEY": "sk-or-v1-your-key"
-      }
-    }
-  }
-}
-```
-
-> `autopilot mcp` and `python -m job_hunt.mcp_server` are equivalent entry points — use
-> whichever suits your setup. From a pip install, `autopilot mcp` is simplest.
-
-### Confirm
+The server reads `config.json`, `.env` and `companies.json` from **its working
+directory**, so it has to start in the repo root. Wrapping it in `bash -c` does that, and
+doesn't depend on any client-specific working-directory setting:
 
 ```bash
-claude mcp list          # autopilot-jobhunt should appear
+claude mcp add jobnotify -- bash -c 'cd /home/user/codes/random_projects/JobNotify && .venv/bin/autopilot mcp'
+claude mcp list            # jobnotify should be listed
 ```
 
-Then in a Claude Code session: *"List the tools from autopilot-jobhunt"* → you should
-see `scan_jobs`, `draft_application`, `export_jobs`.
+Keys come from the repo's `.env`, so don't pass them with `--env`.
+`python -m job_hunt.mcp_server` is an equivalent entry point.
+
+Checked 2026-10-04 with a real stdio MCP client: the server started this way and listed
+the three tools below.
 
 ## Tools
 
-| Tool | Does |
-|---|---|
-| `scan_jobs()` | full scan + score, saves results, sends Telegram |
-| `draft_application(job_ref)` | draft resume + cover letter for `#N` or a job URL |
-| `export_jobs(min_score, days)` | export matches to CSV |
+| Tool | Arguments | Does |
+|---|---|---|
+| `scan_jobs` | none | A full `autopilot scan` with the current config. Returns "Scan complete. N jobs found, M scored." |
+| `export_jobs` | `min_score` (0 = all), `days` (0 = last scan only) | Same as `autopilot export --min … --days …` |
+| `draft_application` | `job_ref`: `#1`, `1` or a job URL | Same as `autopilot draft`. **Needs TinyFish today**, see [05](05-outputs-and-notifications.md#drafts-autopilot-draft) |
+
+Caveats:
+- **`scan_jobs` is slow.** It runs the whole scan (about 35 min for the first full scan),
+  and many MCP clients time out long before that (*assumed*; not tested). For full scans
+  use the CLI; through MCP use `export_jobs`, or a scan with a small company list.
+- **`scan_jobs` takes no flags.** Set `candidate.max_posted_age_days` in `config.json` to
+  get the `--posted-within` behaviour.
 
 ## The usage skill
 
-A committed Claude Code skill (`skills/autopilot-jobhunt/SKILL.md`) drives these tools
-end-to-end: scan → rank the matches → let you pick roles → draft → review. Invoke it
-with `/autopilot-jobhunt` or "scan for jobs matching my profile". It enforces the
-**drafts-only, never-applies** invariant and treats scraped job descriptions as
-untrusted input.
+`skills/autopilot-jobhunt/SKILL.md` is a Claude Code skill that uses these tools:
+scan → rank → you pick → draft → review. It enforces drafts-only and treats job
+descriptions as untrusted input (they could contain prompt-injection text).
 
 ## Example prompts
 
 ```
-"Scan for new jobs matching my profile"
-"Draft an application for job #1 from the last scan"
-"Draft a cover letter for this job: https://company.com/jobs/ml-engineer"
-"Export all jobs with score above 70 from the past week"
+"Export the jobs scored 70 or more in the last 7 days and summarise the top 10"
+"Which of the last scan's matches mention Kafka or distributed systems?"
+"Draft an application for job #1 from the last scan"   (needs TinyFish until T40)
 ```
 
 ## Next
 
-- [08 — Troubleshooting](08-troubleshooting.md)
+- [07 — Config & scoring](07-config-and-scoring.md)

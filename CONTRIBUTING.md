@@ -1,75 +1,64 @@
-# Contributing to autopilot-jobhunt
+# Contributing
 
-Thanks for wanting to contribute. Here's what's most useful:
+JobNotify is a personal fork. The contributors are Manish and the AI agents working for
+him (Claude Code, Antigravity). This page is the short version of how work gets done;
+the details live in the task board.
 
-## High-value contributions
+## Where work comes from
 
-### 1. Add companies to `companies.json`
+**[docs/tasks.md](docs/tasks.md)** is the single board.
 
-The most impactful contribution — more companies = more jobs found for everyone.
+- **Implementing:** follow its *Working loop*. Pick the next task in priority order, claim
+  it, implement it with tests, run its *Done when* check plus the gates, commit, and add
+  it to the *Review queue* with the exact commands and output.
+- **Verifying:** follow its *Verifying* section. Re-run the checks yourself, then pass
+  the task to the *Done log* or send it back with review notes.
+- **New findings:** add them to the board's *Inbox*. Don't fix them inside another task's
+  commit.
+- **Order:** accuracy tasks come first (anything that changes what Gemini sees, how it
+  scores, or which jobs reach it). See the board's *Accuracy-first order*.
 
-Format:
-```json
-{
-  "name": "Company Name",
-  "careers_url": "https://company.com/careers",
-  "search_domain": "company.com",
-  "location": "City, Country",
-  "region": "EU | US | APAC | Remote | NZ"
-}
-```
-
-Please verify the careers URL works before submitting.
-
-### 2. ATS platform support
-
-The scanner handles: Lever, Greenhouse, Ashby, SmartRecruiters, Workable.
-
-Missing: Rippling, Fountain, Teamtailor, SAP SuccessFactors, iCIMS.
-
-If you can identify the URL patterns for a new ATS, open an issue or PR targeting `scanner.py`.
-
-### 3. MCP adapters for other AI assistants
-
-The `job_hunt/tools.py` layer is protocol-agnostic. Adding support for a new AI assistant = wrapping the three functions in that assistant's tool format.
-
-See `mcp_server.py` as the reference implementation.
-
-### 4. Scoring prompt improvements
-
-If you find the LLM scores inaccurately, open an issue with:
-- The job description (anonymized if needed)
-- The score given
-- What you expected and why
-
-## Development setup
+## Setup
 
 ```bash
-git clone https://github.com/tarunlnmiit/autopilot-jobhunt.git
-cd autopilot-jobhunt
-python -m venv .venv && source .venv/bin/activate
-pip install -e ".[dev]"
+python3 -m venv .venv && source .venv/bin/activate
+pip install -e '.[gemini,dev,mcp]'
 ```
 
-Run linting:
+## Gates (all must pass before a commit)
+
 ```bash
-ruff check job_hunt/
+pytest               # coverage gate 85%
+ruff check job_hunt
+mypy
 ```
 
-## Pull request guidelines
+More on testing: [docs/09-testing-checklist.md](docs/09-testing-checklist.md).
 
-- One PR per logical change
-- Test your change locally before submitting
-- For `companies.json` additions: batch up to 10 companies per PR
-- For code changes: briefly explain what problem you're solving
+## Rules
 
-## Reporting issues
+- **Drafts only.** Never add anything that applies, submits or fills in a form.
+- **No network in tests.** Stub the adapters, Gemini and Telegram.
+- **`companies.json` is curated.** Change it only through `autopilot discover`, and review
+  `git diff companies.json` before committing. Never regenerate it with `harvest` or
+  `validate`.
+- **No secrets or PII in git.** `.env`, `config.json`, `resume/*.md` (except the
+  template), `data/`, `state/` and `output/` are gitignored. Keep it that way.
+- **Measure, then claim.** CHANGELOG entries and review evidence say what was
+  *measured* (with the number and the command), what is *inferred* and what is
+  *assumed*. Don't write "verified" for a check that wasn't run.
 
-Open an issue with:
-1. What you ran (`autopilot scan`, `autopilot draft`, etc.)
-2. The error message or unexpected behavior
-3. Your Python version and OS
+## Commits
 
-## Code of Conduct
+- **One task per commit.** The message starts with the task ID:
+  `T03: stop scoring when the Gemini quota is exhausted`. Board-only updates use
+  `tasks: …`.
+- **Stage only your own files** (`git add <paths>`, never `git add -A`). Another agent may
+  be working in the same tree.
+- **Commit on `main`.** Never push to `origin`: it is the upstream repo. A private backup
+  remote is task T01.
+- **Record the change** in [CHANGELOG.md](CHANGELOG.md) under `[Unreleased]`.
 
-By participating, you agree to abide by the [Code of Conduct](CODE_OF_CONDUCT.md).
+## Code of conduct
+
+[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).

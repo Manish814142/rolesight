@@ -1,368 +1,328 @@
-# autopilot-jobhunt
+# JobNotify
 
-<!-- mcp-name: io.github.tarunlnmiit/autopilot-jobhunt -->
+**A personal job radar.** Every day it pulls open roles straight from the public job APIs
+of ~215 companies hiring in India. It drops the ones that obviously don't fit, has Google
+Gemini score the rest against a resume, and writes the matches to a CSV, best first.
 
-**Your AI job agent. Finds, scores, and drafts applications — while you sleep.**
+It is built for one candidate: Manish Singh, 3 years of experience in Node.js, backend
+and distributed systems, looking in India or for genuinely remote roles. The filters and
+the company list are tuned for him on purpose.
 
-> Scans 130+ company careers pages nightly → scores every role against your resume with an LLM → sends you the top matches on Telegram → drafts a tailored resume + cover letter on demand.
->
-> 🔒 **Drafts only — never applies.** You review every draft and submit applications yourself. See [PRIVACY.md](PRIVACY.md) for exactly what data leaves your machine.
+> 🔒 **Drafts only — it never applies.** Nothing in this project submits an application
+> or fills in a form. It finds and ranks jobs; you decide and apply yourself.
 
-<p align="center">
-  <img src="demo/autopilot-reel.gif?v=3" alt="autopilot-jobhunt demo — nightly scan, LLM scoring, Telegram alert, drafted application" width="300">
-</p>
+JobNotify is a personal fork of
+[tarunlnmiit/autopilot-jobhunt](https://github.com/tarunlnmiit/autopilot-jobhunt) (MIT).
+It has been reworked heavily and is **not** upstreamed or published.
+`pip install autopilot-jobhunt` installs the *upstream* package from PyPI, not this code.
 
-[![CI](https://github.com/tarunlnmiit/autopilot-jobhunt/actions/workflows/ci.yml/badge.svg)](https://github.com/tarunlnmiit/autopilot-jobhunt/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/tarunlnmiit/autopilot-jobhunt/branch/main/graph/badge.svg)](https://codecov.io/gh/tarunlnmiit/autopilot-jobhunt)
-[![PyPI version](https://img.shields.io/pypi/v/autopilot-jobhunt)](https://pypi.org/project/autopilot-jobhunt/)
-[![PyPI downloads](https://img.shields.io/pypi/dm/autopilot-jobhunt)](https://pypi.org/project/autopilot-jobhunt/)
-[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue)](https://www.python.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![GitHub Stars](https://img.shields.io/github/stars/tarunlnmiit/autopilot-jobhunt?style=social)](https://github.com/tarunlnmiit/autopilot-jobhunt/stargazers)
-[![autopilot-jobhunt MCP server](https://glama.ai/mcp/servers/tarunlnmiit/autopilot-jobhunt/badges/score.svg)](https://glama.ai/mcp/servers/tarunlnmiit/autopilot-jobhunt)
-[![Listed on CodeGuilds](https://codeguilds.dev/badge/autopilot-jobhunt)](https://codeguilds.dev/packages/autopilot-jobhunt)
-[![MCPVault: claimed](https://mcpvault.io/badge/autopilot-jobhunt.svg)](https://mcpvault.io/servers/autopilot-jobhunt/health?utm_source=external_badge&utm_medium=referral&utm_campaign=mcp_health_report)
+---
 
-**Seen by 90K+ people** — [the Instagram reel that launched it](https://www.instagram.com/p/DZhkDvoxtt2/).
+## Contents
 
-Published on [PyPI](https://pypi.org/project/autopilot-jobhunt/) and listed on the [Official MCP Registry](https://registry.modelcontextprotocol.io) (`io.github.tarunlnmiit/autopilot-jobhunt`), [Glama](https://glama.ai/mcp/servers/tarunlnmiit/autopilot-jobhunt) (Quality A), and [Smithery](https://smithery.ai/servers/tarungupta-y12/autopilot-jobhunt) (MCPB bundle).
+- [What it does](#what-it-does)
+- [Features](#features)
+- [How it works](#how-it-works)
+- [Current status](#current-status)
+- [Quick start](#quick-start)
+- [Commands](#commands)
+- [Configuration](#configuration)
+- [Outputs](#outputs)
+- [The company list](#the-company-list)
+- [Project layout](#project-layout)
+- [Documentation](#documentation)
+- [Development](#development)
+- [Credits and license](#credits-and-license)
 
-**[📖 Full setup guide with Claude Code MCP integration → SETUP.md](SETUP.md)**
+---
 
-> ### ⭐ Star this repo if it helps you land a job
-> This tool is free, open source, and runs entirely on your machine — no subscription, no credit card. The only "payment" I ask: **if it surfaces a role you apply to (or land), drop a star.** It takes one click, costs you nothing, and it's the single thing that pushes the project in front of the next person grinding through 130 careers pages by hand. **[⭐ Star it here →](https://github.com/tarunlnmiit/autopilot-jobhunt/stargazers)**
+## What it does
+
+Each scan (`autopilot scan`):
+
+1. **Fetches** every open job from each company's applicant-tracking system (Greenhouse,
+   Lever, Workday, …) through its public JSON API. No browser, no scraping of careers pages.
+2. **Filters locally**, with no network or AI: role title, India or remote location, and
+   optionally how recently the job was posted.
+3. **Fetches the full job description** for the jobs that survived, where the list API
+   didn't include one.
+4. **Scores** each survivor with Gemini, from 0 to 100, against the full resume and the
+   candidate profile, with a one-sentence reason.
+5. **Remembers** every job in SQLite, so the next scan only scores jobs it hasn't seen.
+6. **Writes** a CSV (`output/jobs_YYYY-MM-DD.csv`), best score first. If Telegram is
+   configured, it also sends alerts.
+
+What you do with it: open the CSV, read the top rows, apply to the ones that fit through
+the company's own job page.
+
+---
+
+## Features
+
+| Area | What you get |
+|---|---|
+| **Direct ATS APIs** | Adapters for Greenhouse (US and EU), Lever, Ashby, SmartRecruiters, Workday, Oracle HCM, Amazon Jobs, Workable, Recruitee and Personio. Parallel fetching (8 workers) with a hard time limit on every request, so one slow board can't stall a scan. |
+| **Curated company list** | `companies.json`: 215 boards, each checked to be live, to belong to the right employer and to have India jobs. `autopilot discover` adds companies from a pasted list in any format and applies the same checks. |
+| **Local pre-filter** | Word-bounded title rules (backend / Node.js / SDE / software engineer in; staff / lead / manager / other stacks out), India-or-remote location rules, and an optional "posted within N days" window. |
+| **Full descriptions** | For Workday, SmartRecruiters and Oracle HCM, whose list APIs carry little or no description, the full text is fetched for survivors only, just before scoring. |
+| **Resume-aware scoring** | Gemini reads the whole resume, the candidate profile and the whole job description. It returns a score and one sentence explaining it. One job per call, by design: batching measurably inflated scores. |
+| **Seen-job memory** | `data/jobs.db` (SQLite) records every job's status. A job is scored once; scoring failures are retried on the next scan; pre-filter rejections are re-checked each scan, so filter fixes apply to old jobs too. |
+| **Outputs** | A CSV per scan (never overwritten), `autopilot export` for filtered CSVs, optional Telegram alerts, and an MCP server for driving it from Claude Code. |
+| **Maintenance tools** | `autopilot doctor` (environment checks), `discover --recheck` (find dead or migrated boards), `discover --census` (which ATS does a careers page use?). |
+| **Safety** | Drafts only. API keys, config and the real resume are gitignored. Tests never touch the network. |
 
 ---
 
 ## How it works
 
 ```mermaid
-flowchart LR
-    A["🌐 130+ Careers Pages"] -->|TinyFish API| B["Job Discovery"]
-    B --> C["LLM Batch Scorer\n(0–100 fit score)"]
-    C -->|score ≥ min| D["📱 Telegram Alert\nTop N matches"]
-    C -->|on demand| E["✉️ Cover Letter\n+ Resume Bullets"]
-    C --> F["📊 CSV Export"]
+flowchart TD
+    C["companies.json<br/>215 boards"] --> F["Fetch<br/>public ATS APIs, 8 in parallel"]
+    F --> D{"Seen before?<br/>data/jobs.db"}
+    D -- "already scored" --> X["skip"]
+    D -- "new, or not scored yet" --> P{"Pre-filter<br/>title · location · posted date"}
+    P -- reject --> S["status: skipped"]
+    P -- pass --> E["Fetch full description<br/>Workday · SmartRecruiters · Oracle HCM"]
+    E --> G["Gemini score 0–100 + reason<br/>full resume, one job per call"]
+    G -- "call failed" --> R["status: discovered<br/>retried next scan"]
+    G -- ok --> O["status: scored<br/>CSV best-first · state/last_scan.json"]
+    O -- "score ≥ min_score and Telegram set up" --> T["Telegram alert<br/>status: notified"]
 ```
 
-**The scoring prompt uses your actual resume** — not keywords. The LLM reads your full work history and the job description, then explains in one sentence why you fit or don't. No more guessing.
+**The first full production scan** (2026-10-04, 215 companies, `--posted-within 7`,
+measured from `scan.log` and the CSV it wrote):
 
-### What a scan result looks like
+| Stage | Result |
+|---|---|
+| Fetch all 215 boards | 8.9 min |
+| Passed the pre-filter but posted more than 7 days ago | 1,044 (saved as `skipped`) |
+| Sent to scoring | 226 jobs (23 of them were repeats of one Sabre posting, from a Workday paging bug fixed since: T47) |
+| Full descriptions fetched | 170 of 226, in 32 s |
+| Gemini scoring | ~24 min (about 6.3 s per job, including the 4.2 s pacing) |
+| Total | 34.3 min |
+| Scores in the CSV | 74 rows ≥ 60, 67 ≥ 70, 38 ≥ 80 |
 
-```
-Scanning Mistral AI...
-  3 new job URLs. Fetching details...
-  Scoring jobs...
-  Saved 2 jobs from Mistral AI
-
-Scanning HuggingFace...
-  5 new job URLs. Fetching details...
-  Scoring jobs...
-  Saved 3 jobs from HuggingFace
-
-Scanning Stripe...
-  No new jobs found
-...
-Scan complete.
-Top 5 sent to Telegram.
-```
-
-### What the Telegram notification looks like
-
-```
-Job Hunt — 06 Jun 2026
-5 matches found
-
-#1 | Mistral AI | Applied AI Engineer, ML Infrastructure
-📍 Paris/London/Marseille, On-site
-🔧 Python, LLMs, RAG, AWS, MLOps, DevOps
-✅ Role combines applied AI + ML infrastructure in EU, aligns with MLOps/RAG expertise and relocation goal
-Score: 85/100  →  https://jobs.lever.co/mistral/...
-
-#2 | HuggingFace | Staff ML Engineer
-📍 Remote (EU)
-🔧 Python, PyTorch, Transformers, CUDA, MLOps
-✅ Open-source ML role matches deep learning and distributed training background
-Score: 80/100  →  https://apply.workable.com/huggingface/...
-
-...
-
-Reply "apply to #N" to draft a tailored application.
-```
+Daily scans after the first one only score jobs not seen before, so they should be much
+shorter. That is *inferred*; no repeat daily run has been measured yet.
 
 ---
 
-## What it does
+## Current status
 
-```
-Every night at 2:30 AM:
-  ┌─────────────────────────────────────────────────────────┐
-  │  Scans careers pages  →  Scores with LLM  →  Notifies  │
-  │       (130+ cos)           (0–100 fit)       (Telegram) │
-  └─────────────────────────────────────────────────────────┘
+As of 2026-10-04. The live list of work is the task board, [docs/tasks.md](docs/tasks.md).
 
-On demand:
-  autopilot draft 1  →  tailored resume + cover letter in 60s
-```
+**Working**
+- Fetching from all 10 ATS platforms, the pre-filter, the posted-date window, scoring and
+  the CSV, as in the first scan above.
+- `discover` for adding companies, `doctor`, `export`.
+- Description enrichment for Workday, SmartRecruiters and Oracle HCM (T19–T22, verified).
+- One database row per posting, keyed by its ATS id, so separate openings with the same
+  title are all scored (T30); Workday paging no longer repeats postings (T47).
+
+**Known gaps** (each is a task on the board)
+- **Not scheduled yet.** There is no cron job or timer; scans run by hand (T07). The old
+  `setup_cron.sh` installs an outdated command, so don't use it (T08).
+- **Score threshold confusion.** `run_daily.sh` announces `MIN_SCORE=70`, but `.env`'s
+  value wins (T05).
+- **No quota guard.** If Gemini's daily quota runs out mid-scan, the remaining jobs still
+  each try a call before failing. They stay `discovered` and retry next scan, so nothing is
+  lost, but time is wasted (T03, T04).
+- **Amazon jobs are scored on a stub.** Their description is cut to 202 characters although
+  the API has the full text (T57).
+- **Coarse scores.** Many jobs tie at 90 (21 of 203 in the first scan). The rubric (T48)
+  lowers false positives at `min_score` 70 (7 → 4 of 75 labelled jobs) but does not rank better;
+  breaking ties needs sub-scores (T41). The labels behind that measurement are Claude's, not
+  yours yet (T59).
+- **`draft` needs TinyFish.** `autopilot draft` still fetches the job description through
+  TinyFish, which this fork no longer uses, so drafting doesn't work without a TinyFish
+  key (T40).
+- **Telegram is unverified.** The last send attempts (2026-10-03) failed with HTTP 404, so
+  treat Telegram as off (T06). The CSV is the primary output.
+- **Empty CSV columns.** Stack and Region are always empty (T36).
 
 ---
-
-## Usage modes
-
-```
-Mode 1: Standalone CLI (no Claude Code required)
-  pip install autopilot-jobhunt
-  autopilot scan / autopilot draft 1 / autopilot export
-
-Mode 2: Claude Code MCP (control via natural language)
-  pip install 'autopilot-jobhunt[mcp]'
-  claude mcp add autopilot-jobhunt ...
-  → "Scan for ML jobs" / "Draft application for job #2"
-```
-
-Both modes use the same config and produce the same output.
 
 ## Quick start
 
-### Option A — pip install
+Full walkthrough: [docs/01-install.md](docs/01-install.md).
 
 ```bash
-pip install autopilot-jobhunt        # or: pip install 'autopilot-jobhunt[mcp]' for Claude Code
-mkdir my-job-hunt && cd my-job-hunt
-autopilot init                       # creates config.json, companies.json, resume/, .env
-# Fill in config.json (API keys + your profile) and resume/YOUR_RESUME.md, then:
-autopilot scan
+# 1. Install (Python 3.11+); run from the repo root
+python3 -m venv .venv && source .venv/bin/activate
+pip install -e '.[gemini,dev]'          # the gemini extra is required for scoring
+
+# 2. Configure
+cp config.example.json config.json      # edit the candidate profile (see docs/07)
+cp job_hunt/data/env_example .env       # set GEMINI_API_KEY (free: aistudio.google.com/apikey)
+cp resume/YOUR_RESUME.md resume/me.md   # replace with your resume; set candidate.resume_path
+
+# 3. Check the environment
+autopilot doctor
+
+# 4. First scan: limit it to recent jobs to stay inside Gemini's free daily quota
+autopilot scan --posted-within 7
+
+# 5. Read the results
+ls output/                              # jobs_YYYY-MM-DD.csv, best score first
 ```
 
-### Option B — clone (recommended if you want to customize companies or contribute)
+Use the repo's own `companies.json` (215 India boards). Don't run `autopilot init` in the
+repo: it copies a different, outdated 140-company list that needs TinyFish (T50).
 
-```bash
-git clone https://github.com/tarunlnmiit/autopilot-jobhunt.git
-cd autopilot-jobhunt
-pip install -e '.'               # standalone CLI
-# pip install -e '.[mcp]'       # + Claude Code MCP integration
-cp config.example.json config.json && cp .env.example .env
-# Fill in your API keys and candidate profile, then:
-autopilot scan
-```
+---
 
-**For the full walkthrough** — API key setup, Claude Code MCP registration, rate limit details, and troubleshooting — see **[SETUP.md](SETUP.md)**.
+## Commands
 
-### 📚 Documentation
+All commands run from the repo root (they read `config.json`, `companies.json` and
+`.env` from the current directory). `python -m job_hunt <command>` works the same as
+`autopilot <command>`.
 
-Step-by-step guides live in [`docs/`](docs/README.md):
+| Command | What it does | Needs keys? |
+|---|---|---|
+| `autopilot scan` | Full scan: fetch → filter → score → CSV | Gemini |
+| `autopilot scan --limit 5` | Only the first 5 companies in `companies.json` | Gemini |
+| `autopilot scan --posted-within 7` | Score only jobs posted in the last 7 days; undated jobs are kept | Gemini |
+| `./run_daily.sh [args]` | Runs `scan` with each output line timestamped into `data/scan.log` | Gemini |
+| `autopilot export [--min N] [--days N]` | Writes a CSV from the last scan, or from N days of history, keeping jobs with score ≥ N | none |
+| `autopilot discover --add-file paste.txt --merge companies.json` | Verifies pasted company names and adds the ones that pass ([docs/04](docs/04-companies-and-scanning.md)) | none |
+| `autopilot discover --recheck --merge companies.json` | Re-verifies every board; repairs or removes dead ones | none |
+| `autopilot discover --census FILE` | Identifies which ATS each careers page uses | none |
+| `autopilot doctor` | Checks the SQLite write, a 1-token Gemini call, Telegram `getMe` and ATS reachability | Gemini (Telegram optional) |
+| `autopilot draft N \| URL` | Drafts a tailored resume and cover letter for job N of the last scan | TinyFish + LLM (see gaps) |
+| `autopilot mcp` | Starts the MCP server for Claude Code ([docs/06](docs/06-mcp-and-skill.md)) | as per tool |
+| `autopilot harvest` / `validate` | Older list builders. Don't point them at the curated list ([docs/04](docs/04-companies-and-scanning.md)) | none |
 
-| Guide | Covers |
+---
+
+## Configuration
+
+Two local, gitignored files:
+
+| File | Holds |
 |---|---|
-| [Install](docs/01-install.md) | pip / from source / `autopilot init` scaffolding |
-| [LLM providers](docs/02-providers.md) | OpenRouter fallback chain, Claude CLI (keyless), Anthropic API |
-| [API keys](docs/03-api-keys.md) | TinyFish + OpenRouter keys, where each goes |
-| [Companies & scanning](docs/04-companies-and-scanning.md) | `companies.json`, discovery + scoring, scan pacing |
-| [Integrations](docs/05-integrations.md) | Telegram notifications |
-| [MCP server & Skill](docs/06-mcp-and-skill.md) | Drive the hunt from Claude Code |
-| [Config & scoring](docs/07-config-and-scoring.md) | Candidate profile, `min_score`, `top_n` |
-| [Troubleshooting](docs/08-troubleshooting.md) | Every error we've hit, and the fix |
-| [Testing checklist](docs/09-testing-checklist.md) | Reproducible independent verification |
+| `config.json` | Candidate profile (`name`, `resume_path`, `profile`, `seeking`, `not_suitable`, `min_score`, `top_n`, `max_posted_age_days`), `llm_provider`, `gemini_model`, optional `telegram`, `fetch_workers`, `gemini_scoring_mode` |
+| `.env` | API keys (`GEMINI_API_KEY`, optional `TELEGRAM_TOKEN` / `TELEGRAM_CHAT_ID`), plus overrides such as `MIN_SCORE`, `RESUME_PATH`, `GEMINI_MODEL` |
 
-### API keys needed
+A value in `.env` overrides `config.json`, unless it is a template placeholder
+(`YOUR_…`, `…_here`). It also overrides variables already exported in your shell.
+The full reference is in [docs/07-config-and-scoring.md](docs/07-config-and-scoring.md).
 
-| Service | Cost | Required | Where to get it |
-|---|---|---|---|
-| **TinyFish** | **Free** — no credit card | Always | [agent.tinyfish.ai](https://agent.tinyfish.ai) |
-| **OpenRouter** | **Free** — 4-model fallback chain | Unless using Claude CLI / Anthropic | [openrouter.ai](https://openrouter.ai) |
-| **Telegram** | Free | Optional | [@BotFather](https://t.me/BotFather) on Telegram |
+The **pre-filter rules are hardcoded** in `job_hunt/prefilter.py` on purpose: this is a
+personal fork, and the rules are tuned to one profile.
 
 ---
 
-## Claude Code / MCP integration
+## Outputs
 
-Use autopilot-jobhunt as an MCP server inside **Claude Code** (CLI) or **Claude Desktop**.
-
-### Step 1: Install with MCP support
-
-```bash
-git clone https://github.com/tarunlnmiit/autopilot-jobhunt.git
-cd autopilot-jobhunt
-pip install -e '.[mcp]'
-```
-
-### Step 2: Register with Claude Code
-
-**Option A — one command:**
-
-```bash
-claude mcp add autopilot-jobhunt \
-  --env TINYFISH_API_KEY=your_key \
-  --env OPENROUTER_API_KEY=your_key \
-  --env TELEGRAM_TOKEN=your_token \
-  --env TELEGRAM_CHAT_ID=your_chat_id \
-  -- python -m job_hunt.mcp_server
-```
-
-**Option B — edit `~/.claude.json` manually:**
-
-```json
-{
-  "mcpServers": {
-    "autopilot-jobhunt": {
-      "command": "python",
-      "args": ["-m", "job_hunt.mcp_server"],
-      "cwd": "/absolute/path/to/autopilot-jobhunt",
-      "env": {
-        "TINYFISH_API_KEY": "your_key",
-        "OPENROUTER_API_KEY": "your_key",
-        "TELEGRAM_TOKEN": "your_token",
-        "TELEGRAM_CHAT_ID": "your_chat_id"
-      }
-    }
-  }
-}
-```
-
-> **Note:** `cwd` must point to the cloned repo — the server reads `config.json` and `companies.json` from there.
-
-### Step 3: Use it
-
-In any Claude Code session:
-
-```
-"Scan for ML jobs"
-"Draft an application for job #2"
-"Export jobs from the last 7 days with score above 70"
-```
-
-### Claude Desktop
-
-Same JSON block — add it under `mcpServers` in Claude Desktop → Settings → Developer.
-
----
-
-## Customize your target companies
-
-Edit `companies.json`. Each entry needs:
-
-```json
-{
-  "name": "Stripe",
-  "careers_url": "https://stripe.com/jobs",
-  "search_domain": "stripe.com",
-  "location": "Remote / San Francisco, CA",
-  "region": "Remote"
-}
-```
-
-The repo ships with 130+ pre-configured EU, NZ, and remote-friendly tech companies. Add or remove as you like.
-
----
-
-## How scoring works
-
-The LLM reads your full resume + the full job description and assigns a score 0–100:
-
-| Score | Meaning |
+| Path | Contents |
 |---|---|
-| 80–100 | Near-perfect fit — apply immediately |
-| 60–79 | Good fit — worth applying |
-| 40–59 | Partial fit — apply if pipeline is thin |
-| < 40 | Poor fit — skipped |
+| `output/jobs_YYYY-MM-DD.csv` | One file per scan (`_1`, `_2`, … if one already exists). Columns: Company, Role, Location, Posted, Application URL, Score (%), Stack, Region, Reason, Worth Applying, Scan Date. Best score first. |
+| `data/jobs.db` | SQLite seen-job memory: `skipped` → `discovered` → `scored` / `notified` |
+| `state/last_scan.json` | The latest scan's scored jobs, best first (`draft N` reads row N) |
+| `state/job_history.json` | Every scored job so far (`export --days N` reads it) |
+| `scan.log` | Full DEBUG log of every run, in the repo root |
+| `data/scan.log` | Timestamped console output of `run_daily.sh` runs |
 
-Set `min_score` in config to filter. Default: 60.
-
----
-
-## Project structure
-
-```
-autopilot-jobhunt/
-├── job_hunt/
-│   ├── main.py          # CLI entry point
-│   ├── scanner.py       # Job discovery + LLM scoring
-│   ├── drafter.py       # Resume tailoring + cover letter
-│   ├── notifier.py      # Telegram notifications
-│   ├── llm_utils.py     # OpenRouter wrapper with fallback
-│   ├── tools.py         # Protocol-agnostic tool layer
-│   └── mcp_server.py    # MCP server (Claude/AI assistant integration)
-├── demo/                # Demo scripts for recording GIF
-├── resume/              # Put your resume here (gitignored)
-├── state/               # Scan state (gitignored)
-├── output/              # Generated applications (gitignored)
-├── companies.json       # 130+ target companies
-├── config.example.json  # Config template (copy to config.json — gitignored)
-└── config.json          # Your config (gitignored — never committed)
-```
+Details, including what each DB status means: [docs/05-outputs-and-notifications.md](docs/05-outputs-and-notifications.md).
 
 ---
 
-## LLM options
+## The company list
 
-### Default: OpenRouter (free)
+`companies.json` is the core of the project, and it is **curated**:
 
-Uses a 4-model fallback chain — all free, no credit card needed:
-
-| Model | Role |
+| ATS | Boards |
 |---|---|
-| `meta-llama/llama-3.3-70b-instruct:free` | Primary — best quality |
-| `nvidia/nemotron-3-super-120b-a12b:free` | Fallback 1 — 120B |
-| `google/gemma-4-31b-it:free` | Fallback 2 |
-| `qwen/qwen3-coder:free` | Fallback 3 |
+| Workday | 78 |
+| Greenhouse | 74 |
+| Lever | 23 |
+| Ashby | 20 |
+| SmartRecruiters | 13 |
+| Oracle HCM | 4 |
+| Workable | 2 |
+| Amazon Jobs | 1 |
+| **Total** | **215** (counted 2026-10-04) |
 
-If one model hits its daily free-tier quota, the tool automatically tries the next. **Zero LLM cost by default.**
+To add companies, paste their names into a file in any format and run
+`autopilot discover --add-file paste.txt --report /tmp/r.csv --out /tmp/v.json --merge companies.json`.
+A board is accepted only if it has live jobs, belongs to that employer, has at least one
+India job, and has a posting from the last 180 days.
 
-### Alternative A: Claude Code CLI (no API key needed)
+Companies on custom career portals (Google, Flipkart, Swiggy's own site, Darwinbox,
+Zoho Recruit, …) can't be reached. See [docs/04](docs/04-companies-and-scanning.md).
 
-If you have [Claude Code](https://claude.ai/code) installed and authenticated, you can use it as the LLM backend — no separate API key required:
+---
 
-In `config.json`:
+## Project layout
 
-```json
-"llm_provider": "claude_cli"
+```
+job_hunt/
+  adapters/         one fetcher per ATS + detect_ats(), fetch_company_jobs(), enrich_job()
+  scanner.py        run_scan(): the whole pipeline
+  prefilter.py      title / location / posted-date rules (personal, hardcoded)
+  scorer.py         Gemini scoring per job, DB status updates, per-job Telegram alert
+  llm_utils.py      LLM providers (gemini default; anthropic, claude_cli; openrouter deprecated)
+  db.py, models.py  SQLite seen-job store; JobPosting + dedupe hash
+  exporter.py       CSV writer (never overwrites)
+  discovery.py      `discover`: verify and add companies, recheck, census
+  harvester.py, validator.py, company_builder.py   older list builders
+  doctor.py         `doctor` diagnostics
+  drafter.py        `draft` (resume + cover letter drafts)
+  notifier.py       Telegram
+  tools.py, mcp_server.py   MCP server for Claude Code
+  main.py           CLI and config loading
+companies.json      the curated board list (committed)
+scripts/            company_seeds.txt, careers_urls.txt (discover inputs)
+run_daily.sh        daily runner (timestamps into data/scan.log)
+docs/               guides + the task board (docs/tasks.md)
+tests/              pytest suite, no network
 ```
 
-Or via environment variable: `LLM_PROVIDER=claude_cli autopilot scan`
+The design: [ARCHITECTURE.md](ARCHITECTURE.md).
 
-Optionally set a model: `"claude_cli_model": "sonnet"` (or `"opus"`, `"haiku"`, empty = Claude's default).
+---
 
-> **Note:** Requires the `claude` binary in your PATH. Verify with `claude --print "hi"` first.
-> The MCP server and cron jobs must run in an environment where your `claude` auth session is active.
->
-> **Rate-limit note:** Each call loads your global Claude Code context (~25–30k tokens). A nightly scan
-> (5–15 LLM calls) burns significantly against your subscription's 7-day rate limit. Prefer OpenRouter
-> for nightly automation; use Claude CLI for occasional on-demand drafts.
+## Documentation
 
-### Alternative B: Anthropic API
+| Doc | Read it for |
+|---|---|
+| [docs/01 — Install & first run](docs/01-install.md) | Setup from zero to the first CSV |
+| [docs/02 — LLM providers](docs/02-providers.md) | Gemini (default), Anthropic, Claude CLI; quotas |
+| [docs/03 — API keys](docs/03-api-keys.md) | Which keys exist, which are needed, where they go |
+| [docs/04 — Companies & scanning](docs/04-companies-and-scanning.md) | `companies.json`, adding companies, what a scan does, timings |
+| [docs/05 — Outputs & notifications](docs/05-outputs-and-notifications.md) | CSV, DB statuses, state files, logs, export, Telegram, drafts |
+| [docs/06 — MCP server & skill](docs/06-mcp-and-skill.md) | Driving it from Claude Code |
+| [docs/07 — Config & scoring](docs/07-config-and-scoring.md) | Every config key; the pre-filter and scoring in detail |
+| [docs/08 — Troubleshooting](docs/08-troubleshooting.md) | Known errors and fixes |
+| [docs/09 — Testing checklist](docs/09-testing-checklist.md) | Gates and smoke tests |
+| [docs/tasks.md](docs/tasks.md) | The task board: what's pending, in review and done |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | Components, data flow, rules, limitations |
+| [CHANGELOG.md](CHANGELOG.md) | What changed, with measurements |
+| [SECURITY.md](SECURITY.md) · [PRIVACY.md](PRIVACY.md) | Guarantees, and what data leaves the machine |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | How work is picked up (people and AI agents) |
 
-If you have an Anthropic API key:
+---
+
+## Development
 
 ```bash
-pip install 'autopilot-jobhunt[claude]'
+pip install -e '.[gemini,dev]'
+pytest                 # coverage gate 85%
+ruff check job_hunt
+mypy
 ```
 
-In `config.json`:
-
-```json
-"llm_provider": "anthropic",
-"anthropic_api_key": "sk-ant-...",
-"anthropic_model": "claude-haiku-4-5-20251001"
-```
-
-`claude-haiku-4-5-20251001` is fast and cheap; `claude-sonnet-4-6` gives higher quality scores. A nightly scan uses ~5–15 LLM calls total (jobs scored in batches of 10).
+- **Tests never touch the network.** Stub the adapters, Gemini and Telegram.
+- **Work comes from the board.** Pick, claim, implement and hand over through
+  [docs/tasks.md](docs/tasks.md). See [CONTRIBUTING.md](CONTRIBUTING.md).
+- **Record changes** in [CHANGELOG.md](CHANGELOG.md) under `[Unreleased]`, with the
+  measurement that justifies them.
 
 ---
 
-## Contributing
+## Credits and license
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). PRs welcome for:
-- Adding companies to `companies.json`
-- New ATS platform support (Rippling, Lever variants, Workday)
-- OpenAI / Gemini MCP adapters
-- Better scoring prompts
-
----
-
-## License
-
-MIT — see [LICENSE](LICENSE).
-
----
-
-*Built by [@tarunlnmiit](https://github.com/tarunlnmiit). If this saved you hours of job searching, a ⭐ means a lot.*
+Forked from [autopilot-jobhunt](https://github.com/tarunlnmiit/autopilot-jobhunt) by
+[@tarunlnmiit](https://github.com/tarunlnmiit). The original scanned careers pages
+through TinyFish and scored with OpenRouter. This fork replaced that with direct ATS APIs,
+a local pre-filter, SQLite memory and Gemini scoring. MIT license; see [LICENSE](LICENSE).

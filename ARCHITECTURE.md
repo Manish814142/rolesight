@@ -1,13 +1,16 @@
 # System Architecture
 
-Architecture guide for `autopilot-jobhunt` / **JobNotify**, a personal job radar for one
-candidate (Manish Singh: 3 YOE, Node.js / backend / distributed systems, India or remote).
-It is a fork of `tarunlnmiit/autopilot-jobhunt` that is **never upstreamed**, so
-candidate-specific choices (e.g. the pre-filter) are deliberate. Read this together with
-[CLAUDE.md](CLAUDE.md) before changing anything.
+How JobNotify is built. JobNotify is a personal job radar for one candidate (Manish Singh:
+3 YOE, Node.js / backend / distributed systems, India or remote). It's a fork of
+`tarunlnmiit/autopilot-jobhunt` that is **never upstreamed**, so candidate-specific choices
+(the hardcoded pre-filter, the India company list) are deliberate. Read this together
+with [CLAUDE.md](CLAUDE.md) and the task board [docs/tasks.md](docs/tasks.md) before
+changing anything.
 
-> ⚠️ **Invariant — drafts only.** Nothing in this project may ever submit an application.
-> All outputs are CSVs and drafts in `output/` for human review.
+> ⚠️ **Invariant: drafts only.** Nothing in this project may ever submit an application or
+> fill in a form. All outputs are CSVs and draft files in `output/` for a human to review.
+
+Current as of 2026-10-04, after T47 (Workday paging), T30 (dedupe by ATS id) and T24.
 
 ---
 
@@ -15,28 +18,33 @@ candidate-specific choices (e.g. the pre-filter) are deliberate. Read this toget
 
 ```mermaid
 flowchart TD
-    COMP["companies.json<br/>(ats + slug / Workday tenant)"] --> ADAPT
-    subgraph Fetch ["1. Fetch — job_hunt/adapters/"]
-        ADAPT["fetch_company_jobs()"] --> GH["Greenhouse / Lever / Ashby<br/>SmartRecruiters / Recruitee<br/>Personio / Workable (public JSON/XML)"]
-        ADAPT --> WD["Workday CXS<br/>searchText=India, 20/page ≤100<br/>detail call for 'N Locations'"]
+    COMP["companies.json<br/>215 boards: ats + slug / tenant / host"] --> FETCH
+    subgraph Fetch ["1. Fetch: adapters/, 8 companies in parallel"]
+        FETCH["fetch_company_jobs()"] --> LISTAPI["Greenhouse · Lever · Ashby · Workable<br/>Recruitee · Personio · Amazon<br/>(list API includes descriptions; Amazon's is cut to a stub, T57)"]
+        FETCH --> WD["Workday CXS: searchText=India<br/>20/page, ≤500, 600 s budget<br/>detail call only for 'N Locations'"]
+        FETCH --> SROH["SmartRecruiters ≤2,000 · Oracle HCM ≤2,000<br/>(no / short descriptions)"]
     end
-    GH --> JP["JobPosting (models.py)"]
+    LISTAPI --> JP["JobPosting (models.py)"]
     WD --> JP
-    JP --> DEDUP{"data/jobs.db<br/>status scored/notified?"}
+    SROH --> JP
+    JP --> DEDUP{"data/jobs.db<br/>scored / notified?"}
     DEDUP -- yes --> SKIPF["skip (final)"]
-    DEDUP -- "no / skipped / discovered" --> PF{"prefilter.py<br/>title + location regex"}
+    DEDUP -- "new / skipped / discovered" --> PF{"prefilter.should_evaluate_job<br/>title + location"}
     PF -- reject --> SKIPPED["status = skipped"]
-    PF -- pass --> QUEUE["queued (all companies)"]
-    QUEUE --> SCORE["scorer.py → llm_utils.score_job_with_gemini<br/>full resume, 1 job/call, 4.2 s pacing<br/>(opt-in batch: 10 jobs/call)"]
-    SCORE -- error --> DISC["status stays discovered<br/>(retried next scan)"]
+    PF -- pass --> AGE{"prefilter.is_too_old<br/>(--posted-within N)"}
+    AGE -- "known date > N days" --> SKIPPED
+    AGE -- "within N / undated" --> QUEUE["status = discovered<br/>queued (all companies)"]
+    QUEUE --> ENRICH["adapters.enrich_job (parallel)<br/>ENRICHERS: workday, smartrecruiters, oracle_hcm<br/>failure → keep list-API text"]
+    ENRICH --> SCORE["scorer.score_and_process_job → llm_utils.score_job_with_gemini<br/>full resume + full JD (≤20k chars), 1 job/call, 4.2 s pacing"]
+    SCORE -- error --> DISC["stays discovered<br/>(retried next scan)"]
     SCORE -- ok --> SCORED["status = scored (+score, reason)"]
     SCORED -- "score ≥ min_score & Telegram HTTP 200" --> NOTIFIED["status = notified"]
-    SCORED --> OUT["state/last_scan.json · state/job_history.json<br/>output/jobs_YYYY-MM-DD[_N].csv"]
-    OUT --> DRAFT["autopilot draft N → drafter.py<br/>(TinyFish JD fetch + LLM)"]
+    SCORED --> OUT["sorted best-first →<br/>state/last_scan.json · state/job_history.json<br/>output/jobs_YYYY-MM-DD[_N].csv · Telegram digest"]
 ```
 
-Companies with no `ats` field fall back to the legacy TinyFish careers-page path in
-`scanner.py` (only if `TINYFISH_API_KEY` is set). The current `companies.json` has none.
+Companies with no `ats` field (and a non-ATS `careers_url`) fall back to the legacy
+TinyFish careers-page path in `scanner.py`, only if `TINYFISH_API_KEY` is set. The curated
+`companies.json` has none, and this fork doesn't use TinyFish (T42 removes the path).
 
 ---
 
@@ -44,63 +52,54 @@ Companies with no `ats` field fall back to the legacy TinyFish careers-page path
 
 | Module | Responsibility |
 |---|---|
-| [`adapters/`](job_hunt/adapters/) | One fetcher per ATS (incl. Amazon and Oracle HCM) returning `JobPosting`s; `detect_ats()` from URLs; `fetch_company_jobs()` dispatch. 404 → `[]`, never raises. |
-| [`adapters/workday.py`](job_hunt/adapters/workday.py) | CXS `POST …/wday/cxs/{tenant}/{site}/jobs` with `searchText="India"`, offsets 0–80 (Workday caps pages at 20), stop on a short page, keep earlier pages if a later one fails. Items showing `"N Locations"` get one `GET …{externalPath}` detail call for real locations + description. |
-| [`models.py`](job_hunt/models.py) | `JobPosting` dataclass; `canonical_hash(title, company, location)` (MD5) is the dedupe key. |
-| [`db.py`](job_hunt/db.py) | SQLite `data/jobs.db`, table `jobs`: `init_db`, `get_job`, `save_job`, `update_job_status`. Location is **not** stored. |
-| [`prefilter.py`](job_hunt/prefilter.py) | Local, word-bounded regexes (see §3). No network. |
-| [`scorer.py`](job_hunt/scorer.py) | Scores one job via Gemini (`raise_on_error=True`), sleeps 4.2 s (15 RPM), writes status/score, sends the optional Telegram alert. |
-| [`llm_utils.py`](job_hunt/llm_utils.py) | Provider dispatch: `gemini` (default), `anthropic`, `claude_cli`; `openrouter` is deprecated and logs a warning. Gemini model fallbacks on 429/503. |
-| [`scanner.py`](job_hunt/scanner.py) | `run_scan()` orchestration, state files, CSV export, scan-level Telegram digest. |
-| [`notifier.py`](job_hunt/notifier.py) | `send_telegram`, `is_telegram_configured` (empty/placeholder ⇒ off), `format_job_alert` with headcount badge. |
-| [`exporter.py`](job_hunt/exporter.py) | CSV writer that never overwrites (`jobs_DATE.csv`, `jobs_DATE_1.csv`, …). |
-| [`discovery.py`](job_hunt/discovery.py) | `autopilot discover` (`--add-file` for pasted lists in any format): name → slug candidates → probe 7 ATSs (+ curated Workday tenants) → accept only boards with live jobs, confirmed identity, ≥1 India job, newest posting ≤180 days; `--merge` re-verifies existing entries. Seeds in `scripts/company_seeds.txt`. |
-| [`harvester.py`](job_hunt/harvester.py) | Builds a company list from `india.yml`: probes the declared ATS first, then the other 6; active = HTTP 200 **and** ≥1 job; tags off-declared matches `ats_fallback_from`. Applies `validator.KNOWN_CORRECTIONS`. Headcount is metadata only. |
-| [`validator.py`](job_hunt/validator.py) | `autopilot validate` pruner. Caveat: its probe accepts HTTP 200 with 0 jobs and it auto-adds BrowserStack — prefer `harvest` + manual diff. |
-| [`company_builder.py`](job_hunt/company_builder.py) | LinkedIn headcount matching (`match_headcount`). Its `build_companies_dataset` / blocklist is legacy and not used by the CLI. |
-| [`doctor.py`](job_hunt/doctor.py) | `autopilot doctor`: SQLite write, Gemini 1-token call, Telegram `getMe`, ATS egress. |
-| [`drafter.py`](job_hunt/drafter.py) | `autopilot draft N|URL`: TinyFish JD fetch → tailored resume, cover letter, application info. Requires `TINYFISH_API_KEY`. |
-| [`main.py`](job_hunt/main.py) | CLI (`init doctor validate harvest scan draft export mcp`) and `load_config()`. `config.py` re-exports it. |
-| [`tools.py`](job_hunt/tools.py) / [`mcp_server.py`](job_hunt/mcp_server.py) | Protocol-agnostic tool layer and FastMCP server (`scan_jobs`, `draft_application`, `export_jobs`). |
-| [`run_daily.sh`](run_daily.sh) | Cron runner: timestamps every line into `data/scan.log`, defaults `MIN_SCORE=70`. |
+| [`adapters/__init__.py`](job_hunt/adapters/__init__.py) | `detect_ats(url)` (Greenhouse incl. EU and embed URLs, Lever, Ashby, SmartRecruiters, Workday incl. locale paths, Oracle HCM, Recruitee, Personio, Workable); `fetch_company_jobs(entry)` dispatch, which applies the entry's `name` and `headcount`; `ENRICHERS` and `enrich_job(job)` (never raises). |
+| [`adapters/base.py`](job_hunt/adapters/base.py) | `http_get` / `http_post` with a **900 s total download deadline** (requests' `timeout` is per read, and Lever boards were seen trickling for 100–436 s); `strip_html` (stdlib only; decodes Greenhouse's entity-escaped markup). |
+| `adapters/<ats>.py` | One fetcher per ATS returning `JobPosting`s; endpoints and limits in [docs/04](docs/04-companies-and-scanning.md#per-ats-fetching). Errors are logged as warnings and give `[]`. `workday`, `smartrecruiters` and `oracle_hcm` also expose `fetch_description(job)` for the enrich step. |
+| [`models.py`](job_hunt/models.py) | `JobPosting` (`global_id`, `ats`, `company`, `title`, `location`, `is_remote`, `url`, `description_text`, `posted_at`, `headcount`); `job_key(job)` is the dedupe key: the ATS's `global_id`, else `canonical_hash(title, company, location)` (MD5). |
+| [`db.py`](job_hunt/db.py) | SQLite `data/jobs.db`, table `jobs`: `init_db`, `get_job`, `save_job`, `update_job_status`, `get_jobs_by_status`. Location, description and posted date are **not** stored (T29). |
+| [`prefilter.py`](job_hunt/prefilter.py) | `should_evaluate_job` (title exclude → title include → location) and `is_too_old` / `posted_age_days` (ISO, epoch, Workday relative text). Local and deterministic. Rules in [docs/07](docs/07-config-and-scoring.md#the-pre-filter-job_huntprefilterpy). |
+| [`scanner.py`](job_hunt/scanner.py) | `run_scan()`: parallel fetch (`fetch_workers`) → per-job dedupe / pre-filter / age → enrich → score → state files, CSV, digest. Also the legacy TinyFish path and the legacy `score_jobs` batch prompt. |
+| [`scorer.py`](job_hunt/scorer.py) | `score_and_process_job` (single, default) / `score_and_process_batch` (opt-in): Gemini call, 4.2 s pacing, DB status update, per-job Telegram alert. A failure returns `score=None` and leaves the row `discovered`. |
+| [`llm_utils.py`](job_hunt/llm_utils.py) | `score_job_with_gemini` / `score_jobs_batch_with_gemini` (JSON output, model fallback `gemini-3.5-flash-lite` → `gemini-3.1-flash-lite`, one retry per model on 429/503/quota); `chat_with_llm` provider dispatch for drafting (`gemini`, `anthropic`, `claude_cli`; `openrouter` deprecated). |
+| [`exporter.py`](job_hunt/exporter.py) | CSV writer: 11 columns, never overwrites (`jobs_DATE.csv`, `jobs_DATE_1.csv`, …). |
+| [`notifier.py`](job_hunt/notifier.py) | `send_telegram`, `is_telegram_configured` (empty or placeholder ⇒ off), `format_job_alert` (with the headcount badge). |
+| [`discovery.py`](job_hunt/discovery.py) | `autopilot discover`: seeds / `--add-file` / `--add` → slug candidates → probe ATSs and curated Workday tenants → accept only if live, the right employer, ≥1 India job and the newest posting ≤180 days; `--merge`, `--recheck`, `--census`, `--emit-seeds`. `KNOWN_BAD_BOARDS` is never accepted. |
+| [`harvester.py`](job_hunt/harvester.py), [`validator.py`](job_hunt/validator.py), [`company_builder.py`](job_hunt/company_builder.py) | Older list builders. Both CLIs **write `companies.json` by default**; use `discover`. `company_builder.match_headcount` is still used by `discover` for the badge. |
+| [`doctor.py`](job_hunt/doctor.py) | `autopilot doctor`: SQLite write, a 1-token Gemini call, Telegram `getMe`, ATS egress. |
+| [`drafter.py`](job_hunt/drafter.py) | `autopilot draft N\|URL`: fetches the job description through TinyFish (required, T40) → tailored resume, cover letter, application info in `output/<company>-<date>/`. |
+| [`main.py`](job_hunt/main.py) | CLI (`init doctor validate harvest discover scan draft export mcp`) and `load_config()`; `config.py` re-exports it. |
+| [`tools.py`](job_hunt/tools.py) / [`mcp_server.py`](job_hunt/mcp_server.py) | Protocol-agnostic tool layer and FastMCP stdio server (`scan_jobs`, `draft_application`, `export_jobs`). |
+| [`run_daily.sh`](run_daily.sh) | Runner: timestamps every output line into `data/scan.log`, exports `MIN_SCORE=70` (which `.env` overrides, T05). Not scheduled yet (T07). |
 
 ---
 
 ## 3. Key rules
 
-### Pre-filter (`prefilter.py`)
-Applied in order; all patterns are case-insensitive and word-bounded.
-
-1. **Title exclude** — seniority (`senior`, `sr`, `lead`, `principal`, `staff`, `manager`, `director`, `architect`), other stacks (`java`, `python`, `golang`, `.net`, `c#`, `react`, `angular`, `vue`, `ios`, `android`, `flutter`, `frontend`), `qa`/`test(er|ing)`, `intern(ship)`, `devops`, `sre`. `java` does not match "JavaScript"; `test` does not match "Latest".
-2. **Title include** — `backend`/`back-end`, `node`/`nodejs`, `sde\d*`, `software engineer`, `developer`, `full-stack`, `api`, `distributed systems`, `platform|product|infrastructure|systems engineer`.
-3. **Location**
-   - an Indian city (incl. Delhi/NCR/Kolkata), `india`, or a trailing lowercase `, in`
-     country code ⇒ pass (even alongside US cities; uppercase `, IN` = Indiana is not India);
-   - else a non-India region (`us`, `uk`, `canada`, `germany`, `europe`, `emea`, `latam`, major US/EU cities, `, CA|NY|TX|WA|IL|MA`) ⇒ reject;
-   - else `worldwide|anywhere|global` ⇒ pass;
-   - else `is_remote` or `remote` ⇒ pass (geography-free remote);
-   - else reject.
-4. **Posted date (optional)** — with `--posted-within N` / `candidate.max_posted_age_days`,
-   jobs whose posted date is known and older than N days are saved as `skipped`; undated
-   jobs always pass. Dates: ISO from Greenhouse (`first_published`), Lever, Ashby,
-   SmartRecruiters, Workable, Recruitee, Personio; Workday relative text ("Posted 5 Days Ago").
-
-### DB status lifecycle
+### Dedupe and the status lifecycle
 
 | status | meaning | next scan |
 |---|---|---|
-| `skipped` | rejected by pre-filter | re-run through the pre-filter, so filter changes apply retroactively |
-| `discovered` | passed the pre-filter, not yet scored, **or scoring failed** | re-scored |
-| `scored` | Gemini score stored | final |
-| `notified` | scored **and** Telegram returned HTTP 200 | final |
+| `skipped` | Rejected by the pre-filter, or outside the posted-date window | Re-run through the pre-filter and the age check, so rule changes apply retroactively |
+| `discovered` | Passed, not yet scored, **or scoring failed** | Scored again |
+| `scored` | Gemini score stored | Final |
+| `notified` | Scored **and** Telegram returned HTTP 200 | Final |
 
-A Gemini failure never writes `score=0`. Telegram is optional: with empty/placeholder
-credentials it is skipped (debug log) and jobs stay `scored`.
+A Gemini failure never writes `score=0`. Each posting is keyed by `(ats, global_id)`, the
+ATS's own id, so two openings with the same title and location are two rows (T30). Rows
+without a `global_id` fall back to `canonical_hash(title, company, location)`.
+
+### Ordering
+
+`run_scan` sorts the scored jobs best first before writing `state/last_scan.json` and the
+CSV. Digest #N = `draft N` = CSV row N (T10).
 
 ### Configuration precedence
-Module defaults → `config.json` → `.env` (an env value is ignored if it is a placeholder
-such as `YOUR_…` / `…_here`). `llm_provider` defaults to `gemini`, `gemini_model` to
-`gemini-3.5-flash-lite`. `TELEGRAM_BOT_TOKEN` is an alias of `TELEGRAM_TOKEN`.
+
+Module defaults → `config.json` → `.env` (`load_dotenv(override=True)`, which also beats
+the shell's environment). An env value is ignored if it's a placeholder (`YOUR_…`,
+`…_here`). `llm_provider` defaults to `gemini`. **Scoring uses Gemini whenever a Gemini key
+is present**, whatever `llm_provider` says; `llm_provider` only picks the drafting
+model and the legacy no-key path.
 
 ---
 
@@ -108,65 +107,101 @@ such as `YOUR_…` / `…_here`). `llm_provider` defaults to `gemini`, `gemini_m
 
 | Path | Purpose | Git |
 |---|---|---|
-| `companies.json` | Curated ATS boards (see CLAUDE.md for removed boards and why) | committed |
+| `companies.json` | Curated ATS boards (the core asset) | committed |
+| `scripts/company_seeds.txt`, `scripts/careers_urls.txt` | `discover` seeds and census input | committed |
 | `config.json`, `.env` | Candidate profile, provider, keys | ignored |
-| `resume/YOUR_RESUME.md` | Resume template (committed); real resume via `candidate.resume_path` | template only |
-| `data/jobs.db`, `data/scan.log` | Dedupe DB, cron log | ignored |
-| `state/last_scan.json`, `state/job_history.json`, `state/seen_jobs.json` | Last scan, cumulative history (for `export --days`), legacy URL set | ignored |
+| `resume/*.md` | Real resume (`candidate.resume_path`); only `YOUR_RESUME.md` is committed | ignored |
+| `data/jobs.db` | Seen-job store | ignored |
+| `data/scan.log` | `run_daily.sh` output | ignored |
+| `scan.log` | Full DEBUG log from the `autopilot` logger (root dir, unrotated, T16) | ignored |
+| `state/last_scan.json`, `state/job_history.json`, `state/seen_jobs.json` | Latest scan (best first), cumulative history, legacy URL set. They overlap with the DB (T31–T34) | ignored |
 | `output/` | CSVs and drafts | ignored |
+| `job_hunt/data/` | Templates that `autopilot init` copies. Its `companies.json` is an outdated upstream list (T50) | committed |
 
 ---
 
-## 5. Development standards
+## 5. Concurrency, limits and pacing
+
+| Thing | Value | Where |
+|---|---|---|
+| Companies fetched in parallel | 8 (`fetch_workers`) | `scanner.DEFAULT_FETCH_WORKERS` |
+| Total deadline per HTTP response | 900 s | `adapters/base.DOWNLOAD_DEADLINE_SECONDS` |
+| Workday budget per tenant | 600 s; ≤500 jobs, 20 per page | `adapters/workday.py` |
+| SmartRecruiters / Oracle HCM / Amazon caps | 2,000 / 2,000 / 4,000 jobs | adapter `MAX_JOBS` |
+| Enrich step | parallel, `fetch_workers` threads, survivors only | `scanner._enrich_jobs` |
+| Gemini pacing | 4.2 s after each call (15 RPM) | `scorer.THROTTLE_INTERVAL_SECONDS` |
+| Description bound in the prompt | 20,000 chars | `llm_utils.MAX_DESCRIPTION_CHARS` |
+| `discover` probes in parallel | 40 (`--workers`) | `discovery.main` |
+
+DB writes and scoring are sequential.
+
+---
+
+## 6. Development standards
 
 ```bash
-uv venv --python 3.12 && source .venv/bin/activate
-uv pip install -e ".[dev,mcp,claude]"
+python3 -m venv .venv && source .venv/bin/activate
+pip install -e '.[gemini,dev,mcp]'
 pytest            # coverage gate 85% (pyproject)
 ruff check job_hunt
 mypy
 ```
 
-- **No network in tests.** Stub adapters (`requests.get/post`), Gemini
-  (`score_job_with_gemini` / `_get_genai_client_and_types`), and `scanner.send_telegram`.
-  Use the `clean_env` / `fake_llm` fixtures in [`conftest.py`](conftest.py).
-- **Test-first** for behaviour changes; update [`CHANGELOG.md`](CHANGELOG.md) under `[Unreleased]`.
-- New capabilities go into `tools.py` first so the CLI and MCP stay in parity.
+- **No network in tests.** Stub adapters (`requests.get/post` or `adapters.base.http_*`),
+  Gemini (`score_job_with_gemini` / `_get_genai_client_and_types`), and
+  `scanner.send_telegram`. `conftest.py` stubs `scanner.enrich_job` globally and provides
+  the `clean_env` / `fake_llm` fixtures.
+- **Test first** for behaviour changes. Record the change, with its measurement, in
+  [`CHANGELOG.md`](CHANGELOG.md) under `[Unreleased]`.
+- **Work comes from [docs/tasks.md](docs/tasks.md)**: claim → implement → review queue
+  → verification.
+- **Tool parity:** new capabilities go into `tools.py` first, so the CLI and MCP stay in
+  step.
 
 ---
 
-## 6. Known limitations (measured 2026-10-03/04)
+## 7. Known limitations
 
-- **Workday scan time:** detail calls for multi-location jobs cost ~100 s each for Nvidia
-  and Salesforce; a full Workday pass is ~5 min.
-- **Volume is title-bound:** of 455 Workday jobs (301 India), 7 passed the pre-filter;
-  Target/BrowserStack India roles are mostly non-engineering or senior.
-- **Walmart Workday** (`walmart/wd5/WalmartExternal`) returns HTTP 422; not in the list.
-- **Scan length:** companies are fetched 8 at a time (measured 6.4 min for 139 boards on
-  2026-10-04 vs ~45 min sequential). Every HTTP call has a 900 s total deadline and Workday
-  tenants a 600 s budget; a board that exceeds it is skipped for that scan (logged as a warning).
-- **Gemini daily quota vs volume:** ~1,270 jobs pass the pre-filter across 215 companies,
-  but the free tier allows ~1,000 calls/day (2 Flash Lite models × 500). The first full
-  scan should use `--posted-within 7` (~226 calls); unscored jobs stay `discovered` and
-  retry the next day, so nothing is lost either way.
-- **Batch scoring is opt-in only:** measured mean |Δ| of 15.5 points vs single-job scores
-  (noise 1.0); weak fits inflated. Single-job scoring costs ~4.2 s per new job.
-- **SmartRecruiters** list API has no descriptions (title-only scoring) and the adapter
-  stops at 100 postings (Freshworks, Swiggy hit the cap).
-- **Harvest is not idempotent with the curated list:** rerunning it re-adds boards removed on
-  evidence (wrong employer on a same-slug board). Harvest to a scratch file and diff.
-- Workday jobs without multi-location get no description, so Gemini scores them on title.
+Measured on 2026-10-04 unless marked otherwise. Each one has a task.
+
+- **Scan time:** the first full scan took 34.3 min: 8.9 min fetching, 32 s enriching
+  170 of 226 survivors, and about 24 min scoring 226 jobs at about 6.3 s each.
+  Repeat daily scans only score new jobs (shorter; *not yet measured*).
+- **Gemini quota:** about 1,270 jobs pass the pre-filter across 215 companies, but the
+  free tier allows about 1,000 calls a day (2 Flash Lite models × 500 a day; Google's
+  published figure, not verified live). Nothing stops scoring early when the quota runs
+  out, and each remaining job still burns its retries (T03, T04). Use `--posted-within`.
+- **Old counts:** figures reported before T47 (for example "36,228 jobs fetched" and
+  "Sabre 26 in 7 days") counted Workday postings that some tenants repeat past their
+  total. Paging now stops there (T47).
+- **Score resolution:** 21 of 203 distinct jobs tied at 90 in the first scan. The rubric (T48)
+  shifts calibration (at `min_score` 70: false positives 7 → 4 on 75 labelled jobs, `apply`
+  recall unchanged) but not ranking (AUC 0.955 vs 0.956). Ties need sub-scores (T41). The
+  labels are Claude's, not Manish's (T59). Fresher-level roles still score 88–90 (T58).
+- **Amazon descriptions:** the adapter uses `description_short` (cut at 202 characters) although
+  the API has a full `description` (2,796 characters on one record). Amazon is the biggest
+  source of matches, so those jobs are scored without the role description (T57).
+- **Pre-filter gaps:** "Computer Scientist" (Adobe) isn't included (T11); "developer"
+  admits CRM-platform roles (T12); `python` / `java` / `golang` title words are excluded
+  although the resume lists Python (T17 measures the cost).
+- **Onsite outside India:** "India anywhere in the location" passes multi-location jobs; the
+  prompt then caps roles that need onsite work abroad at 30 (rubric rule 1, T24; checked on
+  one job).
+- **`draft` needs TinyFish**, which this fork doesn't use (T40), and it cuts the resume
+  at 2,500 chars (T14).
+- **Three stores** (`jobs.db`, `last_scan.json`, `job_history.json`) overlap; `export`
+  ignores the DB (T31–T34). The CSV's Stack and Region columns are always empty (T36).
+- **Unreachable employers:** custom portals and platforms without a public API
+  (Darwinbox, Eightfold, Phenom, Zoho Recruit…). The census found 52% of 458 careers pages
+  JS-only or unidentified. Some large employers (Accenture, Sony, Western Digital) were
+  rejected by `discover` for "no India jobs", which may be a search issue (T49).
+- **Operations:** not scheduled (T07); `setup_cron.sh` is outdated (T08); logs are
+  unrotated and polluted by tests (T15, T16); no off-machine backup (T01).
 
 ---
 
-## 7. Roadmap
+## 8. Roadmap
 
-Done: direct ATS adapters (8 engines), SQLite dedupe, Gemini scoring, Workday India search
-+ pagination, optional Telegram, curated India company list.
-
-Next candidates:
-- Config-driven pre-filter (move the regexes into `config.json`).
-- Additional notification channels (Slack/Discord/email digest).
-- Multi-dimensional scoring (stack / seniority / location) and salary parsing.
-- Local web dashboard for reviewing CSVs, drafts and application status.
-- Interview-prep and company-dossier generators (drafts only).
+The roadmap is the task board, [docs/tasks.md](docs/tasks.md). Accuracy work (what Gemini
+sees, how it scores, which jobs reach it) comes first; then scheduling and operations;
+then a single SQLite source of truth, tracking features and cleanup.

@@ -1,49 +1,47 @@
-# Privacy — what leaves your machine
+# Privacy: what leaves the machine
 
-`autopilot-jobhunt` reads your resume and fetches job pages. This page states exactly
-where that content goes, so you can pick a setup that matches your comfort level.
+JobNotify runs locally. This page lists every outbound destination in the code and what
+each one receives. It was checked against the source on 2026-10-04.
 
 ## The short version
 
-- **This tool never applies to a job.** It drafts a resume + cover letter locally for
-  your review (see [SECURITY.md](SECURITY.md)). You send applications yourself.
-- **Two things always leave your machine when you scan:** job page fetches go through
-  **TinyFish** (cloud), and your **resume + the job description** go to your chosen
-  **LLM provider** for scoring and drafting.
-- **The default provider (`openrouter`) is a cloud provider.** Out of the box, your
-  resume and the JD transit OpenRouter. Switch to `claude_cli` before your first run if
-  you want to keep content on your existing local Claude session.
+- **Your resume goes to Google.** The full resume text, plus the candidate profile from
+  `config.json`, is sent to the Gemini API with **every** scoring call. The first full
+  scan made 226 such calls.
+- **Job boards see only requests for public listings.** No personal data is sent to them.
+- **Everything else is opt-in:** Telegram alerts, and drafting (which uses your chosen
+  LLM provider and, for now, TinyFish).
+- **It never applies to a job** ([SECURITY.md](SECURITY.md)).
 
-## What leaves your machine, by LLM provider
+## Outbound destinations
 
-Set the provider with `llm_provider` in `config.json` (or `LLM_PROVIDER` in `.env`).
+| Destination | When | What it receives |
+|---|---|---|
+| ATS job boards: Greenhouse, Lever, Ashby, SmartRecruiters, Workday tenants, Oracle HCM tenants, Amazon Jobs, Workable, Recruitee, Personio | Every scan, and `discover` / `doctor` | Requests for public job listings and job details. Your IP address and a browser-like User-Agent. **No resume or profile data.** |
+| **Google Gemini API** (`generativelanguage.googleapis.com`) | Every scoring call; one tiny call per `doctor` run | **The full resume, the candidate profile** (name, profile, seeking, not-suitable) and the job's title, company, location and description |
+| Telegram (`api.telegram.org`) | Only if `TELEGRAM_TOKEN` + `TELEGRAM_CHAT_ID` are set | Per-job alerts and the digest: company, title, location, score, reason, URL |
+| Your `llm_provider` (Gemini, Anthropic, local `claude` CLI, or OpenRouter, deprecated) | `autopilot draft` only | The resume, the profile and the job description, to write the drafts |
+| TinyFish (`agent.tinyfish.ai`) | `autopilot draft` only, and only with a TinyFish key; also the unused legacy careers-page path | The job URL to fetch. This fork doesn't use TinyFish (T40 removes the dependency) |
 
-| Provider (`llm_provider`) | Resume + JD content goes to | Key needed | Notes |
-|---|---|---|---|
-| `claude_cli` | **Your existing local Claude Code / Claude session** | none (uses `claude` CLI login) | No separate cloud upload beyond your existing Anthropic relationship. Best for privacy. |
-| `openrouter` **(default)** | **OpenRouter (cloud, third party)** | API key | Routes to whichever model you pick; content transits OpenRouter + the chosen model host. |
-| `anthropic` | **Anthropic (cloud)** | API key | Direct Anthropic API. |
+**About Gemini's free tier.** Google's terms for unpaid Gemini API use have allowed it to
+use submitted content to improve its products, which can include human review. That is
+*assumed* from Google's published terms at the time of writing; read the current terms
+before relying on it. If that matters for your resume, use a paid Gemini key, or remove
+personal details (phone, email, address) from the resume file. Scoring doesn't need them.
 
-> Regardless of provider, **page fetching always uses TinyFish** — job URLs and fetched
-> page text transit the TinyFish API. There is no fully-offline mode.
+Not active: `notifier.send_whatsapp` (TextMeBot) exists in the code, but nothing calls it.
 
-## Other outbound data (opt-in only)
+## What is stored locally (all gitignored)
 
-- **Telegram** (configured via `TELEGRAM_TOKEN` + `TELEGRAM_CHAT_ID`) — sends the top
-  matches (title, company, URL, score) to Telegram's servers, into your own chat.
-  Notification only; it never applies to anything.
-
-## What is stored locally
-
-- **`state/last_scan.json`** — the most recent scan's scored results. Contains job data,
-  not your resume. Gitignored.
-- **`output/<company>-<date>/`** — drafted resumes and cover letters. **These contain
-  your personal content.** Gitignored.
-- **`resume/`** — your resume source (PII). Gitignored except the committed template.
-- **`config.json` / `.env`** — your candidate profile, provider choice, and API keys.
-  Gitignored in this repo; keep them out of version control in yours too.
-- **`scan.log`** — run logs. Gitignored.
+| Path | Contains |
+|---|---|
+| `resume/<name>.md` | Your resume (personal data) |
+| `config.json`, `.env` | Candidate profile and API keys |
+| `data/jobs.db` | Jobs seen, statuses, scores and reasons. Job data only, no resume |
+| `state/*.json` | Scored jobs (last scan, history), seen URLs |
+| `output/` | CSVs. Drafts (`output/<company>-<date>/`) contain your personal content |
+| `scan.log`, `data/scan.log` | Run logs: job titles, scores and reasons. No keys |
 
 ## Telemetry
 
-None. This tool sends no analytics, usage pings, or crash reports anywhere.
+None. JobNotify sends no analytics, usage pings or crash reports.

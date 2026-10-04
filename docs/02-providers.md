@@ -1,82 +1,77 @@
 # 02 — LLM providers
 
-The LLM scores each job against your resume and writes your drafts. Pick one backend
-via `llm_provider` in `config.json` (or `LLM_PROVIDER` in `.env`). Page **fetching**
-always uses TinyFish regardless — see [03 — API keys](03-api-keys.md).
+JobNotify uses an LLM for two things: **scoring** jobs (every scan) and **drafting**
+applications (`autopilot draft`, on demand). The two choose their provider differently.
 
-## OpenRouter (default · free)
+## Who does the scoring
 
-Access to hosted models on a free tier. autopilot uses a **4-model fallback chain** —
-if the primary hits its daily free quota, the next is tried automatically:
+| Situation | Scoring path |
+|---|---|
+| A Gemini key is set (`GEMINI_API_KEY` in `.env`, or `gemini_api_key` in `config.json`) | **Gemini, always**, whatever `llm_provider` says. One job per call, results stored in `data/jobs.db`. This is the supported path. |
+| No Gemini key | Legacy path: `llm_provider` scores 10 jobs per prompt, with a shorter resume and description cut. Its scores are **not written to the DB**, so the same jobs are re-scored on every scan (read in `scanner.py`, not run). Don't rely on it. |
 
-| Order | Model | Role |
-|---|---|---|
-| 1 | `meta-llama/llama-3.3-70b-instruct:free` | primary |
-| 2 | `nvidia/nemotron-3-super-120b-a12b:free` | fallback 1 |
-| 3 | `google/gemma-4-31b-it:free` | fallback 2 |
-| 4 | `qwen/qwen3-coder:free` | fallback 3 |
+`llm_provider` also picks the model for `autopilot draft` (and the legacy TinyFish path).
 
-- **Calls per scan:** ~5–15 (jobs scored in batches of 10). One nightly scan stays
-  within all four models' free daily limits.
-- **`All LLM models failed`:** every model hit its daily quota — wait for the midnight
-  UTC reset, or add a small OpenRouter credit ($1–5) to remove the cap.
-- Override the chain in `config.json` with `openrouter_model` and
-  `openrouter_fallback_models` (or `OPENROUTER_MODEL` / `OPENROUTER_FALLBACK_MODELS`,
-  the latter comma-separated).
+## Gemini (default)
 
-```json
-"llm_provider": "openrouter",
-"openrouter_api_key": "sk-or-v1-...",
-```
+- **Models:** `gemini_model` (default `gemini-3.5-flash-lite`). If it fails, the
+  fallback is `gemini-3.1-flash-lite`. Set the model in `config.json`, or with
+  `GEMINI_MODEL` in `.env`.
+- **Call:** temperature 0.1, JSON output `{"score": 0-100, "reason": "<one sentence>"}`.
+- **Retries:** on a 429 / 503 / quota error, each model gets one retry after 5–15 s
+  (using the server's "retry in N s" hint when there is one), then the next model is
+  tried. If every model fails, the job stays `discovered` and is retried next scan. A
+  failure is never stored as a score of 0.
+- **Pacing:** a 4.2 s sleep after every scoring call, to stay under 15 requests per
+  minute. Measured: about 6.3 s per job including the call (226 jobs in about 24 min,
+  2026-10-04).
+- **Free-tier limits** (Google's published figures, as recorded in CLAUDE.md, not
+  verified live): 15 requests per minute, 250k tokens per minute and **500 requests per
+  day per model**. With 2 models that is roughly 1,000 scoring calls a day.
+  Use `--posted-within N` to keep a scan inside that budget. Nothing stops a scan early
+  when the quota runs out (tasks T03 / T04).
+- **Model choice:** `gemini-3.8-flash` (20 requests a day) and `gemini-flash-latest` are
+  deliberately not used as fallbacks, so a fallback never burns a tiny quota.
 
-## Claude CLI (keyless)
+### Batch mode (opt-in, not recommended)
 
-Use your local Claude Code login as the LLM — **no API key**.
+`"gemini_scoring_mode": "batch"` in `config.json` scores `gemini_batch_size` jobs (default
+10) per call, with a JSON schema. It's about 17× faster. On 10 live jobs, batch scores
+differed from single-job scores by 15.5 points on average, against 1.0 point of
+run-to-run noise, and weak fits were inflated (measured 2026-10-04, CHANGELOG). Accuracy
+matters more than speed here, so single-job scoring is the default.
 
-```bash
-claude auth login
-claude --print "hi"        # confirm auth works in this shell
-```
-
-```json
-"llm_provider": "claude_cli",
-"claude_cli_model": "sonnet"    // or "opus", "haiku", or a full model id; "" = default
-```
-
-Or per-run: `LLM_PROVIDER=claude_cli autopilot scan`.
-
-> **Subscription rate-limit burn.** Each CLI call loads your global Claude Code context
-> (~25k–30k tokens even for a short prompt). A nightly scan makes 5–15 such calls
-> against your subscription's rate limit. Prefer OpenRouter for nightly automation; use
-> Claude CLI for occasional on-demand drafts.
-
-> **Cron / MCP note.** Both run as background processes and inherit the starting shell's
-> auth. Run `claude --print "hi"` in that same context before scheduling.
-
-> `temperature` and `max_tokens` are not configurable with Claude CLI — the binary
-> doesn't expose them.
-
-## Anthropic API
-
-Direct Anthropic API instead of OpenRouter.
+## Anthropic API (drafting, or scoring without a Gemini key)
 
 ```bash
-pip install 'autopilot-jobhunt[claude]'
+pip install -e '.[claude]'
 ```
 
 ```json
 "llm_provider": "anthropic",
 "anthropic_api_key": "sk-ant-...",
-"anthropic_model": "claude-haiku-4-5-20251001"   // or "claude-sonnet-4-6"
+"anthropic_model": "claude-haiku-4-5-20251001"
 ```
 
-- `claude-haiku-4-5-20251001` — fast, affordable, handles JSON scoring well.
-- `claude-sonnet-4-6` — higher-quality scores, higher cost.
+Or set `ANTHROPIC_API_KEY` / `ANTHROPIC_MODEL` in `.env`.
 
-> When `llm_provider` is `claude_cli` or `anthropic`, `openrouter_api_key` is ignored —
-> you can leave it empty.
+## Claude Code CLI (keyless)
+
+```json
+"llm_provider": "claude_cli",
+"claude_cli_model": ""
+```
+
+This uses the local `claude` binary and its login, so no API key is needed. Check it first
+with `claude --print "hi"`. Each call loads your Claude Code context, which costs a lot of
+subscription usage, so use it for an occasional draft, not for daily scoring.
+
+## OpenRouter (deprecated)
+
+It still works for `llm_provider: "openrouter"` (it logs a deprecation warning), but it
+is no longer maintained or tested against real keys. It will be removed (T42).
 
 ## Next
 
 - [03 — API keys](03-api-keys.md)
-- [07 — Config & scoring](07-config-and-scoring.md)
+- [07 — Config & scoring](07-config-and-scoring.md): the scoring prompt and threshold.

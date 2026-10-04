@@ -1,68 +1,65 @@
-# Security Policy
+# Security
 
-`autopilot-jobhunt` fetches third-party job pages, sends your resume to an LLM, and
-optionally posts to Telegram. This document states the guarantees, the trust
-boundaries, and how to report a vulnerability.
+JobNotify fetches public job listings, sends a resume to an LLM for scoring, and can
+post alerts to Telegram. This page states what it guarantees and where the trust
+boundaries are. For exactly which data goes where, see [PRIVACY.md](PRIVACY.md).
 
 ## The never-apply invariant
 
-**This tool never applies to a job or submits anything on your behalf.** It only:
+**JobNotify never applies to a job or submits anything on anyone's behalf.** It only:
 
-- scans configured careers pages and scores them,
-- writes a tailored resume + cover letter to `output/` for a role you pick,
-- (optionally) posts the top matches to your own Telegram chat.
+- fetches public job listings and scores them,
+- writes CSVs, and (with `autopilot draft`) a tailored resume and cover letter, to
+  `output/` for a human to review,
+- optionally sends alerts to your own Telegram chat.
 
-There is no "apply", "submit", or form-filling capability anywhere in the codebase.
-Every application is a local draft for you to review, edit, and send yourself. Do not
+There is no apply, submit or form-filling capability anywhere in the code. Every change
+is reviewed against this invariant ([docs/tasks.md](docs/tasks.md) → *Verifying*). Don't
 extend the tool to auto-apply.
 
 ## Trust boundaries
 
-- **API keys** (`TINYFISH_API_KEY`, `OPENROUTER_API_KEY`, `ANTHROPIC_API_KEY`) and your
-  `config.json` live locally in `.env` / `config.json`. Both are gitignored and scanned
-  in CI (gitleaks). They must never be committed. Rotate any key that may have leaked.
-- **Your resume is PII.** It is read from `resume/` and sent to your chosen LLM provider
-  for scoring and drafting. Personal résumé files are gitignored; keep them out of
-  version control.
-- **Page fetching goes through TinyFish.** Job URLs and the fetched page contents transit
-  the TinyFish API (cloud). Scored results are stored locally in `state/last_scan.json`.
-- **LLM providers.** Depending on `llm_provider`, your resume and job descriptions may be
-  transmitted to a third-party cloud. See [PRIVACY.md](PRIVACY.md) for the exact
-  per-provider breakdown. Use `claude_cli` to keep content on your existing local Claude
-  session.
-- **Telegram (opt-in).** If configured, match summaries (title, company, URL, score) are
-  sent to Telegram's servers into your own chat.
-
-## Scraping and terms of service
-
-Scanning fetches pages from company careers sites. **You are responsible for respecting
-each target site's Terms of Service, `robots.txt`, and rate limits.** The default cadence
-is conservative (nightly, batched), but the operator — not this tool — is accountable for
-lawful, courteous use.
+- **Secrets.** `GEMINI_API_KEY`, the optional `TELEGRAM_TOKEN` / `TELEGRAM_CHAT_ID` and
+  any other keys live in `.env` / `config.json`, which are both gitignored. Rotate any key
+  that may have leaked. The upstream CI's gitleaks scan doesn't run for this fork (it
+  isn't pushed anywhere), so check staged diffs yourself.
+- **The resume is personal data.** The real resume (`resume/<name>.md`) is gitignored; only
+  the template is committed. Its full text is sent to Gemini with every scoring call.
+- **ATS endpoints are untrusted input.** Job titles, locations and descriptions come from
+  third-party servers. They are parsed as data (JSON/XML) and stripped of HTML, never
+  executed. Every HTTP response has a hard total deadline (900 s), so a hostile or broken
+  server can't hang a scan.
+- **Telegram (opt-in).** Alerts contain the company, title, location, score, reason and
+  URL. They go to Telegram's servers and into your own chat.
 
 ## Prompt injection
 
-Scraped job descriptions flow into the scoring and cover-letter prompts. A hostile or
-manipulative posting can attempt to steer its own score or the text of a drafted letter
-(prompt injection). The design mitigates the worst case: the tool **never applies
-automatically** and **never treats scraped content as commands** — every draft is a local
-file for human review, and scoring only produces a number + one-line rationale. Do not
-extend the tool to execute instructions found inside scraped content.
+Job descriptions are pasted into the scoring prompt in full (up to 20,000 characters), and
+into the drafting prompts. A posting could contain text meant to steer its own score or a
+drafted cover letter. Mitigations:
 
-## Reporting a vulnerability
+- The output is only a number and one sentence, and the model is asked for JSON only.
+  Nothing the model returns is executed.
+- A score only orders what a human reads; a human always decides and applies.
+- Drafts are local files for review, never sent anywhere.
 
-Please report security issues **privately** — do not open a public issue for an
-exploitable vulnerability.
+Don't extend the tool to act on instructions found in job content, and treat an
+implausibly high score with a generic reason as a sign of injection.
 
-- Use GitHub's **[private vulnerability reporting](https://github.com/tarunlnmiit/autopilot-jobhunt/security/advisories/new)**
-  (Security → Report a vulnerability), or
-- open a minimal public issue asking for a private contact channel if the above is
-  unavailable.
+## Fetching etiquette
 
-Please include: affected version, reproduction steps, and impact. We aim to acknowledge
-within a few days. Coordinated disclosure is appreciated — give us a chance to ship a fix
-before public details.
+The ATS endpoints are the public job-board APIs that the vendors provide for listing
+jobs. JobNotify fetches 8 companies at a time, once per scan, with a browser-like
+User-Agent. Whoever runs it is responsible for keeping within each site's terms and rate
+limits. Don't raise `fetch_workers` aggressively or run scans in a tight loop.
+
+## Reporting a problem
+
+This is a personal fork. Report issues to Manish directly, or add them to the
+[task board](docs/tasks.md#inbox) Inbox if they aren't sensitive. Issues that also affect
+the upstream project can go to
+[tarunlnmiit/autopilot-jobhunt](https://github.com/tarunlnmiit/autopilot-jobhunt/security/advisories/new).
 
 ## Supported versions
 
-This is a young project; only the latest published version on PyPI receives fixes.
+Only the current `main` of this fork.

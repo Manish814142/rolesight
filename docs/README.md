@@ -1,48 +1,36 @@
-# autopilot-jobhunt — Documentation
+# JobNotify documentation
 
-One command runs your job hunt: **scan careers pages → score every role against your
-resume → alert the top matches → draft a tailored resume + cover letter**. It writes
-drafts for you to review — it **never applies or submits** on your behalf.
-
-> 🔒 **Drafts only — never applies.** There is no submit/apply capability anywhere.
-> You review every drafted resume and cover letter and send applications yourself.
+JobNotify fetches open jobs from the public ATS APIs of about 215 India-hiring companies,
+filters them locally, scores the survivors against a resume with Gemini, and writes a
+best-first CSV. It **never applies** to anything. The project overview is in the
+[top-level README](../README.md).
 
 ## Guides
 
-| # | Guide | What it covers |
-|---|-------|----------------|
-| 01 | [Install](01-install.md) | pip / from source / `autopilot init` scaffolding |
-| 02 | [LLM providers](02-providers.md) | OpenRouter fallback chain, Claude CLI (keyless), Anthropic API |
-| 03 | [API keys](03-api-keys.md) | Get your TinyFish + OpenRouter keys; where each one goes |
-| 04 | [Companies & scanning](04-companies-and-scanning.md) | `companies.json`, how discovery + scoring work, scan pacing |
-| 05 | [Integrations](05-integrations.md) | Telegram notifications |
-| 06 | [MCP server & Skill](06-mcp-and-skill.md) | Drive the hunt from Claude Code |
-| 07 | [Config & scoring](07-config-and-scoring.md) | Candidate profile, `min_score`, `top_n`, provider selection |
-| 08 | [Troubleshooting](08-troubleshooting.md) | Every error we've hit, and the fix |
-| 09 | [Testing checklist](09-testing-checklist.md) | Reproducible independent test — install, gating, every provider |
+| # | Guide | Covers |
+|---|---|---|
+| 01 | [Install & first run](01-install.md) | venv, extras, `.env` / `config.json`, resume, `doctor`, the first scan |
+| 02 | [LLM providers](02-providers.md) | Gemini (default) models, retries, quotas, batch mode; Anthropic; Claude CLI |
+| 03 | [API keys](03-api-keys.md) | Which keys exist, which are required, precedence |
+| 04 | [Companies & scanning](04-companies-and-scanning.md) | `companies.json`, `discover` (add / recheck / census), what a scan does, per-ATS details, timings |
+| 05 | [Outputs & notifications](05-outputs-and-notifications.md) | CSV columns, DB statuses, state files, logs, `export`, drafts, Telegram |
+| 06 | [MCP server & skill](06-mcp-and-skill.md) | Using JobNotify from Claude Code |
+| 07 | [Config & scoring](07-config-and-scoring.md) | Every config key; the pre-filter rules; the scoring prompt and what scores mean |
+| 08 | [Troubleshooting](08-troubleshooting.md) | Known symptoms, causes and fixes |
+| 09 | [Testing checklist](09-testing-checklist.md) | Gates, smoke tests, a real small scan, MCP check |
 | — | [Task board](tasks.md) | Pending work by priority; how agents claim, finish and verify tasks |
 
-## Provider matrix
+## Also see
 
-Set with `llm_provider` in `config.json` (or `LLM_PROVIDER` in `.env`).
+- [ARCHITECTURE.md](../ARCHITECTURE.md): components, data flow, rules, known limitations.
+- [CHANGELOG.md](../CHANGELOG.md): what changed and the measurements behind it.
+- [SECURITY.md](../SECURITY.md) and [PRIVACY.md](../PRIVACY.md): guarantees, and what
+  leaves the machine.
+- [CONTRIBUTING.md](../CONTRIBUTING.md): how work is picked up.
 
-| `llm_provider` | Key needed | Runs on | Best for |
-|---|---|---|---|
-| `openrouter` **(default)** | `OPENROUTER_API_KEY` | OpenRouter cloud (free tier) | zero-cost nightly automation |
-| `claude_cli` | none (local `claude` login) | your Claude subscription | keyless / on-demand drafts |
-| `anthropic` | `ANTHROPIC_API_KEY` | Anthropic cloud | highest-quality scoring |
+## Reading order
 
-> Page fetching **always** uses TinyFish (cloud) regardless of LLM provider — there is
-> no fully-offline mode. See [PRIVACY.md](../PRIVACY.md).
-
-## 60-second start
-
-```bash
-pip install 'autopilot-jobhunt[mcp]'
-mkdir my-job-hunt && cd my-job-hunt
-autopilot init          # scaffolds config.json, companies.json, .env, resume/
-autopilot export        # smoke test — prints "No scan found" (no keys needed yet)
-```
-
-Then follow [01-install](01-install.md) → [03-api-keys](03-api-keys.md) →
-[07-config-and-scoring](07-config-and-scoring.md) → `autopilot scan`.
+- **New to the project:** [README](../README.md) → [01](01-install.md) →
+  [04](04-companies-and-scanning.md) → [05](05-outputs-and-notifications.md).
+- **Changing code:** [ARCHITECTURE.md](../ARCHITECTURE.md) → [07](07-config-and-scoring.md)
+  → [09](09-testing-checklist.md) → [tasks.md](tasks.md).
