@@ -6,7 +6,7 @@ Antigravity, or any other agent.
 - **Told to "work from docs/tasks.md"?** Follow the [Working loop](#working-loop).
 - **Told to "verify the tasks"?** Follow [Verifying](#verifying).
 
-**Last re-evaluated:** 2026-10-04 against commit `04521db` (355 tests pass, ruff and
+**Last re-evaluated:** 2026-10-04 against commit `04521db` (accuracy-first order added after the first real scan) (355 tests pass, ruff and
 mypy clean — measured). File:line references are as of that commit; they drift, so
 search for the named function if a line has moved.
 
@@ -17,9 +17,10 @@ search for the named function if a line has moved.
 First read `CLAUDE.md` (project context) and this whole file. Then repeat:
 
 1. **Pick.** First any task with status `changes` (a verifier sent it back). Otherwise
-   take the first `todo` from the top (P0 before P1, lower ID first) whose *Needs* are
-   all `review` or in the Done log. Skip `decision`, `manish` and `blocked`. Never
-   make Manish's decisions for him.
+   take the first `todo` in the [Accuracy-first order](#accuracy-first-order) whose
+   *Needs* are all `review` or in the Done log; when that list is exhausted, take the
+   first `todo` from the top of the tables below (P0 before P1, lower ID first). Skip
+   `decision`, `manish` and `blocked`. Never make Manish's decisions for him.
 2. **Claim.** Set Status to `doing · <you> · <date>`, where you are `claude`,
    `antigravity`, `manish`, and so on. Commit only that line: `tasks: claim T03`. A
    task already `doing` belongs to someone else; if it has had no commits for 3 days,
@@ -82,6 +83,86 @@ Prefer a verifier other than the implementer, or at least a fresh session.
 `decision` (Manish chooses) · `manish` (needs his accounts or devices).
 Verified tasks leave their table and move to the Done log.
 **Size** (estimates): XS < 30 min · S ≈ 1 h · M ≈ half a day · L ≈ 1+ day
+
+---
+
+## Accuracy-first order
+
+**Manish's rule (2026-10-04):** the product is a job notifier driven by the LLM score, so
+any task that changes what Gemini sees, how it scores, or which jobs reach it comes
+before everything else. **Division of work:** Antigravity implements; Claude reviews
+(see [Verifying](#verifying)). Claude's own tasks in the Review queue should be verified
+by Antigravity.
+
+Pick from this list top to bottom. Status lives in the task's own row (below, or in its
+P-table); this list only sets the order.
+
+| # | Task | Why it changes the score or the accuracy | Evidence |
+|---|---|---|---|
+| 1 | **T47** Workday paging repeats postings | The same job is scored many times; counts are inflated | measured |
+| 2 | **T30** Dedupe by ATS job ID | A new opening whose title+location match any already-scored job is skipped as "scored" and never reaches Gemini | measured (34 merged rows today) + inferred from `scanner.py` |
+| 3 | **T24** Penalise onsite or work authorisation outside India | A US-onsite role scored 75 | measured by the earlier review |
+| 4 | **T48** Scoring rubric and a golden set | 21 of 203 jobs tie at exactly 90, so the top can't be ranked; no precision was ever measured | measured |
+| 5 | **T12** CRM / platform "developer" titles | Wastes scoring calls on Salesforce / Dynamics / ServiceNow roles | measured on the old list, inferred for 215 boards |
+| 6 | **T11** "Computer Scientist" titles | 16 of 19 were skipped by the pre-filter | measured |
+| 7 | **T17** Cost of the python/java/golang title exclusions (measure only) | Manish's resume has Python, yet a "Python" title word is excluded | measured: exclusion list in `prefilter.py` |
+| 8 | **T49** Big employers that report "no India jobs" | Possible missed jobs at Accenture, Sony, Western Digital | assumed, not investigated |
+| 9 | **T03**, **T04** Quota breaker, newest-first cap | Decide which jobs get scored when the daily quota runs out | inferred |
+| 10 | **T41** Structured sub-scores | Breaks ties by stack / seniority / location | inferred |
+| 11 | **T29**, **T35** Store the job text; funnel log line | Needed to audit and re-score; not accuracy by themselves | inferred |
+
+Decisions that change what Manish sees: **T05** (MIN_SCORE 60 or 70) and **T02** (posted-date
+window). On the first real scan (203 distinct jobs, 2026-10-04) 74 scored ≥ 60, 67 ≥ 70
+and 38 ≥ 80 (measured).
+
+After this list: **T40, T50, T42** (Manish will not use TinyFish), then the rest.
+
+### New accuracy tasks
+
+| ID | Task | Status | Owner | Size | Needs |
+|---|---|---|---|---|---|
+| T47 | Workday paging repeats postings | todo | — | XS | — |
+| T48 | Scoring rubric and a golden set | todo | — | M | — |
+| T49 | Check big employers that report "no India jobs" | todo | — | S | — |
+
+**T47 · Workday paging repeats postings.** `fetch_workday` pages until a page has fewer
+than 20 postings, but some tenants keep returning earlier postings once the offset passes
+their total. Measured 2026-10-04: Sabre returns 500 rows with 40 distinct URLs (one URL
+24 times); Warner Bros Discovery and Danaher do the same. Of the 1,271 pre-filter
+survivors, 84 (6.6%) are repeats, and in the real scan 23 of 226 Gemini calls re-scored
+the same Sabre posting. So the "36,228 jobs fetched" and "Sabre 26 in 7 days" figures
+(CHANGELOG, earlier reports) are inflated. Fix: read `total` from the first response and
+stop at it, stop when a page adds no new `externalPath`, and dedupe by `externalPath`.
+Why the server repeats is not confirmed (assumed); the stop rule works either way.
+*Done when:* a unit test whose stub serves the same page at every offset returns each
+posting once in at most 2 requests; live `fetch_company_jobs` for Sabre, Warner Bros
+Discovery and Danaher returns rows == distinct URLs; the CHANGELOG figures are
+re-measured and corrected.
+
+**T48 · Scoring rubric and a golden set.** The prompt (`llm_utils.score_job_with_gemini`)
+asks for "score 0-100" with no scale. First real scan, measured: 21 of 203 jobs tie at
+exactly 90 and 38 are ≥ 80; a Nike role whose reason says it "specifically requires
+C#/.NET Core, outside his primary Node.js" scored 75; same-title Hotstar, Mastercard and
+Nike jobs differ by up to 75 points, but their reasons cite different job descriptions,
+so that spread is content, not noise. Run-to-run noise was 3.3 points on 3 jobs (small
+sample). Nobody has ever measured the score's precision. Do: (a) add anchors to the
+prompt (for example primary-stack mismatch caps at 60; required years above the
+candidate's by 3+ caps at 50; 90+ only when stack, seniority and location all fit);
+(b) write `scripts/golden_set.csv` from the scan output (about 40 jobs: top, middle,
+bottom) for Manish to label apply / maybe / no; (c) a script that scores the set and
+prints agreement and the precision at MIN_SCORE. Manish's labelling takes about 20 minutes
+(assumed); mark the task `blocked` until then.
+*Done when:* the script prints agreement for the old and the new prompt on the same
+labelled jobs. Keep the new prompt only if precision at MIN_SCORE doesn't drop and the
+tie at the top shrinks.
+
+**T49 · Big employers that report "no India jobs".** `discover` rejected Accenture, Sony
+and Western Digital because the first page of their Workday India search had no India
+jobs; all three employ large India teams (assumed). Either the tenant or site is wrong, or
+`searchText="India"` misses their location format. Check each by hand against the
+company's real careers page, then fix the entry or the search.
+*Done when:* each of the three is added with at least one India job, or this task records
+why it can't be.
 
 ---
 
@@ -331,7 +412,7 @@ review. Never write the real file unattended.
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
 | T29 | Store location, posted_at and description in `jobs` | todo | — | M | — |
-| T30 | Dedupe by ATS job ID | todo | — | M | T29 |
+| T30 | Dedupe by ATS job ID | todo | — | M | — |
 | T31 | `draft` reads SQLite | todo | — | S | T29 |
 | T32 | `export` reads SQLite | todo | — | S | T29 |
 | T33 | first_seen / last_seen and closed-job detection | todo | — | M | T29 |
@@ -350,6 +431,12 @@ carry the fields.
 measured 18 of 565 postings hidden this way (e.g. two Druva req IDs). The `global_id`
 column already exists: first check that every adapter fills it with the ATS's own ID,
 then key on (ats, global_id), falling back to the hash.
+**Update 2026-10-04 (first real scan):** 22 groups (34 extra rows) share company, title and
+location but have different URLs; the DB keeps one row per group. `scanner.run_scan`
+skips any job whose hash is `scored`/`notified`, so a *new* opening with the same title
+and location as an old one never reaches Gemini (inferred from the code, not yet
+observed). The `global_id` and `url_hash` columns already exist (measured: schema), so
+this no longer needs T29 first.
 *Done when:* a test stores two req IDs with the same title as two rows, and existing
 `scored` rows aren't re-scored after the migration.
 
@@ -421,6 +508,18 @@ Keep the drafts-only rule.
 | T43 | Make `harvest` safe (exclusions file) or deprecate it for `discover` | todo | — | S | — |
 | T44 | Keyword gap analysis in `draft` | todo | — | M | T40 |
 | T45 | Local dashboard or TUI | todo | — | L | T29 |
+| T50 | Remove TinyFish from the docs, `init` and `config.example.json` | todo | — | S | T40 |
+
+**T50 · Remove TinyFish from the docs and setup.** Manish will not use TinyFish. SETUP.md
+L27 still says "TinyFish (required)"; PRIVACY.md L27 and SECURITY.md L27 say page
+fetching always uses it; `config.example.json` has `tinyfish_api_key`. Worse, the 140
+companies that `autopilot init` copies (`job_hunt/data/companies.json`) are
+careers-URL-only entries with no `ats` field (measured: 140 of 140), so a fresh `init`
+has no company the scanner can fetch without TinyFish. Ship the curated list instead (it
+is India-tilted; say so in SETUP.md).
+*Done when:* in an empty directory `autopilot init` then `autopilot scan --limit 3`
+fetches jobs with `TINYFISH_API_KEY` unset; `grep -rni tinyfish SETUP.md PRIVACY.md
+SECURITY.md config.example.json docs/` returns only notes saying it was removed.
 
 T43 context: re-running `harvest` re-adds boards that were removed on evidence (see
 CLAUDE.md), and `discover` has become the main way to add companies.
@@ -429,7 +528,7 @@ CLAUDE.md), and `discover` has become the main way to add companies.
 
 ## Inbox
 
-New findings go here with the next free ID (next: **T47**), an evidence tag and the
+New findings go here with the next free ID (next: **T51**), an evidence tag and the
 file:line. Manish or the triaging agent moves each one into a priority table.
 
 | ID | Finding | Evidence | Added by |
