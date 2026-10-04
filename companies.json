@@ -24,6 +24,12 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Kong",
+    "ats": "ashby",
+    "slug": "kong",
+    "headcount": "Unknown"
+  },
+  {
     "name": "Notion",
     "ats": "ashby",
     "slug": "notion",
@@ -45,6 +51,12 @@
     "name": "Protegrity",
     "ats": "ashby",
     "slug": "protegrity",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Quadric",
+    "ats": "ashby",
+    "slug": "quadric",
     "headcount": "Unknown"
   },
   {
@@ -120,6 +132,12 @@
     "headcount": "Unknown"
   },
   {
+    "name": "AppViewX",
+    "ats": "greenhouse",
+    "slug": "appviewx",
+    "headcount": "Unknown"
+  },
+  {
     "name": "AQR",
     "ats": "greenhouse",
     "slug": "aqr",
@@ -175,6 +193,12 @@
     "headcount": "Unknown"
   },
   {
+    "name": "CommerceIQ",
+    "ats": "greenhouse",
+    "slug": "commerceiq",
+    "headcount": "Unknown"
+  },
+  {
     "name": "Commvault",
     "ats": "greenhouse",
     "slug": "commvault",
@@ -193,6 +217,12 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Da Vinci Derivatives",
+    "ats": "greenhouse",
+    "slug": "davinciderivatives",
+    "headcount": "Unknown"
+  },
+  {
     "name": "Databricks",
     "ats": "greenhouse",
     "slug": "databricks",
@@ -202,6 +232,12 @@
     "name": "Datadog",
     "ats": "greenhouse",
     "slug": "datadog",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "DevRev",
+    "ats": "greenhouse",
+    "slug": "devrev",
     "headcount": "Unknown"
   },
   {
@@ -313,6 +349,12 @@
     "headcount": "1,001-5,000 employees"
   },
   {
+    "name": "Jumio",
+    "ats": "greenhouse",
+    "slug": "jumio",
+    "headcount": "201-500 employees"
+  },
+  {
     "name": "LaunchDarkly",
     "ats": "greenhouse",
     "slug": "launchdarkly",
@@ -337,9 +379,21 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Netradyne",
+    "ats": "greenhouse",
+    "slug": "netradyne",
+    "headcount": "Unknown"
+  },
+  {
     "name": "New Relic",
     "ats": "greenhouse",
     "slug": "newrelic",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "NK Securities Research",
+    "ats": "greenhouse",
+    "slug": "nksecuritiesresearch",
     "headcount": "Unknown"
   },
   {
@@ -392,6 +446,12 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Squarepoint Capital",
+    "ats": "greenhouse",
+    "slug": "squarepointcapital",
+    "headcount": "Unknown"
+  },
+  {
     "name": "Starburst",
     "ats": "greenhouse",
     "slug": "starburst",
@@ -422,10 +482,22 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Toast",
+    "ats": "greenhouse",
+    "slug": "toast",
+    "headcount": "Unknown"
+  },
+  {
     "name": "Tower Research Capital",
     "ats": "greenhouse",
     "slug": "towerresearchcapital",
     "headcount": "Unknown"
+  },
+  {
+    "name": "Turing",
+    "ats": "greenhouse",
+    "slug": "turing",
+    "headcount": "11-50 employees"
   },
   {
     "name": "Twilio",
@@ -501,6 +573,12 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Dozee",
+    "ats": "lever",
+    "slug": "dozee",
+    "headcount": "Unknown"
+  },
+  {
     "name": "Extreme Networks",
     "ats": "lever",
     "slug": "extremenetworks",
@@ -526,6 +604,12 @@
     "headcount": "Unknown"
   },
   {
+    "name": "ION Group",
+    "ats": "lever",
+    "slug": "ion",
+    "headcount": "Unknown"
+  },
+  {
     "name": "Level AI",
     "ats": "lever",
     "slug": "levelai",
@@ -542,6 +626,12 @@
     "ats": "lever",
     "slug": "mindtickle",
     "headcount": "Unknown"
+  },
+  {
+    "name": "Netomi",
+    "ats": "lever",
+    "slug": "netomi",
+    "headcount": "201-500 employees"
   },
   {
     "name": "Nium",
@@ -626,9 +716,27 @@
     "ats_fallback_from": "greenhouse"
   },
   {
+    "name": "NielsenIQ",
+    "ats": "smartrecruiters",
+    "slug": "nielseniq",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Renesas Electronics",
+    "ats": "smartrecruiters",
+    "slug": "renesaselectronics",
+    "headcount": "10,001+ employees"
+  },
+  {
     "name": "ServiceNow",
     "ats": "smartrecruiters",
     "slug": "servicenow",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Sixt",
+    "ats": "smartrecruiters",
+    "slug": "sixt",
     "headcount": "Unknown"
   },
   {
@@ -644,11 +752,25 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Leena AI",
+    "ats": "workable",
+    "slug": "leena-ai",
+    "headcount": "Unknown"
+  },
+  {
     "name": "Adobe India",
     "ats": "workday",
     "tenant": "adobe",
     "dc": "wd5",
     "site": "external_experienced",
+    "headcount": "10,001+ employees"
+  },
+  {
+    "name": "Amgen",
+    "ats": "workday",
+    "tenant": "amgen",
+    "dc": "wd1",
+    "site": "Careers",
     "headcount": "10,001+ employees"
   },
   {
@@ -668,12 +790,44 @@
     "headcount": "Unknown"
   },
   {
+    "name": "AstraZeneca",
+    "ats": "workday",
+    "tenant": "astrazeneca",
+    "dc": "wd3",
+    "site": "Careers",
+    "headcount": "Unknown"
+  },
+  {
     "name": "Autodesk",
     "ats": "workday",
     "tenant": "autodesk",
     "dc": "wd1",
     "site": "Ext",
     "headcount": "10,001+ employees"
+  },
+  {
+    "name": "Baker Hughes",
+    "ats": "workday",
+    "tenant": "bakerhughes",
+    "dc": "wd5",
+    "site": "BakerHughes",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Barclays",
+    "ats": "workday",
+    "tenant": "barclays",
+    "dc": "wd3",
+    "site": "External_Career_Site_Barclays",
+    "headcount": "10,001+ employees"
+  },
+  {
+    "name": "Becton Dickinson",
+    "ats": "workday",
+    "tenant": "bdx",
+    "dc": "wd1",
+    "site": "EXTERNAL_CAREER_SITE_INDIA",
+    "headcount": "Unknown"
   },
   {
     "name": "BlackBerry",
@@ -700,6 +854,14 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Broadridge",
+    "ats": "workday",
+    "tenant": "broadridge",
+    "dc": "wd5",
+    "site": "Careers",
+    "headcount": "Unknown"
+  },
+  {
     "name": "BrowserStack",
     "ats": "workday",
     "tenant": "browserstack",
@@ -713,6 +875,22 @@
     "tenant": "cadence",
     "dc": "wd1",
     "site": "External_Careers",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Carrier",
+    "ats": "workday",
+    "tenant": "carrier",
+    "dc": "wd5",
+    "site": "jobs",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Ciena",
+    "ats": "workday",
+    "tenant": "ciena",
+    "dc": "wd5",
+    "site": "Careers",
     "headcount": "Unknown"
   },
   {
@@ -730,6 +908,22 @@
     "dc": "wd5",
     "site": "crowdstrikecareers",
     "headcount": "5,001-10,000 employees"
+  },
+  {
+    "name": "Danaher",
+    "ats": "workday",
+    "tenant": "danaher",
+    "dc": "wd1",
+    "site": "DanaherJobs",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Deutsche Bank",
+    "ats": "workday",
+    "tenant": "db",
+    "dc": "wd3",
+    "site": "DBWebsite",
+    "headcount": "Unknown"
   },
   {
     "name": "Disney",
@@ -764,6 +958,30 @@
     "headcount": "10,001+ employees"
   },
   {
+    "name": "GlobalFoundries",
+    "ats": "workday",
+    "tenant": "globalfoundries",
+    "dc": "wd1",
+    "site": "External",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "GSK",
+    "ats": "workday",
+    "tenant": "gsk",
+    "dc": "wd5",
+    "site": "GSKCareers",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Hewlett Packard Enterprise",
+    "ats": "workday",
+    "tenant": "hpe",
+    "dc": "wd5",
+    "site": "Jobsathpe",
+    "headcount": "10,001+ employees"
+  },
+  {
     "name": "HP Inc",
     "ats": "workday",
     "tenant": "hp",
@@ -780,6 +998,14 @@
     "headcount": "10,001+ employees"
   },
   {
+    "name": "Johnson Controls",
+    "ats": "workday",
+    "tenant": "jci",
+    "dc": "wd5",
+    "site": "JCI",
+    "headcount": "Unknown"
+  },
+  {
     "name": "KLA",
     "ats": "workday",
     "tenant": "kla",
@@ -788,12 +1014,44 @@
     "headcount": "10,001+ employees"
   },
   {
+    "name": "Logitech",
+    "ats": "workday",
+    "tenant": "logitech",
+    "dc": "wd5",
+    "site": "Logitech",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Marvell",
+    "ats": "workday",
+    "tenant": "marvell",
+    "dc": "wd1",
+    "site": "MarvellCareers",
+    "headcount": "Unknown"
+  },
+  {
     "name": "Mastercard",
     "ats": "workday",
     "tenant": "mastercard",
     "dc": "wd1",
     "site": "CorporateCareers",
     "headcount": "10,001+ employees"
+  },
+  {
+    "name": "Medtronic",
+    "ats": "workday",
+    "tenant": "medtronic",
+    "dc": "wd1",
+    "site": "MedtronicCareers",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Microchip Technology",
+    "ats": "workday",
+    "tenant": "microchiphr",
+    "dc": "wd5",
+    "site": "External",
+    "headcount": "Unknown"
   },
   {
     "name": "Micron",
@@ -817,6 +1075,22 @@
     "tenant": "nasdaq",
     "dc": "wd1",
     "site": "Global_External_Site",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Northern Trust",
+    "ats": "workday",
+    "tenant": "ntrs",
+    "dc": "wd1",
+    "site": "northerntrust",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Novartis",
+    "ats": "workday",
+    "tenant": "novartis",
+    "dc": "wd3",
+    "site": "Novartis_Careers",
     "headcount": "Unknown"
   },
   {
@@ -844,6 +1118,14 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Pfizer",
+    "ats": "workday",
+    "tenant": "pfizer",
+    "dc": "wd1",
+    "site": "PfizerCareers",
+    "headcount": "Unknown"
+  },
+  {
     "name": "Philips",
     "ats": "workday",
     "tenant": "philips",
@@ -860,11 +1142,51 @@
     "headcount": "Unknown"
   },
   {
+    "name": "S&P Global",
+    "ats": "workday",
+    "tenant": "spgi",
+    "dc": "wd5",
+    "site": "SPGI_Careers",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Sabre",
+    "ats": "workday",
+    "tenant": "sabre",
+    "dc": "wd1",
+    "site": "SabreJobs",
+    "headcount": "5,001-10,000 employees"
+  },
+  {
     "name": "Salesforce",
     "ats": "workday",
     "tenant": "salesforce",
     "dc": "wd12",
     "site": "External_Career_Site",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Shell",
+    "ats": "workday",
+    "tenant": "shell",
+    "dc": "wd3",
+    "site": "ShellCareers",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Silicon Labs",
+    "ats": "workday",
+    "tenant": "silabs",
+    "dc": "wd1",
+    "site": "SiliconLabsCareers",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Snap",
+    "ats": "workday",
+    "tenant": "snapchat",
+    "dc": "wd1",
+    "site": "snap",
     "headcount": "Unknown"
   },
   {
@@ -876,12 +1198,28 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Synchrony",
+    "ats": "workday",
+    "tenant": "synchronyfinancial",
+    "dc": "wd5",
+    "site": "careers",
+    "headcount": "Unknown"
+  },
+  {
     "name": "Target India",
     "ats": "workday",
     "tenant": "target",
     "dc": "wd5",
     "site": "targetcareers",
     "headcount": "10,001+ employees"
+  },
+  {
+    "name": "Thermo Fisher",
+    "ats": "workday",
+    "tenant": "thermofisher",
+    "dc": "wd5",
+    "site": "ThermoFisherCareers",
+    "headcount": "Unknown"
   },
   {
     "name": "Warner Bros Discovery",
@@ -897,6 +1235,14 @@
     "tenant": "wf",
     "dc": "wd1",
     "site": "WellsFargoJobs",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Wolters Kluwer",
+    "ats": "workday",
+    "tenant": "wk",
+    "dc": "wd3",
+    "site": "External",
     "headcount": "Unknown"
   },
   {

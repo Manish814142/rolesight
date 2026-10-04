@@ -816,3 +816,581 @@ Autodesk | workday | autodesk | wd1 | Ext
 BrowserStack | workday | browserstack | wd3 | External
 Nvidia | workday | nvidia | wd5 | NVIDIAExternalCareerSite
 Salesforce | workday | salesforce | wd12 | External_Career_Site
+
+# ── added via discover --add (2026-10-04) ──
+GlobalFoundries | workday | globalfoundries | wd1 | External
+Synchrony | workday | synchronyfinancial | wd5 | careers
+Medtronic | workday | medtronic | wd1 | MedtronicCareers
+Eaton | workday | eaton | wd1 | Eaton_Careers
+Novartis | workday | novartis | wd3 | Novartis_Careers
+GSK | workday | gsk | wd5 | GSKCareers
+Eli Lilly | workday | lilly | wd5 | LLY
+Broadridge | workday | broadridge | wd5 | Careers
+Baker Hughes | workday | bakerhughes | wd5 | BakerHughes
+Carrier | workday | carrier | wd5 | jobs
+Silicon Labs | workday | silabs | wd1 | SiliconLabsCareers
+Marvell | workday | marvell | wd1 | MarvellCareers
+Renesas Electronics | workday | renesas | wd3 | jobs
+Sabre | workday | sabre | wd1 | SabreJobs
+Wolters Kluwer | workday | wk | wd3 | External
+Logitech | workday | logitech | wd5 | Logitech
+Hewlett Packard Enterprise | workday | hpe | wd5 | Jobsathpe
+Shell | workday | shell | wd3 | ShellCareers
+Volvo Group | workday | volvogroup | wd3 | VolvoGroupCareers
+Visteon | workday | visteon | wd5 | Visteon
+Verisk | workday | verisk | wd1 | Verisk
+Chubb | workday | chubb | wd5 | ChubbCareers
+Kinaxis | workday | kinaxis | wd3 | Kinaxis
+Ivanti | workday | ivanti | wd1 | Ivanti
+NielsenIQ | workday | nielseniq | wd5 | NIQ
+Synaptics | workday | synaptics | wd5 | External
+Microchip Technology | workday | microchiphr | wd5 | External
+Pegasystems | workday | pegasystems | wd1 | Pegasystems
+Becton Dickinson | workday | bdx | wd1 | EXTERNAL_CAREER_SITE_INDIA
+Enphase Energy | workday | enphase | wd1 | Enphase_External
+John Deere | workday | johndeere | wd5 | DeereJobs
+Ciena | workday | ciena | wd5 | Careers
+Johnson Controls | workday | jci | wd5 | JCI
+S&P Global | workday | spgi | wd5 | SPGI_Careers
+Moody's | workday | moodys | wd5 | Careers
+MSCI | workday | msci | wd1 | MSCI_Careers
+Northern Trust | workday | ntrs | wd1 | northerntrust
+Deutsche Bank | workday | db | wd3 | DBWebsite
+Barclays | workday | barclays | wd3 | External_Career_Site_Barclays
+HSBC | workday | hsbc | wd3 | external
+Siemens Healthineers | workday | healthineers | wd3 | SHS
+Infineon | workday | infineon | wd3 | External
+Thermo Fisher | workday | thermofisher | wd5 | ThermoFisherCareers
+Danaher | workday | danaher | wd1 | DanaherJobs
+Amgen | workday | amgen | wd1 | Careers
+AstraZeneca | workday | astrazeneca | wd3 | Careers
+Pfizer | workday | pfizer | wd1 | PfizerCareers
+Comcast | workday | comcast | wd5 | Comcast_Careers
+Snap | workday | snapchat | wd1 | snap
+Adobe | workday | adobe | wd5 | external_experienced
+Chegg
+Chqbook
+Chronus Software
+Citi Bank
+Citymall
+Clarisights
+ClearQuote
+Clootrack
+Cloud Lending
+Clumio
+Credgenics
+Cogoport
+CommerceIQ
+Crowdfire
+Cure Fit
+Daily Rounds
+Decimal Point Analytics
+Dish Network
+Dkraft
+DP World
+Dremio
+Edfora Infotech
+EdgeVerve
+Editorialist YX
+Eightfold AI
+Eltropy
+Endurance International
+Epifi
+eSentire
+Falabella
+FanClash
+Fareportal
+Fastenal
+Finflux
+Fleetx
+Flock
+Fraazo
+Freescale
+FreshMenu
+FrontRow
+FunPlus
+GE HealthCare
+GoKwik
+GoodWorker
+Headout
+Heyday
+IDFC First Bank
+IDrive
+Increff
+Indiagold
+Infinx
+Info Edge
+Infoworks
+InsideView
+Instabase
+ION Group
+ION Trading
+ITILITE
+JTG
+Jumio
+Komprise
+LimeRoad
+Linq
+Loco
+Magnitude Software
+MemeChat
+MediaTek
+Mentor Graphics
+Millennium Management
+Mfine
+Moneycontrol
+Moonfrog Labs
+Motorq
+MSC Technology
+myKaarma
+NK Securities Research
+Nas Academy
+National Instruments
+Navis
+Nektar AI
+Netomi
+Newfold Digital
+nference
+Noccarc
+NXP
+O4S
+Oracle Cloud Infrastructure
+OLX Group
+OPPO
+Peak AI
+Pickrr
+Piramal Finance
+Plivo
+PocketPills
+Progress Software
+PropertyGuru
+Prophecy
+Qoala
+Quadeye (QE Securities LLP)
+Quizizz
+Rain Instant Pay
+Rakuten Symphony
+RateGain
+Rebel Foods
+Reliance Retail
+SAP Labs
+Salesken
+Schlumberger
+SLB
+SenseHQ
+SHL
+SigTuple
+Sixt
+Slack
+SmartCoin
+Societe Generale
+SoStronk
+SplashLearn
+Stashfin
+Stimuler
+Tala
+Deutsche Telekom
+Telstra
+Tesco
+Thales
+Times Internet
+Toast
+Tokopedia
+TomTom
+Traveloka
+Truminds
+Trifacta
+Trinkerr
+TruEra
+Uolo
+Unthinkable Solutions
+Virohan
+Vymo
+Wingify
+VWO
+Xerox
+Xilinx
+Yubi
+CredAvenue
+ZebPay
+Zendrive
+Zenefits
+Zeotap
+Zynga
+Flow Traders
+Da Vinci Derivatives
+TSMC
+Orbit Markets
+Vitol
+Honda R&D
+Elevation Capital (Light Ray Advisors LLP)
+Infurnia Technologies
+OLA (ANI Technologies Private Limited)
+Neysa Networks
+Nimble Diagnostics
+Think Investments
+Murata Manufacturing
+Sysmex
+Procter & Gamble
+Hyprbots Systems
+OPPO India R&D
+Finarb Analytics
+FASHNEAR TECHNOLOGIES PRIVATE LTD (Meesho)
+Apollo Global Management
+Nestle
+Shell
+Jaguar Land Rover
+Ikigai Labs
+Quadric
+FinMechanics
+Fujitsu Research of India
+Samsung Semiconductor India Research
+Micron Technology
+Fog Teams
+Strategy& (PwC)
+Optym
+Coupa Software
+Brokenatom
+Join Highbrow
+NEC
+Mercedes-Benz Research and Development India
+Arpwood Capital
+NPCI
+Aura Semiconductor
+Experion Developers
+Mindgate Solutions
+Baldor Technologies Private Limited (IDfy)
+Cargill
+Miebach Consulting
+Nobias
+InterGlobe Aviation (IndiGo)
+Air India
+Kearney
+Entuple E-Mobility
+Arthur D. Little
+Dolat Capital
+Kotak Securities
+Quintics
+Alphawave Semi
+Mobilewalla
+Samsung India Electronics
+Aurum PropTech
+SecPod Technologies
+AU Small Finance Bank
+SEDEMAC Mechatronics
+Bitmapper Integration Technologies
+Shakti Pumps
+Jio Financial Services
+Petronet LNG
+Michelin
+Apporchid
+ARGA Investment Management
+auxoAI
+Bloom Energy
+Nomura Research Institute
+AspectRatio
+Marsh McLennan
+Cleanmax Enviro Energy Solutions
+Alvarez & Marsal
+Reliance Industries
+Tata AIA Life Insurance
+Compound Express
+DSP Asset Managers
+Dataeaze Systems
+Varroc Engineering
+Akasa Air
+Auctus Advisors
+SMFG India Credit
+Hero MotoCorp
+Vantage Research
+Bajaj Auto
+Clarity Bio Systems
+Avendus Capital
+Singularity Dynamics
+MyGate
+QNu Labs
+Arihant Capital Markets
+Johnson & Johnson
+Godrej & Boyce
+Hind Rectifiers
+Premier Energies
+Fuji Electric
+Rosy Blue
+CEEW
+IndusInd Bank
+Tata Consultancy Services
+ICICI Prudential Life Insurance
+United Airlines
+EXL Service
+Axtria
+Tata Steel
+Computer Age Management Services
+Metal Power Analytical
+ExxonMobil
+Strand Life Sciences
+TVS Motor
+General Mills
+ICICI Bank
+GE
+Wissen Technology
+Indkal Technologies
+Jindal Stainless
+Delta Electronics
+FSG Advisory
+ICICI Lombard
+KPMG
+Svaya Robotics
+Xion Multiventures
+Futures First
+MRF
+Johnson Matthey
+EY
+Axxela Research and Analytics
+Dozee (Turtle Shell Technologies)
+Cyient
+Hitachi Energy
+DHL Supply Chain
+I-PAC
+Aditya Birla Science and Technology
+Quest Global
+Logixal
+Greaves Cotton
+Boult Audio
+House of Code
+Mahindra Susten
+Aarti Industries
+Larsen & Toubro
+L&T Technology Services
+LTIMindtree
+Crisil
+Walter P Moore
+Tejase Aerosense
+L&T Finance
+JSW Steel
+Technip Energies
+Cubastion Consulting
+Denso
+Squarepoint Capital
+Asahi Kasei
+Suzuki Motor
+Javis
+Alps Alpine
+Trilogy Innovations
+Renesas Electronics
+artience
+Deutsche India
+Netradyne
+ServCrust
+Verint
+C-DOT
+Mavenir
+CyePro Solutions
+Novartis
+Toshiba
+Rapidue Technologies
+Synchrony
+SiFive
+GlobalFoundries
+Chubb
+Carrier
+KPIT Technologies
+Turium AI
+SaaS Labs
+Drip Capital
+Cadence Design Systems
+Verisk
+Olympus
+Pegasystems
+Synaptics
+Innvolution Healthcare
+BharatX
+Data Insights
+Apollo 24/7
+Providence
+Human Holdings
+Gullak
+Flexcar
+Sembly AI
+Steradian Semiconductors
+Silicon Labs
+MaxLinear
+CASA Retail AI
+LetsTransport
+Richpanel
+Siemens EDA
+Airoha Technology
+Audify
+Jubilant FoodWorks
+Voxela
+Hewlett Packard Enterprise
+SWYM
+Enphase Energy
+Codemantra
+Addverb Technologies
+Sandvine
+Baker Hughes
+Signify
+42Gears
+Aster DM Healthcare
+ConveGenius
+Euler Motors
+GSK
+Kimberly-Clark
+Luganodes
+Quicket Solutions
+Urjanet
+Samsung R&D Institute India
+Sapiens
+Thorogood
+Affinsys
+Bain & Company
+Fujitsu
+iamneo
+Mad Street Den
+Microchip Technology
+NatWest Group
+Plotline
+Zee Entertainment
+OneShot.ai
+Kinaxis
+Blaize
+DotPe
+Epsilon
+Freo
+Institutional Shareholder Services
+Titan Company
+Bajaj Finserv
+John Deere
+Havells
+UBS
+Accelerize360
+AppViewX
+Becton Dickinson
+Capillary Technologies
+DevRev
+Forma.ai
+Ivanti
+Ozone Cloud
+RootQuotient
+Tide
+Tredence
+Eaton
+NielsenIQ
+Eli Lilly
+Qwikcilver
+Wolters Kluwer
+PepsiCo
+insightsoftware
+MulticoreWare
+NTT DATA
+AppsForBharat
+Broadridge
+Ensuredit
+GalaxEye Space
+Hono AI
+Osmosys
+Stratus Technologies
+Zenduty
+ZentreeLabs
+Rohm Semiconductor
+Verizon
+Medtronic
+Epicor
+LatentView Analytics
+Dover
+Uhnder
+Vassar Labs
+Vicara
+Caelius Consulting
+Logitech
+Tata Motors
+Volvo Group
+Visteon
+BMW
+Ford
+Fundwave
+General Electric
+Zycus
+YantraVision
+Docker
+Kong
+Toast Inc
+Chime
+Robinhood
+Affirm
+Brex
+Plaid
+Mercury
+Deel
+Remote
+Oyster HR
+Multiplier
+Turing
+Rocketlane
+Kapture CX
+Moglix
+WorkIndia
+Cutshort
+Instahyre
+Simplilearn
+Great Learning
+Allen Digital
+Cuemath
+Teachmint
+Leap Scholar
+Leverage Edu
+Yocket
+Zolve
+Univest
+Digio
+Leegality
+Riskcovry
+Onsurity
+Loop Health
+Medikabazaar
+Niramai
+5C Network
+Sugarfit
+Truemeds
+M2P
+STAGE OTT
+Josh Talks
+VerSe Innovation
+Moj
+Glance InMobi
+A23 Games
+Nazara Technologies
+PokerBaazi
+Head Digital Works
+FanCode
+Rario
+Pixxel
+Skyroot Aerospace
+Agnikul Cosmos
+Digantara
+Dhruva Space
+GalaxEye
+River Mobility
+Exponent Energy
+Log9 Materials
+Battery Smart
+Sun Mobility
+ChargeZone
+Statiq
+BluSmart
+Swiggy Instamart
+Country Delight
+FreshToHome
+Milkbasket
+Otipy
+WayCool
+Shopsy
+Tata CLiQ
+Noise
+Yatra
+Tata Communications
+Sify
+Netmagic
+Yotta Infrastructure
+E2E Networks
+Neysa
