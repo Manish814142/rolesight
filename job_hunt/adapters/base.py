@@ -1,6 +1,7 @@
 """Common base utilities and headers for direct ATS adapters."""
 from __future__ import annotations
 
+import html
 import re
 import time
 from typing import Any, Dict
@@ -17,19 +18,27 @@ DEFAULT_HEADERS: Dict[str, str] = {
 }
 
 
+_ESCAPED_TAG_RE = re.compile(r"&lt;\s*/?\s*[a-zA-Z]")
+_BLOCK_TAG_RE = re.compile(r"<\s*/?\s*(br|p|div|li|ul|ol|h[1-6]|tr|table|section)\b[^>]*>", re.IGNORECASE)
+_TAG_RE = re.compile(r"<[^>]+>")
+
+
 def strip_html(html_content: str) -> str:
-    """Strip HTML markup from a description string."""
+    """Plain text from an HTML description, one line per block element.
+
+    Greenhouse sends the markup itself entity-escaped ("&lt;p&gt;..."); such a document
+    (escaped tags, no real ones) is decoded to real markup first. Stdlib only: bs4 is
+    not a dependency, and its get_text() would keep escaped markup as literal text.
+    """
     if not html_content:
         return ""
-    try:
-        from bs4 import BeautifulSoup
-
-        soup = BeautifulSoup(html_content, "html.parser")
-        return soup.get_text(separator="\n").strip()
-    except Exception:
-        # Fallback to regex tag stripping
-        clean = re.sub(r"<[^>]+>", " ", html_content)
-        return " ".join(clean.split()).strip()
+    text = html_content
+    if "<" not in text and _ESCAPED_TAG_RE.search(text):
+        text = html.unescape(text)
+    text = _BLOCK_TAG_RE.sub("\n", text)
+    text = html.unescape(_TAG_RE.sub(" ", text))
+    lines = (" ".join(line.split()) for line in text.splitlines())
+    return "\n".join(line for line in lines if line)
 
 
 # Total wall-clock budget for one HTTP response (connect + full body). requests'
