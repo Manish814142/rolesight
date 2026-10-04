@@ -259,8 +259,8 @@ Greenhouse survivor in a live fetch contains `&lt;` or `<div`.
 |---|---|---|---|---|---|
 | T19 | Add an "enrich survivors" step to the scanner | review · claude · 0fd640e | claude | S | — |
 | T20 | Workday: fetch descriptions for single-location survivors | review · claude · ded2879 | claude | S | T19 |
-| T21 | SmartRecruiters: fetch descriptions for survivors | doing · claude · 2026-10-04 | claude | S | T19 |
-| T22 | Oracle HCM: fetch full descriptions for survivors | todo | — | S | T19 |
+| T21 | SmartRecruiters: fetch descriptions for survivors | review · claude · b7ba18e | claude | S | T19 |
+| T22 | Oracle HCM: fetch full descriptions for survivors | doing · claude · 2026-10-04 | claude | S | T19 |
 | T23 | Workday: check titles before the detail call (measure first) | todo | — | S | — |
 | T24 | Penalise roles that need onsite work outside India | todo | — | S | — |
 
@@ -448,6 +448,7 @@ The implementer adds a row when a task reaches `review`; the verifier removes it
 | T13 | ef15c4c | claude | `pytest tests/test_gemini_provider.py` → 3 new tests failed before the change (6,000-char description cut in single and batch prompts; no bound), pass after; `pytest` → 364 passed, coverage 89.16%; ruff, mypy clean. Deviation: a 20,000-char runaway bound kept (measured clean max 10,180). Live: 16 real Gemini calls with 1,001–7,638-char descriptions all returned valid scores (A/B in CHANGELOG). |
 | T19 | 0fd640e | claude | `pytest tests/test_enrich.py` → 4 failed before (no `ENRICHERS` / `scanner.enrich_job`), 4 passed after: survivor enriched; pre-filter reject, too-old and already-scored jobs not; scorer receives the enriched text. `pytest` → 368 passed, coverage 89.24%; ruff, mypy clean. Live run deferred to T20–T22 (registry empty here). conftest stubs `scanner.enrich_job` for every test. |
 | T20 | ded2879 | claude | `pytest tests/test_enrich.py` → 4 Workday tests failed before (no `workday.fetch_description`, not registered), pass after; `pytest` → 372 passed; ruff, mypy clean. Live: `scanner._enrich_jobs` (real network) on the 643 Workday survivors saved from a real fetch the same day → empty descriptions 591 → 0, incl. 0 of 153 posted ≤7 days; 109 s. Script: scratchpad `enrich_live.py`. |
+| T21 | b7ba18e | claude | Endpoint probed live first (HTTP 200, 4 sections). `pytest tests/test_enrich.py` → 3 SmartRecruiters tests failed before, pass after; `pytest` → 375 passed; ruff, mypy clean. Live: real fetch of the 13 boards → 74 survivors, `scanner._enrich_jobs` → empty 74 → 0 (18 of them posted ≤7 days), 14 s. Script: scratchpad `enrich_live_fetch.py smartrecruiters`. |
 
 ---
 
