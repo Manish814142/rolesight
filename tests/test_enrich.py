@@ -8,7 +8,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from job_hunt import adapters, scanner
-from job_hunt.adapters import smartrecruiters, workday
+from job_hunt.adapters import oracle_hcm, smartrecruiters, workday
 from job_hunt.db import init_db, save_job, update_job_status
 from job_hunt.models import JobPosting, canonical_hash
 
@@ -99,6 +99,52 @@ def test_smartrecruiters_detail_error_gives_empty(mock_get):
 
 def test_smartrecruiters_enricher_is_registered():
     assert adapters.ENRICHERS["smartrecruiters"] is smartrecruiters.fetch_description
+
+
+# --- Oracle HCM (T22) ------------------------------------------------------
+
+def _oracle_job(url="https://hcbt.fa.em2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX/job/123456"):
+    return JobPosting(global_id="oracle_hcm:hcbt.fa.em2.oraclecloud.com:123456", ats="oracle_hcm",
+                      company="EXL", title="Software Engineer", location="Noida, India",
+                      is_remote=False, url=url, description_text="Short summary")
+
+
+@patch("requests.get")
+def test_oracle_description_combines_description_responsibilities_qualifications(mock_get):
+    # EXL/Kotak keep most of the role in Responsibilities/Qualifications (probed 2026-10-04).
+    mock_get.return_value = _resp({"items": [{
+        "ShortDescriptionStr": "Short summary",
+        "ExternalDescriptionStr": "<p>Join our platform team.</p>",
+        "ExternalResponsibilitiesStr": "<ul><li>Build Node.js APIs</li></ul>",
+        "ExternalQualificationsStr": "<p>3+ years backend</p>",
+        "CorporateDescriptionStr": "<p>EXL is a data company.</p>",
+    }]})
+
+    desc = oracle_hcm.fetch_description(_oracle_job())
+
+    assert mock_get.call_args.args[0] == (
+        "https://hcbt.fa.em2.oraclecloud.com/hcmRestApi/resources/latest/recruitingCEJobRequisitionDetails")
+    assert mock_get.call_args.kwargs["params"]["finder"] == 'ById;Id="123456",siteNumber=CX'
+    for part in ("Join our platform team.", "Build Node.js APIs", "3+ years backend", "EXL is a data company."):
+        assert part in desc
+    assert "<" not in desc
+    assert desc.index("Build Node.js APIs") < desc.index("EXL is a data company.")
+
+
+@patch("requests.get")
+def test_oracle_detail_without_items_gives_empty(mock_get):
+    mock_get.return_value = _resp({"items": []})
+    assert oracle_hcm.fetch_description(_oracle_job()) == ""
+
+
+@patch("requests.get")
+def test_oracle_unrecognised_url_is_skipped(mock_get):
+    assert oracle_hcm.fetch_description(_oracle_job(url="https://example.com/job/1")) == ""
+    mock_get.assert_not_called()
+
+
+def test_oracle_enricher_is_registered():
+    assert adapters.ENRICHERS["oracle_hcm"] is oracle_hcm.fetch_description
 
 
 def _job(title, ats="workday", location="Bengaluru, India", posted_at="", desc=""):

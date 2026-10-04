@@ -8,9 +8,10 @@ The India location facet id differs per tenant, so it is looked up first.
 from __future__ import annotations
 
 import logging
+import re
 from typing import List, Optional
 
-from job_hunt.adapters.base import DEFAULT_HEADERS, http_get
+from job_hunt.adapters.base import DEFAULT_HEADERS, http_get, strip_html
 from job_hunt.models import JobPosting
 
 logger = logging.getLogger(__name__)
@@ -33,6 +34,41 @@ def _india_facet_id(host: str, site: str) -> Optional[int]:
         if (loc.get("Name") or "").strip().lower() == "india":
             return loc.get("Id")
     return None
+
+
+_JOB_URL_RE = re.compile(r"https://([^/]+)/hcmUI/CandidateExperience/[^/]+/sites/([^/]+)/job/([^/?#]+)")
+
+# The list API only has ShortDescriptionStr (~20-120 chars). Tenants split the role across
+# these fields: EXL and Kotak keep most of it in Responsibilities/Qualifications (2026-10-04).
+_DETAIL_FIELDS = (
+    ("ExternalDescriptionStr", "Description"),
+    ("ExternalResponsibilitiesStr", "Responsibilities"),
+    ("ExternalQualificationsStr", "Qualifications"),
+    ("OrganizationDescriptionStr", "About the organisation"),
+    ("CorporateDescriptionStr", "About the company"),
+)
+
+
+def fetch_description(job: JobPosting) -> str:
+    """Full description of one requisition from recruitingCEJobRequisitionDetails ("" if none)."""
+    m = _JOB_URL_RE.match(job.url)
+    if not m:
+        return ""
+    host, site, req_id = m.groups()
+    resp = http_get(f"https://{host}/hcmRestApi/resources/latest/recruitingCEJobRequisitionDetails",
+                    headers=DEFAULT_HEADERS, timeout=20,
+                    params={"onlyData": "true", "finder": f'ById;Id="{req_id}",siteNumber={site}'})
+    if resp.status_code != 200:
+        return ""
+    items = resp.json().get("items") or []
+    if not items:
+        return ""
+    parts = []
+    for field, label in _DETAIL_FIELDS:
+        text = strip_html(items[0].get(field) or "")
+        if text:
+            parts.append(f"{label}:\n{text}")
+    return "\n\n".join(parts)
 
 
 def fetch_oracle_hcm(host: str, site: str, company: str = "") -> List[JobPosting]:
