@@ -184,6 +184,7 @@ once. Record in CHANGELOG: jobs fetched, India, pre-filter passes, too old, scor
 | T16 | Put the logs in `data/` with rotation | todo | — | S | T15 |
 | T17 | Measure what the python/java/golang exclusions cost now | todo | — | XS | — |
 | T18 | Fix the CHANGELOG dates | todo | — | XS | — |
+| T46 | Decode HTML-escaped descriptions (Greenhouse) | doing · claude · 2026-10-04 | claude | XS | — |
 
 **T10 · `draft N` numbering.** The digest numbers jobs by score (`top_jobs`,
 `scanner.py` L599), but `state/last_scan.json` is written in scan order (L609), and
@@ -240,6 +241,15 @@ Inbox, and Manish decides.
 `git log` shows the commits were made on 2026-10-04 (measured). Correct the headings
 and the in-text dates.
 *Done when:* every dated entry matches its commit date in `git log`.
+
+**T46 · Escaped HTML in descriptions.** `bs4` is not installed in `.venv`, so
+`adapters/base.py` `strip_html` uses its regex fallback, which never decodes entities.
+Greenhouse sends `content` entity-escaped (`&lt;div class=&quot;…`), so all 154
+Greenhouse survivors reached Gemini as raw markup, cut at 2,000 chars (measured
+2026-10-04). Decode with stdlib `html.unescape`, then strip tags; no new dependency.
+Prerequisite for T13: removing the cap first would send up to 79,158 chars of markup.
+*Done when:* a unit test turns escaped Greenhouse HTML into plain text, and no
+Greenhouse survivor in a live fetch contains `&lt;` or `<div`.
 
 ---
 
@@ -419,7 +429,7 @@ CLAUDE.md), and `discover` has become the main way to add companies.
 
 ## Inbox
 
-New findings go here with the next free ID (next: **T46**), an evidence tag and the
+New findings go here with the next free ID (next: **T47**), an evidence tag and the
 file:line. Manish or the triaging agent moves each one into a priority table.
 
 | ID | Finding | Evidence | Added by |
