@@ -17,6 +17,8 @@ Usage:
     # periodic health check of the existing list (run monthly/quarterly): re-verify every
     # entry; boards that fail are re-discovered by name (ATS migration) or removed
     python -m job_hunt discover --recheck --merge companies.json --report /tmp/recheck.csv
+    # ATS census: which platform do careers pages use? ("Name | careers URL" lines)
+    python -m job_hunt discover --census scripts/careers_urls.txt --report /tmp/census.csv
 
 Seeds file, one company per line ('#' comments allowed):
     Stripe
@@ -35,6 +37,7 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+from urllib.parse import urljoin
 
 import requests
 
@@ -444,6 +447,113 @@ def recheck_companies(entries: List[Dict[str, Any]]) -> Tuple[List[Dict[str, Any
     return merge_companies(kept, replacements), summary + rows + disc_rows
 
 
+# Careers-page fingerprints, used to measure which ATS platforms the target companies
+# use (and so which adapters are worth building). Order = tie-break priority.
+ATS_FINGERPRINTS: List[Tuple[str, re.Pattern]] = [(name, re.compile(rx, re.IGNORECASE)) for name, rx in [
+    ("workday", r"myworkdayjobs\.com|myworkdaysite\.com"),
+    ("greenhouse", r"greenhouse\.io"),
+    ("lever", r"jobs\.lever\.co|api\.lever\.co"),
+    ("ashby", r"ashbyhq\.com"),
+    ("smartrecruiters", r"smartrecruiters\.com"),
+    ("workable", r"apply\.workable\.com|workable\.com/"),
+    ("recruitee", r"recruitee\.com"),
+    ("personio", r"jobs\.personio\.(de|com)"),
+    ("oracle_hcm", r"oraclecloud\.com/hcmUI|\.fa\.[a-z0-9]+\.oraclecloud\.com|CandidateExperience"),
+    ("taleo", r"taleo\.net"),
+    ("successfactors", r"successfactors\.(com|eu)|sapsf\.(com|eu)"),
+    ("eightfold", r"eightfold\.ai"),
+    ("phenom", r"phenompeople\.com"),
+    ("icims", r"icims\.com"),
+    ("avature", r"avature\.net"),
+    ("jobvite", r"jobvite\.com"),
+    ("brassring", r"brassring\.com"),
+    ("darwinbox", r"darwinbox\.(in|com)"),
+    ("keka", r"\.keka\.com"),
+    ("zoho_recruit", r"zohorecruit\.(com|in)"),
+    ("freshteam", r"freshteam\.com"),
+    ("skillate", r"skillate\.com"),
+    ("peoplestrong", r"peoplestrong\.com"),
+    ("param", r"param\.ai"),
+    ("recruiterflow", r"recruiterflow\.com"),
+    ("breezy", r"breezy\.hr"),
+    ("bamboohr", r"bamboohr\.com"),
+    ("teamtailor", r"teamtailor\.com"),
+    ("kula", r"kula\.ai"),
+]]
+JOB_BOARD_FINGERPRINTS: List[Tuple[str, re.Pattern]] = [(name, re.compile(rx, re.IGNORECASE)) for name, rx in [
+    ("instahyre", r"instahyre\.com"),
+    ("naukri", r"naukri\.com"),
+    ("linkedin", r"linkedin\.com/(jobs|company/[^\"' ]+/jobs)"),
+    ("wellfound", r"wellfound\.com|angel\.co/company"),
+    ("cutshort", r"cutshort\.io"),
+]]
+
+
+def fingerprint_ats(text: str) -> List[str]:
+    """ATS platforms referenced in a careers page (most-referenced first), then job boards
+    as "job_board:<name>". Empty when nothing recognisable is found."""
+    hits = [(len(rx.findall(text)), -i, name) for i, (name, rx) in enumerate(ATS_FINGERPRINTS)]
+    found = [name for n, _, name in sorted(hits, reverse=True) if n]
+    found += [f"job_board:{name}" for name, rx in JOB_BOARD_FINGERPRINTS if rx.search(text)]
+    return found
+
+
+_LINK_RE = re.compile(r"""href=["']([^"'#]+)["']""", re.IGNORECASE)
+_STRONG_JOB_WORD_RE = re.compile(r"open|position|job|vacanc|requisition", re.IGNORECASE)
+_JOB_WORD_RE = re.compile(r"open|position|job|vacanc|requisition|career|hiring|join|work-with-us", re.IGNORECASE)
+_ASSET_RE = re.compile(r"\.(css|js|png|jpe?g|gif|svg|ico|woff2?|pdf)(\?|$)", re.IGNORECASE)
+
+
+def _job_links(base_url: str, html: str, limit: int = 3) -> List[str]:
+    """Links on a careers landing page that probably lead to the job list."""
+    links: List[str] = []
+    for href in _LINK_RE.findall(html):
+        full = urljoin(base_url, href)
+        if (not full.startswith("http") or full.rstrip("/") == base_url.rstrip("/")
+                or not _JOB_WORD_RE.search(href) or _ASSET_RE.search(full)
+                or any(rx.search(full) for _, rx in JOB_BOARD_FINGERPRINTS)):
+            continue
+        if full not in links:
+            links.append(full)
+    links.sort(key=lambda u: not _STRONG_JOB_WORD_RE.search(u))  # "open positions" before "careers"
+    return links[:limit]
+
+
+def ats_census(entries: List[Dict[str, Any]], workers: int = 16) -> List[Dict[str, Any]]:
+    """Fetch each entry's careers URL and fingerprint the ATS behind it, following up to
+    three job-looking links one level deep when the landing page names no ATS."""
+    headers = {**DEFAULT_HEADERS, "Accept": "text/html,application/xhtml+xml,*/*"}
+
+    def one(e: Dict[str, Any]) -> Dict[str, Any]:
+        row = {"seed": e["name"], "url": e.get("url", "")}
+        try:
+            r = requests.get(e["url"], headers=headers, timeout=20, allow_redirects=True)
+            found = fingerprint_ats(f"{r.url}\n{r.text[:3_000_000]}")
+            verdict = f"HTTP {r.status_code}"
+            if not [f for f in found if not f.startswith("job_board:")] and r.status_code == 200:
+                for link in _job_links(r.url, r.text):
+                    try:
+                        r2 = requests.get(link, headers=headers, timeout=15, allow_redirects=True)
+                    except Exception:
+                        continue
+                    deeper = [f for f in fingerprint_ats(f"{r2.url}\n{r2.text[:3_000_000]}") if not f.startswith("job_board:")]
+                    if deeper:
+                        found = deeper + found
+                        verdict += f" via {link}"
+                        break
+            row.update({"platform": found[0] if found else "unknown/custom", "all_platforms": ",".join(found),
+                        "final_url": r.url, "verdict": verdict})
+        except Exception as ex:
+            row.update({"platform": "fetch failed", "all_platforms": "", "final_url": "", "verdict": str(ex)[:80]})
+        return row
+
+    with ThreadPoolExecutor(max_workers=workers) as ex:
+        return list(ex.map(one, entries))
+
+
+CENSUS_FIELDS = ["seed", "platform", "all_platforms", "url", "final_url", "verdict"]
+
+
 def write_report(rows: List[Dict[str, Any]], path: str) -> None:
     with open(path, "w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, fieldnames=REPORT_FIELDS, extrasaction="ignore")
@@ -480,6 +590,20 @@ def main(argv: Optional[List[str]] = None) -> None:
         if a in opts and i + 1 < len(argv):
             opts[a] = argv[i + 1]
     recheck = "--no-recheck" not in argv
+
+    if "--census" in argv:
+        path = argv[argv.index("--census") + 1]
+        entries = [e for e in parse_seeds(Path(path).read_text(encoding="utf-8")) if e.get("url")]
+        rows = ats_census(entries)
+        with open(opts["--report"], "w", newline="", encoding="utf-8") as fh:
+            w = csv.DictWriter(fh, fieldnames=CENSUS_FIELDS, extrasaction="ignore")
+            w.writeheader()
+            w.writerows(rows)
+        from collections import Counter
+        for platform, n in Counter(r["platform"] for r in rows).most_common():
+            print(f"  {platform:<24}{n:>4}")
+        print(f"Census of {len(rows)} careers pages -> {opts['--report']}")
+        return
 
     if "--recheck" in argv:
         target = Path(opts["--merge"] or "companies.json")

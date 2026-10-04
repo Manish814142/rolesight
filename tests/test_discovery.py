@@ -1,6 +1,8 @@
 """Unit tests for job_hunt/discovery.py (no network)."""
 from __future__ import annotations
 
+import pytest
+
 from job_hunt.discovery import (
     accept_board,
     merge_companies,
@@ -356,3 +358,70 @@ def test_recheck_replaces_moved_boards_and_removes_dead_ones(tmp_path, monkeypat
     assert (out["Moved"]["ats"], out["Moved"]["headcount"]) == ("ashby", "1,001-5,000 employees")
     text = report.read_text()
     assert "Gone" in text and "Moved" in text
+
+
+# ── ATS census: which platform does a careers page use? ───────────────────────
+
+from job_hunt.discovery import fingerprint_ats  # noqa: E402
+
+
+@pytest.mark.parametrize("text,platform", [
+    ('<a href="https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite">Jobs</a>', "workday"),
+    ('<iframe src="https://boards.greenhouse.io/embed/job_board?for=stripe">', "greenhouse"),
+    ('<a href="https://jobs.lever.co/cred">', "lever"),
+    ('https://ehpv.fa.em2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1', "oracle_hcm"),
+    ('<script src="https://cdn.phenompeople.com/CareerConnectResources/x.js">', "phenom"),
+    ('https://careers.microsoft.com -> https://apply.careers.microsoft.com/ (eightfold.ai)', "eightfold"),
+    ('https://magicpin.darwinbox.in/ms/candidate/careers', "darwinbox"),
+    ('https://career5.successfactors.eu/career?company=x', "successfactors"),
+    ('https://benchmarkit.zohorecruit.com/jobs/Careers', "zoho_recruit"),
+    ('https://spinny.freshteam.com/jobs', "freshteam"),
+    ('https://acme.keka.com/careers/', "keka"),
+    ('https://jobs.example.icims.com/jobs', "icims"),
+    ('https://x.taleo.net/careersection', "taleo"),
+    ('https://groww.skillate.com/', "skillate"),
+    ('<p>Join us! Email careers@acme.com</p>', None),
+])
+def test_fingerprint_ats(text, platform):
+    found = fingerprint_ats(text)
+    assert (found[0] if found else None) == platform
+
+
+def test_fingerprint_counts_job_boards_separately():
+    found = fingerprint_ats('<a href="https://www.instahyre.com/jobs-at-apna/">x</a>')
+    assert found == ["job_board:instahyre"]
+
+
+@patch("job_hunt.discovery.requests.get")
+def test_census_fetches_pages_and_reports_platform(mock_get, tmp_path):
+    page = MagicMock()
+    page.status_code = 200
+    page.url = "https://careers.acme.com/"
+    page.text = '<a href="https://jobs.lever.co/acme">Openings</a>'
+    mock_get.return_value = page
+    rows = disc.ats_census([{"name": "Acme", "url": "https://careers.acme.com"}], workers=2)
+    assert rows == [{"seed": "Acme", "url": "https://careers.acme.com", "platform": "lever",
+                     "all_platforms": "lever", "final_url": "https://careers.acme.com/", "verdict": "HTTP 200"}]
+    mock_get.side_effect = Exception("blocked")
+    assert disc.ats_census([{"name": "B", "url": "https://b"}])[0]["platform"] == "fetch failed"
+
+
+@patch("job_hunt.discovery.requests.get")
+def test_census_follows_job_links_one_level_when_landing_page_is_silent(mock_get):
+    """Marketing careers pages often only link to an 'Open positions' page; the ATS
+    shows up there."""
+    def page(url, text):
+        r = MagicMock()
+        r.status_code, r.url, r.text = 200, url, text
+        return r
+    landing = page("https://acme.com/careers", '<a href="/careers/open-positions">See open positions</a>'
+                                               '<a href="/about">About</a>')
+    openings = page("https://acme.com/careers/open-positions",
+                    '<script src="https://cdn.phenompeople.com/x.js"></script>')
+    mock_get.side_effect = lambda url, **kw: openings if "open-positions" in url else landing
+
+    row = disc.ats_census([{"name": "Acme", "url": "https://acme.com/careers"}])[0]
+
+    assert row["platform"] == "phenom"
+    assert row["verdict"].endswith("via https://acme.com/careers/open-positions")
+    assert all("/about" not in c.args[0] for c in mock_get.call_args_list)

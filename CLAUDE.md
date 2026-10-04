@@ -16,6 +16,7 @@ autopilot scan              # full scan of companies.json (alias: python -m job_
 autopilot scan --limit 5    # only the first 5 companies
 autopilot scan --posted-within 7   # only jobs posted in the last 7 days (undated jobs kept)
 autopilot discover --recheck --merge companies.json --report /tmp/r.csv   # monthly list health check
+autopilot discover --census scripts/careers_urls.txt --report /tmp/c.csv   # which ATS do careers pages use?
 ./run_daily.sh              # cron runner: timestamps into data/scan.log, MIN_SCORE defaults to 70
 autopilot harvest           # rebuild companies.json from india.yml + LinkedIn headcount cache
 autopilot validate          # probe boards in companies.json, prune dead ones (accepts empty boards — prefer discover)
