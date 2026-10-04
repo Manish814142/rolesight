@@ -14,6 +14,7 @@ from job_hunt.adapters.personio import fetch_personio
 from job_hunt.adapters.recruitee import fetch_recruitee
 from job_hunt.adapters.smartrecruiters import fetch_smartrecruiters
 from job_hunt.adapters.workable import fetch_workable
+from job_hunt.adapters.workday import fetch_description as workday_description
 from job_hunt.adapters.workday import fetch_workday
 from job_hunt.models import JobPosting
 
@@ -170,7 +171,9 @@ def fetch_company_jobs(company_info: Dict[str, Any]) -> List[JobPosting]:
 # ats -> fetch the full description of one job (one HTTP call), or "" to keep what the
 # list API gave. Only pre-filter survivors are enriched, just before scoring, so detail
 # calls are paid for jobs Gemini will actually read.
-ENRICHERS: Dict[str, Callable[[JobPosting], str]] = {}
+ENRICHERS: Dict[str, Callable[[JobPosting], str]] = {
+    "workday": workday_description,
+}
 
 
 def enrich_job(job: JobPosting) -> JobPosting:

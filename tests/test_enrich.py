@@ -1,11 +1,66 @@
-"""Enrich step (T19): survivors get their full description before scoring."""
+"""Enrich step (T19): survivors get their full description before scoring.
+
+Per-ATS description fetchers: Workday (T20), SmartRecruiters (T21), Oracle HCM (T22).
+"""
 from datetime import date
+from unittest.mock import MagicMock, patch
 
 import pytest
 
 from job_hunt import adapters, scanner
+from job_hunt.adapters import workday
 from job_hunt.db import init_db, save_job, update_job_status
 from job_hunt.models import JobPosting, canonical_hash
+
+
+def _resp(payload, status=200):
+    r = MagicMock()
+    r.status_code = status
+    r.json.return_value = payload
+    r.raise_for_status.return_value = None
+    return r
+
+
+# --- Workday (T20) ---------------------------------------------------------
+
+WD_URL = "https://adobe.wd5.myworkdayjobs.com/external_experienced/job/Noida/Software-Development-Engineer-2_R162019"
+
+
+@patch("requests.get")
+def test_workday_description_fetched_for_single_location_job(mock_get):
+    mock_get.return_value = _resp({"jobPostingInfo": {
+        "location": "Noida", "jobDescription": "<p>Build <b>Node.js</b> services</p>"}})
+    job = JobPosting(global_id="workday:adobe:R162019", ats="workday", company="Adobe",
+                     title="Software Development Engineer 2", location="Noida, India",
+                     is_remote=False, url=WD_URL)
+
+    desc = workday.fetch_description(job)
+
+    assert mock_get.call_args.args[0] == (
+        "https://adobe.wd5.myworkdayjobs.com/wday/cxs/adobe/external_experienced"
+        "/job/Noida/Software-Development-Engineer-2_R162019")
+    assert desc == "Build Node.js services"
+
+
+@patch("requests.get")
+def test_workday_job_that_already_has_a_description_is_not_refetched(mock_get):
+    # "N Locations" items were resolved via the same detail call during the fetch.
+    job = JobPosting(global_id="g", ats="workday", company="X", title="t", location="India",
+                     is_remote=False, url=WD_URL, description_text="already here")
+    assert workday.fetch_description(job) == ""
+    mock_get.assert_not_called()
+
+
+@patch("requests.get")
+def test_workday_url_without_job_path_is_skipped(mock_get):
+    job = JobPosting(global_id="g", ats="workday", company="X", title="t", location="India",
+                     is_remote=False, url="https://adobe.wd5.myworkdayjobs.com/external")
+    assert workday.fetch_description(job) == ""
+    mock_get.assert_not_called()
+
+
+def test_workday_enricher_is_registered():
+    assert adapters.ENRICHERS["workday"] is workday.fetch_description
 
 
 def _job(title, ats="workday", location="Bengaluru, India", posted_at="", desc=""):

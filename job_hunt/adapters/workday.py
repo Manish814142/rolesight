@@ -5,6 +5,7 @@ import logging
 import re
 import time
 from typing import Any, List, Tuple
+from urllib.parse import urlparse
 
 from job_hunt.adapters.base import DEFAULT_HEADERS, http_get, http_post, strip_html
 from job_hunt.models import JobPosting
@@ -37,6 +38,22 @@ def _fetch_detail(cxs_base: str, external_path: str) -> Tuple[str, str]:
         return "", ""
     locs = [info.get("location") or ""] + list(info.get("additionalLocations") or [])
     return "; ".join(loc for loc in locs if loc), strip_html(info.get("jobDescription", ""))
+
+
+def fetch_description(job: JobPosting) -> str:
+    """Full description of a single-location survivor ("" if it already has one).
+
+    The list API has no description; "N Locations" items already got theirs from the
+    detail call in fetch_workday. job.url is https://{tenant}.{dc}.myworkdayjobs.com/{site}{externalPath}.
+    """
+    if job.description_text:
+        return ""
+    u = urlparse(job.url)
+    site, _, rest = u.path.lstrip("/").partition("/")
+    if not (site and rest.startswith("job/")):
+        return ""
+    tenant = u.netloc.split(".")[0]
+    return _fetch_detail(f"https://{u.netloc}/wday/cxs/{tenant}/{site}", "/" + rest)[1]
 
 
 def fetch_workday(tenant: str, dc: str, site: str, budget: float = BOARD_BUDGET_SECONDS) -> List[JobPosting]:
