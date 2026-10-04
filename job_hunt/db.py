@@ -10,6 +10,29 @@ from job_hunt.models import JobPosting, canonical_hash, url_hash
 
 DEFAULT_DB_PATH = "data/jobs.db"
 
+# PRAGMA user_version of a database whose Workday ids were re-derived (see _rekey_workday).
+SCHEMA_VERSION = 1
+
+
+def _rekey_workday(conn: sqlite3.Connection) -> None:
+    """Make every stored Workday global_id equal what the adapter emits for that job.
+
+    The first T30 migration rewrote them to 'workday:<company display name>:...' while the
+    adapter uses the tenant ('workday:amat:...'), so already-scored jobs were never found
+    again and would have been re-scored. A row whose new id is already taken is left alone.
+    """
+    # Imported here, not at module level: the adapters package imports models.
+    from job_hunt.adapters.workday import workday_global_id_from_url
+
+    rows = conn.execute("SELECT id, global_id, url FROM jobs WHERE ats = 'workday'").fetchall()
+    for row_id, global_id, url in rows:
+        new_id = workday_global_id_from_url(url)
+        if new_id and new_id != global_id:
+            try:
+                conn.execute("UPDATE jobs SET global_id = ? WHERE id = ?", (new_id, row_id))
+            except sqlite3.IntegrityError:
+                pass
+
 
 def _migrate_db(conn: sqlite3.Connection) -> None:
     """Migrate legacy database schema where canonical_hash was UNIQUE.
@@ -30,23 +53,23 @@ def _migrate_db(conn: sqlite3.Connection) -> None:
         or "UNIQUE(canonical_hash)" in table_sql
         or "UNIQUE (canonical_hash)" in table_sql
     ):
-        # 1. Backfill Workday global_ids from URL if generic/location
-        conn.execute("""
-            UPDATE jobs
-            SET global_id = 'workday:' || company || ':' || substr(url, instr(url, '_') + 1)
-            WHERE ats = 'workday' AND url LIKE '%_%' AND (global_id LIKE '%:0' OR global_id LIKE '%(%' OR global_id LIKE '%Work%');
-        """)
-        # 2. Deduplicate any duplicate (ats, global_id) if present
+        # 1. Re-derive Workday ids from the stored URLs, exactly as the adapter builds them
+        _rekey_workday(conn)
+        # 2. Collapse rows that now share (ats, global_id) -- the same requisition stored twice --
+        #    keeping a scored one if there is one
         conn.execute("""
             DELETE FROM jobs
-            WHERE id NOT IN (
-                SELECT min(id) FROM jobs
-                WHERE global_id IS NOT NULL AND global_id != ''
-                GROUP BY ats, global_id
-                UNION ALL
-                SELECT id FROM jobs
-                WHERE global_id IS NULL OR global_id = ''
-            );
+            WHERE global_id IS NOT NULL AND global_id != ''
+              AND id NOT IN (
+                SELECT id FROM (
+                    SELECT id, ROW_NUMBER() OVER (
+                        PARTITION BY ats, global_id
+                        ORDER BY (status IN ('scored', 'notified')) DESC, id
+                    ) AS rn
+                    FROM jobs
+                    WHERE global_id IS NOT NULL AND global_id != ''
+                ) WHERE rn = 1
+              );
         """)
         # 3. Recreate table without UNIQUE on canonical_hash
         conn.execute("PRAGMA foreign_keys=OFF;")
@@ -110,6 +133,9 @@ def init_db(db_path: str = DEFAULT_DB_PATH) -> sqlite3.Connection:
         "CREATE UNIQUE INDEX IF NOT EXISTS idx_jobs_canonical_fallback ON jobs(canonical_hash) "
         "WHERE global_id IS NULL OR global_id = '';"
     )
+    if conn.execute("PRAGMA user_version").fetchone()[0] < SCHEMA_VERSION:
+        _rekey_workday(conn)
+        conn.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")
     conn.commit()
     return conn
 

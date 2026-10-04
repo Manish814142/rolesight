@@ -4,7 +4,7 @@ from __future__ import annotations
 import logging
 import re
 import time
-from typing import Any, List, Tuple
+from typing import Any, List, Optional, Tuple
 from urllib.parse import urlparse
 
 from job_hunt.adapters.base import DEFAULT_HEADERS, http_get, http_post, strip_html
@@ -24,6 +24,30 @@ BOARD_BUDGET_SECONDS = 600.0
 
 # List items with several locations show "5 Locations" instead of cities.
 _MULTI_LOCATION_RE = re.compile(r"^\d+\s+Locations?$", re.IGNORECASE)
+
+
+def workday_global_id(tenant: str, external_path: str, bullet_id: str = "", title: str = "") -> str:
+    """Stable id of one posting: the requisition suffix of its externalPath.
+
+    "/job/Noida/Software-Development-Engineer-2_R162019" -> "workday:adobe:R162019".
+    The database migration re-derives stored ids from job URLs with this same function.
+    """
+    if external_path and "_" in external_path:
+        job_id = external_path.split("_")[-1]
+    elif external_path:
+        job_id = external_path.strip("/")
+    else:
+        job_id = bullet_id
+    return f"workday:{tenant}:{job_id or title}"
+
+
+def workday_global_id_from_url(url: str) -> Optional[str]:
+    """workday_global_id for a stored job URL (https://{tenant}.{dc}.myworkdayjobs.com/{site}{externalPath})."""
+    parsed = urlparse(url or "")
+    site, _, rest = parsed.path.lstrip("/").partition("/")
+    if not (parsed.netloc.endswith("myworkdayjobs.com") and site and rest.startswith("job/")):
+        return None
+    return workday_global_id(parsed.netloc.split(".")[0], "/" + rest)
 
 
 def _fetch_detail(cxs_base: str, external_path: str) -> Tuple[str, str]:
@@ -123,20 +147,14 @@ def fetch_workday(tenant: str, dc: str, site: str, budget: float = BOARD_BUDGET_
 
             is_remote = "remote" in location.lower() or "remote" in title.lower()
 
-            # Requisition ID from external_path or bulletFields
-            job_id = ""
-            if external_path and "_" in external_path:
-                job_id = external_path.split("_")[-1]
-            elif external_path:
-                job_id = external_path.strip("/")
-            elif item.get("bulletFields"):
-                job_id = str(item["bulletFields"][0])
+            bullet_fields = item.get("bulletFields") or []
+            global_id = workday_global_id(tenant, external_path, str(bullet_fields[0]) if bullet_fields else "", title)
 
             job_url = f"https://{base_domain}/{site}{external_path}" if external_path else f"https://{base_domain}/{site}"
 
             jobs.append(
                 JobPosting(
-                    global_id=f"workday:{tenant}:{job_id or title}",
+                    global_id=global_id,
                     ats="workday",
                     company=tenant,
                     title=title,
