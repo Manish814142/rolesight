@@ -22,6 +22,18 @@ class JobPosting:
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
 
+    @property
+    def key(self) -> str:
+        """Return the unique deduplication key for this job."""
+        return job_key(self)
+
+
+def job_key(job: JobPosting) -> str:
+    """Return unique lookup/dedupe key for a job: global_id if present, else canonical_hash."""
+    if job.global_id and job.global_id.strip():
+        return job.global_id.strip()
+    return canonical_hash(job.title, job.company, job.location)
+
 
 def canonical_hash(title: str, company: str, location: str) -> str:
     """Compute deterministic MD5 hash based on normalized title, company, and location.

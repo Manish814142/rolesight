@@ -12,7 +12,7 @@ from job_hunt.adapters import enrich_job, fetch_company_jobs
 from job_hunt.db import get_job, init_db, save_job, update_job_status
 from job_hunt.llm_utils import chat_with_llm
 from job_hunt.log import get_logger
-from job_hunt.models import canonical_hash
+from job_hunt.models import job_key
 from job_hunt.notifier import is_telegram_configured, send_telegram
 from job_hunt.prefilter import is_too_old, should_evaluate_job
 from job_hunt.scorer import score_and_process_batch, score_and_process_job
@@ -459,11 +459,11 @@ def run_scan(config: dict, companies: list[dict]) -> None:
                     queued = 0
                     for job in direct_jobs:
                         seen_urls.add(job.url)
-                        c_hash = canonical_hash(job.title, job.company, job.location)
+                        j_key = job_key(job)
                         # Only scored/notified rows are final. 'skipped' rows are re-run
                         # through the (cheap, local) pre-filter so filter fixes apply to
                         # known jobs; 'discovered' rows are ones whose scoring failed.
-                        existing = get_job(c_hash)
+                        existing = get_job(j_key)
                         prior_status = existing["status"] if existing else None
                         if prior_status in ("scored", "notified"):
                             logger.debug(f"  Skipping previously scored job: {job.title}")
@@ -486,7 +486,7 @@ def run_scan(config: dict, companies: list[dict]) -> None:
                         if prior_status is None:
                             save_job(job, status="discovered")
                         elif prior_status != "discovered":
-                            update_job_status(c_hash, "discovered")
+                            update_job_status(j_key, "discovered")
                         pending_direct.append(job)
                         queued += 1
 

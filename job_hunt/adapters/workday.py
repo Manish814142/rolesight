@@ -123,13 +123,14 @@ def fetch_workday(tenant: str, dc: str, site: str, budget: float = BOARD_BUDGET_
 
             is_remote = "remote" in location.lower() or "remote" in title.lower()
 
-            # Job ID from bulletFields or external_path
+            # Requisition ID from external_path or bulletFields
             job_id = ""
-            bullet_fields = item.get("bulletFields", [])
-            if bullet_fields:
-                job_id = str(bullet_fields[0])
+            if external_path and "_" in external_path:
+                job_id = external_path.split("_")[-1]
             elif external_path:
-                job_id = external_path.split("_")[-1] if "_" in external_path else external_path.strip("/")
+                job_id = external_path.strip("/")
+            elif item.get("bulletFields"):
+                job_id = str(item["bulletFields"][0])
 
             job_url = f"https://{base_domain}/{site}{external_path}" if external_path else f"https://{base_domain}/{site}"
 

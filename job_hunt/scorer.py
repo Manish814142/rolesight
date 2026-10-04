@@ -7,7 +7,7 @@ from typing import Any, Dict, List, Optional
 
 from job_hunt.db import DEFAULT_DB_PATH, update_job_status
 from job_hunt.llm_utils import score_job_with_gemini, score_jobs_batch_with_gemini
-from job_hunt.models import JobPosting, canonical_hash
+from job_hunt.models import JobPosting, job_key
 from job_hunt.notifier import format_job_alert, is_telegram_configured, send_telegram
 
 logger = logging.getLogger(__name__)
@@ -109,7 +109,7 @@ def _record_score(
         if send_telegram_notification(telegram_token, telegram_chat_id, job=job, score=score, reason=reason):
             status = "notified"
     update_job_status(
-        c_hash=canonical_hash(job.title, job.company, job.location),
+        key=job_key(job),
         status=status,
         score=score,
         score_reason=reason,
