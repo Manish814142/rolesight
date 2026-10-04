@@ -365,7 +365,7 @@ review. Never write the real file unattended.
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
 | T29 | Store location, posted_at and description in `jobs` | todo | — | M | — |
-| T30 | Dedupe by ATS job ID | doing · antigravity · 2026-10-04 | antigravity | M | — |
+| T30 | Dedupe by ATS job ID | review · antigravity · 289d062 | antigravity | M | — |
 | T31 | `draft` reads SQLite | todo | — | S | T29 |
 | T32 | `export` reads SQLite | todo | — | S | T29 |
 | T33 | first_seen / last_seen and closed-job detection | todo | — | M | T29 |
@@ -507,6 +507,7 @@ The implementer adds a row when a task reaches `review`; the verifier removes it
 | ID | Commit(s) | Implementer | Evidence (command → result) |
 |---|---|---|---|
 | T47 | d160271 | antigravity | `pytest tests/test_adapters.py -k "test_fetch_workday_stops"` → 2 passed (failed before the fix); `pytest` → 382 passed, coverage 89.36%; ruff, mypy clean. Live: Sabre 40 distinct jobs (was 500 rows with 40 distinct URLs), Warner Bros Discovery 39 jobs, Danaher 200 jobs, each returning rows == distinct URLs. |
+| T30 | 289d062 | antigravity | `pytest tests/test_dedupe_by_job_id.py` → 3 passed; `pytest` → 385 passed, coverage 89.23%; ruff, mypy clean. Two req IDs with same title/location stored as distinct rows; data/jobs.db migrated cleanly with all 168 scored rows preserved; scanner scores new req IDs without skipping them. |
 
 ---
 
