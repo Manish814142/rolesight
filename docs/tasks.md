@@ -184,7 +184,7 @@ once. Record in CHANGELOG: jobs fetched, India, pre-filter passes, too old, scor
 | T16 | Put the logs in `data/` with rotation | todo | — | S | T15 |
 | T17 | Measure what the python/java/golang exclusions cost now | todo | — | XS | — |
 | T18 | Fix the CHANGELOG dates | todo | — | XS | — |
-| T46 | Decode HTML-escaped descriptions (Greenhouse) | doing · claude · 2026-10-04 | claude | XS | — |
+| T46 | Decode HTML-escaped descriptions (Greenhouse) | review · claude · 95b2002 | claude | XS | — |
 
 **T10 · `draft N` numbering.** The digest numbers jobs by score (`top_jobs`,
 `scanner.py` L599), but `state/last_scan.json` is written in scan order (L609), and
@@ -444,7 +444,7 @@ The implementer adds a row when a task reaches `review`; the verifier removes it
 
 | ID | Commit(s) | Implementer | Evidence (command → result) |
 |---|---|---|---|
-| — | — | — | — |
+| T46 | 95b2002 | claude | `pytest tests/test_strip_html.py` → 6 passed (4 failed before the fix); `pytest` → 361 passed; ruff, mypy clean. Live: `_prefetch_jobs` on the 74 Greenhouse boards → 154 survivors, 0 containing `&lt;`, `<div` or `&quot;` (was 154/154). |
 
 ---
 
