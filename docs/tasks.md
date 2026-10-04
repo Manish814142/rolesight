@@ -121,7 +121,7 @@ After this list: **T40, T50, T42** (Manish will not use TinyFish), then the rest
 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
-| T47 | Workday paging repeats postings | todo | — | XS | — |
+| T47 | Workday paging repeats postings | doing · antigravity · 2026-10-04 | antigravity | XS | — |
 | T48 | Scoring rubric and a golden set | todo | — | M | — |
 | T49 | Check big employers that report "no India jobs" | todo | — | S | — |
 
