@@ -34,6 +34,23 @@ def test_scoring_rubric_constant_present_and_has_anchors():
     assert "85" in rubric or "100" in rubric
 
 
+def test_stack_cap_has_explicit_exceptions():
+    """T48 review: rule 4 capped jobs that accept a language on the resume (measured on 59 labelled
+    jobs: Hotstar 'Java, Golang, or Python' and Toast 'Kotlin, Java, or another OO language' fell to
+    58). The cap must say when it does NOT apply."""
+    rule4 = llm_utils.SCORING_RUBRIC.split("4.")[1].split("5.")[0].lower()
+    assert "every" in rule4 or "all" in rule4                     # fires only if ALL accepted languages are outside the stack
+    assert "python" in rule4 and "or another" in rule4            # accepting Python / "or another language" is not a mismatch
+    assert "prefer" in rule4                                       # a preferred (not mandated) stack is not a mismatch
+
+
+def test_rubric_does_not_ask_for_arbitrary_score_spread():
+    """Measured on 59 jobs: asking the model to 'avoid clustering' left 2 distinct scores >= 85 and a
+    tie of 8, so the instruction was a no-op. Ties need sub-scores (T41), not jitter."""
+    rubric = llm_utils.SCORING_RUBRIC.lower()
+    assert "avoid clustering" not in rubric and "do not round" not in rubric
+
+
 def test_single_scoring_prompt_includes_rubric(monkeypatch):
     """score_job_with_gemini must pass SCORING_RUBRIC to Gemini prompt."""
     client = _capturing_client('{"score": 88, "reason": "strong match"}')
@@ -75,103 +92,129 @@ def test_batch_scoring_prompt_includes_rubric(monkeypatch):
     assert llm_utils.SCORING_RUBRIC in prompt
 
 
-def test_golden_set_csv_structure_and_tiers():
-    """scripts/golden_set.csv must exist, have 40 rows, required columns, and non-empty descriptions."""
-    import csv
-    from pathlib import Path
-
-    csv_path = Path("scripts/golden_set.csv")
-    assert csv_path.exists(), "scripts/golden_set.csv must exist"
-
-    with open(csv_path, mode="r", encoding="utf-8") as f:
-        reader = csv.DictReader(f)
-        rows = list(reader)
-
-    assert len(rows) >= 35, f"Expected ~40 jobs, got {len(rows)}"
-    expected_fields = {"id", "company", "title", "location", "url", "old_score", "old_reason", "label", "description"}
-    assert expected_fields.issubset(set(reader.fieldnames or []))
-
-    # All descriptions must be non-empty
-    for r in rows:
-        assert len(r["description"].strip()) > 0, f"Empty description for job #{r['id']} ({r['company']})"
-        assert r["label"] in ("apply", "maybe", "no"), f"Invalid label '{r['label']}' in job #{r['id']}"
-
-    # Verify representation of tiers
-    top = [r for r in rows if int(r["old_score"]) >= 85]
-    mid = [r for r in rows if 40 <= int(r["old_score"]) < 85]
-    bot = [r for r in rows if int(r["old_score"]) < 40]
-
-    assert len(top) >= 10, f"Expected >= 10 top jobs, got {len(top)}"
-    assert len(mid) >= 10, f"Expected >= 10 middle jobs, got {len(mid)}"
-    assert len(bot) >= 10, f"Expected >= 10 bottom jobs, got {len(bot)}"
-
-
-def test_compute_metrics_and_compare_scores():
-    """Verify accuracy metrics: precision, tie shrinkage, and agreement rate."""
+def _golden():
     import sys
     from pathlib import Path
     sys.path.insert(0, str(Path("scripts").resolve()))
     import score_golden_set
-
-    old_scores = [90, 90, 90, 75, 75, 45, 20]
-    labels = ["apply", "apply", "maybe", "no", "no", "no", "no"]
-
-    # Baseline old metrics at min_score=60
-    old_m = score_golden_set.compute_metrics(old_scores, labels, min_score=60)
-    assert old_m["predicted_positives"] == 5  # 90, 90, 90, 75, 75
-    assert old_m["strict_true_positives"] == 2  # 2 apply
-    assert old_m["false_positives"] == 2  # 2 'no' scored 75
-    assert old_m["max_tie_score"] == 90
-    assert old_m["max_tie_count"] == 3  # 3 tied at 90
-
-    # New scores where 75s (stack/location mismatches) are capped <= 60, and 90s are de-tied
-    new_scores = [92, 89, 87, 55, 30, 45, 20]
-    new_m = score_golden_set.compute_metrics(new_scores, labels, min_score=60)
-    assert new_m["predicted_positives"] == 3  # 92, 89, 87
-    assert new_m["strict_true_positives"] == 2  # 2 apply
-    assert new_m["false_positives"] == 0  # 0 false positives!
-    assert new_m["max_tie_count"] == 1  # No ties!
-
-    comp = score_golden_set.compare_scores(old_scores, new_scores, labels, min_score=60)
-    assert comp["precision_improved"] is True
-    assert comp["tie_at_top_shrunk"] is True
-    assert comp["mean_absolute_difference"] > 0
+    return score_golden_set
 
 
-def test_golden_set_dry_run_cli(tmp_path):
-    """Run score_golden_set.py with --dry-run and verify exit 0 and report output."""
+def test_golden_set_csv_is_well_formed():
+    """The labelled set the prompt is measured on must be sound (T48 review)."""
+    from collections import Counter
+
+    sgs = _golden()
+    rows = sgs.load_golden_set()
+    assert len(rows) >= 70
+    assert {r["split"] for r in rows} == {"dev", "held-out"}
+    c = Counter(r["label"] for r in rows)
+    assert min(c.values()) >= 5 and set(c) == {"apply", "maybe", "no"}
+    urls = Counter(r["url"] for r in rows)
+    assert max(urls.values()) == 1, "each posting appears once"
+    for r in rows:
+        assert len(r["description"]) >= 300, f"{r['id']} {r['company']}: description too short to judge"
+        assert r["label_source"] and r["label_reason"], f"{r['id']}: label needs a source and a reason"
+    # The first builder fetched the wrong Amazon page and stored ONE description on six different
+    # jobs. A posting can legitimately appear twice (same JD, two requisitions), never more.
+    assert max(Counter(r["description"] for r in rows).values()) <= 2
+
+
+def test_loader_rejects_bad_label_and_missing_columns(tmp_path):
+    import pytest
+
+    sgs = _golden()
+    bad_label = tmp_path / "a.csv"
+    bad_label.write_text("id,split,company,title,location,url,label,label_source,label_reason,description\n"
+                         "1,dev,C,T,L,u,definitely,x,y,d\n")
+    with pytest.raises(ValueError, match="label must be one of"):
+        sgs.load_golden_set(bad_label)
+    no_cols = tmp_path / "b.csv"
+    no_cols.write_text("id,company\n1,C\n")
+    with pytest.raises(ValueError, match="lacks columns"):
+        sgs.load_golden_set(no_cols)
+
+
+def test_auc_values():
+    sgs = _golden()
+    assert sgs.auc([90, 80, 20, 10], [True, True, False, False]) == 1.0
+    assert sgs.auc([10, 20, 80, 90], [True, True, False, False]) == 0.0
+    assert sgs.auc([50, 50], [True, False]) == 0.5          # a tie counts half
+    assert sgs.auc([50, 60], [True, True]) != sgs.auc([50, 60], [True, True])  # undefined -> nan
+
+
+def test_compute_metrics_precision_recall_false_positives_and_ties():
+    sgs = _golden()
+    #            apply  apply  maybe  no   no   no   apply
+    scores =    [92,    88,    70,    75,  65,  30,  58]
+    labels = ["apply", "apply", "maybe", "no", "no", "no", "apply"]
+    m = sgs.compute_metrics(scores, labels, min_score=60)
+    assert m["passes"] == 5 and m["apply_found"] == 2 and m["apply_total"] == 3
+    assert m["fit_found"] == 3 and m["fit_total"] == 4
+    assert m["false_positives"] == 2 and m["false_positive_indices"] == [3, 4]
+    assert m["precision"] == 3 / 5 and m["recall_apply"] == 2 / 3 and m["recall_fit"] == 3 / 4
+    assert m["top_count"] == 2 and m["top_distinct"] == 2 and m["max_tie_count"] == 1
+    assert sgs.compute_metrics([90, 90, 90], ["apply"] * 3)["max_tie_count"] == 3
+    assert sgs.compute_metrics([], [])["passes"] == 0
+
+
+def test_paired_bootstrap_detects_an_obvious_ranking_gain():
+    sgs = _golden()
+    labels = ["apply"] * 15 + ["no"] * 15
+    good = [90] * 15 + [20] * 15
+    useless = [50] * 30
+    med, lo, hi = sgs.paired_auc_diff_ci(useless, good, labels)
+    assert med == 0.5 and lo > 0 and hi <= 0.5
+    med, lo, hi = sgs.paired_auc_diff_ci(good, list(good), labels)
+    assert med == 0 == lo == hi
+
+
+def test_banner_only_while_labels_are_unconfirmed():
+    sgs = _golden()
+    rows = [{"label_source": "claude-2026-10-04"}, {"label_source": "claude-2026-10-04"}, {"label_source": "manish"}]
+    text = "\n".join(sgs.banner(rows))
+    assert "NOT CONFIRMED BY MANISH" in text and "2 by claude-2026-10-04" in text and "of 3 rows" in text
+    assert sgs.banner([{"label_source": "manish"}] * 3) == []
+
+
+def test_score_arms_failure_is_none_not_zero_and_rubric_is_restored(monkeypatch):
+    """A quota error must not become a score of 0, and the module constant must be put back."""
+    sgs = _golden()
+    seen = []
+
+    def fake(payload, resume, config, raise_on_error=False):
+        seen.append(llm_utils.SCORING_RUBRIC)
+        if payload["title"] == "boom":
+            raise RuntimeError("429")
+        return {"score": 77, "reason": "r"}
+
+    monkeypatch.setattr(sgs, "score_job_with_gemini", fake)
+    original = llm_utils.SCORING_RUBRIC
+    jobs = [{"id": "1", "company": "C", "title": "ok", "location": "L", "description": "d"},
+            {"id": "2", "company": "C", "title": "boom", "location": "L", "description": "d"}]
+    out = sgs.score_arms(jobs, "resume", {}, {"off": "", "current": "RUBRIC"}, sleep_interval=0)
+    assert out == {"off": {"1": 77, "2": None}, "current": {"1": 77, "2": None}}
+    assert seen[:2] == ["", "RUBRIC"]            # arms really used different rubric text
+    assert llm_utils.SCORING_RUBRIC == original
+
+
+def test_report_from_saved_scores_cli(tmp_path):
+    """The real CLI on the real golden set, with scores that rank perfectly: no API, exit 0."""
+    import json
     import subprocess
     import sys
 
-    out_csv = tmp_path / "scored.csv"
-    res = subprocess.run(
-        [sys.executable, "scripts/score_golden_set.py", "--dry-run", "--output", str(out_csv)],
-        capture_output=True,
-        text=True,
-    )
-    assert res.returncode == 0
-    assert "GOLDEN SET BENCHMARK EVALUATION" in res.stdout
-    assert out_csv.exists()
-    # T48 review: the labels are the build script's (old score >= 85 -> apply) and the dry-run
-    # "new" scores come from a rule-based simulator, so no figure here may read as a pass.
-    assert "NOT AN ACCURACY MEASURE" in res.stdout
-    assert "assigned by scripts/build_golden_set.py" in res.stdout
-    assert "simulator, not Gemini" in res.stdout
-    assert "(Passed)" not in res.stdout
-
-
-def test_banner_names_only_the_caveats_that_apply(capsys):
-    """Live scores against confirmed labels are a real measure: no 'not an accuracy measure' banner."""
-    from scripts import score_golden_set as sgs
-
-    jobs = [{"label": "apply", "company": "C", "title": "T", "old_reason": "r"}] * 2
-    sgs.LABELS_CONFIRMED_BY_MANISH = True
-    try:
-        sgs.print_comparison_report(jobs, [80, 70], [80, 70], ["r", "r"], 60, simulated=False)
-    finally:
-        sgs.LABELS_CONFIRMED_BY_MANISH = False
-    assert "NOT AN ACCURACY MEASURE" not in capsys.readouterr().out
-    sgs.print_comparison_report(jobs, [80, 70], [80, 70], ["r", "r"], 60, simulated=False)
-    out = capsys.readouterr().out
-    assert "NOT AN ACCURACY MEASURE" in out and "simulator, not Gemini" not in out
-
+    sgs = _golden()
+    rows = sgs.load_golden_set()
+    perfect = {"off": {r["id"]: 50 for r in rows},
+               "current": {r["id"]: {"apply": 90, "maybe": 65, "no": 30}[r["label"]] for r in rows}}
+    scores = tmp_path / "s.json"
+    scores.write_text(json.dumps(perfect))
+    res = subprocess.run([sys.executable, "scripts/score_golden_set.py", "--from-scores", str(scores)],
+                         capture_output=True, text=True)
+    assert res.returncode == 0, res.stderr
+    out = res.stdout
+    assert "LABELS NOT CONFIRMED BY MANISH" in out
+    assert "--- all:" in out and "--- dev:" in out and "--- held-out:" in out
+    assert "AUC 1.000" in out and "AUC 0.500" in out
+    assert "(Passed)" not in out and "improved" not in out.lower()

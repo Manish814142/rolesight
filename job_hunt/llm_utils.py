@@ -208,7 +208,8 @@ def _description(job: dict) -> str:
     return str(job.get("content", job.get("snippet", "")))[:MAX_DESCRIPTION_CHARS]
 
 
-# Scoring rubric anchors for LLM evaluation (T48 / T24).
+# Scoring rubric anchors for LLM evaluation (T48 / T24). Rule 4's exceptions and the removal of the
+# "spread the scores" text come from the labelled comparison of 2026-10-04 (CHANGELOG, T48).
 SCORING_RUBRIC = """SCORING RUBRIC & HARD ANCHORS (strictly enforce):
 1. Location & Work Authorization Cap (score <= 30):
    If the job requires on-site presence outside India, or requires foreign citizenship / work authorization without visa sponsorship, cap score at <= 30. (India-based roles, India hybrid, or remote roles are eligible for higher scores).
@@ -217,17 +218,15 @@ SCORING_RUBRIC = """SCORING RUBRIC & HARD ANCHORS (strictly enforce):
 3. Seniority Gap Cap (score <= 50):
    The candidate has ~3.3 years of experience. If the role strictly requires 6+ years of professional experience (Lead, Staff, Principal, Architect), cap score at <= 50. (Roles requiring 2-4 years are optimal; 4-5 years is acceptable up to 75-80 if stack matches).
 4. Primary Stack Mismatch Cap (score <= 60):
-   If the core backend stack strictly requires an incompatible ecosystem (such as mandatory C#/.NET Core, Java/Spring Boot, Go, C++, or Ruby) and does NOT accept or use the candidate's primary stack (Node.js/TypeScript/Python), cap score at <= 60.
+   Apply this cap only if EVERY language or framework the posting accepts is outside the candidate's stack, i.e. it mandates C#/.NET Core, Java/Spring Boot, Go, C++, Ruby or similar and nothing else.
+   Do NOT apply it when the posting lists Python, JavaScript, TypeScript or Node.js among its acceptable languages (the candidate's resume has Python), when it says "or another"/"any" object-oriented or programming language, or when it only prefers (does not require) a stack. For example "Java, Golang, or Python" is not a mismatch.
 5. High Score Criteria (85-100):
    Award 85-100 ONLY when ALL three criteria hold:
    - Primary backend stack matches candidate's core stack (Node.js, TypeScript, Python, backend microservices, event-driven queues, databases/caching).
    - Experience target fits candidate's seniority (2-5 years / SDE-2 / Mid-level).
    - Location fits (India or Remote).
-   Differentiate within 85-100 (e.g. 87, 91, 95) based on exact skill depth; avoid clustering scores at round numbers like 90.
 6. Moderate Match (65-84):
-   Solid backend fit with minor stack or seniority stretch.
-7. Calibration:
-   Use the full 0-100 scale; do not round or cluster scores."""
+   Solid backend fit with minor stack or seniority stretch."""
 
 
 def score_job_with_gemini(job: dict, resume: str, config: dict, raise_on_error: bool = False) -> dict:
