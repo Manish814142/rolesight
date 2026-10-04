@@ -256,23 +256,13 @@ once. Record in CHANGELOG: jobs fetched, India, pre-filter passes, too old, scor
 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
-| T10 | `draft N` opens the wrong job | review · claude · e126b79 | claude | S | — |
 | T11 | Let Adobe "Computer Scientist" titles through | todo | — | XS | — |
 | T12 | Exclude CRM/platform "developer" roles | todo | — | S | — |
-| T13 | Remove the 2,000-char description cap when scoring | review · claude · ef15c4c | claude | XS | T46 |
 | T14 | Send the full resume to `draft` | todo | — | XS | — |
 | T15 | Stop tests writing to the real `scan.log` | todo | — | S | — |
 | T16 | Put the logs in `data/` with rotation | todo | — | S | T15 |
 | T17 | Measure what the python/java/golang exclusions cost now | todo | — | XS | — |
 | T18 | Fix the CHANGELOG dates | todo | — | XS | — |
-| T46 | Decode HTML-escaped descriptions (Greenhouse) | review · claude · 95b2002 | claude | XS | — |
-
-**T10 · `draft N` numbering.** The digest numbers jobs by score (`top_jobs`,
-`scanner.py` L599), but `state/last_scan.json` is written in scan order (L609), and
-`drafter.py` L25–31 counts down that file. The earlier review measured digest #4 =
-Salesforce (75) while `draft 4` opened Adobe SDE-3 (20). Write `last_scan.json` in the
-digest's order. T31 is the lasting fix.
-*Done when:* a unit test shows `draft 1` resolves to the highest-scoring job.
 
 **T11 · "Computer Scientist" titles.** On 2026-10-04, 16 of the 19 "Computer
 Scientist" / MTS titles in the DB were `skipped` (measured). MTS is now included
@@ -288,11 +278,6 @@ passes on the 28-board list, scored 10–20. The 215 boards now include ServiceN
 the exclude list. Match on the title only, never the company field.
 *Done when:* unit tests pass, and a `scan --limit` dry run has none of these titles
 among its passes.
-
-**T13 · Description cap.** `llm_utils.py` L226 and L280 cut job descriptions to
-2,000 characters. Remove the cut. It should fit the 250k tokens/min limit at this volume
-(assumed).
-*Done when:* a unit test shows a 6,000-character description reaching the prompt intact.
 
 **T14 · Full resume in `draft`.** `drafter.py` L114 still uses `resume[:2500]`. The
 scorer was fixed in cd5df8e; the resume is about 4,000 characters.
@@ -323,46 +308,14 @@ Inbox, and Manish decides.
 and the in-text dates.
 *Done when:* every dated entry matches its commit date in `git log`.
 
-**T46 · Escaped HTML in descriptions.** `bs4` is not installed in `.venv`, so
-`adapters/base.py` `strip_html` uses its regex fallback, which never decodes entities.
-Greenhouse sends `content` entity-escaped (`&lt;div class=&quot;…`), so all 154
-Greenhouse survivors reached Gemini as raw markup, cut at 2,000 chars (measured
-2026-10-04). Decode with stdlib `html.unescape`, then strip tags; no new dependency.
-Prerequisite for T13: removing the cap first would send up to 79,158 chars of markup.
-*Done when:* a unit test turns escaped Greenhouse HTML into plain text, and no
-Greenhouse survivor in a live fetch contains `&lt;` or `<div`.
-
 ---
 
 ## P2 — Better input for the scorer
 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
-| T19 | Add an "enrich survivors" step to the scanner | review · claude · 0fd640e | claude | S | — |
-| T20 | Workday: fetch descriptions for single-location survivors | review · claude · ded2879 | claude | S | T19 |
-| T21 | SmartRecruiters: fetch descriptions for survivors | review · claude · b7ba18e | claude | S | T19 |
-| T22 | Oracle HCM: fetch full descriptions for survivors | review · claude · 61c6874 | claude | S | T19 |
 | T23 | Workday: check titles before the detail call (measure first) | todo | — | S | — |
 | T24 | Penalise roles that need onsite work outside India | todo | — | S | — |
-
-**T19 · Enrich step.** In `run_scan`, between the pre-filter and scoring, call an
-optional per-adapter `enrich(job)` only for jobs that passed. It does nothing by default.
-*Done when:* a unit test shows `enrich` called for survivors only.
-
-**T20 · Workday descriptions.** `workday.py` L82 calls `_fetch_detail` only for
-"N Locations" items. Single-location jobs reach Gemini as "No full description
-provided." (`scorer.py` L68).
-*Done when:* no Workday survivor in a dry run is scored without a description.
-
-**T21 · SmartRecruiters descriptions.** `smartrecruiters.py` L74 sets
-`description_text=""`. The Antigravity review suggested the detail endpoint
-`GET https://api.smartrecruiters.com/v1/companies/{slug}/postings/{id}`. It is
-unverified, so probe it first.
-*Done when:* SmartRecruiters survivors have non-empty descriptions in a dry run.
-
-**T22 · Oracle HCM descriptions.** `oracle_hcm.py` L74 stores only
-`ShortDescriptionStr`. Find the requisition detail endpoint (unverified).
-*Done when:* Oracle HCM survivors carry the full description.
 
 **T23 · Workday title check before detail calls.** "N Locations" detail calls run for
 every such job, before the title filter. The earlier review measured about 100 s each
@@ -521,6 +474,11 @@ is India-tilted; say so in SETUP.md).
 fetches jobs with `TINYFISH_API_KEY` unset; `grep -rni tinyfish SETUP.md PRIVACY.md
 SECURITY.md config.example.json docs/` returns only notes saying it was removed.
 
+**T50 update (docs rewrite, 2026-10-04):** the docs half is done. README, SETUP.md, PRIVACY.md,
+SECURITY.md and `docs/` now describe TinyFish as unused, needed only by `draft` until T40.
+Still open: `autopilot init`'s company list, `config.example.json`, and the `grep` check
+(which will keep finding the T40 notes until T40/T42 remove the code).
+
 T43 context: re-running `harvest` re-adds boards that were removed on evidence (see
 CLAUDE.md), and `discover` has become the main way to add companies.
 
@@ -528,12 +486,17 @@ CLAUDE.md), and `discover` has become the main way to add companies.
 
 ## Inbox
 
-New findings go here with the next free ID (next: **T51**), an evidence tag and the
+New findings go here with the next free ID (next: **T57**), an evidence tag and the
 file:line. Manish or the triaging agent moves each one into a priority table.
 
 | ID | Finding | Evidence | Added by |
 |---|---|---|---|
-| — | — | — | — |
+| T51 | `requirements.txt` has `google-genai` commented out, so an install from it scores nothing (every call fails "google-genai is not installed"). Add it, or delete `requirements.txt` in favour of the `gemini` extra | measured: `requirements.txt` L8–9; error text in `llm_utils._get_genai_client_and_types` | claude (docs rewrite) |
+| T52 | Without a Gemini key, the legacy `score_jobs` path scores survivors but never writes the score to the DB, so the same jobs stay `discovered` and are re-scored every scan | inferred from `scanner.run_scan` (legacy `else` branch after the Gemini block, no `update_job_status`); not run | claude (docs rewrite) |
+| T53 | Warnings from module loggers (`job_hunt.adapters.*`, `job_hunt.scorer`, …) never reach `scan.log`. Only the `autopilot` logger has the file handler (`log.py`), so e.g. "Greenhouse fetch failed for …" appears on the console only. Fold into T16 | inferred from `log.py`; `grep -c "fetch failed for" scan.log` → 0 (measured) | claude (docs rewrite) |
+| T54 | `notifier.send_whatsapp` (TextMeBot) is dead code: only `tests/test_notifier.py` calls it. Remove it with the T42 cleanup | measured: `grep -rn send_whatsapp job_hunt tests` | claude (docs rewrite) |
+| T55 | Packaging metadata is still upstream's: `pyproject.toml` URLs, description and `openrouter` keyword; `tinyfish` and `openai` are core dependencies; the `Dockerfile` sets `TINYFISH_API_KEY` / `OPENROUTER_API_KEY` and installs `.[mcp]` without `gemini`. `server.json`, `smithery.yaml` and `glama.json` describe the upstream registry listing | measured: read the files | claude (docs rewrite) |
+| T56 | Before T25/T27: a previous Claude session recorded that Eightfold (PCSX endpoint → HTTP 403) and Darwinbox (needs a tenant session) have no easy public API (tried 2026-10-04/05). Check that record before re-probing | assumed: Claude memory, not re-checked, not in the repo | claude (docs rewrite) |
 
 ---
 
@@ -543,13 +506,7 @@ The implementer adds a row when a task reaches `review`; the verifier removes it
 
 | ID | Commit(s) | Implementer | Evidence (command → result) |
 |---|---|---|---|
-| T46 | 95b2002 | claude | `pytest tests/test_strip_html.py` → 6 passed (4 failed before the fix); `pytest` → 361 passed; ruff, mypy clean. Live: `_prefetch_jobs` on the 74 Greenhouse boards → 154 survivors, 0 containing `&lt;`, `<div` or `&quot;` (was 154/154). |
-| T13 | ef15c4c | claude | `pytest tests/test_gemini_provider.py` → 3 new tests failed before the change (6,000-char description cut in single and batch prompts; no bound), pass after; `pytest` → 364 passed, coverage 89.16%; ruff, mypy clean. Deviation: a 20,000-char runaway bound kept (measured clean max 10,180). Live: 16 real Gemini calls with 1,001–7,638-char descriptions all returned valid scores (A/B in CHANGELOG). |
-| T19 | 0fd640e | claude | `pytest tests/test_enrich.py` → 4 failed before (no `ENRICHERS` / `scanner.enrich_job`), 4 passed after: survivor enriched; pre-filter reject, too-old and already-scored jobs not; scorer receives the enriched text. `pytest` → 368 passed, coverage 89.24%; ruff, mypy clean. Live run deferred to T20–T22 (registry empty here). conftest stubs `scanner.enrich_job` for every test. |
-| T20 | ded2879 | claude | `pytest tests/test_enrich.py` → 4 Workday tests failed before (no `workday.fetch_description`, not registered), pass after; `pytest` → 372 passed; ruff, mypy clean. Live: `scanner._enrich_jobs` (real network) on the 643 Workday survivors saved from a real fetch the same day → empty descriptions 591 → 0, incl. 0 of 153 posted ≤7 days; 109 s. Script: scratchpad `enrich_live.py`. |
-| T21 | b7ba18e | claude | Endpoint probed live first (HTTP 200, 4 sections). `pytest tests/test_enrich.py` → 3 SmartRecruiters tests failed before, pass after; `pytest` → 375 passed; ruff, mypy clean. Live: real fetch of the 13 boards → 74 survivors, `scanner._enrich_jobs` → empty 74 → 0 (18 of them posted ≤7 days), 14 s. Script: scratchpad `enrich_live_fetch.py smartrecruiters`. |
-| T22 | 61c6874 | claude | Endpoint probed on all 4 tenants first (HTTP 200; `expand=all` adds nothing). `pytest tests/test_enrich.py` → 4 Oracle tests failed before, pass after; `pytest` → 379 passed; ruff, mypy clean. Live: real fetch of the 4 tenants → 77 survivors, `scanner._enrich_jobs` → under 300 chars 42 → 1, median 181 → 2,721, 13 s. 3 jobs stay short (Kotak 258948, 260553; EXL 12459): their detail record has no text field at all (probed with `expand=all`). |
-| T10 | e126b79 | claude | `pytest tests/test_draft_numbering.py` → failed before (`draft 1` → the 20-score job, first in scan order), passes after: real `run_scan` writes `last_scan.json`, `drafter._resolve_job` 1/2/3 → scores 75/50/20, CSV rows in the same order. `pytest` → 380 passed; ruff, mypy clean. Not run: `autopilot draft 1` end to end — it needs `TINYFISH_API_KEY` (unset) before it resolves N (T40). Also changes the CSV to best-first. |
+| — | — | — | — |
 
 ---
 
@@ -561,6 +518,13 @@ and CHANGELOG (inferred), and their numbers from CHANGELOG unless marked measure
 
 | ID | What | Commit | Evidence | Verified |
 |---|---|---|---|---|
+| T46 | Decode HTML-escaped descriptions (Greenhouse) | 95b2002 | `pytest tests/test_strip_html.py` → 6 passed; `pytest` → 380 passed, coverage 89.39%; ruff, mypy clean | verified · antigravity · 2026-10-04 |
+| T13 | Remove the 2,000-char description cap when scoring | ef15c4c | `pytest tests/test_gemini_provider.py` → 17 passed; `pytest` → 380 passed, coverage 89.39%; ruff, mypy clean | verified · antigravity · 2026-10-04 |
+| T19 | Add an "enrich survivors" step to the scanner | 0fd640e | `pytest tests/test_enrich.py` → 15 passed; `pytest` → 380 passed, coverage 89.39%; ruff, mypy clean | verified · antigravity · 2026-10-04 |
+| T20 | Workday: fetch descriptions for single-location survivors | ded2879 | `pytest tests/test_enrich.py` → 15 passed; `pytest` → 380 passed, coverage 89.39%; ruff, mypy clean | verified · antigravity · 2026-10-04 |
+| T21 | SmartRecruiters: fetch descriptions for survivors | b7ba18e | `pytest tests/test_enrich.py` → 15 passed; `pytest` → 380 passed, coverage 89.39%; ruff, mypy clean | verified · antigravity · 2026-10-04 |
+| T22 | Oracle HCM: fetch full descriptions for survivors | 61c6874 | `pytest tests/test_enrich.py` → 15 passed; `pytest` → 380 passed, coverage 89.39%; ruff, mypy clean | verified · antigravity · 2026-10-04 |
+| T10 | `draft N` opens digest job #N (number last_scan.json and CSV by score) | e126b79 | `pytest tests/test_draft_numbering.py` → 1 passed; `pytest` → 380 passed, coverage 89.39%; ruff, mypy clean | verified · antigravity · 2026-10-04 |
 | — | Commit the working tree; tree clean | cd5df8e … 04521db | 355 tests pass, ruff and mypy clean (measured 2026-10-04) | pre-board |
 | — | Location filter: Delhi / NCR / Kolkata and case-sensitive `, in` | cd5df8e | "Indianapolis, IN" still rejected (unit test) | pre-board |
 | — | Full resume in the scoring prompts | cd5df8e | previously first 2,500 of ~4,000 chars | pre-board |
