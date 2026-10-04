@@ -80,6 +80,10 @@ Applied in order; all patterns are case-insensitive and word-bounded.
    - else `worldwide|anywhere|global` ⇒ pass;
    - else `is_remote` or `remote` ⇒ pass (geography-free remote);
    - else reject.
+4. **Posted date (optional)** — with `--posted-within N` / `candidate.max_posted_age_days`,
+   jobs whose posted date is known and older than N days are saved as `skipped`; undated
+   jobs always pass. Dates: ISO from Greenhouse (`first_published`), Lever, Ashby,
+   SmartRecruiters, Workable, Recruitee, Personio; Workday relative text ("Posted 5 Days Ago").
 
 ### DB status lifecycle
 

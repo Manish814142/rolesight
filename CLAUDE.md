@@ -14,6 +14,8 @@ Telegram is optional. The primary output is the CSV in `output/`.
 ```bash
 autopilot scan              # full scan of companies.json (alias: python -m job_hunt scan)
 autopilot scan --limit 5    # only the first 5 companies
+autopilot scan --posted-within 7   # only jobs posted in the last 7 days (undated jobs kept)
+autopilot discover --recheck --merge companies.json --report /tmp/r.csv   # monthly list health check
 ./run_daily.sh              # cron runner: timestamps into data/scan.log, MIN_SCORE defaults to 70
 autopilot harvest           # rebuild companies.json from india.yml + LinkedIn headcount cache
 autopilot validate          # probe boards in companies.json, prune dead ones (accepts empty boards — prefer discover)
@@ -44,6 +46,12 @@ Tests must make **no network calls** — stub `send_telegram`, adapters, and Gem
 
 Companies **without** an `ats` fall back to the legacy TinyFish careers-page path
 (only if `TINYFISH_API_KEY` is set; otherwise skipped).
+
+### Seen-job memory
+`data/jobs.db` (SQLite, table `jobs`) is what makes daily runs show only new jobs: key =
+`canonical_hash` = MD5(title+company+location). `state/last_scan.json` holds only the latest
+run (used by `draft N`), `state/job_history.json` the cumulative scored jobs (`export --days`),
+`state/seen_jobs.json` only the legacy TinyFish path.
 
 ### DB status lifecycle (`data/jobs.db`, table `jobs`)
 
