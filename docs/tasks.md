@@ -121,7 +121,7 @@ After this list: **T40, T50, T42** (Manish will not use TinyFish), then the rest
 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
-| T47 | Workday paging repeats postings | doing · antigravity · 2026-10-04 | antigravity | XS | — |
+| T47 | Workday paging repeats postings | review · antigravity · d160271 | antigravity | XS | — |
 | T48 | Scoring rubric and a golden set | todo | — | M | — |
 | T49 | Check big employers that report "no India jobs" | todo | — | S | — |
 
@@ -506,7 +506,7 @@ The implementer adds a row when a task reaches `review`; the verifier removes it
 
 | ID | Commit(s) | Implementer | Evidence (command → result) |
 |---|---|---|---|
-| — | — | — | — |
+| T47 | d160271 | antigravity | `pytest tests/test_adapters.py -k "test_fetch_workday_stops"` → 2 passed (failed before the fix); `pytest` → 382 passed, coverage 89.36%; ruff, mypy clean. Live: Sabre 40 distinct jobs (was 500 rows with 40 distinct URLs), Warner Bros Discovery 39 jobs, Danaher 200 jobs, each returning rows == distinct URLs. |
 
 ---
 
