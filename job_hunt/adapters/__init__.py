@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import logging
 import re
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 from job_hunt.adapters.amazon import fetch_amazon
 from job_hunt.adapters.ashby import fetch_ashby
@@ -167,8 +167,33 @@ def fetch_company_jobs(company_info: Dict[str, Any]) -> List[JobPosting]:
     return jobs
 
 
+# ats -> fetch the full description of one job (one HTTP call), or "" to keep what the
+# list API gave. Only pre-filter survivors are enriched, just before scoring, so detail
+# calls are paid for jobs Gemini will actually read.
+ENRICHERS: Dict[str, Callable[[JobPosting], str]] = {}
+
+
+def enrich_job(job: JobPosting) -> JobPosting:
+    """Replace a survivor's description with its full text when its ATS has an enricher.
+
+    Never raises: on any failure the job keeps the description it was fetched with.
+    """
+    enricher = ENRICHERS.get(job.ats)
+    if enricher is None:
+        return job
+    try:
+        description = enricher(job)
+    except Exception as e:
+        logger.debug("Enrich failed for %s (%s): %s", job.title, job.url, e)
+        return job
+    if description:
+        job.description_text = description
+    return job
+
+
 __all__ = [
     "detect_ats",
+    "enrich_job",
     "fetch_company_jobs",
     "fetch_greenhouse",
     "fetch_lever",

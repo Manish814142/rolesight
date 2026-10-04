@@ -23,6 +23,15 @@ _ENV_KEYS = (
 )
 
 
+@pytest.fixture(autouse=True)
+def no_enrich_network(monkeypatch):
+    """run_scan fetches full descriptions for survivors (adapters.enrich_job = HTTP).
+
+    Stubbed for every test; a test that checks enrichment patches scanner.enrich_job itself.
+    """
+    monkeypatch.setattr("job_hunt.scanner.enrich_job", lambda job: job)
+
+
 @pytest.fixture
 def clean_env(monkeypatch):
     """Remove all autopilot env vars so tests assert on config.json/defaults only."""

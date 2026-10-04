@@ -8,7 +8,7 @@ from pathlib import Path
 
 from tinyfish import RateLimitError, TinyFish
 
-from job_hunt.adapters import fetch_company_jobs
+from job_hunt.adapters import enrich_job, fetch_company_jobs
 from job_hunt.db import get_job, init_db, save_job, update_job_status
 from job_hunt.llm_utils import chat_with_llm
 from job_hunt.log import get_logger
@@ -143,6 +143,17 @@ def _prefetch_jobs(companies: list[dict], workers: int) -> list[tuple[list, str 
 
     with ThreadPoolExecutor(max_workers=max(1, workers)) as ex:
         return list(ex.map(one, companies))
+
+
+def _enrich_jobs(jobs: list, workers: int) -> int:
+    """Fetch full descriptions for pre-filter survivors concurrently (in place).
+
+    Returns how many jobs' descriptions changed.
+    """
+    before = [j.description_text for j in jobs]
+    with ThreadPoolExecutor(max_workers=max(1, workers)) as ex:
+        list(ex.map(enrich_job, jobs))
+    return sum(j.description_text != b for j, b in zip(jobs, before))
 
 
 def _fetch_with_ratelimit(tf: TinyFish, urls: list[str], **kwargs):
@@ -532,6 +543,12 @@ def run_scan(config: dict, companies: list[dict]) -> None:
             continue
 
     if pending_direct:
+        # Workday/SmartRecruiters/Oracle list APIs carry little or no description;
+        # fetch it for survivors only (see adapters.ENRICHERS).
+        enrich_start = time.time()
+        enriched = _enrich_jobs(pending_direct, workers)
+        logger.info(f"Full descriptions fetched for {enriched} of {len(pending_direct)} survivor(s) "
+                    f"in {time.time() - enrich_start:.0f} s")
         if gemini_key:
             scored_pairs: list = []
             if config.get("gemini_scoring_mode", "single") == "batch":
