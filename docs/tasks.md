@@ -175,7 +175,7 @@ once. Record in CHANGELOG: jobs fetched, India, pre-filter passes, too old, scor
 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
-| T10 | `draft N` opens the wrong job | todo | — | S | — |
+| T10 | `draft N` opens the wrong job | doing · claude · 2026-10-04 | claude | S | — |
 | T11 | Let Adobe "Computer Scientist" titles through | todo | — | XS | — |
 | T12 | Exclude CRM/platform "developer" roles | todo | — | S | — |
 | T13 | Remove the 2,000-char description cap when scoring | review · claude · ef15c4c | claude | XS | T46 |
