@@ -1,0 +1,1365 @@
+id,company,title,location,url,old_score,old_reason,label,description
+1,Expedia,Software Development Engineer II (Full Stack BE Heavy),India - Gurgaon,https://expedia.wd108.myworkdayjobs.com/search/job/India---Gurgaon/Software-Development-Engineer-II_R-108065,92,"Manish is a strong backend-focused full stack engineer with relevant cloud, microservices, and GenAI experience that closely matches Expedia's backend-heavy full-stack requirements, despite primarily using Node.js instead of Java/Kotlin.",apply,"At Expedia Group, we help travelers explore the world, one journey at a time. As a global travel company powered by passionate people, trusted partnerships, and leading technology, we connect travelers, partners, and advertisers through our consumer brands, B2B network, and travel advertising business.
+Here, you'll do meaningful work that helps millions of people discover, book, and experience travel with more ease, confidence, and joy. Our five Behaviors-Traveler First, Think Big, Operate with Excellence, Ownership Mindset, and Succeed Together-help foster a supportive environment where people can grow their careers and have the flexibility, benefits, and support to do their best work. Join us and build for travelers everywhere.
+Brief introduction to the team:
+Modern Checkout is pioneering the future of frictionless travel commerce by developing a brand and product line agnostic checkout platform for Expedia Brands including Hotels.com and Vrbo. The Checkout Engineering organization enables one of the most critical steps in a traveler’s journey. Once a user selects their ideal trip, it is Checkout team job to make their booking smooth, highly secure, and effortless. By decoupling the transaction layer from individual brand architectures and specific travel products (flights, hotels, car rentals), Modern Checkout delivers a unified, highly adaptable payment experience. This strategic evolution simplifies the path to purchase, accelerates global scaling, and empowers Expedia to deploy seamless, hyper-localized checkout flows across its entire portfolio with unprecedented agility.
+In this role, you will:
+Design, build, and operate backend‑heavy full‑stack services for Expedia Group’s Modern Checkout platform, creating brand‑agnostic, product‑agnostic capabilities that serve hotels, flights, activities, and packages at global scale.
+Own problems end to end across the stack, from clarifying requirements and producing low‑level designs, APIs, and data models through implementation, testing, deployment, and ongoing operational support.
+Develop and evolve microservices and platform components in a cloud‑native environment using languages such as Kotlin, Java, or C#/.NET, integrating with AWS‑hosted data stores, caches, and streaming systems.
+Implement resilient, observable, and high‑performance tier‑zero checkout services, contributing to CI/CD pipelines, automated testing, and operational readiness to meet strict availability and latency goals.
+Collaborate with engineers, product managers, and partner teams to incrementally decompose legacy monoliths into a unified architecture, ensuring services are reusable and fungible across multiple brands and domains.
+Use AI‑assisted development tools and AI‑driven workflows to accelerate coding, testing, and troubleshooting, and safely integrate and operate AI/ML‑enabled solutions that improve engineering efficiency and checkout outcomes.
+Minimum Qualifications:
+Bachelor’s degree in Computer Science or a related technical field; or Equivalent related professional experience.
+2+ years of relevant professional experience.
+Demonstrated ownership of services or features through the full development lifecycle, including low‑level system design, API design, data modeling, implementation, testing, deployment, and production support in a cloud environment.
+Strong coding, problem‑solving, and analytical skills, with solid understanding of core computer science fundamentals such as data structures, algorithms, and time/space complexity.
+Preferred Qualifications:
+Experience building microservices or service‑oriented architectures on AWS (or a similar cloud), integrating with technologies such as Redis or other caches, NoSQL data stores like DynamoDB, and streaming or messaging systems such as Kinesis.
+Track record of delivering and operating high‑availability, high‑throughput, tier‑zero or mission‑critical services with strong observability, reliability, and incident‑response practices.
+Hands‑on experience with modern front‑end technologies such as JavaScript and React, and with service interaction patterns and protocols such as REST or GraphQL in full‑stack systems.
+Familiarity with AI‑driven systems, tools, or workflows and applying AI/ML concepts to real world products, including practical use of AI‑assisted coding tools (for example, Cursor, Claude Code, or similar) to improve development speed, quality, or test coverage, and experience safely integrating AI‑powered capabilities into production services where appropriate.
+Accommodation requests
+Expedia Group is committed to providing an inclusive and accessible recruiting experience. If you need an accommodation or adjustment due to a disability during the application or recruiting process, please submit a request at https://expedia.service-now.com/askeg?id=job_accommodation .
+About Expedia Group
+Expedia Group includes three flagship consumer brands - Expedia, Hotels.com, and Vrbo - along with a leading B2B travel business and travel advertising offerings. Across our brands and business, we help travelers explore the world with confidence and ease.
+Important notice
+Employment opportunities and job offers at Expedia Group will always come from Expedia Group's Talent Acquisition and hiring teams. Never share sensitive personal information unless you are confident of the recipient. Expedia Group does not extend job offers via email or messaging tools to individuals with whom we have not made prior contact. Our email domain is @expediagroup.com. The official place to find and apply for roles is https://careers.expediagroup.com/jobs/ .
+Equal Opportunity
+Expedia is committed to creating an inclusive work environment with a diverse workforce. All qualified applicants will receive consideration for employment without regard to race, religion, gender, sexual orientation, national origin, disability or age."
+2,Amazon,"Software Development Engineer, Prime Video Live Events - Sports Data Platform","Bengaluru, Karnataka, IND",https://www.amazon.jobs/en/jobs/10565511/software-development-engineer-prime-video-live-events-sports-data-platform,90,"The candidate has over 3 years of professional backend-focused software development experience, aligns with the Bengaluru location, and matches the technical and system design requirements for the Amazon Prime Video Live Events role.",apply,"Amazon’s FC team is seeking highly skilled and motivated person to help develop a and implement a world class security program for our first mile network which will ensure that our customers receive the
+
+- 3+ years of security and loss prevention experience
+- Bachelor's degree, or Advanced degree
+
+- MBA
+Our inclusive culture empowers Amazonians to deliver the best results for our customers. If you have a disability and need a workplace accommodation or adjustment during the application and hiring process, including support for the interview or onboarding process, please visit https://amazon.jobs/content/en/how-we-hire/accommodations for more information. If the country/region you’re applying in isn’t listed, please contact your Recruiting Partner."
+3,Amazon,"Software Development Engineer II, Infrastructure Supply Chain Automation, Infrastructure Supply Chain Automation","Bengaluru, Karnataka, IND",https://www.amazon.jobs/en/jobs/10567650/software-development-engineer-ii-infrastructure-supply-chain-automation-infrastructure-supply-chain-automation,90,"The candidate has over 3 years of backend software development experience, strong system design and architecture background, and matches the location and role requirements for Amazon's Bengaluru office.",apply,"Amazon’s FC team is seeking highly skilled and motivated person to help develop a and implement a world class security program for our first mile network which will ensure that our customers receive the
+
+- 3+ years of security and loss prevention experience
+- Bachelor's degree, or Advanced degree
+
+- MBA
+Our inclusive culture empowers Amazonians to deliver the best results for our customers. If you have a disability and need a workplace accommodation or adjustment during the application and hiring process, including support for the interview or onboarding process, please visit https://amazon.jobs/content/en/how-we-hire/accommodations for more information. If the country/region you’re applying in isn’t listed, please contact your Recruiting Partner."
+4,Amazon,"Software Development Engineer II, Prime Video Sports, PV Sports and Linear Tech","Bengaluru, Karnataka, IND",https://www.amazon.jobs/en/jobs/10565804/software-development-engineer-ii-prime-video-sports-pv-sports-and-linear-tech,85,"The candidate has over 3 years of professional software development experience and matches the backend/full-stack focus, though the job mentions mobile development which is outside their core expertise.",apply,"Amazon’s FC team is seeking highly skilled and motivated person to help develop a and implement a world class security program for our first mile network which will ensure that our customers receive the
+
+- 3+ years of security and loss prevention experience
+- Bachelor's degree, or Advanced degree
+
+- MBA
+Our inclusive culture empowers Amazonians to deliver the best results for our customers. If you have a disability and need a workplace accommodation or adjustment during the application and hiring process, including support for the interview or onboarding process, please visit https://amazon.jobs/content/en/how-we-hire/accommodations for more information. If the country/region you’re applying in isn’t listed, please contact your Recruiting Partner."
+5,Amazon,"Software Development Engineer II, Workplace Productivity","Hyderabad, Telangana, IND",https://www.amazon.jobs/en/jobs/10564385/software-development-engineer-ii-workplace-productivity,85,"Manish meets the 3+ years of experience requirement and has a strong backend and systems background, though his primary focus is Node.js rather than Amazon's typical core tech stacks (Java/C++).",apply,"Amazon’s FC team is seeking highly skilled and motivated person to help develop a and implement a world class security program for our first mile network which will ensure that our customers receive the
+
+- 3+ years of security and loss prevention experience
+- Bachelor's degree, or Advanced degree
+
+- MBA
+Our inclusive culture empowers Amazonians to deliver the best results for our customers. If you have a disability and need a workplace accommodation or adjustment during the application and hiring process, including support for the interview or onboarding process, please visit https://amazon.jobs/content/en/how-we-hire/accommodations for more information. If the country/region you’re applying in isn’t listed, please contact your Recruiting Partner."
+6,Nike,"Software Engineer II, ITC","Karnataka, India",https://nike.wd1.myworkdayjobs.com/nke/job/Karnataka-India/Software-Engineer-II--ITC_R-86849-1,90,"Manish's 3.3+ years of backend experience, strong Node.js/Python/AWS/Azure/Kafka stack, and Microsoft background in Databricks and PySpark align exceptionally well with Nike's requirements for a backend and data services engineer.",apply,"WHO YOU'LL WORK WITH
+You will report to the Senior Engineering Manager— the enterprise team that curates, governs, and serves Nike Direct and Marketplace data products to BI Experience teams and other GT domains. You will work within a team of engineers building backend APIs, ontology layers, and data pipelines that BI Experience teams consume directly. A Senior or Lead Engineer will support you with design and technical guidance. You will share your experience and technical expertise to help shape the longer-term strategic direction of our consumption and ontology layers.
+WHO WE ARE LOOKING FOR
+We are looking for engineers who are passionate about crafting great code and building high-quality backend and data services using best software engineering principles and standards.
+A minimum of 3–5 years of backend software development experience.
+Experience working in a highly collaborative, multi-discipline team environment.
+Strong experience designing and implementing microservices, domain-driven design, and RESTful services using Java, Python, Scala, or Node.
+Hands-on experience working in a distributed/cloud environment (AWS, GCP, or Azure).
+Solid knowledge of common design patterns and clean architecture.
+Working experience with data platforms — Databricks, Spark, Delta Lake, or equivalent — and SQL at scale.
+Experience with workflow orchestration tools such as Airflow, Dagster, or Prefect.
+Test-driven development experience, including productive use of AI tools like GitHub Copilot.
+Experience with distributed messaging — Kafka, SQS, or similar.
+Experience with CI/CD, unit testing, static analysis, and automated integration tests (Jenkins, GitHub Actions).
+Working knowledge of Scrum and agile principles.
+Comfortable in a fast-paced, results-oriented environment with globally distributed teams.
+Excellent verbal and written communication skills, with the ability to translate between business and technical audiences.
+Bachelor's degree in Computer Science, Information Systems, or related field — or equivalent experience.
+Preferred: experience with NoSQL stores (Cassandra, DynamoDB, MongoDB), relational stores (PostgreSQL, MySQL, Oracle), monitoring/tracing (Splunk, SignalFx, Datadog), data modeling, and serverless computing.
+WHAT YOU'LL WORK ON
+As a Software Engineer II in Marketplace Data Engineering, you will help design and deliver the data products, APIs, and pipelines that serve the Marketplace and Nike Direct data needs of the entire Nike enterprise.
+You will build and own backend services that expose curated Marketplace and Nike Direct data to BI Experience teams and downstream GT domains.
+You will contribute to high-throughput, low-latency, fault-tolerant data services with strong governance, RLS, and quality guarantees baked in.
+You will partner with product, analytics, and BI Experience teams to design schemas, contracts, and consumption patterns that scale across the enterprise.
+You will write clean, well-tested, well-documented code, and remain current with industry trends in data platforms, APIs, and AI-assisted development.
+You will help drive continuous improvement in performance, scalability, reliability, and observability of our consumption layers.
+You will collaborate with globally distributed engineering teams to provide technical expertise on architecture, code quality, and operational excellence.
+You will take end-to-end ownership of backend modules — from design through production support — for the Marketplace data products you build."
+7,Toast,Software Engineer II,"Bengaluru, Karnataka, India",https://careers.toasttab.com/jobs?gh_jid=8232478,85,"The candidate has strong backend experience with Node.js, distributed systems (Kafka, RabbitMQ), relational databases, and AWS, fitting the Bengaluru hybrid Software Engineer II role well, though their primary language is Node.js/Python rather than the requested Java/Kotlin.",apply,"Toast creates technology to help restaurants and local businesses succeed in a digital world, helping business owners operate, increase sales, engage customers, and keep employees happy.
+Toast is building the restaurant platform that helps restaurants adapt, take control, and get back to what they do best: running the businesses they love. We’ve grown into a leading hospitality software company in the U.S., and are now entering our next phase of growth - one defined by scale, complexity, and a new class of enterprise customers.
+Are you bready* to make a change?
+Toast is looking for a Software Engineer II to join our Toast Connect team in Bangalore. The Connect team owns how everything outside Toast connects to Toast including the event infrastructure every team at Toast uses to publish data, the frameworks partners and customers use to integrate through our APIs, and a new charter to make Toast the source of truth for all the data about the customers we serve.
+You will play a role in evolving our platform to support ever more complex new features and best-in-class monitoring as we scale to orders of magnitude of our current size!
+If you want to help create something tangible that is used every day, help businesses achieve their vision, and take on the challenge of scaling a SaaS product, Toast is the place for you.
+About this roll* (Responsibilities)
+Build, test, and deploy scalable backend microservices and RESTful APIs using Java / Kotlin and AWS infrastructure.
+Champion best practices such quality automated testing and phased rollouts to ensure zero-regression releases and high test coverage.
+Monitor service health for success & failure, analyze logs and metrics (Datadog/CloudWatch), and participate in on-call rotations to maintain platform uptime.
+Collaborate organically with peer engineers, provide design feedback, and participate in code reviews.
+Collaborate with PM & UX on the development of new features & products.
+Use AI tooling as a genuine part of your workflow, not an afterthought
+What you'll need to thrive (Requirements)
+2+ years of professional backend software development in Kotlin, Java, or another object-oriented language, with solid instincts around testing and code quality.
+Experience building RESTful APIs and distributed systems in production.
+Strong problem-solving skills, curiosity to learn restaurant domain workflows, and enthusiasm for collaborating in an agile, cross-functional team.
+Experience working with relational databases (e.g., PostgreSQL, MySQL) and writing efficient SQL queries and schema migrations.
+Familiarity with distributed systems concepts, asynchronous messaging (Kafka, Pulsar, or AWS SQS/SNS), and cloud platforms (AWS).
+Demonstrate humility, empathy and respectfulness.
+What will help you stand out (Nonessential Skills/Nice to Haves)
+Experience designing platform APIs that other teams depend on - platform thinking, not just feature delivery
+AI at Toast
+At Toast, one of our company values is that we're hungry to build and learn. We believe learning new AI tools empowers us to build for our customers faster, more independently, and with higher quality. We provide these tools across all disciplines, from Engineering and Product to Sales and Support, and are inspired by how our Toasters are already driving real value with them. The people who thrive here are those who embrace changes that let us build more for our customers; it’s a core part of our culture.
+Our Total Rewards Philosophy
+We strive to provide competitive compensation and benefits programs that help to attract, retain, and motivate the best and brightest people in our industry. Our total rewards package goes beyond great earnings potential and provides the means to a healthy lifestyle with the flexibility to meet Toasters’ changing needs. Learn more about our benefits at https://careers.toasttab.com/toast-benefits .
+How Toast Uses AI in its Hiring Process
+Throughout the hiring process, our goal is to get to know you. We use AI tools to support our recruiters and interviewers with tasks like note-taking, summarization, and documentation of interviews to ensure they can be fully focused on your conversation. All hiring decisions are made by people. We ask that you complete interviews and assessments on your own, without real-time AI tools, recording, or transcription bots, unless we tell you otherwise in advance. To learn more: https://careers.toasttab.com/ai-in-hiring
+Our Approach to Hybrid Working
+We embrace a hybrid work model that fosters in-person collaboration while valuing individual needs. Our goal is to build a strong culture of connection as we work together to empower the hospitality community, regardless of location. Please visit the Locations page on our career site to learn more about our in-office expectations by region: https://careers.toasttab.com/locations-toast
+People Are the Secret Ingredient in Our Recipe for Success
+At Toast, our employees are our secret ingredient—when they thrive, we thrive. The restaurant industry brings together people with a wide range of backgrounds, experiences, and perspectives, and we value that same breadth at Toast. We strive to build a culture grounded in authenticity, respect, and humility, where every Toaster has a real opportunity to grow, contribute, and do their best work—raising the bar in delivering exceptional experiences for our customers and each other.
+Apply today!
+Toast is committed to creating an accessible and inclusive hiring process. As part of this commitment, we strive to provide reasonable accommodations for persons with disabilities to enable them to access the hiring process. If you need an accommodation to access the job application or interview process, please contact candidateaccommodations@toasttab.com .
+------
+For roles in the United States, it is unlawful in Massachusetts to require or administer a lie detector test as a condition of employment or continued employment. An employer who violates this law shall be subject to criminal penalties and civil liability."
+8,MongoDB,Software Engineer 3 - Enterprise Architecture,Gurugram,https://www.mongodb.com/careers/job/?gh_jid=8221290,90,"The candidate has strong backend experience, TypeScript and Python skills, and direct experience with GenAI automation, making them a great fit for this AI experimentation and prototyping role.",apply,"Role at MongoDB: Software Engineer 3 - Enterprise Architecture (Gurugram). Reason: The candidate has strong backend experience, TypeScript and Python skills, and direct experience with GenAI automation, making them a great fit for this AI experimentation and prototyping role."
+9,ServiceNow,Software Engineer (Cybersecurity Integrations) - Armis,"Bangalore, in",https://jobs.smartrecruiters.com/servicenow/744000152830943,90,"Manish's 3.3+ years of experience in backend systems, Python, message queues (Kafka/RabbitMQ), and GenAI perfectly align with the requirements for this Cybersecurity Integration Engineer role at ServiceNow in Bangalore.",apply,"Role at ServiceNow: Software Engineer (Cybersecurity Integrations) - Armis (Bangalore, in). Reason: Manish's 3.3+ years of experience in backend systems, Python, message queues (Kafka/RabbitMQ), and GenAI perfectly align with the requirements for this Cybersecurity Integration Engineer role at ServiceNow in Bangalore."
+10,Genpact,Sr. Developer - Application Development Programming Language/Scripting Languages/Web Technologies S 4B,"1401-GIPL: Prestige Technology Park IV, Bangalore",https://genpact.wd108.myworkdayjobs.com/External_Careers/job/1401-GIPL-Prestige-Technology-Park-IV-Bangalore/Sr-Developer---Application-Development-Programming-Language-Scripting-Languages-Web-Technologies-S-4B_JR10027736-1,90,"The candidate matches the required tech stack (Node.js, MongoDB, AWS), microservices architecture, and is located in Bengaluru for a hybrid role, though Java is missing from their primary background.",apply,"Sr. Developer - Application Development Programming Language/Scripting Languages/Web Technologies S
+Ready to turn bold ideas into real-world impact?
+At Genpact, we don’t just adapt to change, we lead it. AI and digital innovation are transforming the way businesses work, and we’re at the forefront of it. Genpact’s AI Gigafactory , our industry-first accelerator, exemplifies how we scale advanced technology solutions to help global enterprises work smarter, grow faster, and transform at scale. Whether tackling complex challenges through large-scale models or agentic AI , our breakthrough solutions tackle companies’ most complex challenges.
+If you thrive in a fast-moving, innovation-driven environment, love building and deploying cutting-edge AI solutions, and want to push the boundaries of what’s possible, this is your moment.
+Genpact (NYSE: G) is an agentic and advanced technology solutions company. We leverage process intelligence and artificial intelligence to deliver measurable outcomes. With a strong partner ecosystem and decades of client trust, we provide innovative solutions that transform how businesses run. Powered by a team with an active learning mindset and client centricity at its core, we deliver lasting value for the world’s leading enterprises.
+Get to know us at genpact.com and on LinkedIn , YouTube , X , and Facebook .
+Job Description
+In this position you will:
+Integrate a multidisciplinary team, in a diverse, international, fast paced and innovative environment where you will have the opportunity to partake in the challenge to build and develop the most advanced online insurance platforms and services.
+Responsibilities:
+▪ Help build cutting-edge technology that provides client's team with a unique value proposition allowing it to become a leader in the market.
+▪ Ensure timely development of POC’s and prototypes prioritizing quick time to market with MVP features.
+▪ Utilize Agile and Lean techniques to deliver key features quickly.
+▪ Continuously research new technical capability and solutions for adoption.
+▪ Foster innovation culture within Tech team.
+For you to be successful:
+Collaborative
+• Offers support and contributes to the delivery of shared goals. Displays loyalty and trust to team.
+• Builds diverse networks and cooperative key working relationships to work in partnership with others
+• Co-operates with team members to resolve problems and achieve goals
+• Listens, encourages, and is respectful of others when working together
+Creative
+• Experiments with different ideas to solve issues, develop new offerings and enhance approaches
+• Proactively tests out new offerings and looks at innovations that can be leveraged to build useful solutions
+• Brings a fresh and original perspective to creating new solutions.
+• Pushes the boundaries, evolves ideas and follows through on implementation
+Communication
+• Adept communicator, listens to and integrates diverse contributions; explains issues clearly and succinctly.
+• Shares accurate, timely information with the right people in an appropriate format for the audience
+• Communication is clear and concise and uses data relevant to the audience to support points of view and suggestions
+• Values feedback and visibly integrates it into approach. Looks to create open twoway conversations around providing feedback.
+Qualifications and Skills:
+• Know-how the following combination of technology stacks:
+Backend: Java springboot, Node.js,
+Frontend: React, Angular
+Database: MongoDB,
+Cloud: AWS
+• Good grasp of Microservices based Architecture.
+• Experience building applications using services provided by AWS such as S3, SQS, SNS API GW, EC2
+• Familiar with CI/CD tooling such as Jenkins
+• Knowledge in web services especially in REST API and tools such as Postman.
+• Working experience in Linux based environment.
+• Knowledge in source code repository and branching models in Git and usage of tools such as GitHub, GitLab, BitBucket etc.
+• Working knowledge of Agile and/or Lean methodologies.
+• Demonstrated exceptional written and verbal communication skills
+Qualifications
+Bachelors - Computer Engineering, Bachelors - Computer Science, Bachelors - Information Technology, Masters - Software Engineering
+Certifications
+Oracle Certified Professional - Java SE 8 Programmer - KodNestKodNest
+Required Skills
+Agile Methodology, Client Relations, Collaboration Tools, Design Thinking, Executive Presence, Inclusion, Personal Effectiveness, Programming Languages, Scripting Languages, Storytelling, Web Technologies
+Language
+English, English
+Language Proficiency -
+Upper Intermediate - B2
+Additional Job Location -
+Job Type
+Regular
+Master Skill List -
+Application Development Programming Language/Scripting Languages/Web Technologies S
+Remote Type -
+Hybrid
+Work Shift -
+Rotating (India)
+Why join Genpact?
+• Lead AI-powered transformation – Drive innovation and solve real-world business challenges that matter
+• Make an impact – Help global enterprises solve business challenges that matter
+• Accelerate your career – Gain hands-on experience, mentorship, and world-class learning opportunities to stay ahead
+• Work with the best – Join 140,000+ bold thinkers and problem-solvers who push boundaries every day
+• Thrive in a values-driven culture – Our courage, curiosity, and incisiveness - built on a foundation of integrity and inclusion - allow your ideas to fuel progress
+Come join the 140,000+ coders, tech shapers, and growth makers at Genpact and take your career in the only direction that matters: Up.
+Let’s build tomorrow together.
+Genpact is an Equal Opportunity Employer and considers applicants for all positions without regard to race, color, religion or belief, sex, age, national origin, citizenship status, marital status, military/veteran status, genetic information, sexual orientation, gender identity, physical or mental disability or any other characteristic protected by applicable laws. Genpact is committed to creating a dynamic work environment that values respect and integrity, customer focus, and innovation.
+Furthermore, please do note that Genpact does not charge fees to process job applications and applicants are not required to pay to participate in our hiring process in any other way. Examples of such scams include purchasing a 'starter kit,' paying to apply, or purchasing equipment or training."
+11,Hotstar,Software Development Engineer II,Bengaluru- We Work,https://jiostar.wd102.myworkdayjobs.com/JioStar/job/Bengaluru--We-Work/Software-Development-Engineer-II_JR12389-1,90,"Manish matches the SDE-II role well with 3.3+ years of backend experience, Python proficiency, distributed microservices background, Kafka experience, and alignment with the Bengaluru location.",apply,"Job Title: Software Development Engineer - II
+Department, Level: Prism
+Location: Onsite, Bangalore
+Work Type: Full time
+Job Summary: As an SDE-II, you will design and build high-performance services that power mission-critical authentication, subscriptions, payments and content delivery systems across JioStar's platform. You will operate at the intersection of scale, reliability, and real-time decisioning - supporting live sports, premium entertainment, and personalized experiences for millions of users. This is a high-ownership, high-impact role best suited for engineers passionate about building for scale and business impact.
+About the Team: JioHotstar's world-record-breaking streaming platform serves audiences across India, the UK, Singapore, Canada, and other international markets.
+Our International team builds the technology that enables global expansion, powering region-specific experiences while leveraging a common platform architecture. You'll work on subscriber growth platforms, market-specific product innovations, and scalable frameworks that support diverse business and content requirements across geographies.
+This is a unique opportunity to work across the entire technology stack, contribute to globally visible products, and directly influence JioHotstar's international growth journey. Your work will help shape how millions of users around the world experience premium entertainment.
+Reporting To: Engineering Manager
+Key responsibilities:
+● Build robust, secure, and scalable microservices to power JioStar applications ● Write clean, efficient, and maintainable code using best practices, conduct unit testing and participate in code reviews
+● Ensure sub-second server response times and implement appropriate data stores - relational, document, key-value, object, or graph - as well as index stores and messaging systems
+● Take ownership of running and maintaining cloud infrastructure
+● Continuously evaluate relevant technologies and influence architecture and design discussions ● Collaborate with Product Managers and cross-functional teams to understand requirements and deploy high-quality software solutions that meet business objectives ● Guide and mentor junior engineers and interns on functional and domain areas
+Skills and attributes for success: ● Proficiency in Java, Golang, or Python ● Experience building distributed domain-driven microservices ● Strong understanding of database and storage fundamentals ● Experience working with cloud platforms (AWS preferred), messaging systems (Kafka), and CI/CD pipelines
+● Experience working on large-scale production systems, with a strong focus on performance and reliability is a plus
+● Ability to translate ambiguous product requirements into well-structured, scalable technical solutions
+Preferred education and experience: ● Bachelors/Masters in Computer Science or a related field with 2-4 years of experience in backend development
+About JioStar
+Perched at the nucleus of spellbinding content and innovative technology, JioStar is a leading global media & entertainment company that is reimagining the way audiences consume entertainment and sports. Its television network and streaming service together reach more than 750 million viewers every week, igniting the dreams and aspirations of hundreds of million people across geographies. JioStar is an equal opportunity employer. The company values diversity and its mission is to create a workplace where everyone can bring their authentic selves to work. The company ensures that the work environment is free from any discrimination against persons with disabilities, gender, gender identity and any other characteristics or status that is legally protected."
+12,Philips,Full stack -  AI Application Engineer - People Analytics,Bangalore,https://philips.wd3.myworkdayjobs.com/jobs-and-careers/job/Bangalore/Full-stack----AI-Application-Engineer---People-Analytics_588990-1,90,"The candidate has strong Python, API development, cloud, and GenAI automation experience that aligns well with the requirements for the AI Application Engineer role at Philips in Bangalore.",apply,"Job Title
+Full stack - AI Application Engineer - People Analytics
+Job Description
+Job description
+In this role, you have the opportunity to
+Turn advanced analytics, machine-learning models and GenAI capabilities into simple, scalable and usable People Analytics products.
+You will be responsible for developing lightweight internal applications, APIs, deployment workflows and monitoring solutions that allow the People Analytics team to take products from development into production.
+Your work will help ensure that People Analytics solutions are not limited to notebooks or proofs of concept, but can be securely deployed, adopted, supported and improved over time.
+You are responsible for
+Developing lightweight, scalable internal applications for People Analytics use cases.
+Building conversational interfaces, analytical applications and decision-support tools.
+Developing APIs that connect user interfaces with data, machine-learning models and GenAI services.
+Integrating applications with enterprise authentication and role-based access controls.
+Implementing application logging, error handling and user-feedback mechanisms.
+Packaging analytical and AI solutions for deployment into IT-managed environments.
+Building and maintaining product-specific CI/CD pipelines in line with enterprise standards.
+Automating code testing, application testing and deployment activities.
+Managing application configurations across development, test and production environments.
+Working with IT to provision and configure required cloud and platform services.
+Supporting deployment, release management, rollback and recovery activities.
+Operationalising batch and real-time model inference.
+Supporting model-serving and GenAI-service integration.
+Implementing monitoring for application availability, performance, latency, usage and errors.
+Supporting the monitoring of model and GenAI components in collaboration with the Applied AI and ML Engineer.
+Creating reusable application templates and common technical components.
+Standardising authentication, API, logging, monitoring and feedback patterns across People Analytics products.
+Providing business-hours technical support for deployed applications.
+Diagnosing application, integration and deployment issues.
+Coordinating infrastructure-related incidents with IT teams.
+Maintaining technical documentation, support runbooks and release records.
+Contributing to ongoing enhancements and product improvements after launch.
+You are a part of
+The central People Analytics team within the People Intelligence organisation.
+The team builds predictive, prescriptive and AI-enabled products for People Business Partners, business leaders and People-function Centres of Expertise across Philips.
+You will work closely with:
+The People Analytics Lead
+Data Scientists
+People Data Engineers
+Applied AI and Machine Learning Engineers
+People Intelligence Analytics Partners
+Enterprise IT, cloud, platform and security teams
+To succeed in this role, you will need
+A bachelor’s or master’s degree in computer science, software engineering, information technology, engineering or a related field.
+Relevant professional experience in software engineering, analytics application development, DevOps, MLOps or a related domain.
+Strong Python software-engineering skills.
+Experience developing REST APIs using FastAPI, Flask or equivalent frameworks.
+Experience developing internal applications using Streamlit, Dash or similar frameworks.
+Experience with automated testing and code-quality practices.
+Experience with Git and modern version-control workflows.
+Experience configuring and using CI/CD pipelines.
+Understanding of containerisation and cloud-deployment concepts.
+Experience integrating applications with authentication and role-based access controls.
+Experience implementing logging, monitoring and alerting.
+Familiarity with Databricks and cloud-based data or AI services.
+Experience troubleshooting applications in production or controlled enterprise environments.
+The ability to translate analytical requirements into maintainable technical products.
+Strong collaboration and communication skills.
+A pragmatic approach to technology, with the ability to balance scalability with speed and simplicity.
+Preferred experience
+Experience with Azure, AWS or both.
+Experience with Azure App Service, AWS application services or equivalent platforms.
+Experience with Docker and Kubernetes fundamentals.
+Experience integrating with enterprise API gateways.
+Experience with MLflow, model-serving platforms or MLOps tools.
+Experience integrating GenAI or RAG capabilities into applications.
+Experience with React or another front-end framework.
+Experience with enterprise identity and access-management systems.
+Understanding of application-security practices.
+Experience building internal data, analytics or AI products.
+Experience working with sensitive or employee-level data.
+Experience operating in global, matrixed organisations.
+Key capabilities
+Application engineering
+API development
+MLOps
+DevOps and CI/CD
+Cloud application deployment
+Monitoring and observability
+Python engineering
+Authentication and access control
+Production support
+GenAI application integration
+Technical ownership
+How we work together
+We believe that collaboration and effective ways of working are essential to building meaningful solutions. For this role, we prefer candidates who can work from Bangalore and collaborate closely with local and global stakeholders.
+About Philips
+We are a health technology company. We built our entire company around the belief that every human matters, and we will not stop until everybody everywhere has access to the quality healthcare that we all deserve.
+Doing meaningful work with people who share our passion for improving lives is what makes Philips a unique place to work."
+13,JPMorgan Chase,Software Engineer III - Data Engineer,"Bengaluru, Karnataka, India",https://jpmc.fa.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1001/job/210791823,85,"Manish's 3.3+ years of software engineering experience, backend expertise, and cloud certifications strongly align with this Software Engineer III role at JPMorgan Chase.",apply,"Description:
+We have an exciting and rewarding opportunity for you to take your software engineering career to the next level.
+As a Software Engineer III at JPMorgan Chase within the Consumer and community banking technology team, you serve as a seasoned member of an agile team to design and deliver trusted market-leading technology products in a secure, stable, and scalable way. You are responsible for carrying out critical technology solutions across multiple technical areas within various business functions in support of the firm’s business objectives.
+Job responsibilities
+Executes software solutions, design, development, and technical troubleshooting with ability to think beyond routine or conventional approaches to build solutions or breakdown technical problems
+Creates secure and high-quality production code and maintains algorithms that run synchronously with appropriate systems
+Leverages enterprise-authorized AI coding assist tools within the work environment to improve code quality, delivery speed, and productivity across complex deliverables (e.g., code generation/refactoring, unit test creation, documentation), while validating outputs through peer review, automated testing, and secure coding standards; contributes learnings and reusable patterns to improve broader team effectiveness.
+Applies knowledge of tools within the Software Development Life Cycle toolchain, including enterprise-authorized AI-assisted development and automation capabilities, to improve the value realized by automation.
+Produces architecture and design artifacts for complex applications while being accountable for ensuring design constraints are met by software code development
+Gathers, analyzes, synthesizes, and develops visualizations and reporting from large, diverse data sets in service of continuous improvement of software applications and systems
+Proactively identifies hidden problems and patterns in data and uses these insights to drive improvements to coding hygiene and system architecture
+Required qualifications, capabilities, and skills
+Formal training or certification on software engineering concepts and 3+ years applied experience
+Hands-on practical experience in system design, application development, testing, and operational stability
+Experience in developing, debugging, and maintaining code in a large corporate environment with one or more modern programming languages and database querying languages
+Hands-on experience using enterprise-authorized AI-assisted software development tools within the work environment (e.g., for coding, test creation, troubleshooting, or documentation) with demonstrated ability to critically evaluate, validate, and refine AI-generated outputs for correctness, performance, and security.
+Understanding of responsible AI use in engineering workflows, including data sensitivity considerations, secure handling of inputs/outputs, and adherence to resiliency and security expectations; ability to guide peers on safe and effective usage within team practices.
+Overall knowledge of the Software Development Life Cycle
+Solid understanding of agile methodologies such as CI/CD, Application Resiliency, and Security
+Preferred qualifications, capabilities, and skills
+Familiarity with modern front-end technologies
+Exposure to cloud technologies"
+14,Salesforce,AI Native - Full Stack Engineer,California - San Francisco; California - Palo Alto; Illinois - Chicago; Massachusetts - Boston; Massachusetts - Burlington; Washington - Bellevue; West Virginia - Washington DC Metro - Remote; District of Columbia - Washington; New Jersey - New York City Metro - Remote; North Carolina - Raleigh; Indiana - Indianapolis; New York - New York; Virginia - Washington DC Metro - Remote; Washington - Seattle; Maryland - Washington DC Metro - Remote; Texas - Dallas; New York - New York City Metro - Remote; Colorado - Denver; Georgia - Atlanta; Virginia - Mclean; Texas - Austin,https://salesforce.wd12.myworkdayjobs.com/External_Career_Site/job/California---San-Francisco/AI-Native-Software-Engineer_JR359620-1,75,"The candidate has strong backend and GenAI skills matching the role's requirements, but the job is strictly onsite in the US and the candidate seeks remote/India roles.",no,"To get the best candidate experience, please consider applying for a maximum of 3 roles within 12 months to ensure you are not duplicating efforts.
+Job Category
+Software Engineering
+Job Details
+About Salesforce
+Salesforce is the #1 AI CRM, where humans with agents drive customer success together. Here, ambition meets action. Tech meets trust. And innovation isn’t a buzzword — it’s a way of life. The world of work as we know it is changing and we're looking for Trailblazers who are passionate about bettering business and the world through AI, driving innovation, and keeping Salesforce's core values at the heart of it all.
+Ready to level-up your career at the company leading workforce transformation in the agentic era? You’re in the right place! Agentforce is the future of AI, and you are the future of Salesforce.
+Applications will be accepted until 10/23/2026.
+The Experience:
+We are seeking a senior full-stack engineer with deep backend roots to build the next generation of application interfaces for an agent-driven world. Traditional UIs rely on static, step-by-step human workflows; our future surfaces rely on AI agents doing the bulk of the work while high-density dashboards give humans real-time visibility, intent control, and governance. To build interfaces that make complex, non-deterministic system state effortlessly clear, you must be someone who can write production agentic/AI code, reason deeply about distributed data architecture, and translate underlying backend complexity into intuitive, high-trust human experiences.
+About the Role:
+We are looking for a rare software engineer: someone who understands backend application architecture and data pipeline engineering deeply, writes production backend and agentic code, and is equally driven by information design, front-end architecture, and human-computer interaction.
+In an agentic world, control planes are shifting from rigid step-by-step workflows to intent-driven supervision. As AI agents execute complex, non-deterministic tasks, humans need clear visibility into application state, data lineage, and failure modes. You will own both the backend software logic and the visual control/telemetry surfaces—building the bridges that allow humans to direct, govern, observe, and intervene in AI-agent activities with high trust.
+This is a hands-on, code-first software engineering role for someone who loves full-stack execution, agentic orchestrations, and transforming complex data flows and backend behavior into intuitive, powerful user interfaces.
+What You’ll Do
+End-to-End Control Planes & Telemetry: Architect, write, and maintain backend services, domain models, APIs, and high-density front-end interfaces for intent expression, agent supervision, and anomaly diagnosis.
+Agentic Integration & Backend Execution: Design asynchronous workflows, event streams, and LLM/agent integration layers (tool-use, state machines, contextual memory) while ensuring resilience, auditability, and clear data provenance.
+Information Architecture & High-Density UI: Apply core information design principles (hierarchy, progressive disclosure, temporal tracking) to make non-deterministic system states and multi-agent interactions instantly legible through next-gen dashboards.
+Human-in-the-Loop Frameworks: Build the interaction logic, feedback loops, and state-reversal mechanisms for automated workflows. Implement dynamic guardrails, synchronous approval gates, and asynchronous audit trails based on risk and reversibility.
+Prototyping to Production: Rapidly code functional prototypes to test novel human-agent interaction models, stress-test them against backend performance constraints, and ship production-grade code across the full stack.
+You’re Our Person If:
+Full-Stack Software Engineering Experience: Strong backend foundation in web backend architecture, state management, asynchronous failure modes, and observability, alongside modern front-end engineering proficiency (e.g., React, TypeScript, modern state management, web visualization).
+Hands-on Agentic & AI Engineering: Practical experience writing code that orchestrates LLMs, AI agents, or tool-using model workflows (beyond basic prompt-engineering or chat interfaces).
+Innate Instincts for UI/UX & Information Design: A deep passion for human-computer interaction, data visualization, and micro-interactions. You care about friction vs. fluidity—knowing exactly when to require human intervention and how to clearly show causality and uncertainty.
+Product & Platform Thinking: Ability to reason through multi-agent governance, context delegation, and high-trust developer/operator tools.
+Even Better If:
+Experience building developer tools, observability platforms, complex control planes, or investigative analytics software.
+A background or strong self-directed grounding in HCI (Human-Computer Interaction), design systems, or data visualization theory (e.g., Edward Tufte, Bret Victor, Tamara Munzner).
+Track record of building zero-to-one developer platforms or open-source tooling for AI agent supervision.
+Unleash Your Potential
+When you join Salesforce, you’ll be limitless in all areas of your life. Our benefits and resources support you to find balance and be your best , and our AI agents accelerate your impact so you can do your best . Together, we’ll bring the power of Agentforce to organizations of all sizes and deliver amazing experiences that customers love. Apply today to not only shape the future — but to redefine what’s possible — for yourself, for AI, and the world.
+Accommodations
+If you need a reasonable accommodation during the application or the recruiting process, please submit a request via this Accommodations Request Form .
+Please note that Salesforce uses artificial intelligence (AI) tools to help our recruiters assess and evaluate candidates’ resumes and qualifications throughout the recruiting process. Humans will always make any candidate selection and hiring decisions. Please see our Candidate Privacy Statement for more information about how we use your personal data and your rights, including with regard to use of AI tools and opt out options.
+Posting Statement
+Salesforce is an equal opportunity employer and maintains a policy of non-discrimination with all employees and applicants for employment. What does that mean exactly? It means that at Salesforce, we believe in equality for all. And we believe we can lead the path to equality in part by creating a workplace that’s inclusive, and free from discrimination. Know your rights: workplace discrimination is illegal. Any employee or potential employee will be assessed on the basis of merit, competence and qualifications – without regard to race, religion, color, national origin, sex, sexual orientation, gender expression or identity, transgender status, age, disability, veteran or marital status, political viewpoint, or other classifications protected by law. This policy applies to current and prospective employees, no matter where they are in their Salesforce employment journey. It also applies to recruiting, hiring, job assignment, compensation, promotion, benefits, training, assessment of job performance, discipline, termination, and everything in between. Recruiting, hiring, and promotion decisions at Salesforce are fair and based on merit. The same goes for compensation, benefits, promotions, transfers, reduction in workforce, recall, training, and education.
+In the United States, compensation offered will be determined by factors such as location, job level, job-related knowledge, skills, and experience. Certain roles may be eligible for incentive compensation, equity, and benefits. Salesforce offers a variety of benefits to help you live well including: time off programs, medical, dental, vision, mental health support, paid parental leave, life and disability insurance, 401(k), and an employee stock purchasing program. More details about company benefits can be found at the following link: https://www.salesforcebenefits.com.Pursuant to the San Francisco Fair Chance Ordinance and the Los Angeles Fair Chance Initiative for Hiring, Salesforce will consider for employment qualified applicants with arrest and conviction records.
+At Salesforce, we believe in equitable compensation practices that reflect the dynamic nature of labor markets across various regions.&#xa;&#xa;The typical base salary range for this position is $197,300 - $313,700 annually. In select cities within the San Francisco and New York City metropolitan area, the base salary range for this role is $237,700 - $344,700 annually.&#xa;&#xa;The range represents base salary only, and does not include company bonus, incentive for sales roles, equity or benefits, as applicable."
+15,Nike,"Software Engineer II, ITC","Karnataka, India",https://nike.wd1.myworkdayjobs.com/nke/job/Karnataka-India/Software-Engineer-II--ITC_R-94513,75,"Manish is a strong backend-focused engineer with cloud and microservices experience, though the role specifically requires C#/.NET Core which is outside his primary Node.js/Python stack.",no,"WHO WE ARE LOOKING FOR
+If you’re ready to innovate and lead in the Digital world, join Nike’s Global Technology - Geographies And Marketplace Experiences Organization. We bring together technology and process expertise to deliver the next generation of applications for Stores team. You are responsible for building next generation tools and services that serve our Athletes to enable discounts and promotions during checkout process. We are in the process of modernizing and scaling our in-store applications, building scalable applications and services in the cloud. This is a team that’s always on the offense, working on innovative solutions and building world class solutions to serve Nike teams and consumers around the globe.
+WHAT YOU WILL WORK ON
+As a Software Engineer II, you will be part of the PassPlay Engineering team, which is Nike's global benefits program and engagement platform that powers employee, partner, and member rewards, discounts, and exclusive discount experiences across Nike stores .
+In this role, you will
+Design, develop, and deliver scalable, secure, and high-performing full-stack applications using React, C#, .NET Core, React, SQL Server, and AWS.
+Build and maintain cloud-native RESTful APIs and microservices that power Nike's global employee, partner, and member discounts and rewards platform.
+Collaborate closely with Product Managers, Engineering teams and business stakeholders to deliver innovative and customer focused solution .
+You will support the team’s agile practices, promoting continuous improvement and collaboration to deliver top-notch in-store applications.
+Develop and enhance Nike’s PassPlay platform , enabling digital rewards , discounts , passes and exclusive member experiences across retail platform .
+Write effective SQL Queries , Store procedures and database optimizations to ensure reliable and performant applications at scale.
+Ensure quality of the code and products throughout the entire development lifecycle (DevOps)
+Ensure continuous improvement in performance, scalability, extensibility, reliability, usability, and availability of the platform.
+Leverage agile methodology concepts for quality, delivery and continuous improvement
+Participate in sprint planning and other scrum ceremonies. Help team plan and execute sprint tickets.
+Work in full DevOps model in the entire tech stack including designing, implementing, deploying, monitoring, and operating services at scale
+Resolve technical issues and remove blockers for the team
+Actively participate in code review and feedback for other developers
+Own build, test, release, and production support for team‑owned capabilities, ensuring stability, incident resolution, and continuous improvement.
+Implement strong observability and operational readiness using Splunk and SignalFx , including monitoring and alerting.
+WHO YOU WILL WORK WITH
+You will be reporting to the Engineering Manager at Geographies & Marketplace Experiences - India Technology Center, who will guide you to grow and build your career path. You will be directly working within a team of dedicated engineers that work on the same solutions. You share your experience and technical expertise such that we improve on the longer-term technical strategic direction.
+As a Software Engineer II for the Geographies & Marketplace Experiences team, you will contribute to a high scale platform that enables Nike employees, members and partners to unlock exclusive rewards, discounts and personalized experiences across retail and digital channels. You will build resilient, cloud native services that supports millions of customer interactions and power key membership and engagement initiatives.
+A minimum of 4+ years software development experience.
+Experience working in a highly collaborative, multi-discipline development team environment
+Experience working in a distributed/cloud-based environment (e.g. AWS Services, GCE, Azure etc.)
+Experience in designing and building cloud native microservices and distributed systems using C#, .NET Core, React, Restful APIs, and SQL Server.
+Demonstrate an AI-first mindset, actively leveraging AI powered developer tools (e.g., Cursor) to accelerate development and learning.
+Experience in Test Driven development – with Nunit, Mockito, cucumber, Playwright etc.,
+Experience with monitoring and tracing tools like Splunk, SignalFx, Kibana/Grafana etc.
+Experience working with NoSQL data stores like Cosmos DB/ DynamoDB and relational data stores like SQL Server or Oracle etc.
+Experience with continuous integration, unit testing, static analysis, and automated integration tests. Continuous delivery experience preferred.
+Working knowledge of Scrum and agile principles.
+Working in a fast-paced, results-oriented environment with globally distributed and diverse teams.
+Demonstrate end-to-end ownership of project/capabilities that includes requirements evaluation, design, implementation, code reviews, observability, maintenance and support.
+Excellent verbal and written communication and collaboration skills to effectively communicate with both business and technical teams
+Bachelor’s degree in computer science, Information Systems, or other relevant subject area, or equivalent experience
+Experience with CI/CD ( Jenkins ),Azure devops and engineering hygiene: GitHub workflows (branching, PR reviews, code quality, collaboration) and release readiness
+Observability and operational readiness using Splunk and SignalFx , including monitoring and alerting
+The following would be nice-to-have:
+Experience in designing and implementing highly scalable web applications
+Exposure to Stores application areas like Point of Sale and discount management systems."
+16,Nike,"Software Engineer II, ITC","Karnataka, India",https://nike.wd1.myworkdayjobs.com/nke/job/Karnataka-India/Software-Engineer-II--ITC_R-94605,75,"The candidate has strong backend microservices and cloud experience that aligns with the role, but falls slightly short of the 4+ years requirement (has 3.3+) and lacks explicit mention of Java/Spring Boot which is marked as mandatory in the posting.",no,"WHO WE ARE LOOKING FOR
+If you’re ready to innovate and lead in the Digital world, join Nike’s Global Technology - Geographies And Marketplace Experiences Organization. We bring together technology and process expertise to deliver the next generation of applications for Stores team. You are responsible for building next generation tools and services that serve our Athletes with Cart and checkout capability within stores. We are in the process of modernizing and scaling our in-store applications, building scalable applications and services in the cloud. This is a team that’s always on the offense, working on innovative solutions and building world class solutions to serve Nike teams and consumers around the globe.
+WHAT YOU WILL WORK ON
+As a Software Engineer II, you will be part of the Stores Retail Cloud Checkout Engineering team, which is responsible for building next generation tools and services that serve consumer to checkout from Nike Retail Stores and support back-end teams.
+In this role, you will
+Participate in technical development and delivery of backend cloud native micro services
+Contribute ideas for new features and identifying technical areas for improvement proactively collaborating with product team members at Nike to design, develop, and deploy a highly scalable digital asset management system and services.
+You will use your in-depth experience in software development to write clean, tested, and well-documented code, as well as perform peer code review process and mentor other engineers on the team.
+You will remain current with industry trends and participate in development of key innovation features.
+You will support the team’s agile practices, promoting continuous improvement and collaboration to deliver top-notch in-store applications.
+Leverage GenAI powered capabilities (RAG, prompt driven workflows, MCP and spec driven architectures) to deliver faster, scalable, intelligent capabilities & experiences
+Ensure quality of the code and products throughout the entire development lifecycle (DevOps)
+Ensure continuous improvement in performance, scalability, extensibility, reliability, usability, and availability of the platform
+Leverage agile methodology concepts for quality, delivery and continuous improvement
+Participate in sprint planning and other scrum ceremonies. Help team plan and execute sprint tickets
+Work in full DevOps model in the entire tech stack including designing, implementing, deploying, monitoring, and operating services at scale
+Resolve technical issues and remove blockers for the team
+Actively participate in code review and feedback for other developers
+Own build, test, release, and production support for team‑owned capabilities, ensuring stability, incident resolution, and continuous improvement
+Implement strong observability and operational readiness using Splunk and SignalFx , including monitoring and alerting
+WHO YOU WILL WORK WITH
+You will be reporting to the Engineering Manager at Geographies & Marketplace Experiences - India Technology Center, who will guide you to grow and build your career path. You will be directly working within a team of dedicated engineers that work on the same solutions. You share your experience and technical expertise such that we improve on the longer-term technical strategic direction.
+As a Software Engineer II for the Geographies & Marketplace Experiences team, you will be part of a mission critical team focused on building a high-throughput, low-latency, fault-tolerant Retail Stores Cloud Checkout that drives Nike’s Digital transformation and growth strategies.
+A minimum of 4+ years software development experience.Experience working in a highly collaborative, multi-discipline development team environment
+Experience working in a distributed/cloud-based environment (e.g. AWS Services, GCE, Azure etc.)
+Experience in micro service architecture, domain driven design, and RESTful Services using Java and Spring Boot framework mandatorily.
+Demonstrate an AI-first mindset, actively leveraging AI powered developer tools (e.g., Cursor) to accelerate development and learning.
+Experience in Test Driven development – with Junit, Mockito, cucumber, Playwright etc.,
+Experience with monitoring and tracing tools like Splunk, SignalFx, Kibana/Grafana etc.
+Experience working with NoSQL data stores like DynamoDB and relational data stores like MySQL, Oracle etc.
+Experience with continuous integration, unit testing, static analysis, and automated integration tests. Continuous delivery experience preferred.
+Working knowledge of Scrum and agile principles.Working in a fast-paced, results-oriented environment with globally distributed and diverse teams
+Demonstrate end-to-end ownership of project/capabilities that includes requirements evaluation, design, implementation, code reviews, observability, maintenance and support.
+Excellent verbal and written communication and collaboration skills to effectively communicate with both business and technical teams
+Bachelor’s degree in computer science, Information Systems, or other relevant subject area, or equivalent experience.
+Experience with CI/CD ( Jenkins ) and engineering hygiene: GitHub workflows (branching, PR reviews, code quality, collaboration) and release readiness
+Observability and operational readiness using Splunk and SignalFx , including monitoring and alerting
+The following would be nice-to-have:
+Experience in designing and implementing highly scalable web applications
+Exposure to Stores application areas like Point of Sale"
+17,Sureify,Sr. Software Engineer,"Hyderabad, India",https://job-boards.greenhouse.io/sureify/jobs/5376120008,75,"The candidate has strong backend and TypeScript experience matching the role, but lacks specific hands-on experience with Golang and PHP, and the role requires strong frontend/React focus which is secondary to their backend profile.",no,"Sr. Software Developer
+Sureify drives customer engagement between the customer and their insurance company by incorporating web & mobile apps into the insurance product experience. Our product is controlled by our backend dashboard, so insurers can get the latest iOT data streaming in. The SaaS platform is designed to ensure that insurers never miss opportunities to increase engagement with their existing customer base.
+We are looking for a Full Stack Web Developer who is motivated to combine the art of design with the art of programming. Responsibilities will include translation of the UI/UX design wireframes to actual code that will produce visual elements of the application. You will work with the UI/UX designer and bridge the gap between graphical design and technical implementation, taking an active role on both sides and defining how the application looks as well as how it works. On the backend, you will have the opportunity to help our product scale and be involved in the further architecture of the Sureify platform.
+Responsibilities
+Design, develop, and maintain robust web applications using React on the frontend and Golang/Typescript/PHP on the backend.
+Build reusable code and libraries for future use
+Build a scalable architecture to support millions of users.
+Design schema migrations, optimize complex queries, and manage data integrity in MySQL.
+Ensure the technical feasibility of UI/UX designs
+Work closely with the UI/UX designers and product managers
+Identify and resolve performance bottlenecks across the stack, from frontend rendering to database indexing
+Write clean, maintainable code and participate in rigorous peer code reviews to ensure long-term system stability.
+Collaborate with other team members and stakeholders.
+Proven ability to explain complex technical concepts clearly to developers.
+Mentor junior engineers, conduct code reviews, and foster an inclusive, collaborative environment.
+Skills And Qualifications
+3+ years of experience designing, building, and scaling enterprise-grade applications that deliver measurable business impact and exceptional user experiences.
+Strong hands-on experience with Golang , specifically building microservices and handling concurrency.
+Strong experience in React & TypeScript, modern CSS frameworks (MaterialUI, Styled Components, CSS Modules), accessibility (WCAG 2.2 AA), and performance optimization.
+Full-stack development proficiency: relational data modeling, DB optimization, REST API design, JavaScript, CSS, and delivering APIs as a service.
+API design and lifecycle management: REST; versioning, pagination, rate limiting, and security best practices.
+Good understanding of asynchronous request handling and partial page updates.
+Use test-driven development and acceptance tests to ensure feature quality.
+Familiarity with Git, Docker, and CI/CD pipelines.
+Having hands-on experience in AWS(SQS, S3, Parameter store, RDS, ECS) is advantageous.
+Benefits
+Here is a glimpse of some of the benefits we offer:
+Competitive Salary
+Medical insurance & Accidental insurance to keep you and your family healthy.
+Possibility to travel around the world for seminars and learning on the latest technologies in the industry.
+Great team to work with, exposure to the best technologies in the industry.
+Sureify is an equal opportunity employer and enthusiastically encourages people from a wide variety of backgrounds and experiences to apply.
+Our Guiding Principles
+Our products are for nothing if their creators are not fulfilled in their work. We want our employees to flourish at Sureify. We do not fawn over status or titles, instead, we honor effort and intelligence. The best idea wins no matter which colleague proposed it. We do not shortcut our mission with overblown claims or false promises. Sticking to the truth is both a strategy and a principle for us.
+Sureify is an Equal Opportunity Employer committed to diversity. Qualified applicants will receive consideration for employment without regard to race, color, national origin, citizenship, ancestry, religion, sex, sexual orientation, gender perception or identity, age, disability, veteran or military status, or any other basis prohibited by law.
+If you are a California resident, please be aware Sureify collects personal information from you during the application process, which may include your name, contact details, employment history, and educational background, in accordance with the California Consumer Privacy Act (CCPA). We use this information solely to evaluate your candidacy for employment and may share it with internal hiring personnel as needed."
+18,Hotstar,Software Development Engineer II,Bengaluru- We Work,https://jiostar.wd102.myworkdayjobs.com/JioStar/job/Bengaluru--We-Work/Software-Development-Engineer-II_JR12470-1,75,"The candidate has strong Python, Kafka, and Azure Databricks/Spark experience from Microsoft, matching the data platform requirements, though their primary recent experience is backend Node.js rather than pure data engineering.",maybe,"Job Title: Software Development Engineer II (Data Platform) Department, Level: X21
+Location: Onsite, Bangalore
+Work Type: Full time
+As an SDE II, you will be part of the engineering team building scalable data and backend systems that power JioStar’s Ad Platform. You will work on large-scale data pipelines and real-time systems supporting ad reporting, attribution, targeting, measurement, and analytics.
+This role offers an opportunity to work on challenging engineering problems involving large-scale data processing, distributed systems, and real-time event processing while contributing to products that support millions of users.
+About the Team
+JioStar’s Ad Platform is among the leading video advertising platforms in India—and we’re aiming higher. With deep expertise across Video-on-Demand, Live Sports, and Ad Monetization, our vision is to build one of the most effective and scalable AdTech ecosystems in the world.
+Our engineering team works across the full AdTech stack—from high-throughput backend and data systems to deeply integrated ad experiences across client platforms. We work with a wide range of technologies, but more importantly, we solve complex engineering problems involving scale, reliability, real-time processing, and monetization.
+If you enjoy solving challenging problems, learning new technologies, and building systems at scale, we’d love to talk.
+Key Responsibilities ● Design, develop, and maintain scalable data pipelines and backend systems for Ads reporting, attribution, analytics, and measurement. ● Build and optimize batch and real-time data processing workflows using technologies such as Spark, Hive, Kafka, SQL, and Scala. ● Work with large-scale datasets and distributed systems to ensure reliability, scalability, and performance. ● Write clean, maintainable, and efficient code following engineering best practices. ● Collaborate with senior engineers, product managers, data scientists, and other engineering teams to build and deliver technical solutions. ● Develop and maintain data models, datasets, and APIs to support various Ads use cases. ● Ensure data quality, consistency, and reliability across different data sources.
+● Troubleshoot and resolve issues in batch processing and real-time streaming pipelines. ● Participate in code reviews, debugging, and performance optimization. ● Continuously learn and explore new technologies relevant to large-scale data processing and distributed systems.
+Skills and Attributes for Success ● 2–4 years of experience in data engineering. ● Strong programming skills in Scala, Java, or Python. ● Hands-on experience or strong exposure to Apache Spark for batch or streaming data processing. ● Good understanding of SQL, Hive, and data modeling concepts. ● Experience working with Kafka or other messaging and event-streaming systems is preferred. ● Understanding of distributed systems and Big Data technologies. ● Strong problem-solving, debugging, and analytical skills. ● Familiarity with tools such as Presto, Delta Lake, Airflow, or similar technologies is a plus. ● Exposure to cloud-based data platforms such as AWS, GCP, Databricks, or EMR is an added advantage. ● Experience or interest in AdTech, campaign analytics, attribution, or large-scale consumer platforms is a plus.
+Preferred Education & Experience ● Bachelor’s or Master’s degree in Computer Science, Engineering, or a related technical field. ● 2–4 years of relevant experience in software development, backend engineering, data engineering, or building large-scale data systems. About Us Perched firmly at the nucleus of spellbinding content and innovative technology, JioStar is a leading global media & entertainment company that is reimagining the way audiences consume entertainment and sports. Its television network and streaming service together reach more than 750 million viewers every week, igniting the dreams and aspirations of hundreds of million people across geographies. JioStar India Private Limited (formerly known as Star India Private Limited) is an equal opportunity employer. The company values diversity and its mission is to create a workplace where everyone can bring their authentic selves to work. The company ensures that the work
+environment is free from any discrimination against persons with disabilities, gender, gender identity and any other characteristics or status that is legally protected."
+19,Wells Fargo,Senior Software Engineer,"Bengaluru, India",https://wf.wd1.myworkdayjobs.com/WellsFargoJobs/job/Bengaluru-India/Senior-Software-Engineer_R-577612,75,"Manish matches the tech stack and backend focus well, but has ~3.3 years of experience against a preferred 4+ years requirement for a senior role.",maybe,"bout this role:
+Wells Fargo is seeking a Senior Software Engineer.
+In this role, you will:
+Lead moderately complex initiatives and deliverables within technical domain environments
+Contribute to large scale planning of strategies
+Design, code, test, debug, and document for projects and programs associated with technology domain, including upgrades and deployments
+Review moderately complex technical challenges that require an in-depth evaluation of technologies and procedures
+Resolve moderately complex issues and lead a team to meet existing client needs or potential new clients needs while leveraging solid understanding of the function, policies, procedures, or compliance requirements
+Collaborate and consult with peers, colleagues, and mid-level managers to resolve technical challenges and achieve goals
+Lead projects and act as an escalation point, provide guidance and direction to less experienced staff
+Required Qualifications:
+4+ years of Software Engineering experience, or equivalent demonstrated through one or a combination of the following: work experience, training, military experience, education
+Required Qualifications for Europe, Middle East & Africa only:
+Experience in Software Engineering, or equivalent demonstrated through one or a combination of the following: work experience, training, education
+Desired Qualifications:
+Strong proficiency in Java, Spring Boot, REST APIs, and Microservices architecture.
+Hands-on experience with React.js and modern front-end development frameworks, including state management and responsive UI development.
+Experience designing and implementing Event-Driven Architectures using messaging and streaming platforms.
+Working knowledge of Apache Kafka concepts, producers, consumers, topics, partitions, and event-driven integration patterns.
+Experience with CI/CD pipelines and DevOps practices using tools such as GitHub Actions, Harness, Jenkins, or equivalent platforms.
+Strong source control and branching strategy experience using Git.
+Experience developing and maintaining automated unit tests, integration tests, and test automation frameworks.
+Experience working with at least one NoSQL database such as MongoDB or similar technologies.
+Good understanding of software design patterns, secure coding practices, and application performance optimization.
+Awareness of Python and its usage in automation, scripting, data processing, or AI/ML-related initiatives.
+Experience working in Agile/Scrum environments with cross-functional distributed teams.
+Participate in code reviews, enforce best practices, and mentor junior developers.
+Knowledge of Cybersecurity, Identity and Access Management (IAM), Authentication, Authorization, Privileged Access Management, or related security domains is a strong plus
+Posting End Date:
+8 Oct 2026
+*Job posting may come down early due to volume of applicants.
+We Value Equal Opportunity
+Wells Fargo is an equal opportunity employer. All qualified applicants will receive consideration for employment without regard to race, color, religion, sex, sexual orientation, gender identity, national origin, disability, status as a protected veteran, or any other legally protected characteristic.
+Employees support our focus on building strong customer relationships balanced with a strong risk mitigating and compliance-driven culture which firmly establishes those disciplines as critical to the success of our customers and company. They are accountable for execution of all applicable risk programs (Credit, Market, Financial Crimes, Operational, Regulatory Compliance), which includes effectively following and adhering to applicable Wells Fargo policies and procedures, appropriately fulfilling risk and compliance obligations, timely and effective escalation and remediation of issues, and making sound risk decisions. There is emphasis on proactive monitoring, governance, risk identification and escalation, as well as making sound risk decisions commensurate with the business unit’s risk appetite and all risk and compliance program requirements.
+Candidates applying to job openings posted in Canada: Applications for employment are encouraged from all qualified candidates, including women, persons with disabilities, aboriginal peoples and visible minorities. Accommodation for applicants with disabilities is available upon request in connection with the recruitment process.
+Applicants with Disabilities
+To request a medical accommodation during the application or interview process, visit Disability Inclusion at Wells Fargo .
+Drug and Alcohol Policy
+Wells Fargo maintains a drug free workplace. Please see our Drug and Alcohol Policy to learn more.
+Wells Fargo Recruitment and Hiring Requirements:
+a. Third-Party recordings are prohibited unless authorized by Wells Fargo.
+b. Wells Fargo requires you to directly represent your own experiences during the recruiting and hiring process."
+20,Nike,"Senior Software Engineer, Global Converse, ITC","Karnataka, India",https://nike.wd1.myworkdayjobs.com/nke/job/Karnataka-India/Senior-Software-Engineer--Global-Converse--ITC_R-92601,70,"The candidate has strong backend and full-stack experience matching the tech stack (Node.js, Python, AWS, Kafka) but falls short of the 5+ years requirement for this Senior Software Engineer role, having just over 3 years.",maybe,"WHO YOU’LL WORK WITH
+This role typically reports to Manager Software Engineering within Global Converse, ITC within the Supply chain, Planning and Corporate Functions
+Product Managers, Designers, and Program/Portfolio partners
+Platform and Site Reliability Engineering (SRE) teams
+Engineers, Security, and Architecture partners
+External technology partners and vendors
+WHO WE ARE LOOKING FOR
+We are seeking a We are seeking a Senior Software Engineer- Full stack for Global Converse within the Supply Chain, Planning, and Corporate Functions. You are a strategic thinker with hands‑on expertise in systems orchestration and simplification. You thrive in complex environments, bring strong cross‑functional partnership, and could translate business needs into scalable, reliable technical solutions. You will support the engineering team by providing technical direction, architectural guidance, and delivery maturity, helping deliver high‑impact consumer and enterprise experiences. You lead with curiosity, problem‑solving rigor, and a commitment to elevating the maturity of Supply Chain, Planning, and Corporate technology capabilities across the enterprise.
+Details on qualifications:
+Bachelor’s degree in computer science, Engineering, or a related field.
+5+ years of professional software engineering experience building and operating production systems.
+Domain experience of financial services will be preferred’
+Experience in microservices architecture, domain driven design, and RESTful API’s using languages such as Node.js and python
+Experience using cloud services to build an integrated application (AWS - EC2, ECS, API gateway, Lambda, Relational and Non-relational Databases), and container orchestration (Docker/Kubernetes).
+Experience with implementing CI/CD and leading teams with DevOps responsibilities of deploying and supporting the software in production
+Proven delivery excellence in highly collaborative, multi-disciplinary teams.
+Expertise in microservices architecture, domain driven design, RESTful services,
+Proficiency in one or more of: Java/Kotlin, JavaScript/TypeScript, Python, or Go.
+Good to have experience with observability & monitoring tools (e.g., Splunk, SignalFx)
+Familiarity with messaging and streaming platforms (e.g., Kafka, Event Hubs).
+Knowledge of secure coding practices, identity and access management, and compliance considerations.
+Exposure to Supply Chain and Corporate domains, such as inventory, order management, logistics, warehouse management, and financial systems.
+Experience implementing or integrating with ERP platforms.
+Strong problem-solving skills, with experience troubleshooting complex, distributed systems.
+Excellent verbal and written communication skills, with the ability to engage both technical and business stakeholders.
+Eagerness to learn and apply AI driven solutions to improve engineering productivity and system outcomes, and operational efficiency
+Strong collaboration and A growth mindset — curious, adaptable, and energized by evolving technology.
+WHAT YOU’LL WORK ON
+Design & Develop: Build, test, and maintain React applications and Node services providing functionality necessary to enable our software Engineering efforts.
+Collaborate: Work closely with product managers, engineers to understand requirements, technical specifications, and deliver quality software.
+Explain designs to teammates to for alignment and approval
+Ensure solutions are designed and developed using a scalable, highly resilient cloud native architecture
+Front-End Development: Design and implement RESTful APIs, microservices, services using technologies like Node.js
+Review code developed by other developers and provide feedback to ensure best practices
+Database Management: Develop databases, ensuring efficient data storage and retrieval.
+Testing & Quality Assurance: Write unit tests, integration tests, and maintain high code quality standards using tools such as Jest, Mocha, or similar.
+Performance Optimization: Identify and fix performance bottlenecks across the full stack, ensuring high availability and responsiveness.
+CI/CD Integration: Integrate with and maintain continuous integration/continuous deployment (CI/CD) pipelines for seamless software delivery.
+Contribute to existing documentation or educational content and adapt content based on product/program updates and user feedback.
+Provide technical leadership and mentorship to engineers, analysts, and partner teams.
+Partner with business and technology teams to define product features, and design, build, and launch new products or enhance existing platforms.
+Contribute to architecture evolution, security by design, and cost-efficient solutions."
+21,Nike,"Software Engineer III - Data Engineering , ITC","Karnataka, India",https://nike.wd1.myworkdayjobs.com/nke/job/Karnataka-India/Software-Engineer-III---Data-Engineering---ITC_R-85756,70,"The candidate has strong Python, Azure, and data engineering experience from Microsoft, but falls slightly short of the 5-7 years experience requirement with their 3.3+ years total YOE.",no,"WHO YOU’LL WORK WITH
+At Nike, we leverage the power of data and technology to serve athletes* around the world. The Data Foundation team is at the forefront of this mission—building scalable, secure, and intelligent platforms that power decision-making across Nike’s global supply chain and planning ecosystem.
+WHO WE ARE LOOKING FOR
+We are looking for an experienced software engineer with a passion for building robust and scalable data solutions. You thrive in a fast-paced, collaborative environment and have a proven track record of delivering high-quality software.
+Skillset Required
+5-7 years of experience in software development, with a strong foundation in distributed systems, cloud-native architectures, and data platforms.
+Experience with various stages of software development, including design, development, testing, and deployment.
+Strong programming skills in Python, SQL etc.
+Deep expertise with cloud platforms like AWS, Azure, or GCP.
+Hands-on experience with Databricks, Snowflake, AWS EMR, AWS RDS, Azure SQL, or GCP Cloud SQL, Apache Spark, Databricks Workflow and Apache Airflow.
+Strong understanding of Lakehouse architecture, Data Mesh principles, data governance frameworks, and modern data pipelines.
+Proven ability to deliver high-impact, API-first services at scale.
+Proficiency with tools like Terraform or AWS CloudFormation is critical for managing cloud infrastructure programmatically, ensuring consistency, and enabling automation.
+Strong problem-solving and analytical thinking skills.
+Experience in guiding and supporting junior engineers.
+Excellent communication and collaboration skills.
+Good hands on experience in observability and Data quality
+Skillset Preferred (Good to Have)
+Basic understanding of Machine Learning and Generative AI concepts
+Exposure to LLMs (Large Language Models) and their applications (data cataloging, data schematic layer, data enrichment, etc.)
+Familiarity with prompt engineering techniques and evaluation
+Experience or exposure to AI frameworks/libraries, Agentic AI such as LangChain, OpenAI APIs, or similar
+Understanding of RAG (Retrieval-Augmented Generation) patterns and vector databases is a plus
+Awareness of AI guardrails, responsible AI, and data privacy considerations
+WHAT YOU’LL WORK ON
+As a Software Engineer III, you will -
+Design, develop, and maintain scalable data solutions.
+Build and optimize data pipelines, ensuring data quality and reliability.
+Develop SDKs, APIs, and microservices to support enterprise-wide data and analytics needs.
+Collaborate with cross-functional teams including product managers, data scientists, and other engineers to deliver high-impact solutions.
+Implement best practices in software development, data governance, and platform observability.
+Participate in code reviews, provide feedback, and mentor junior engineers."
+22,Hotstar,Senior Software Development Engineer - Data Engineer,Mumbai - Urmi,https://jiostar.wd102.myworkdayjobs.com/JioStar/job/Mumbai---Urmi/Senior-Software-Development-Engineer---Data-Engineer_JR12427-1,65,"The candidate has strong Python, Spark, and data pipeline experience from Microsoft, but lacks the 5-7 years of pure data engineering experience required for this senior role.",maybe,"Job Summary:
+The Data Engineer will be responsible for designing, building, and maintaining scalable and reliable data pipelines and data platforms to support analytics, reporting, and downstream applications. The role involves working across the entire data lifecycle - ingestion, processing, storage, and consumption with a strong focus on data quality, performance, and operational stability.
+The engineer will work closely with analytics teams, business stakeholders, and platform teams to enable timely and accurate data availability across multiple use cases.
+About the team:
+Join JioStar's business systems team, where you'll build scalable platforms that empower data­driven campaign decisions across TV and Digital channels. You'll work on systems that help business users optimise advertiser coverage, maximise viewership reach through TVR/Digital impressions, and analyse how users adopt micro-content across demographic and geographic cohorts. We're solving complex problems at massive scale-enabling clarity on user adoption patterns by gender, economic class, and geography-so our business teams can make informed decisions on content strategy and revenue optimisation. If you're passionate about building high­performance systems that drive business impact at billion-user scale, join us
+Key responsibilities:
+Design, develop, and maintain batch and near real-time data pipelines using modern data
+engineering frameworks and tools
+Implement and manage data ingestion, E TL/ELT workflows, and data transformations from
+multiple internal and external data sources
+Build and optimize scalable data processing solutions using distributed computing frameworks
+(e.g., Spark)
+Develop and manage datasets for analytics, dashboards, and reporting use cases
+Monitor pipeline performance, data freshness, and reliability; proactively identify and resolve
+issues
+Work with stakeholders to understand data requirements and translate them into technical
+solutions
+Ensure adherence to data governance, security, and best engineering practices
+Participate in code reviews, design discussions, and continuous improvement initiatives
+Skills and attributes for success:
+Strong experience with data engineering and data pipelining concepts
+Hands-on experience with distributed data processing frameworks such as Apache Spark
+Experience building data solutions on Google Cloud Platform (GCP), including components such
+as Google Cloud Storage (GCS), BigQuery, Dataproc / Dataflow, Pub/Sub
+Strong SQL skills and experience working with large datasets
+Proficiency in Python (Java/Scala is a plus)
+Experience integrating data from multiple heterogeneous data sources
+Solid understanding of distributed systems, parallel processing, and performance optimization
+Preferred education and experience:
+Bachelor’s or Master’s degree in Computer Science, Engineering, Mathematics, or a related field (or equivalent practical experience)
+5-7 years of hands-on experience in data engineering/ big data roles
+Strong experience working in complex, large-scale data environments
+About Us:
+Perched firmly at the nucleus of spellbinding content and innovative technology, JioStar is a leading global media & entertainment company that is reimagining the way audiences consume entertainment and sports. Its television network and streaming service together reach more than 750 million viewers every week, igniting the dreams and aspirations of hundreds of million people across geographies.
+JioStar is an equal opportunity employer. The company values diversity and its mission is to create a workplace where everyone can bring their authentic selves to work. The company ensures that the work environment is free from any discrimination against persons with disabilities, gender, gender identity and any other characteristics or status that is legally protected.
+If you would like more information about how your data is processed, please contact us."
+23,Kotak Mahindra Bank,Software Developer Engineer 1_Digital Banking Kotak 811-Regional Sales_Karnataka,"Karnataka, India",https://hcbt.fa.em2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX/job/258948,50,"The candidate has the right technical background for a software engineering role, but the job is location-specific to Karnataka and likely onsite for regional sales operations, whereas the candidate prefers remote, hybrid, or Bengaluru.",no,"Role at Kotak Mahindra Bank: Software Developer Engineer 1_Digital Banking Kotak 811-Regional Sales_Karnataka (Karnataka, India). Reason: The candidate has the right technical background for a software engineering role, but the job is location-specific to Karnataka and likely onsite for regional sales operations, whereas the candidate prefers remote, hybrid, or Bengaluru."
+24,Wolters Kluwer,Senior Enterprise Software Engineer,IND-Pune-Smartworks,https://wk.wd3.myworkdayjobs.com/External/job/IND-Pune-Smartworks/Senior-Enterprise-Software-Engineer_R0058640,45,"The candidate has ~3.3 years of experience and a background in backend/full-stack development, whereas this role requires 5-7 years of experience with a heavy focus on Infrastructure as Code (Terraform) and DevSecOps.",no,"Wolters Kluwer is seeking a Senior Enterprise Software Engineer to design, develop, and implement scalable cloud-based solutions, with a strong focus on Infrastructure as Code (IaC), DevSecOps practices, and automation .
+This role represents a key step in the evolution from traditional IT operations toward software-driven infrastructure engineering , where systems and environments are built, deployed, and managed through code and automated pipelines.
+The engineer will contribute to the development of enterprise platform capabilities, leveraging modern CI/CD toolchains and AI-assisted engineering tools to improve productivity, quality, and delivery speed.
+Key Responsibilities
+Software & Infrastructure Engineering
+Design, develop, and maintain infrastructure using Infrastructure as Code (Terraform)
+Build automation solutions to replace manual operational activities
+Contribute to the development of enterprise cloud services across Azure and AWS
+CI/CD and Automation
+Design and maintain pipelines using:
+Azure DevOps (ADO Pipelines)
+Jenkins
+GitHub Actions
+GitLab CI/CD
+Ensure consistent and repeatable deployment processes across environments
+Integrate validation, testing, and security controls into delivery pipelines
+AI-Enabled Development
+Utilize AI tools (e.g., GitHub Copilot, M365 Copilot) to:
+Accelerate code and IaC development
+Improve documentation and test coverage
+Validate AI-generated outputs and ensure adherence to engineering standards
+Apply basic prompt engineering techniques to support development activities
+Cloud & Platform Contribution
+Support the provisioning and automation of infrastructure in Azure and AWS
+Contribute to shared platform components and reusable modules
+Assist in implementing event-driven and API-based automation
+Security & Compliance
+Integrate security practices into development workflows:
+Secure coding
+Secrets management
+Dependency validation
+Ensure compliance with enterprise standards and policies
+Operations & Reliability
+Support system monitoring, troubleshooting, and incident resolution
+Contribute to observability practices (logging, metrics, alerting)
+Improve system reliability through automation and continuous improvement
+Work Breakdown
+50% Software & Infrastructure Engineering
+25% CI/CD & Automation
+15% Operations & Troubleshooting
+10% Innovation & AI enablement
+Qualifications
+Education
+Bachelor’s degree in Computer Science, Information Systems, or related field, or equivalent experience
+Experience
+5–7 years of experience in software engineering, DevOps, or cloud engineering
+Hands-on experience with Terraform (IaC)
+Experience with CI/CD tools:
+Azure DevOps, Jenkins, GitHub Actions, or GitLab CI/CD
+Experience working in Azure and/or AWS environments
+Programming experience (Python preferred)
+AI Capability
+Practical experience using AI tools for development productivity
+Ability to validate AI-generated code and outputs
+Understanding of responsible AI usage in engineering workflows
+Core Competencies
+Strong execution and problem-solving skills
+Automation-first mindset
+Attention to detail and quality
+Collaboration and teamwork
+Continuous learning and adaptability
+Other Duties and Soft Skills
+Performs other duties as assigned by management.
+On call rotation responsibilities with the Service Delivery and Operations Team
+Excellent communication and collaboration skills, with a willingness to learn and contribute to team success.
+Minimal domestic travel requirements
+Normal professional office environment.
+Our Interview Practices
+To maintain a fair and genuine hiring process, we kindly ask that all candidates participate in interviews without the assistance of AI tools or external prompts. Our interview process is designed to assess your individual skills, experiences, and communication style. We value authenticity and want to ensure we’re getting to know you—not a digital assistant. To help maintain this integrity, we ask to remove virtual backgrounds and include in-person interviews in our hiring process. Please note that use of AI-generated responses or third-party support during interviews will be grounds for disqualification from the recruitment process
+Our Interview Practices
+To maintain a fair and genuine hiring process, we kindly ask that all candidates participate in interviews without the assistance of AI tools or external prompts. Our interview process is designed to assess your individual skills, experiences, and communication style. We value authenticity and want to ensure we’re getting to know you—not a digital assistant. To help maintain this integrity, we ask to remove virtual backgrounds and include in-person interviews in our hiring process. Please note that use of AI-generated responses or third-party support during interviews will be grounds for disqualification from the recruitment process.
+Applicants may be required to appear onsite at a Wolters Kluwer office as part of the recruitment process."
+25,Deutsche Bank,"Senior Engineer(Backend), AVP","Bangalore, Velankani Tech Park",https://db.wd3.myworkdayjobs.com/DBWebsite/job/Bangalore-Velankani-Tech-Park/Senior-Engineer-Backend---AVP_R0449345-1,45,"While Manish has strong backend and Redis experience, the role requires senior leadership (AVP) with extensive Java/Spring/Spring Boot expertise, which does not match his primary Node.js and Python stack.",maybe,"Job Description:
+Job Title-Senior Engineer(Backend), AVP
+Location-Bangalore, India
+Role Description
+A seasoned technical leader with software engineering background to improve functional performance and help deliver Divisional business goals.
+Key responsibilities of this role include active participation in the design of their solution components, investigating re-use, ensuring that solutions are fit for purpose and maintainable, and can be integrated successfully into the overall solution and environment with clear, robust and well tested deployments.
+A person who’s hands on would fit the team quite well
+What we’ll offer you
+As part of our flexible scheme, here are just some of the benefits that you’ll enjoy
+Best in class leave policy
+Gender neutral parental leaves
+100% reimbursement under childcare assistance benefit (gender neutral)
+Sponsorship for Industry relevant certifications and education
+Employee Assistance Program for you and your family members
+Comprehensive Hospitalization Insurance for you and your dependents
+Accident and Term life Insurance
+Complementary Health screening for 35 yrs. and above
+Your key responsibilities
+Lead the feature team, collaborating with others to understand requirements, analyze and refine stories, design solutions, implement them, test them and support them in production
+Use BDD techniques, collaborating closely with users, analysts, developers and other testers. Make sure we are building the right thing.
+Rapid prototype development
+Write code and write it well. Be proud to call yourself a programmer. Use test driven development, write clean code and refactor constantly. Make sure we are building the thing right.
+Be ready to work on a range of technologies and components, including user interfaces, services and databases. Act as a generalizing specialist.
+Define and evolve the architecture of the components you are working on and contribute to architectural decisions at a department and bank-wide level.
+Ensure that the software you build is reliable and easy to support in production. Be prepared to take your turn on call providing 3rd line support when it's needed
+Help your team to build, test and release software within short lead times and with minimum of waste. Work to develop and maintain a highly automated Continuous Delivery pipeline.
+Help create a culture of learning and continuous improvement within your team and beyond
+Your skills and experience
+Experienced in Spec Driven Development using AI tools.
+Proficiency in Java /Kotlin with good understanding of both object oriented and functional programming concepts.
+Practical experience in building data engineering solutions
+Strong knowledge of Java, Spring, Spring Boot, Maven, PHP, Reddis , Elastic Search
+Strong knowledge of Github Actions, CI/CD pipeline , Container-native delivery : Docker , Kubernetes, Helpm
+Experience with setting up key stores, generating SSL Certificates, Gateways , Apigee
+Experience working in an agile team, practicing Scrum, Kanban or XP
+Experience of Automated Testing is highly desirable
+Architecture and design approaches that support rapid, incremental and iterative delivery, such as Domain Driven Design, CQRS, Event Sourcing and microservices.
+Deep API design (GraphQL and REST) and inter-service communication (sync + async/eventing)
+High performance SQL data access - SQL scripts
+Database: Oracle 10G or higher for Liquibase database automation and Postgres – modelling, performance , zero-low downtime schema change
+Ability to read and safely evolve an unfamiliar legacy PHP codebase
+Proven ability to leverage AI tools to enhance productivity, optimise workflows to solve business problems, while applying critical judgment to ensure responsible and ethical use of data and AI outputs.
+How we’ll support you
+Training and development to help you excel in your career
+Coaching and support from experts in your team
+A culture of continuous learning to aid progression
+A range of flexible benefits that you can tailor to suit your needs
+About us and our teams
+Please visit our company website for further information:
+https://www.db.com/company/company.html
+We strive for a culture in which we are empowered to excel together every day. This includes acting responsibly, thinking commercially, taking initiative and working collaboratively.
+Together we share and celebrate the successes of our people. Together we are Deutsche Bank Group.
+We welcome applications from all people and promote a positive, fair and inclusive work environment."
+26,Sureify,Full-Stack Application Engineer (Support) (US shift),"India, Hyderabad",https://job-boards.greenhouse.io/sureify/jobs/5435996008,40,"While the candidate has the required years of experience and TypeScript skills, the job focuses heavily on application support, requires PHP (which the candidate lacks), and demands working the US night shift (10 PM to 7 AM IST).",no,"Title: Fullstack Application Engineer (Support) (US shift) (or Fullstack Software Engineer (Support))
+About Sureify:
+Sureify is dedicated to modernizing the life insurance and annuity industry. We provide cutting-edge digital solutions that empower insurers to easily engage with, sell to, and service their customers. Our mission is to drive meaningful digital transformation by offering scalable technology that enhances customer engagement and streamlines carrier operations. Sureify's products deliver the advanced digital experiences that life insurance carriers, agents, employees, and consumers now expect in this rapidly evolving technological landscape. AtSureify, we cultivate a culture that prioritizes innovation, collaboration, and continuous learning.
+About the Role:
+Are you ready to be part of a dynamic and growing agile software company? At Sureify, we’re helping a large and critical industry -- life insurance -- modernize and innovate. We build digital solutions for some of the world’s leading insurance companies, and we need your help to provide production support for our SaaS products. Sureify’s success depends on our ability to provide world-class support to our customers and to make sure they are receiving tremendous, continuous, and progressive value from the products.
+We are looking for a seasoned software engineer with Full Stack Web dev/support experience. Your primary responsibility will be to provide application support of Sureify SaaS products. You will play the role of an expert in Sureify SaaS products and technologies in troubleshooting production issues and also provide timely and effective communication to customers.
+Responsibilities:
+Develop and maintain deep expertise in Sureify SaaS products.
+Troubleshoot and resolve incoming support cases. This includes identifying root causes of issues, providing workarounds or solutions, and collaborating with other teams to resolve complex problems.
+Troubleshoot technical issues using PHP, MySQL/Postgres, and TypeScript.
+Create knowledge articles, runbooks, and troubleshooting guides.
+Work during the US business hours between 10 PM IST to 7 AM IST.
+Requirements:
+3 to 4 years as a full-stack software engineer with experience providing enterprise application software support in PHP, TypeScript, with strong working knowledge of SQL (MySQL and Postgres), RESTful APIs for a B2B software company.
+Must have experience in coding, implementing and/or supporting software applications.
+Must have experience in handling high-severity and complex issues impacting production systems availability.
+Must have experience working on production issues and support tickets by investigating, troubleshooting, and resolving technical problems within the defined SLAs.
+Must have experience in analyzing application logs, database records, and system behavior to identify the root cause of issues.
+Must have experience in documenting investigation findings, root causes, resolutions, and required follow-up actions.
+Nice to have experience with:
+Integrations such as DocuSign, Payment Gateways, and Auth services such as Okta or Azure.
+Performance tuning in application and database layers.
+Developing and supporting applications with REACT, Node.js, Apache web servers.
+WHAT YOU WILL BRING
+Excellent written and verbal communication skills in English, including the ability to explain complex technical topics in clear, customer-friendly language.
+Outstanding troubleshooting skills; ability to think critically and display an aptitude for problem-solving.
+Employ sound business judgment when making business decisions
+Use creative and innovative ways to solve problems
+Display a strong work ethic and do whatever it takes to get the job done
+Demonstrate strong follow-through and consistently keep commitments to customers and employees
+Display an understanding of the customer’s needs and a strong commitment to customer satisfaction
+Ensure that each and every customer is handled with a consummately professional attitude and the highest possible level of service
+Benefits
+Here is a glimpse of some of the benefits we offer:
+Competitive Salary
+Medical & Accidental insurance to keep you and your family healthy.
+Great team to work with exposure to the best technologies in the industry.
+Sureify is an equal opportunity employer and enthusiastically encourages people from a wide variety of backgrounds and experiences to apply.
+Why Join Sureify?
+At Sureify, you’ll be part of a collaborative, innovation-driven culture where your expertise will directly influence the quality and success of products, transforming the life insurance landscape. You’ll work alongside passionate technologists and industry experts, tackling complex challenges with cutting-edge technologies while helping shape the future of digital insurance.
+Our Guiding Principles
+Our products are for nothing if their creators are not fulfilled in their work. We want our employees to flourish at Sureify. We do not fawn over status or titles; instead, we honour effort and intelligence. The best idea wins, no matter which colleague proposed it. We do not shortcut our mission with overblown claims or false promises. Sticking to the truth is both a strategy and a principle for us.
+Our Guiding Principles
+Our products are for nothing if their creators are not fulfilled in their work. We want our employees to flourish at Sureify. We do not fawn over status or titles, instead, we honor effort and intelligence. The best idea wins no matter which colleague proposed it. We do not shortcut our mission with overblown claims or false promises. Sticking to the truth is both a strategy and a principle for us.
+Sureify is an Equal Opportunity Employer committed to diversity. Qualified applicants will receive consideration for employment without regard to race, color, national origin, citizenship, ancestry, religion, sex, sexual orientation, gender perception or identity, age, disability, veteran or military status, or any other basis prohibited by law.
+If you are a California resident, please be aware Sureify collects personal information from you during the application process, which may include your name, contact details, employment history, and educational background, in accordance with the California Consumer Privacy Act (CCPA). We use this information solely to evaluate your candidacy for employment and may share it with internal hiring personnel as needed."
+27,Amazon,"Software Development Engineer II, SP Support","Bengaluru, Karnataka, IND",https://www.amazon.jobs/en/jobs/10565475/software-development-engineer-ii-sp-support,40,"The candidate has over 3 years of software development experience and matches the location, but lacks the specific 3+ years of Video Games Industry experience required by the job posting.",no,"Amazon’s FC team is seeking highly skilled and motivated person to help develop a and implement a world class security program for our first mile network which will ensure that our customers receive the
+
+- 3+ years of security and loss prevention experience
+- Bachelor's degree, or Advanced degree
+
+- MBA
+Our inclusive culture empowers Amazonians to deliver the best results for our customers. If you have a disability and need a workplace accommodation or adjustment during the application and hiring process, including support for the interview or onboarding process, please visit https://amazon.jobs/content/en/how-we-hire/accommodations for more information. If the country/region you’re applying in isn’t listed, please contact your Recruiting Partner."
+28,Hewlett Packard Enterprise,Senior System Engineer- Storage/Distributed System,"Hyderabad, Telangana, India",https://hpe.wd5.myworkdayjobs.com/Jobsathpe/job/Hyderabad-Telangana-India/Senior-System-Engineer--Storage-Distributed-System_1215533-2,35,"The candidate lacks the required 7-10 years of experience, Java/C++/Golang programming skills, and core systems/storage expertise demanded for this senior storage/distributed systems role.",no,"Senior System Engineer- Storage/Distributed System
+This role has been designed as ‘’Onsite’ with an expectation that you will primarily work from an HPE office.
+Who We Are:
+Hewlett Packard Enterprise is the global edge-to-cloud company advancing the way people live and work. We help companies connect, protect, analyze, and act on their data and applications wherever they live, from edge to cloud, so they can turn insights into outcomes at the speed required to thrive in today’s complex world. Our culture thrives on finding new and better ways to accelerate what’s next. We know varied backgrounds are valued and succeed here. We have the flexibility to manage our work and personal needs. We make bold moves, together, and are a force for good. If you are looking to stretch and grow your career our culture will embrace you. Open up opportunities with HPE.
+Job Description:
+In the HPE Hybrid Cloud , we lead the innovation agenda and technology roadmap for all of HPE. This includes managing the design, development, and product portfolio of our next-generation cloud platform, Green Lake. Working with customers, we help them reimagine their information technology needs to deliver a simple, consumable solution that helps them drive their business results. Join us redefine what’s next for you.
+Job Family Definition:
+The Cloud Developer builds from the ground up to meet the needs of mission-critical applications, and is always looking for innovative approaches to deliver end-to-end technical solutions to solve customer problems.
+Brings technical thinking to break down complex data and to engineer new ideas and methods for solving, prototyping, designing, and implementing cloud-based solutions.
+Collaborates with project managers and development partners to ensure effective and efficient delivery, deployment, operation, monitoring, and support of Cloud engagements.
+The Cloud Developer provides business value expertise to drive the development of innovative service offerings that enrich HPE's Cloud Services portfolio across multiple systems, platforms, and applications.
+Management Level Definition:
+Contributions impact technical components of HPE products, solutions, or services regularly and sustainable. Applies advanced subject matter knowledge to solve complex business issues and is regarded as a subject matter expert. Provides expertise and partnership to functional and technical project teams and may participate in cross-functional initiatives. Exercises significant independent judgment to determine best method for achieving objectives. May provide team leadership and mentoring to others.
+What you will do:
+Responsibilities:
+Leads the project team for design and development of complex products and platforms, including solution design, analysis, coding, testing, and integration for building efficient, scalable and robust cloud subsystems.
+Reviews and evaluates designs, test plans, and develops code for compliance with cloud design and development guidelines and standards.
+Provides tangible feedback to improve product quality and mitigate risks.
+Represents the engineering team in various technical forums and provides guidance and mentoring to less-experienced team members.
+Drives innovation and integration of new technologies into projects and activities in the software systems design organization.
+Analyzes science, engineering, business, and other data processing problems to develop and implement solutions to complex application problems, system administration issues, or network concerns.
+What you will need to bring:
+Education and Experience Required:
+Bachelor's or master's degree in computer science, engineering, information systems, or closely related quantitative discipline.
+Typically, 7-10 years’ experience.
+Knowledge and Skills:
+Strong JAVA/C++/Golang programming skills
+Expertise in File Systems, Networking, or Distributed storage/compute systems
+Good debugging and problem-solving skills
+Communication skills and the ability to work independently
+Through knowledge of the Linux/UNIX and Kubernete environment
+Must have proficiency with data structures, algorithms and multi-threaded programming
+Must have in-depth knowledge of OS internals and storage concepts.
+Understanding microservice architecture and how they can be built in a containerized, Kubernetes-managed environment is central to all modern cloud-native applications.
+Designing and integrating software systems running on multiple platform types into the overall architecture.
+Evaluating forms and processes for software systems testing and methodology, including writing and executing test plans, debugging, and testing scripts and tools.
+Excellent written and verbal communication skills. Ability to effectively communicate product architectures and design proposals at senior management levels.
+Accessibility
+HPE is committed to creating an inclusive and accessible workplace and encourages applications from all qualified individuals, including those with disabilities. If you believe you require accommodation during any stage of the application or interview process, please submit your request by completing our secure form linked here .
+Note: This option is reserved for applicants needing assistance/reasonable accommodation related to a disability.
+What We Can Offer You:
+Health & Wellbeing
+We strive to provide our team members and their loved ones with a comprehensive suite of benefits that supports their physical, financial and emotional wellbeing.
+Personal & Professional Development
+We also invest in your career because the better you are, the better we all are. We have specific programs catered to helping you reach any career goals you have — whether you want to become a knowledge expert in your field or apply your skills to another division.
+Unconditional Inclusion
+We are unconditionally inclusive in the way we work and celebrate individual uniqueness. We know varied backgrounds are valued and succeed here. We have the flexibility to manage our work and personal needs. We make bold moves, together, and are a force for good.
+Let's Stay Connected:
+Follow @HPECareers on Instagram to see the latest on people, culture and tech at HPE.
+#india
+#hybridcloud
+Job:
+Engineering
+Job Level:
+TCP_04
+HPE is an Equal Employment Opportunity/ Veterans/Disabled/LGBT employer. We do not discriminate on the basis of race, gender, or any other protected category, and all decisions we make are made on the basis of qualifications, merit, and business need. Our goal is to be one global team that is representative of our customers, in an inclusive environment where we can continue to innovate and grow together. Please click here: Equal Employment Opportunity .
+Hewlett Packard Enterprise is EEO Protected Veteran/ Individual with Disabilities.
+HPE will comply with all applicable laws related to employer use of arrest and conviction records, including laws requiring employers to consider for employment qualified applicants with criminal histories.
+Recruitment Fraud Alert
+We have become aware of an increase in fraudulent recruitment activities in which individuals impersonate our company or authorized recruitment agencies to offer fake employment opportunities. These scams may occur through false websites, emails, social media, or chat-based applications and often aim to obtain personal information or money. Please note that Hewlett Packard Enterprise (HPE), its direct and indirect subsidiaries and affiliated companies, and its authorized recruitment agencies/vendors will never charge a candidate a registration fee, hiring fee, or any other fee in connection with its recruitment and hiring process. We also never request personal information such as back account details, Social Security numbers, or national IDs via social media or chat applications.
+All legitimate job opportunities will come through official company channels, and candidates are responsible for verifying the credentials of any third party claiming to represent the company. Any reliance on fraudulent communication is at the individual’s own risk, and HPE disclaims legal liability for any resulting damages. If you suspect recruitment fraud, do not share personal information or make any payments and report the incident to your local authorities immediately."
+29,Nvidia,"Senior Platform Software Engineer, DriveAV - Autonomous Vehicles","India, Bengaluru",https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite/job/India-Bengaluru/Senior-Platform-Software-Engineer--DriveAV---Autonomous-Vehicles_JR2025704,25,"The candidate has only 3.3 years of experience and lacks C/C++, embedded systems, and automotive domain expertise required for this Senior AV Platform role demanding 8+ years.",no,"The automotive industry is at disruption & NVIDIA is at the forefront of the autonomous vehicle revolution, powering many key solutions for major car manufacturers. We are engaged in the key areas of automotive business where visual computing & AI matters: AI Cockpit and Autonomous Vehicles (AV). Autonomous vehicles need a supercomputer on wheels; it's an AI & SW heavy computational challenge. There is not an off-the-shelf platform which stands up to this challenge, so we are building our own. You have technically mastered your field, gathered several years of senior experience in cracking complex problems and now seeking a next challenge? Join our automotive teams and apply now! We are now looking for a Senior Software Engineer, based in Bangalore, India to join our Autonomous Driving Software team to contribute to customer engagements.
+What you’ll be doing:
+Support adaptation of NVIDIA AV Software platform to the customer ECU, Vehicle environment.
+Regularly engage with customer teams to productize workflows for platform integration
+Analyse, debug, fix bugs in the SW platform components to deliver high quality SW releases to customers
+Enhance integration efficiency to facilitate low latency development on Autonomous Vehicle Simulation & Car platforms
+Contribute to platform software development, tools, filesystem customization, and software integration
+What we need to see:
+BS or MS degree from a leading university, or equivalent experience, in an engineering or computer science related discipline with 8+ years of relevant working experience
+Working experience with ADAS or autonomous driving software stack, particularly platform SW components, middleware & sensors
+Proficient debugging skills from application to kernel level on embedded hardware
+Good working knowledge of Linux and QNX and experience with device drivers
+Excellent programming skills in C, C++ and understanding of build systems (like Bazel)
+Good written and verbal interpersonal skills - concisely articulate knowledge and ideas
+Ways to stand out from the crowd:
+Experience in functional development, adaptation and testing of automotive software based on various sensors (e.g. camera, radar, lidar, GPS, ultrasound etc.)
+Experience developing software in heterogeneous architectures, including GPUs and other types of accelerators
+Good knowledge of process standards like ASPICE & ISO26262.
+Self-motivated and work effectively across different international functional organizations"
+30,Nike,"Senior Software Engineer, ITC","Karnataka, India",https://nike.wd1.myworkdayjobs.com/nke/job/Karnataka-India/Senior-Software-Engineer--ITC_R-91645-1,25,The candidate has 3.3 years of experience and lacks the required enterprise Coupa and SAP S/4HANA expertise demanded by the senior role.,no,"WHO YOU’LL WORK WITH
+You will work closely with Finance and Procurement business partners, product managers, architects, engineering teams, and program stakeholders across Nike. Together, you will align technology outcomes to prioritized business capabilities and deliver solutions that support global direct procurement and payables processes.
+You will collaborate with engineers across product squads and platform teams to design and deliver integrations, resolve technical dependencies, and improve service reliability, security, performance, and operational support.
+You will also contribute to team health and engineering excellence through design discussions, code and configuration reviews, pairing, documentation, knowledge sharing, and continuous improvement.
+WHO WE ARE LOOKING FOR
+We’re looking for a Software Engineer who combines strong engineering fundamentals with 5+ years of relevant hands-on experience in enterprise procurement and finance technology. You will primarily build and enhance Coupa Direct solutions and the integrations that connect Coupa to SAP S/4HANA Accounts Payable and adjacent services.
+The ideal candidate is curious, collaborative, and comfortable working across Coupa configuration, custom development, integration design, testing, deployment, and production support. A learning mindset, strong analytical and problem-solving skills, and clear written and verbal communication are essential. We value a healthy team culture where diverse perspectives are welcomed and every voice can be heard.
+Required qualifications
+• Bachelor’s degree in Computer Science, Software Engineering, Information Systems, or a related field, or equivalent combination of education and experience.
+• 5+ years of experience in delivering enterprise software solutions across design, build, test, deployment, and production support.
+• Hands-on experience with Coupa, with strong preference for Coupa Direct—application configuration, workflow design, data structures, business rules, and integration touchpoints.
+• Working knowledge of SAP S/4HANA Accounts Payable processes and how procurement and supplier invoice transactions flow into financial posting, clearing, and payment processes.
+• Strong understanding of data mapping, transformation, validation, reconciliation, error handling, and monitoring across integrated systems.
+• Experience diagnosing production issues through logs, traces, monitoring, and structured root-cause analysis.
+• Ability to assess complex technical information, make sound trade-off decisions, and communicate clearly with both technical and business audiences.
+• Strong collaboration skills and experience working in an Agile delivery environment.
+WHAT YOU’LL WORK ON
+As a Software Engineer III on the Direct Payables Capability Team, you will design, configure, build, test, deploy, and support technology solutions centered on Coupa Direct and its integration with SAP S/4HANA Accounts Payable. You will translate business requirements into reliable, secure, maintainable, and scalable solutions that improve the end-to-end direct payables experience—from requisition and purchase order through receipt, supplier invoice, approval, and payment readiness in SAP.
+Key responsibilities include:
+Configure, extend, and support Coupa Direct capabilities, including direct procurement workflows, purchase orders, receiving, supplier invoicing, approvals, catalogs, and related payables processes.
+• Deep understanding of integrations between Coupa and SAP S/4HANA Accounts Payable using APIs, integration services, events, and file-based patterns as appropriate—for example, master data synchronization, invoice and accrual payloads, status feedback, and error handling across systems.
+• Partner with product and business teams to refine requirements, evaluate solution options, and translate process needs into technical designs.
+• Develop high-quality, supportable solutions and participate in code, configuration, and design reviews.
+• Create automated tests and support end-to-end, integration, regression, and production validation activities.
+• Troubleshoot complex application, data, and integration issues across Coupa, SAP S/4HANA, and connected services; drive root-cause analysis and sustainable remediation.
+• Contribute to observability, operational readiness, incident response, performance, security, and reliability improvements.
+• Support Coupa and SAP platform upgrades and release activities while assessing downstream integration and business-process impacts.
+• Maintain clear technical documentation, including solution designs, interface mappings, support procedures, and operational runbooks.
+• Participate in Agile planning and delivery, proactively communicating dependencies, risks, trade-offs, and progress."
+31,Nike,"Software Engineer II, ITC","Karnataka, India",https://nike.wd1.myworkdayjobs.com/nke/job/Karnataka-India/Software-Engineer-II--ITC_R-91634,20,"The candidate is a backend-focused Full Stack Engineer with expertise in Node.js, microservices, and GenAI, whereas this role requires specific, extensive experience with enterprise procurement systems like Coupa, IT controls, and SOX compliance.",no,"WHO YOU'LL WORK WITH
+You will work closely with senior engineers, Finance and Procurement business partners, internal audit, IT controls, product managers, and program stakeholders across Nike. You will support audit and compliance requests from internal and external auditors, helping gather evidence and respond to control inquiries related to Coupa.
+You will collaborate with engineers across product squads and platform teams—including Coupa, SailPoint/IdentityIQ (IIQ), and other indirect procurement systems—to support user access reviews, role mapping, configuration change tracking, and audit evidence collection.
+You will learn from senior team members through pairing, documentation reviews, and guided troubleshooting while contributing to team delivery and operational support.
+WHO WE ARE LOOKING FOR
+We're looking for a Software Engineer - II who is eager to build a career in indirect procurement technology with a focus on Coupa audit, control, and compliance support. You will assist in responding to audit requests, supporting user access and configuration change reviews, and executing Coupa-related changes under the guidance of senior engineers.
+The ideal candidate has foundational understanding of Procure-to-Pay processes, attention to detail, and interest in audit-ready systems. You are organized, curious, and comfortable working with structured evidence requests, access management concepts, and Coupa administration tasks. Strong written communication and the ability to follow established procedures are essential.
+Required qualifications
+Bachelor's degree in Computer Science, Software Engineering, Information Systems, or a related field, or equivalent combination of education and experience.
+Min 4 years of overall experience in software engineering, IT application support, or enterprise business systems, with exposure to indirect procurement or finance technology.
+2+ years of hands-on experience supporting COUPA audit, control, or compliance-related activities—such as user access reviews, configuration change evidence, or ITGC/SOX request support.
+Working knowledge of Coupa administration, configuration, or production support—including workflows, user roles, approvals, and basic platform troubleshooting.
+Understanding of user access management concepts and experience supporting identity management tools (e.g., SailPoint, IdentityIQ) or equivalent access governance processes.
+Familiarity with Procure-to-Pay (P2P) and Source-to-Pay (S2P) processes and how Coupa supports requisition, approval, and payables workflows.
+Ability to gather, document, and present audit evidence in structured formats with accuracy and attention to detail.
+Strong collaboration skills and willingness to work in an Agile delivery environment under senior engineer guidance.
+Preferred qualifications
+Exposure to Coupa configuration changes, release notes review, and regression testing support.
+Basic understanding of SAP S/4HANA or SAP ECC integration touchpoints with Coupa.
+Familiarity with ITGC/SOX control frameworks and evidence requirements for enterprise SaaS applications.
+WHAT YOU'LL WORK ON
+As a Software Engineer - II on the Indirect Procurement Technology team, you will support Coupa audit and control compliance activities and assist with Coupa configuration and enhancement work. You will help ensure audit requests are responded to accurately and on time, and that Coupa changes follow Nike change management and control standards.
+Key responsibilities include:
+Support internal and external audit requests related to Coupa SOX/ITGC controls by gathering evidence, documenting findings, and presenting information in required formats under senior engineer review.
+Assist with user access audit requests—including role reviews, access certification support, user provisioning/deprovisioning validation, and mapping Coupa roles to identity management tools such as SailPoint/IIQ.
+Support configuration change audit requests by tracking Coupa configuration changes, maintaining change evidence, and helping validate that changes follow approved change management processes.
+Execute Coupa configuration and enhancement tasks as assigned—such as workflow updates, approval rule changes, user role adjustments, and basic troubleshooting—in test and production environments.
+Partner with senior engineers, finance, and business teams to clarify audit requirements and ensure responses are complete and accurate.
+Participate in testing and validation activities for Coupa changes, including regression support and documentation of test results.
+Troubleshoot Coupa application and access-related issues; escalate complex integration or production issues to senior engineers.
+Maintain clear documentation—including audit evidence logs, access review records, configuration change notes, and support procedures.
+Participate in Agile ceremonies and communicate progress, blockers, and risks to the team lead or senior engineer."
+32,Bosch,Senior AI developer and Data Visualization exper,"coimbatore, in",https://jobs.smartrecruiters.com/BoschGroup/744000153226804,20,"The candidate has 3.3+ years of experience while the job requires 8+ years, and the role focuses heavily on senior AI and data visualization rather than backend engineering.",no,"Role at Bosch: Senior AI developer and Data Visualization exper (coimbatore, in). Reason: The candidate has 3.3+ years of experience while the job requires 8+ years, and the role focuses heavily on senior AI and data visualization rather than backend engineering."
+33,Genpact,Developer - Enterprise Application Salesforce P 4A,"1401-G-India: 14-45, Uppal L&R, STPI, Hyderabad",https://genpact.wd108.myworkdayjobs.com/External_Careers/job/1401-G-India-14-45-Uppal-LR-STPI-Hyderabad/Developer---Enterprise-Application-Salesforce-P-4A_JR10027511,15,"The candidate is a Node.js/Python backend full-stack engineer, whereas this role requires extensive hands-on experience specifically in Salesforce development, Apex, and LWC.",no,"Developer - Enterprise Application - Salesforce P
+Ready to turn bold ideas into real-world impact?
+At Genpact, we don’t just adapt to change, we lead it. AI and digital innovation are transforming the way businesses work, and we’re at the forefront of it. Genpact’s AI Gigafactory , our industry-first accelerator, exemplifies how we scale advanced technology solutions to help global enterprises work smarter, grow faster, and transform at scale. Whether tackling complex challenges through large-scale models or agentic AI , our breakthrough solutions tackle companies’ most complex challenges.
+If you thrive in a fast-moving, innovation-driven environment, love building and deploying cutting-edge AI solutions, and want to push the boundaries of what’s possible, this is your moment.
+Genpact (NYSE: G) is an agentic and advanced technology solutions company. We leverage process intelligence and artificial intelligence to deliver measurable outcomes. With a strong partner ecosystem and decades of client trust, we provide innovative solutions that transform how businesses run. Powered by a team with an active learning mindset and client centricity at its core, we deliver lasting value for the world’s leading enterprises.
+Get to know us at genpact.com and on LinkedIn , YouTube , X , and Facebook .
+Job Description
+Inviting applications for the role of Developer , Salesforce Integration Developer.
+This role is dedicated to architecting and building the high-performance ""connective tissue"" between Salesforce, external ERPs, and other platforms to power seamless Field Service and Asset Lifecycle operations.
+Responsibilities:
+API Architecture: Design and implement robust REST, SOAP, and Pub/Sub API integrations to synchronize data between Salesforce, ERPs (like SAP/Oracle), and Asset Management systems.
+Real-Time Data Streams: Develop high-scale event-driven architectures using Platform Events , Change Data Capture (CDC) , and Apex Triggers to ensure field technicians have real-time data.
+Asset & Other platform Integration: Architect the ingestion of high-volume data into Salesforce to trigger automated Asset Service Lifecycle Management (ASLM) workflows.
+Asynchronous Processing: Expertly implement Queueable, Batch, and Future Apex to handle large-scale data imports and heavy computational logic without hitting governor limits.
+Security & Identity: Configure secure authentication protocols, including OAuth 2.0 , OpenID Connect, and Named Credentials , ensuring end-to-end encryption and compliance.
+Error Handling Frameworks: Build ""Self-Healing"" integration frameworks with custom logging, automated retry logic, and real-time alerting for failed synchronization events.
+Performance Optimization: Conduct rigorous API performance testing and SOQL/SOSL optimization to ensure low-latency responses for external system calls.
+Qualifications we seek in you!
+Minimum Qualification:
+B.E or B.Tech or MCA
+Relevant experience in Salesforce development, with a strong focus on Field Service.
+Extensive experience with Apex, Visualforce, Lightning Web Components (LWC), and other Salesforce development tools.
+Deep understanding of Salesforce FSL architecture, data model, and functionality.
+Experience with FSL mobile app customization and offline capabilities.
+Proficiency in REST and SOAP APIs, and experience with integrating Salesforce with external systems.
+Strong understanding of object-oriented programming principles and design patterns.
+Experience with Agile/Scrum methodologies.
+Excellent problem-solving and analytical skills.
+Strong communication and collaboration skills.
+Salesforce certifications (e.g., Platform Developer I/II, Field Service Lightning Consultant) are highly desirable.
+Preferred Skills:
+Experience with other Salesforce clouds (e.g., Sales Cloud, Service Cloud).
+Experience with CI/CD and DevOps practices.
+Experience with testing frameworks (e.g., Apex Unit Tests, Jest).
+Qualifications
+Bachelors - Computer Engineering, Bachelors - Computer Science, Bachelors - Information Technology, Masters - Software Engineering
+Certifications
+MuleSoft Certified Developer - Level 1 - TrailheadTrailhead
+Required Skills
+Agile Methodology, Collaboration Tools, Design Thinking, Executive Presence, Inclusion, Personal Effectiveness, Storytelling
+Language
+English (Required)
+Language Proficiency -
+Proficient - C2
+Additional Job Location -
+Job Type
+Regular
+Master Skill List -
+Enterprise Application Salesforce P
+Remote Type -
+Hybrid
+Work Shift -
+Any (India)
+Why join Genpact?
+• Lead AI-powered transformation – Drive innovation and solve real-world business challenges that matter
+• Make an impact – Help global enterprises solve business challenges that matter
+• Accelerate your career – Gain hands-on experience, mentorship, and world-class learning opportunities to stay ahead
+• Work with the best – Join 140,000+ bold thinkers and problem-solvers who push boundaries every day
+• Thrive in a values-driven culture – Our courage, curiosity, and incisiveness - built on a foundation of integrity and inclusion - allow your ideas to fuel progress
+Come join the 140,000+ coders, tech shapers, and growth makers at Genpact and take your career in the only direction that matters: Up.
+Let’s build tomorrow together.
+Genpact is an Equal Opportunity Employer and considers applicants for all positions without regard to race, color, religion or belief, sex, age, national origin, citizenship status, marital status, military/veteran status, genetic information, sexual orientation, gender identity, physical or mental disability or any other characteristic protected by applicable laws. Genpact is committed to creating a dynamic work environment that values respect and integrity, customer focus, and innovation.
+Furthermore, please do note that Genpact does not charge fees to process job applications and applicants are not required to pay to participate in our hiring process in any other way. Examples of such scams include purchasing a 'starter kit,' paying to apply, or purchasing equipment or training."
+34,CloudSEK,Salesforce Developer,"Bengaluru, Karnataka, India",https://job-boards.greenhouse.io/cloudsek/jobs/6210527004,10,"The candidate is a backend-focused Node.js and full-stack engineer, whereas this role is strictly for a dedicated Salesforce Developer requiring Apex, LWC, and Salesforce administration experience.",no,"WHO ARE WE?
+We are a bunch of super enthusiastic, passionate, and highly driven people, working to achieve a common goal! We believe that work and the workplace should be joyful and always buzzing with energy!
+CloudSEK , one of India’s most trusted Cyber security product companies, is on a mission to build the world’s fastest and most reliable AI technology that identifies and resolves digital threats in real-time. The central proposition is leveraging Artificial Intelligence and Machine Learning to create a quick and reliable analysis and alert system that provides rapid detection across multiple internet sources, precise threat analysis, and prompt resolution with minimal human intervention.
+Founded in 2015, headquartered at Singapore, we are proud to say that we’ve grown at a frenetic pace and have been able to achieve some accolades along the way, including:
+CloudSEK’s Product Suite:
+CloudSEK XVigil constantly maps a customer’s digital assets, identifies threats and enriches them with cyber intelligence, and then provides workflows to manage and remediate all identified threats including takedown support.
+A powerful Attack Surface Monitoring tool that gives visibility and intelligence on customers’ attack surfaces. CloudSEK's BeVigil uses a combination of Mobile, Web, Network and Encryption Scanners to map and protect known and unknown assets.
+CloudSEK’s Contextual AI SVigil identifies software supply chain risks by monitoring Software, Cloud Services, and third-party dependencies.
+CloudSEK’s AIVigil is an AI-native Attack Surface Monitoring platform that continuously discovers, monitors, and secures exposed AI infrastructure, MCP servers, leaked AI credentials, vector databases, agentic workflows, and shadow AI across the internet.
+Key Milestones:
+2016 : Launched our first product.
+2018 : Secured Pre-series A funding.
+2019 : Expanded operations to India, Southeast Asia, and the Americas.
+2020 : Won the NASSCOM-DSCI Excellence Award for Security Product Company of the Year.
+2021 : Raised $7M in Series A funding led by MassMutual Ventures.
+Awards & Recognition : Won NetApp Excellerator's ""Best Growth Strategy Award,"" CloudSEK XVigil joined NVIDIA Inception Program, and won the NASSCOM Emerge 50 Cybersecurity Award.
+2025 : Secured $19 million in funding led by Tenacity Ventures, Commvault.
+About the Role
+CloudSEK runs Salesforce as the system of record for the full customer lifecycle, from pipeline through onboarding and customer success. The org has a mature, highly customized data model that needs a dedicated owner for ongoing administration, automation, and integration work.
+This hire will own Salesforce configuration and development end-to-end: building Flow-based automation for the Sales-to-Implementation handoff, standing up Salesforce integrations with external systems (with more planned over time), and managing the org's security model and deployment pipeline as CloudSEK scales its use of the platform.
+Key Responsibilities
+Administer and extend the existing Salesforce org: custom objects, fields, page layouts, validation rules, record types
+Design and build automation in Flow Builder for the Sales → POC → Handoff → Implementation process, including stage-gate validation rules
+Build and maintain Salesforce integrations with external systems, including field mapping, deduplication logic, and sync triggers
+Own the Salesforce security model: profiles, permission sets, field-level security, sharing rules, designed on least-privilege, not blanket System Administrator grants
+Manage the sandbox-to-production deployment pipeline using Salesforce CLI, Metadata API, or Change Sets
+Build and maintain reports and dashboards for Sales, Customer Success, and Leadership visibility
+Partner with RevOps, Sales, CS, and Implementation teams to gather requirements and translate them into scalable, governed Salesforce solutions
+Maintain documentation of the org's data model, automations, and integrations
+Monitor API usage against governor limits and daily call limits, especially for bulk data operations
+Configure and maintain Salesforce CPQ (quoting, pricing, and approval workflows)
+Design and build custom user interfaces with Lightning Web Components when declarative tools (Flow, page layouts) aren't sufficient
+Required Qualifications
+Hands-on Salesforce development/administration experience on Sales Cloud (3–5 years)
+Strong working knowledge of Apex, Flow Builder, CPQ, SOQL, and Lightning Web Components (LWC)
+Experience with Salesforce Metadata API and Salesforce CLI ( sf / sfdx ) for sandbox-to-production deployment
+Experience integrating Salesforce with third-party systems via REST API and Bulk API 2.0
+Solid understanding of the Salesforce security model: profiles, permission sets, org-wide defaults, sharing rules
+Experience building reports and dashboards for sales/customer-success use cases
+Comfortable working directly with business stakeholders (Sales, CS, RevOps) to scope and validate requirements
+Comfortable using version control (Git) for tracking Salesforce metadata and configuration changes
+Able to write and maintain Apex test classes for any custom code (not just declarative automation)
+Preferred Qualifications
+Salesforce Certified Administrator and/or Platform Developer I/II
+Experience integrating Salesforce with a range of external SaaS platforms and cloud services, not limited to any single vendor( Jira, Hubspot, AWS, Azure, Git , KnowledgeBase)
+Experience in a B2B SaaS or cybersecurity/threat-intelligence company
+Experience working in a company with active ISO 27001 / SOC 2 compliance programs, and building configuration with audit-trail and least-privilege requirements in mind
+Experience with Salesforce data migration tools (Data Loader, Workbench) for bulk data operations
+Familiarity with Agile/Scrum delivery workflows
+Benefits of Joining CloudSEK
+We provide an environment where you can develop and enhance your skills while delivering meaningful work that matters. You’ll be rewarded a competitive salary as well as a full spectrum of generous perks and incentives which include:
+Flexible working hours.
+Food, unlimited snacks and drinks are all available while at office.
+And, the finest part is yet to come! Every now and then we ensure to unwind and have a good time together, which involves games, fun, and soulful music. Feel free to show off your artistic side here!
+CloudSEK is an equal opportunity employer and is committed to building a diverse and inclusive workplace. We encourage candidates from all backgrounds to apply."
+35,Neo4j,Senior Developer Advocate,Remote: San Mateo area,https://boards.greenhouse.io/neo4j/jobs/4717470006?gh_jid=4717470006,10,"The candidate is a backend engineer with 3.3 years of experience, whereas this role requires 5+ years specifically in developer advocacy and relations in the US (San Mateo area), making it a poor match.",no,"About Neo4j:
+Neo4j is the graph intelligence platform that transforms data into knowledge to power the next generation of intelligent applications and AI systems. It includes enterprise-ready knowledge graphs for accurate, explainable, and governed AI; the most comprehensive, trusted, and easy-to-deploy graph capabilities across any environment and data source; and an unmatched ecosystem trusted by 84 of the Fortune 100 and supported by the world’s largest graph community. Intelligence that works. Results that matter.
+Built to work everywhere and integrate with everything across every cloud for dynamic, personalized, and autonomous AI systems. We deliver quicker results, contextual knowledge, and solutions that impact customers and employees across the business.
+Our Vision:
+At Neo4j, we have always strived to help the world make sense of data.
+As business, society and knowledge become increasingly connected, our technology promotes innovation by helping organizations to find and understand data relationships. We created, drive and lead the graph database category, and we’re disrupting how organizations leverage their data to innovate and stay competitive.
+Job Title: Senior Developer Advocate - Startups by the Bay
+Job Description: The Senior Developer Advocate for Startups will be responsible for driving developer engagement among startups in the San Francisco Bay Area, by nurturing relationships with startups, and within the incubators, VCs, and founder communities that support them. This role requires technical expertise, community building, and content creation.
+Key Responsibilities:
+Developer Engagement:
+Build and maintain strong relationships with founding engineers and technical leadership at startups in the Bay Area.
+Serve as the main point of contact for startup inquiries and support.
+Act as a liaison between the startup community and the company.
+Technical Content Creation:
+Create technical content such as blog posts, tutorials, videos, and documentation.
+Develop code samples, demos, and SDKs to help developers understand and use our products.
+Present technical talks, webinars, and workshops at developer events.
+Product Advocacy:
+Advocate for our products and technologies within the developer community.
+Gather feedback from developers and provide insights to product and engineering teams.
+Collaborate with product management to align product development with developer needs.
+Community Building:
+Create and manage developer forums, communities, and user groups.
+Organize and participate in developer events, meetups, and hackathons.
+Foster a sense of collaboration and support within the developer community.
+Developer Education:
+Develop and deliver educational resources, training materials, and documentation.
+Provide guidance and best practices to help developers succeed with our technologies.
+Conduct technical workshops and training sessions.
+Metrics and Analytics:
+Utilize data and analytics to track developer engagement and measure the impact of developer advocacy efforts.
+Provide data-driven insights and recommendations for continuous improvement.
+Prepare regular reports on developer community performance.
+Qualifications :
+Bachelor's degree in Computer Science, Engineering, or a related field.
+5+ years of experience in developer advocacy, developer relations, or a related technical role.
+Deep technical knowledge and proficiency in relevant technologies.
+Exceptional public speaking, presentation, and communication skills.
+Strong content creation abilities, including writing, video creation, and code samples.
+Strong project management and organizational skills.
+Excellent interpersonal and community-building skills.
+Passion for technology and fostering a thriving developer community.
+The annual base salary range for this position based in the United States is listed below. This salary range is an estimate, and the actual salary may vary based on Neo4j’s compensation practices, job related skills, depth of experience, relevant certifications and trainings, in addition to geographic location. Based on the factors above, Neo4j utilizes the full width of the range.
+In addition to the range below, US employees are eligible for a stock option grant and certain roles are eligible for an annual bonus. Employees in this position are also eligible to participate in the Company’s standard benefit programs, which currently include the following: medical, dental, and vision benefits, 401(k), paid time off, and certain leaves of absence.
+Annual Base Salary Range for This Role
+$190,000 — $260,000 USD
+Why Join Neo4j?
+Neo4j is, without question, the most popular graph intelligence platform in the world. We have customers in every industry globally, and our products are a proven product/market fit. Joining our team is an opportunity to shape the future of data and analytics. Below are just a few exciting facts about Neo4j.
+Neo4j is one of the fastest-scaling technology companies in this industry. It recently surpassed $200M in annual recurring revenue (ARR), doubling its ARR over the past three years.
+Raised the biggest funding round in database history ($325M Series F). Backed by world-class investors like Eurazeo, GV (formerly Google Ventures), and Inovia Capital, Neo4j has raised over $600M in funding and is currently valued at over $2Bn. This puts Neo4j among the most well-funded database companies in history.
+84% of the Fortune 100 and 58% of the Fortune 500 use Neo4j. Examples include Boston Scientific , BT Group , Caterpillar , Cisco , Comcast , Department for Education UK , eBay , NBC News , Novo Nordisk , Worldline , and others .
+Co-founder and CEO Emil Eifrem has built an amazing culture that prides itself on relationships, inclusiveness, innovation, and customer success.
+Countless industry awards . Massive enterprises and individual developers/data scientists love Neo4j. A strong sense of community and ecosystem is built around the platform.
+A recent Forrester Total Economic Impact™ Study cited Neo4j as delivering 417% ROI to customers.
+Research shows that members of underrepresented communities are less likely to apply for jobs when they don’t meet all the qualifications. If this is part of the reason you hesitate to apply, we’d encourage you to reconsider and give us the opportunity to review your application. At Neo4j, we are committed to building awareness and helping to improve these issues.
+One of our central objectives is to provide an inclusive, diverse, and equitable workplace for everyone to develop their potential and have a positive, career-defining experience. We look forward to receiving your application.
+Neo4j Values:
+Neo4j is a Silicon Valley company with a Swedish soul. We foster collaboration and each of us is empowered to contribute and put our innovative stamp on projects. We hire candidates who reflect the following Neo4j core values:
+(we)-[:VALUE]->(relationships)
+(we)-[:FOCUS_ON]->(userSuccess)
+(we)-[:THRIVE_IN]->(:Culture {type: [‘Open’, ‘Inclusive’]})
+(we)-[:ASSUME]->(:Intent {direction:’Positive’})
+(we)-[:WELCOME]->(:Discussions {nature: ‘IntellectuallyHonest’})
+(we)-[:DELIVER_ON]->(ourCommitments)
+Neo4j is committed to protecting and respecting your privacy. Please read the privacy notice regarding Neo4j's recruitment process to understand how we will handle the personal data that you provide.
+More information at www.neo4j.com .
+©2026 Neo4j, Inc., Neo Technology®, Neo4j®, Cypher®, Neo4j Bloom™, Neo4j Graph Data Science Library™, Neo4j® Aura™, and Neo4j® AuraDB™ are registered trademarks or a trademark of Neo4j, Inc. All other marks are owned by their respective companies."
+36,Medtronic,Senior Servicenow Developer,"Nanakramguda, Hyderabad, India",https://medtronic.wd1.myworkdayjobs.com/MedtronicCareers/job/Nanakramguda-Hyderabad-India/Senior-Servicenow-Developer_R74006-1,0,"The candidate is a Node.js/Full Stack engineer with 3+ years of experience, whereas this role requires 8+ years of specific ServiceNow development experience.",no,"Careers that change lives start here. Medtronic is a global leader in healthcare technology with a Mission to alleviate pain, restore health, and extend life. Our 95,000 employees work across more than 150 countries to put patients first — developing innovative medical technologies that improve the lives of 72+ million patients each year. Your unique talents will help shape the future of healthcare while building a career grounded in purpose, growth, and impact.
+A Day in the Life
+The Senior ServiceNow Developer is responsible for designing, developing, configuring, and supporting ServiceNow applications and platform capabilities. This role partners with business analysts, architects, and technical teams to deliver scalable solutions, integrations, digital experiences, and automation capabilities that support business objectives while following platform best practices
+Responsibilities may include the following and other duties may be assigned:
+Design, develop, or modify custom and ServiceNow applications, scripts, widgets, and services
+Analyse existing and new functionality for implementation, enhancement, or removal
+Participate in entire development lifecycle
+Design and develop integrations with third-party software
+Design and develop portal and mobile-friendly web experience components including HTML, CSS, and front- and back-end scripting
+Perform configuration of the ServiceNow platform, including workspaces, portals, workflows, flows, reports, dashboards, AI Search, Now Assist, and data imports
+Collaborates with Business Process Analysts and ServiceNow Architects to transform business requirements into technical requirements and designs
+Provide technical guidance during workshops
+Conduct testing, identify and fix bugs during all stages of the development process
+Develop system design documentation (including GUI design, if required), perform coding, and test/debug programs.
+Develop conversion and system implementation plans.
+Prepare and obtain approval of system and programming documentation.
+Recommend changes in development, maintenance, and system standards.
+Correct program errors, prepare operating instructions, compile documentation for program support.
+Conduct and participate in peer reviews
+Manage update sets/source control; support release/change management
+Communicate with senior internal and external customers and vendors
+Provides guidance, coaching and training to other employees within job area.
+Work independently under limited supervision to determine and develop solutions.
+Required knowledge and experience:
+Requires a Baccalaureate degree (or for degrees earned outside of the United States, a degree which satisfies the requirements of 8 C.F.R. § 214.2(h)(4)(iii)(A)
+Minimum of 8 years of relevant experience, or advanced degree plus relevant experience
+Active ServiceNow Certified System Administrator certification
+Proficiency in JavaScript, HTML, CSS, and AJAX, along with experience in web application development and ServiceNow platform functionalities
+Strong analytical and problem-solving abilities to troubleshoot issues and optimize processes
+Excellent verbal and written communication skills to effectively collaborate with team members and stakeholders
+Relevant certifications such as ServiceNow Certified Application Developer or Certified Implementation Specialist (HR/CSM/ITSM)
+Demonstrated experience implementing or supporting ServiceNow installations of CSM, HR Pro, NowAssist, or Employee Center Pro
+Nice to Haves:
+Demonstrated Experience developing and supporting custom Service Portal widgets and pages, including complex CSS and user interfaces
+Practical Experience with ServiceNow AI Search configuration and optimization
+Practical Experience with NowAssist configuration and optimization
+Practical Experience building and supporting custom Configurable Workspaces
+Experience with designing and building Flow Designer Flows
+Experience designing and implementing custom REST integrations
+Experience configuring OAuth authentication and Single Sign-on solutions
+Physical Job Requirements
+The above statements are intended to describe the general nature and level of work being performed by employees assigned to this position, but they are not an exhaustive list of all the required responsibilities and skills of this position.
+‌
+‌
+Recruitment Fraud Alert
+We are aware of phishing scams targeting job seekers. Please keep the following in mind:
+Apply only through official Medtronic channels. All legitimate Medtronic recruiting communications come from approved Medtronic platforms and official @medtronic.com email addresses.
+Medtronic will never ask for payment or sensitive personal information (such as bank account or Social Security details) during early stages of the hiring process. Any such requests are not legitimate.
+If you receive a suspicious message claiming to be from Medtronic, do not respond, click links, or open attachments.
+If you have any questions, concerns regarding the authenticity of a communication alleged to have been made by or on behalf of Medtronic, please contact us immediately at AskHR@medtronic.com .
+Benefits & Compensation
+Medtronic offers a competitive Salary and flexible Benefits Package
+A commitment to our employees lives at the core of our values. We recognize their contributions. They share in the success they help to create. We offer a wide range of benefits, resources, and competitive compensation plans designed to support you at every career and life stage.
+This position is eligible for a short-term incentive called the Medtronic Incentive Plan (MIP)."
+37,Sabre,Sr Software Engineer HFM,"Bengaluru, Karnataka, India",https://sabre.wd1.myworkdayjobs.com/SabreJobs/job/Bengaluru-Karnataka-India/Sr-Software-Engineer-HFM_JR108401-1,10,"The candidate is a backend-focused Node.js/Full Stack engineer, whereas this role requires specific, unrelated expertise in Oracle Hyperion Financial Management (HFM), Essbase, and finance systems administration.",no,"Powering the agentic revolution in travel. Sabre is an AI-native technology leader, backed by one of the world’s largest travel data clouds. Built on an open, modular, cloud-native architecture, Sabre serves as the backbone for both established leaders and bold, new disruptors, guiding them to the next age of travel retailing through intelligent, connected, and personalized experiences. With AI at its core and operating at unparalleled scale, Sabre transforms insights into innovation, empowering airlines, hoteliers, agencies and other partners to retail, distribute and fulfill travel worldwide.
+Sabre is the global leader in innovative technology that leads the travel industry. We are always looking for bright and driven people who have a penchant for technology and want to hone their skills. If you are interested in challenging work, being part of a global team, and solving complex problems through technology, business intelligence and analytics, and Agile practices - then Sabre is right for you! It is our people who develop and deliver powerful solutions that meet the current and future needs for our airline, hotel, and travel agency customers.
+GENERAL DESCRIPTION:
+The EPM systems administrator will be the key contact for Sabre’s EPM systems (HFM and Essbase) with responsibility for maintaining and developing the HFM and Essbase applications.
+In addition to establishing and maintaining good working relationships internally, this position will participate in various cross-functional organizational initiatives. This position supports Accounting, Finance, Tax, Treasury and Internal and External audit.
+RESPONSIBILITIES:
+Knowledge of HFM 11.2.10 and Essbase.
+Maintain three HFM systems (PROD, CERT, TEST) in sync every month by adding new members to the different dimensions per Accounting request.
+Develop/Modify HFM rules as needed per accounting.
+Develop/Modify the FDMEE interfaces that load the data from SAP to HFM (via flat file).
+Perform metadata maintenance in DRM for HFM
+Provision/Deprovision users from the system as requested.
+Support Accounting and Finance during month end close
+Maintain several Essbase databases BSO and ASO on a monthly basis.
+Support Finance during Forecast, Planning and Multiyear Outlook.
+Provide support to all users for any Smart View questions they have.
+Attend to meetings with Accounting, Finance, Tax, Audit as needed.
+Support HFM/Essbase reporting via “Financial Reporting Studio”.
+Do audit related tasks on a monthly/quarterly basis to be SOX compliant.
+Provide reports to Internal/External Audit as needed.
+Provide reports to Tax after month end close.
+EDUCATION: Bachelor's (undergraduate) degree in computer science, information systems or equivalent is required. Understanding of Accounting and Finance basic concepts is required. MBA is a plus. Knowledge of perl is a plus.
+EXPERIENCE: 5+ years of experience in HFM/FDMEE/HFM Calculator Manager/Essbase/Smartview/DRM.
+Knowledge of Windows server 2012. Knowledge of Maxl scripts. Knowledge of Financial Reporting Studio.
+Excellent written and verbal communication skills; ability to handle multiple projects simultaneously.
+We will give careful consideration to your application and review your details against the position criteria. You will receive separate notification as your application progresses.
+Please note that only candidates who meet the minimum criteria for the role will proceed in the selection process.
+#LI-Hybrid#LI-NG1"
+38,Hewlett Packard Enterprise,Senior Cloud Developer,"Hyderabad, Telangana, India",https://hpe.wd5.myworkdayjobs.com/Jobsathpe/job/Hyderabad-Telangana-India/Senior-Cloud-Developer_1215595-2,35,"The candidate has ~3.3 years of experience primarily in Node.js/TypeScript backend development, whereas the role explicitly requires 7-10 years of experience with strong Java/C++/Golang and systems-level programming.",no,"Senior Cloud Developer
+This role has been designed as ‘’Onsite’ with an expectation that you will primarily work from an HPE office.
+Who We Are:
+Hewlett Packard Enterprise is the global edge-to-cloud company advancing the way people live and work. We help companies connect, protect, analyze, and act on their data and applications wherever they live, from edge to cloud, so they can turn insights into outcomes at the speed required to thrive in today’s complex world. Our culture thrives on finding new and better ways to accelerate what’s next. We know varied backgrounds are valued and succeed here. We have the flexibility to manage our work and personal needs. We make bold moves, together, and are a force for good. If you are looking to stretch and grow your career our culture will embrace you. Open up opportunities with HPE.
+Job Description:
+In the HPE Hybrid Cloud , we lead the innovation agenda and technology roadmap for all of HPE. This includes managing the design, development, and product portfolio of our next-generation cloud platform, Green Lake. Working with customers, we help them reimagine their information technology needs to deliver a simple, consumable solution that helps them drive their business results. Join us redefine what’s next for you.
+Job Family Definition:
+The Cloud Developer builds from the ground up to meet the needs of mission-critical applications, and is always looking for innovative approaches to deliver end-to-end technical solutions to solve customer problems.
+Brings technical thinking to break down complex data and to engineer new ideas and methods for solving, prototyping, designing, and implementing cloud-based solutions.
+Collaborates with project managers and development partners to ensure effective and efficient delivery, deployment, operation, monitoring, and support of Cloud engagements.
+The Cloud Developer provides business value expertise to drive the development of innovative service offerings that enrich HPE's Cloud Services portfolio across multiple systems, platforms, and applications.
+Management Level Definition:
+Contributions impact technical components of HPE products, solutions, or services regularly and sustainable. Applies advanced subject matter knowledge to solve complex business issues and is regarded as a subject matter expert. Provides expertise and partnership to functional and technical project teams and may participate in cross-functional initiatives. Exercises significant independent judgment to determine best method for achieving objectives. May provide team leadership and mentoring to others.
+What you will do:
+Responsibilities:
+Leads the project team for design and development of complex products and platforms, including solution design, analysis, coding, testing, and integration for building efficient, scalable and robust cloud subsystems.
+Reviews and evaluates designs, test plans, and develops code for compliance with cloud design and development guidelines and standards.
+Provides tangible feedback to improve product quality and mitigate risks.
+Represents the engineering team in various technical forums and provides guidance and mentoring to less-experienced team members.
+Drives innovation and integration of new technologies into projects and activities in the software systems design organization.
+Analyzes science, engineering, business, and other data processing problems to develop and implement solutions to complex application problems, system administration issues, or network concerns.
+What you will need to bring:
+Education and Experience Required:
+Bachelor's or master's degree in computer science, engineering, information systems, or closely related quantitative discipline.
+Typically, 7-10 years’ experience.
+Knowledge and Skills:
+Strong JAVA/C++/Golang programming skills
+Expertise in File Systems, Networking, or Distributed storage/compute systems
+Good debugging and problem-solving skills
+Communication skills and the ability to work independently
+Through knowledge of the Linux/UNIX and Kubernete environment
+Must have proficiency with data structures, algorithms and multi-threaded programming
+Must have in-depth knowledge of OS internals and storage concepts.
+Understanding microservice architecture and how they can be built in a containerized, Kubernetes-managed environment is central to all modern cloud-native applications.
+Designing and integrating software systems running on multiple platform types into the overall architecture.
+Evaluating forms and processes for software systems testing and methodology, including writing and executing test plans, debugging, and testing scripts and tools.
+Excellent written and verbal communication skills. Ability to effectively communicate product architectures and design proposals at senior management levels.
+Accessibility
+HPE is committed to creating an inclusive and accessible workplace and encourages applications from all qualified individuals, including those with disabilities. If you believe you require accommodation during any stage of the application or interview process, please submit your request by completing our secure form linked here .
+Note: This option is reserved for applicants needing assistance/reasonable accommodation related to a disability.
+What We Can Offer You:
+Health & Wellbeing
+We strive to provide our team members and their loved ones with a comprehensive suite of benefits that supports their physical, financial and emotional wellbeing.
+Personal & Professional Development
+We also invest in your career because the better you are, the better we all are. We have specific programs catered to helping you reach any career goals you have — whether you want to become a knowledge expert in your field or apply your skills to another division.
+Unconditional Inclusion
+We are unconditionally inclusive in the way we work and celebrate individual uniqueness. We know varied backgrounds are valued and succeed here. We have the flexibility to manage our work and personal needs. We make bold moves, together, and are a force for good.
+Let's Stay Connected:
+Follow @HPECareers on Instagram to see the latest on people, culture and tech at HPE.
+#india
+#hybridcloud
+Job:
+Engineering
+Job Level:
+TCP_04
+HPE is an Equal Employment Opportunity/ Veterans/Disabled/LGBT employer. We do not discriminate on the basis of race, gender, or any other protected category, and all decisions we make are made on the basis of qualifications, merit, and business need. Our goal is to be one global team that is representative of our customers, in an inclusive environment where we can continue to innovate and grow together. Please click here: Equal Employment Opportunity .
+Hewlett Packard Enterprise is EEO Protected Veteran/ Individual with Disabilities.
+HPE will comply with all applicable laws related to employer use of arrest and conviction records, including laws requiring employers to consider for employment qualified applicants with criminal histories.
+Recruitment Fraud Alert
+We have become aware of an increase in fraudulent recruitment activities in which individuals impersonate our company or authorized recruitment agencies to offer fake employment opportunities. These scams may occur through false websites, emails, social media, or chat-based applications and often aim to obtain personal information or money. Please note that Hewlett Packard Enterprise (HPE), its direct and indirect subsidiaries and affiliated companies, and its authorized recruitment agencies/vendors will never charge a candidate a registration fee, hiring fee, or any other fee in connection with its recruitment and hiring process. We also never request personal information such as back account details, Social Security numbers, or national IDs via social media or chat applications.
+All legitimate job opportunities will come through official company channels, and candidates are responsible for verifying the credentials of any third party claiming to represent the company. Any reliance on fraudulent communication is at the individual’s own risk, and HPE disclaims legal liability for any resulting damages. If you suspect recruitment fraud, do not share personal information or make any payments and report the incident to your local authorities immediately."
+39,Medtronic,Senior Enterprise Software Engineer,"Nanakramguda, Hyderabad, India",https://medtronic.wd1.myworkdayjobs.com/MedtronicCareers/job/Nanakramguda-Hyderabad-India/Senior-Enterprise-Software-Engineer_R78089-2,35,"The candidate has ~3.3 years of experience, whereas the role explicitly requires a minimum of 8+ years of engineering experience and C#/.NET stack expertise which is missing from the profile.",no,"Careers that change lives start here. Medtronic is a global leader in healthcare technology with a Mission to alleviate pain, restore health, and extend life. Our 95,000 employees work across more than 150 countries to put patients first — developing innovative medical technologies that improve the lives of 72+ million patients each year. Your unique talents will help shape the future of healthcare while building a career grounded in purpose, growth, and impact.
+A Day in the Life
+Senior Software Engineer –Full Stack– Endoscopy
+Location – MEIC – Endoscopy
+Careers That Change Lives
+Our space, the medical device and healthcare industry, is rapidly changing. It always has been that way. With remote monitoring, wearables, robotics, AR/VR, telemedicine, and much more, agility and responsiveness are key to our success. Experience what it’s like to work at a company with an exciting product pipeline full of patented inventions driving innovation in the healthcare space.
+Operating Unit
+The Endoscopy Operating Unit has created a business out of disrupting the status quo in the detection, prevention, and treatment of gastrointestinal cancers and chronic diseases. We’ve done this by commercializing transformational technologies that improve patient management and standards of care, while increasing access to our innovations across the globe.
+We improve patient outcomes by empowering every gastroenterologist across the globe with artificial intelligence and disruptive therapeutic technologies. Our talent is the foundation, and we will continue to bring deep clinical expertise, patient-centric innovation, and powerful digital capabilities to achieve this vision.
+Responsibilities may include the following and other duties may be assigned:
+Responsible for the full-stack development of cloud services that integrate with medical products
+Design, conduct code reviews, implement, debug, web apis, and other AWS cloud services utilizing Dojo, Typescript, .NET, C++, Python.
+Determine design requirements for software systems.
+Evaluate and recommend AWS services, tools, and frameworks based on project requirements.
+Generate documentation for software projects to support regulatory and business needs.
+Participate in all stages of product development: including refining product vision, gathering needs, refining requirements, project planning, system design, coding, testing, release, deployment, and support.
+Utilize experience and education to build high quality, maintainable software following industry design/architectural patterns.
+Use Agile methodologies to manage application development.
+Manage completion of own work assignments and coordinates work with others.
+Continues to strengthen industry knowledge and use that knowledge to improve the quality of our products.
+Ensure that system improvements are successfully implemented and monitored to increase efficiency.
+Additional duties as assigned
+Required Knowledge and Experience:
+Bachelor’s degree in computer engineering, Computer Science or a related technical field with 8+ years of engineering experience
+Minimum 5 years of cloud application software development experience in C#, .NET Core and React/Angular/DOJO
+Proven track record in designing and implementing enterprise-scale microservices and distributed systems architectures
+Experience with database development (Postgres SQL)
+Strong understanding of cloud-native architecture principles, containerization (Kubernetes, Docker), and AWS cloud platform.
+Deep knowledge of API management, event-driven architecture, and real-time data processing for scalable systems.
+Knowledge in DevOps methodologies and CI/CD pipelines
+Strong written and verbal communication skills undefined
+Nice to Have
+Experience in medical device industry (or other regulated industry)
+Experience with application design patterns and object-oriented design patterns
+Experience with networking communication protocols
+Experience with Agile development methodologies
+Experience with Security and Risk analysis
+Physical Job Requirements
+The physical demands described within the responsibilities section of this job description are representative of those that must be met by an employee to successfully perform the essential functions of this job.
+Reasonable accommodation may be made to enable individuals with disabilities to perform the essential functions.
+For Office Roles: While performing the duties of this job, the employee is regularly required to be independently mobile.
+The employee is also required to interact with a computer and communicate with peers and co-workers.
+A commitment to our employees lives at the core of our values. We recognize their contributions.
+They share in the success they help to create.
+We offer a wide range of benefits, resources, and competitive compensation plans designed to support you at every career and life stage.
+Physical Job Requirements
+The above statements are intended to describe the general nature and level of work being performed by employees assigned to this position, but they are not an exhaustive list of all the required responsibilities and skills of this position.
+‌
+‌
+Recruitment Fraud Alert
+We are aware of phishing scams targeting job seekers. Please keep the following in mind:
+Apply only through official Medtronic channels. All legitimate Medtronic recruiting communications come from approved Medtronic platforms and official @medtronic.com email addresses.
+Medtronic will never ask for payment or sensitive personal information (such as bank account or Social Security details) during early stages of the hiring process. Any such requests are not legitimate.
+If you receive a suspicious message claiming to be from Medtronic, do not respond, click links, or open attachments.
+If you have any questions, concerns regarding the authenticity of a communication alleged to have been made by or on behalf of Medtronic, please contact us immediately at AskHR@medtronic.com .
+Benefits & Compensation
+Medtronic offers a competitive Salary and flexible Benefits Package
+A commitment to our employees lives at the core of our values. We recognize their contributions. They share in the success they help to create. We offer a wide range of benefits, resources, and competitive compensation plans designed to support you at every career and life stage.
+This position is eligible for a short-term incentive called the Medtronic Incentive Plan (MIP)."
+40,Amazon,"Senior Software Development Engineer, FinTech Tax","Gurugram, Haryana, IND",https://www.amazon.jobs/en/jobs/10565197/senior-software-development-engineer-fintech-tax,25,"The candidate has only 3.3 years of experience, falling short of the role's strict requirement for 5+ years of software development experience.",no,"Amazon’s FC team is seeking highly skilled and motivated person to help develop a and implement a world class security program for our first mile network which will ensure that our customers receive the
+
+- 3+ years of security and loss prevention experience
+- Bachelor's degree, or Advanced degree
+
+- MBA
+Our inclusive culture empowers Amazonians to deliver the best results for our customers. If you have a disability and need a workplace accommodation or adjustment during the application and hiring process, including support for the interview or onboarding process, please visit https://amazon.jobs/content/en/how-we-hire/accommodations for more information. If the country/region you’re applying in isn’t listed, please contact your Recruiting Partner."
