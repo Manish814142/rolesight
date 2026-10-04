@@ -178,7 +178,7 @@ once. Record in CHANGELOG: jobs fetched, India, pre-filter passes, too old, scor
 | T10 | `draft N` opens the wrong job | todo | — | S | — |
 | T11 | Let Adobe "Computer Scientist" titles through | todo | — | XS | — |
 | T12 | Exclude CRM/platform "developer" roles | todo | — | S | — |
-| T13 | Remove the 2,000-char description cap when scoring | todo | — | XS | — |
+| T13 | Remove the 2,000-char description cap when scoring | doing · claude · 2026-10-04 | claude | XS | T46 |
 | T14 | Send the full resume to `draft` | todo | — | XS | — |
 | T15 | Stop tests writing to the real `scan.log` | todo | — | S | — |
 | T16 | Put the logs in `data/` with rotation | todo | — | S | T15 |
