@@ -16,7 +16,9 @@ autopilot scan              # full scan of companies.json (alias: python -m job_
 autopilot scan --limit 5    # only the first 5 companies
 ./run_daily.sh              # cron runner: timestamps into data/scan.log, MIN_SCORE defaults to 70
 autopilot harvest           # rebuild companies.json from india.yml + LinkedIn headcount cache
-autopilot validate          # probe boards in companies.json, prune dead ones
+autopilot validate          # probe boards in companies.json, prune dead ones (accepts empty boards — prefer discover)
+autopilot discover --seeds scripts/company_seeds.txt --report /tmp/r.csv --out /tmp/v.json [--merge companies.json]
+                            # verify company names against ATS boards; --merge re-checks existing entries too
 autopilot doctor            # SQLite / Gemini / Telegram / ATS egress checks
 autopilot export [--min N] [--days N]   # CSV from state/ (no API keys needed)
 autopilot draft 1 | URL     # resume + cover letter draft (needs TINYFISH_API_KEY for JD fetch)
@@ -32,7 +34,10 @@ Tests must make **no network calls** — stub `send_telegram`, adapters, and Gem
    (greenhouse, lever, ashby, smartrecruiters, workday, recruitee, personio, workable).
 3. Dedupe by `canonical_hash(title, company, location)` in `data/jobs.db`.
 4. `prefilter.should_evaluate_job` — word-bounded title include/exclude + location regex.
-5. `scorer.score_and_process_job` → `llm_utils.score_job_with_gemini`, 4.2 s pacing (15 RPM).
+5. After all companies are fetched, survivors are scored: default one job per Gemini call
+   (`scorer.score_and_process_job`, full resume, 4.2 s pacing = 15 RPM). Opt-in
+   `"gemini_scoring_mode": "batch"` scores `gemini_batch_size` (10) jobs per call — ~17×
+   faster but measured to inflate weak fits by ~15 points (see CHANGELOG 2026-10-04).
 6. Telegram alert (if configured) → `state/last_scan.json`, `state/job_history.json`,
    incremental CSV `output/jobs_YYYY-MM-DD[_N].csv` (never overwrites).
 
@@ -60,7 +65,8 @@ A Gemini failure never stores `score=0`; the row stays `discovered`.
 | `resume/YOUR_RESUME.md` | resume text | template committed |
 
 - **LLM:** `llm_provider` defaults to `gemini`; model from `gemini_model` / `GEMINI_MODEL`,
-  fallback `gemini-3.5-flash-lite`. `anthropic` and `claude_cli` still work.
+  fallback chain `gemini-3.5-flash-lite` → `gemini-3.1-flash-lite` only (free tier: 15 RPM,
+  250k TPM, 500 RPD each; `gemini-3.8-flash` has 20 RPD and is never used as a fallback). `anthropic` and `claude_cli` still work.
   **OpenRouter is deprecated** (logs a warning when used).
 - **TinyFish:** optional. Not required by `load_config`; only `draft` and legacy
   careers_url companies use it.
@@ -74,6 +80,11 @@ A Gemini failure never stores `score=0`; the row stays `discovered`.
 Headcount is badge metadata only — **not** a filter (the cache is stale).
 A board counts as active only with HTTP 200 **and** ≥1 job; each company appears once.
 Matches on a non-declared ATS are tagged `ats_fallback_from`.
+
+**Adding companies:** append names to `scripts/company_seeds.txt` and run `autopilot discover
+... --merge companies.json`. Accepted only with live jobs, confirmed identity, ≥1 India job and
+a posting ≤180 days old (abandoned SmartRecruiters boards from 2015–2020 exist). Custom portals
+(Google, Flipkart, Swiggy careers sites, Darwinbox/Freshteam/Zoho Recruit…) are not reachable.
 
 **`companies.json` is curated — do not blindly overwrite it with `autopilot harvest`.**
 Harvest into a scratch file (`--out /tmp/x.json`) and diff. Boards removed on evidence

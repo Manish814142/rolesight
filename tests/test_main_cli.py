@@ -226,3 +226,14 @@ def test_main_module_run(monkeypatch):
     runpy.run_module("job_hunt.__main__", run_name="__main__")
     assert called["ok"]
 
+
+
+def test_discover_command_dispatches_without_config(tmp_path, monkeypatch):
+    """discover needs no API keys, so it must run before load_config()."""
+    monkeypatch.chdir(tmp_path)
+    seen = {}
+    import job_hunt.discovery as discovery
+    monkeypatch.setattr(discovery, "main", lambda argv: seen.setdefault("argv", argv))
+    monkeypatch.setattr(main.sys, "argv", ["autopilot", "discover", "--seeds", "s.txt"])
+    main.main()
+    assert seen["argv"] == ["--seeds", "s.txt"]

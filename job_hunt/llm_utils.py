@@ -127,40 +127,28 @@ def _get_genai_client_and_types(api_key: str | None = None):
     return client, types
 
 
-def _chat_with_gemini(
-    config: dict,
-    messages: list[dict],
-    temperature: float = 0.1,
-    max_tokens: int = 4096,
-) -> str:
-    api_key = config.get("gemini_api_key") or os.getenv("GEMINI_API_KEY")
-    model = config.get("gemini_model") or os.getenv("GEMINI_MODEL") or "gemini-3.5-flash-lite"
-    client, types = _get_genai_client_and_types(api_key)
+GEMINI_DEFAULT_MODEL = "gemini-3.5-flash-lite"
+# Only high-quota free-tier models (500 RPD each). gemini-3.8-flash (20 RPD) and the
+# "latest" alias are deliberately excluded so a fallback never burns a tiny quota.
+GEMINI_FALLBACK_MODELS = ["gemini-3.5-flash-lite", "gemini-3.1-flash-lite"]
 
-    system = next((m["content"] for m in messages if m["role"] == "system"), None)
-    user_msgs = [m for m in messages if m["role"] != "system"]
-    prompt_content = "\n\n".join(m["content"] for m in user_msgs)
 
-    cfg = types.GenerateContentConfig(
-        temperature=temperature,
-        max_output_tokens=max_tokens,
-        system_instruction=system,
-    )
-    models_to_try = [model]
-    for fallback in ["gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-flash-latest", "gemini-3.8-flash"]:
-        if fallback not in models_to_try:
-            models_to_try.append(fallback)
+def _gemini_models(config: dict) -> list[str]:
+    primary = config.get("gemini_model") or os.getenv("GEMINI_MODEL") or GEMINI_DEFAULT_MODEL
+    return [primary] + [m for m in GEMINI_FALLBACK_MODELS if m != primary]
 
+
+def _generate_with_fallback(client: Any, contents: str, cfg: Any, models: list[str]) -> str:
+    """Call generate_content across `models`, retrying once on rate-limit/transient errors."""
     last_err: Exception | None = None
-    for m in models_to_try:
+    for m in models:
         for attempt in range(2):
             try:
-                resp = client.models.generate_content(
-                    model=m,
-                    contents=prompt_content,
-                    config=cfg,
-                )
-                return resp.text or ""
+                resp = client.models.generate_content(model=m, contents=contents, config=cfg)
+                if resp and resp.text:
+                    return resp.text
+                last_err = RuntimeError(f"Empty response from {m}")
+                break
             except Exception as e:
                 last_err = e
                 err_msg = str(e)
@@ -174,8 +162,40 @@ def _chat_with_gemini(
                     continue
                 logger.warning(f"Gemini model {m} failed ({e}), trying next model...")
                 break
-
     raise last_err or RuntimeError("All Gemini models failed.")
+
+
+def _chat_with_gemini(
+    config: dict,
+    messages: list[dict],
+    temperature: float = 0.1,
+    max_tokens: int = 4096,
+) -> str:
+    api_key = config.get("gemini_api_key") or os.getenv("GEMINI_API_KEY")
+    client, types = _get_genai_client_and_types(api_key)
+
+    system = next((m["content"] for m in messages if m["role"] == "system"), None)
+    user_msgs = [m for m in messages if m["role"] != "system"]
+    prompt_content = "\n\n".join(m["content"] for m in user_msgs)
+
+    cfg = types.GenerateContentConfig(
+        temperature=temperature,
+        max_output_tokens=max_tokens,
+        system_instruction=system,
+    )
+    return _generate_with_fallback(client, prompt_content, cfg, _gemini_models(config))
+
+
+def _candidate_info(config: dict) -> str:
+    cand = config.get("candidate", {})
+    info = f"- Candidate: {cand.get('name', 'the candidate')}\n"
+    if cand.get("profile"):
+        info += f"- Profile: {cand['profile']}\n"
+    if cand.get("seeking"):
+        info += f"- Seeking: {cand['seeking']}\n"
+    if cand.get("not_suitable"):
+        info += f"- Not suitable: {cand['not_suitable']}\n"
+    return info
 
 
 def score_job_with_gemini(job: dict, resume: str, config: dict, raise_on_error: bool = False) -> dict:
@@ -189,29 +209,16 @@ def score_job_with_gemini(job: dict, resume: str, config: dict, raise_on_error: 
     """
     try:
         api_key = config.get("gemini_api_key") or os.getenv("GEMINI_API_KEY")
-        model = config.get("gemini_model") or os.getenv("GEMINI_MODEL") or "gemini-3.5-flash-lite"
         client, types = _get_genai_client_and_types(api_key)
 
-        cand = config.get("candidate", {})
-        cand_name = cand.get("name", "the candidate")
-        cand_profile = cand.get("profile", "")
-        cand_seeking = cand.get("seeking", "")
-        cand_not = cand.get("not_suitable", "")
-
-        candidate_info = f"- Candidate: {cand_name}\n"
-        if cand_profile:
-            candidate_info += f"- Profile: {cand_profile}\n"
-        if cand_seeking:
-            candidate_info += f"- Seeking: {cand_seeking}\n"
-        if cand_not:
-            candidate_info += f"- Not suitable: {cand_not}\n"
-
+        # The full resume is sent: ~4k chars is ~1k tokens, far below the TPM limit,
+        # and truncating dropped Projects/Education from the scoring context.
         prompt = (
             "You are evaluating a job posting for a candidate. "
             "Output ONLY a JSON object with this exact format:\n"
             '{"score": <0-100>, "reason": "<one sentence explanation>"}\n\n'
-            f"CANDIDATE PROFILE:\n{candidate_info}\n"
-            f"RESUME:\n{resume[:2500]}\n\n"
+            f"CANDIDATE PROFILE:\n{_candidate_info(config)}\n"
+            f"RESUME:\n{resume}\n\n"
             f"JOB:\n"
             f"Company: {job.get('company', '')}\n"
             f"Title: {job.get('title', '')}\n"
@@ -223,43 +230,7 @@ def score_job_with_gemini(job: dict, resume: str, config: dict, raise_on_error: 
             temperature=0.1,
             response_mime_type="application/json",
         )
-        models_to_try = [model]
-        for fallback in ["gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-flash-latest", "gemini-3.8-flash"]:
-            if fallback not in models_to_try:
-                models_to_try.append(fallback)
-
-        resp = None
-        last_err: Exception | None = None
-        for m in models_to_try:
-            for attempt in range(2):
-                try:
-                    resp = client.models.generate_content(
-                        model=m,
-                        contents=prompt,
-                        config=cfg,
-                    )
-                    if resp and resp.text:
-                        break
-                except Exception as e:
-                    last_err = e
-                    err_msg = str(e)
-                    if attempt == 0 and ("503" in err_msg or "429" in err_msg or "ResourceExhausted" in err_msg or "temporary" in err_msg or "quota" in err_msg):
-                        retry_wait = 5.0
-                        m_delay = re.search(r"retry in (\d+(?:\.\d+)?)s", err_msg)
-                        if m_delay:
-                            retry_wait = min(float(m_delay.group(1)) + 1.0, 15.0)
-                        logger.warning(f"Temporary issue or rate-limit on {m} ({e}), retrying in {retry_wait:.1f}s...")
-                        time.sleep(retry_wait)
-                        continue
-                    logger.warning(f"Gemini model {m} failed ({e}), trying next model...")
-                    break
-            if resp and resp.text:
-                break
-
-        if resp is None or not resp.text:
-            raise last_err or RuntimeError("All Gemini models failed")
-
-        raw_text = resp.text or ""
+        raw_text = _generate_with_fallback(client, prompt, cfg, _gemini_models(config))
         start, end = raw_text.find("{"), raw_text.rfind("}") + 1
         if start == -1 or end <= start:
             raise ValueError(f"No JSON object in response: {raw_text[:100]}")
@@ -275,6 +246,71 @@ def score_job_with_gemini(job: dict, resume: str, config: dict, raise_on_error: 
         if raise_on_error:
             raise
         return {"score": 0, "reason": "Scoring failed"}
+
+
+BATCH_SCORE_SCHEMA: dict[str, Any] = {
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "job_id": {"type": "string"},
+            "score": {"type": "integer", "minimum": 0, "maximum": 100},
+            "reason": {"type": "string"},
+        },
+        "required": ["job_id", "score", "reason"],
+    },
+}
+
+
+def score_jobs_batch_with_gemini(jobs: list[dict], resume: str, config: dict) -> dict[str, dict]:
+    """Score several jobs in ONE Gemini call with a structured JSON schema.
+
+    Each job dict needs a unique "id". Returns {id: {"score", "reason"}} for every id
+    the model answered; ids it skipped are simply absent (callers retry them later).
+    Raises if the call fails or the output is not a JSON array.
+    """
+    api_key = config.get("gemini_api_key") or os.getenv("GEMINI_API_KEY")
+    client, types = _get_genai_client_and_types(api_key)
+
+    jobs_text = "\n\n".join(
+        f"JOB_ID: {j['id']}\n"
+        f"Company: {j.get('company', '')}\n"
+        f"Title: {j.get('title', '')}\n"
+        f"Location: {j.get('location', '')}\n"
+        f"Description:\n{j.get('content', j.get('snippet', ''))[:2000]}"
+        for j in jobs
+    )
+    prompt = (
+        "You are evaluating job postings for a candidate. Score EACH job independently "
+        "against the candidate (do not rank the jobs against each other).\n"
+        "Return a JSON array with exactly one object per JOB_ID: "
+        '{"job_id": "<JOB_ID>", "score": <0-100>, "reason": "<one sentence explanation>"}.\n\n'
+        f"CANDIDATE PROFILE:\n{_candidate_info(config)}\n"
+        f"RESUME:\n{resume}\n\n"
+        f"JOBS:\n{jobs_text}\n"
+    )
+    cfg = types.GenerateContentConfig(
+        temperature=0.1,
+        response_mime_type="application/json",
+        response_json_schema=BATCH_SCORE_SCHEMA,
+    )
+    raw_text = _generate_with_fallback(client, prompt, cfg, _gemini_models(config))
+    data = json.loads(raw_text)
+    if not isinstance(data, list):
+        raise ValueError(f"Expected a JSON array, got: {raw_text[:100]}")
+
+    wanted = {str(j["id"]) for j in jobs}
+    out: dict[str, dict] = {}
+    for item in data:
+        if not isinstance(item, dict):
+            continue
+        jid = str(item.get("job_id", ""))
+        if jid in wanted and "score" in item:
+            out[jid] = {
+                "score": max(0, min(100, int(item["score"]))),
+                "reason": str(item.get("reason", "")),
+            }
+    return out
 
 
 def chat_with_llm(

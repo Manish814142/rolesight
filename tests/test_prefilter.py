@@ -215,3 +215,28 @@ def test_prefilter_rejects_non_india_remote(location):
 def test_prefilter_accepts_india_and_truly_global(location, is_remote):
     passed, reason = should_evaluate_job(_job("Software Engineer", location=location, is_remote=is_remote))
     assert passed is True, f"{location!r} rejected: {reason}"
+
+
+@pytest.mark.parametrize("location", [
+    "New Delhi, in",          # SmartRecruiters lowercase country code
+    "Gurgaon, in",
+    "Kolkata, WB, in",
+    "Delhi NCR",
+    "New Delhi",
+    "Kolkata",
+    "Gurugram / Noida",
+    "Jaipur, RJ, in",         # any Indian city via the country code
+])
+def test_prefilter_accepts_delhi_kolkata_and_in_country_code(location):
+    passed, reason = should_evaluate_job(_job("Software Engineer", location=location))
+    assert passed is True, f"{location!r} rejected: {reason}"
+
+
+@pytest.mark.parametrize("location", [
+    "Indianapolis, IN",       # US state code for Indiana — must not read as India
+    "Carmel, IN",
+    "Fort Wayne, IN, us",
+])
+def test_prefilter_indiana_state_code_is_not_india(location):
+    passed, _ = should_evaluate_job(_job("Software Engineer", location=location))
+    assert passed is False

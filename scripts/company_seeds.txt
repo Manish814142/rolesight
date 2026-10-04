@@ -1,0 +1,818 @@
+# Company seeds for `autopilot discover` (job_hunt/discovery.py).
+# Format:  Name                          -> slugs are derived from the name and probed on 7 ATSs
+#          Name | careers URL            -> a lever/greenhouse/ashby/workable/... URL is used as-is
+#          Name | workday | tenant | dc | site   -> curated Workday tenant (guess; verified live)
+# Nothing here is trusted: only boards with live jobs, confirmed identity and India jobs are kept.
+# Sources: Manish's lists (2026-10-04 paste, truncated at 50k chars), the
+# Kaustubh-Natuskar/companies-to-apply README, and additions for India engineering hubs.
+
+# ── From the pasted lists ─────────────────────────────────────────────────────
+Meta
+Facebook
+Amazon
+Apple
+Netflix
+Google
+Microsoft
+Zeta
+Zeta Suite
+JPMorgan Chase
+Media.net
+Goldman Sachs
+Arcesium
+D. E. Shaw
+McAfee
+Atlassian
+Codenation
+Intuit
+Flipkart
+Cisco
+InMobi
+LinkedIn
+Morgan Stanley
+Paytm
+PayPal
+Tower Research Capital
+Gojek
+Delhivery
+Mindtickle
+Informatica
+Uber
+Razorpay
+Udaan
+Myntra
+Adobe
+Cult.fit
+Curefit
+ShareChat
+Ola
+Expedia
+Sprinklr
+Nutanix
+Zomato
+Yelp
+ByteDance
+Dunzo
+MakeMyTrip
+Toppr | https://apply.workable.com/toppr/
+VMware
+Intel
+Postman
+Walmart
+Oracle
+Thoughtworks
+Directi
+Swiggy
+Innovaccer
+Mastercard
+Visa
+Samsung
+HashedIn
+American Express
+Infosys
+TCS
+Sahaj
+BuyHatke
+NCR
+IHS Markit
+BrowserStack
+HackerRank
+Salesforce
+FactSet
+Coding Ninjas
+Yellow.ai
+GeeksforGeeks
+Quora
+BharatPe
+Gameskraft
+Databricks
+Apptio
+Cadence
+Hike
+ServiceNow
+Hotstar
+Juspay
+Twitter
+Nvidia
+Dream11
+Dream Sports
+Airtel
+OYO
+CRED
+PhonePe
+PayPay
+Yahoo
+Qualcomm
+Disney
+Accenture
+Accolite
+Acko
+Able
+Accredible
+Activision Blizzard
+Affinidi
+Airbase
+Airbnb
+Airbus
+Ajio
+Akamai
+Alibaba
+AlphaGrep
+Alphonso
+Amadeus
+Amagi
+AMD
+Amdocs
+Angel One
+Analog Devices
+Ansys
+Apna
+AppDynamics
+Appen
+AppFolio
+Applied Materials
+Aptiv
+AQR
+Arista Networks
+Aryaka
+ASML
+Athenahealth
+Atlan
+ADP
+Auzmor
+Avalara
+Avaya
+Axis Bank
+Barclays
+Bain
+BankBazaar
+Bazaarvoice
+BCG
+Bidgely
+BigBasket
+BillDesk
+Bitdefender
+Bitly
+BlackBuck
+BlackRock
+BlackBerry | workday | bb | wd3 | BlackBerry
+Blinkit
+Block
+Bloomberg
+Bluestacks
+BMC Software
+BNY Mellon
+Booking.com
+Bosch
+Bottomline
+Box
+Broadcom
+Capillary
+Capital One
+CarDekho
+Careem
+CarWale
+Cashfree
+Cimpress
+Celigo
+Citi
+Chargebee
+Checkout.com
+Chronus
+Citadel
+Citrix
+Classplus
+Cleartrip
+Cloudera
+Cloudflare
+Cognizant
+Coinbase
+CoinDCX
+CoinSwitch
+Commvault
+Coupang
+Cradlepoint
+Credit Suisse
+Crestron
+CrowdStrike
+Cvent
+Dailyhunt
+Dashlane
+Dataminr
+DBS
+DealShare
+Dell
+Deutsche Bank
+Dialpad
+Digit Insurance
+DigitalOcean
+Discord
+Dolby
+DoorDash
+Doximity
+Dropbox
+Druva
+Dukaan
+Duo Security
+Dynatrace
+Electronic Arts
+eBay
+Enfusion
+Envestnet
+EPAM
+Epic Games
+Ericsson
+Equinix
+EXL
+F5
+FamPay
+Fidelity
+Fiserv
+Flexport
+FlyFin
+Fractal
+Frappe
+FreeCharge
+Freshworks
+Furlenco
+Fyle
+FICO
+Gartner
+GeekyAnts
+Genpact
+Ghost
+GitHub
+GitLab
+GoDaddy
+Grab
+Grafana Labs
+Graviton Research Capital
+Groupon
+Grofers
+Groww
+Groq
+HackerEarth
+Hashnode
+HCLTech
+HDFC Bank
+HealthifyMe
+HERE Technologies
+Hexagon
+Honeywell
+HP
+HSBC
+HubSpot
+Hugging Face | https://apply.workable.com/huggingface/
+IBM
+ideaForge
+Impact Analytics
+Indeed
+IndiaMART
+Infor
+Intellika
+IP Infusion
+iQuanti
+Jar
+Jio
+Juniper Networks
+Jupiter Money | https://jobs.lever.co/jupiter
+Jumbotail
+Kantar
+KeyValue
+Khatabook
+Khoros
+KLA
+Kotak Mahindra Bank
+LambdaTest
+Lam Research
+Lenskart
+Lenovo
+Leap Finance
+Level AI
+Licious
+LogicMonitor
+Lowe's
+Magicpin
+Mathworks
+MAQ Software
+McKinsey
+Meesho
+Micron
+MobiKwik
+MPL
+Mobile Premier League
+MTX
+Nagarro
+Nasdaq
+NatWest
+Navi
+NetApp
+Netcracker
+Netmeds
+Nike
+Ninjacart
+Nokia
+Nurture.farm
+Nykaa
+Obvious
+Ocrolus
+OLX
+OneCard
+OnePlus
+Observe.AI
+OpenAI
+OpenText
+Optum
+Palo Alto Networks
+Park+
+PayU
+PeopleStrong
+Persistent Systems
+PharmEasy
+Philips
+Planful
+Polygon
+Practo
+Priceline
+Privado
+Protegrity | https://jobs.lever.co/protegrity
+Proximity Labs
+Publicis Sapient
+PubMatic
+Quantiphi
+QuickSell
+Ramp
+Red Hat
+Rippling
+Rivigo
+Rubrik
+Roku
+JioSaavn
+Sabre
+SalaryBox
+SAP
+Schneider Electric
+SendinBlue
+Brevo
+SerpApi
+Shaadi.com
+Shiprocket
+Shipsy
+Shopee
+Shopify
+Siemens
+Siemens Healthineers
+Sigmoid
+Sony
+Spinny
+SquadStack
+Stripe
+Sureify
+Synopsys
+Target
+Tata Consumer
+TE Connectivity
+Tekion
+Tencent
+Tesla
+Teradata
+Texas Instruments
+ThoughtSpot
+Topcoder
+Toptal
+Treebo
+Turvo
+Twilio
+Ubisoft
+UKG
+Unacademy
+Unicommerce
+Unisys
+upGrad
+Upstox | https://jobs.lever.co/upstox
+Upwork
+Urban Company
+Valuefy
+Viasat
+Vogo
+Warner Bros. Discovery
+Wells Fargo
+Western Digital
+Whatfix
+Wooqer
+WorldQuant
+Xiaomi
+Yugabyte
+Yulu
+Zepto
+Zerodha
+Zivame
+Zoho
+Zoomcar
+ZS Associates
+1mg
+Tata 1mg
+3i Infotech
+247.ai
+AB InBev
+AirAsia
+Anthem
+Elevance Health
+Attentive
+Bhanzu
+Belzabar
+Binance
+Biofourmis
+Bizongo
+Bloomreach
+Bright Money
+BukuWarung
+Byju's
+C2FO
+
+# ── Additions: product companies & startups with India engineering ────────────
+BitGo
+Okta
+SpotDraft
+Plane
+Cohesity
+Elastic
+MongoDB
+Confluent
+HashiCorp
+Datadog
+Snowflake
+Canonical
+Zscaler
+Pinterest
+Reddit
+Instacart
+Lyft
+Glean
+Notion
+Figma
+Canva
+Hasura
+Appsmith
+ToolJet
+Hevo Data
+MoEngage
+WebEngage
+Haptik
+Gupshup
+LeadSquared
+Darwinbox
+Keka
+Zluri
+Sprinto
+Scaler
+InterviewBit
+Unstop
+Vahan
+Pine Labs
+Simpl
+Smallcase
+INDmoney
+OkCredit
+Rupeek
+Uni Cards
+Slice
+Zetwerk
+Infra.Market
+OfBusiness
+Rapido
+Eruditus
+Physics Wallah
+Vedantu
+Games24x7
+Glance
+Agoda
+HighRadius
+Qure.ai
+Uniphore
+Exotel
+Ozonetel
+Kuku FM
+Pocket FM
+STAGE
+Eloelo
+Rooter
+Zupee
+WinZO
+Nazara
+Junglee Games
+WazirX
+Mudrex
+Biconomy
+Instamojo
+Nium
+Ather Energy
+Ola Electric
+Shadowfax
+Porter
+Xpressbees
+Ecom Express
+EaseMyTrip
+FabHotels
+Medibuddy
+Pristyn Care
+Plum
+PolicyBazaar
+Turtlemint
+InsuranceDekho
+Niyo
+KreditBee
+Moneyview
+Fibe
+Lendingkart
+Kissht
+Indifi
+M2P Fintech
+Setu
+Decentro
+Perfios
+Signzy
+IDfy
+HyperVerge
+Icertis
+Leena AI
+CleverTap
+Netcore Cloud
+Kaleyra
+Tiger Analytics
+Mu Sigma
+LatentView
+Sarvam AI
+Krutrim
+Cars24
+ixigo
+Kredx
+Freshdesk
+Juspay Technologies
+Acceldata
+Chaos Genius
+Postman API
+Fynd
+Shopflo
+Dukaan
+Bureau
+Ultrahuman
+boAt
+Mamaearth
+Honasa Consumer
+FirstCry
+Purplle
+Sugar Cosmetics
+CureBay
+Even Healthcare
+Ninjacart
+DeHaat
+Arya.ag
+Locus
+LogiNext
+Fareye
+Shipway
+Delhivery Tech
+Zeta Tech
+Paysense
+Avail Finance
+Jupiter
+Fi Money | https://jobs.lever.co/epifi
+Cred Club
+Atlassian India
+Intuit India
+Uber India
+Wise
+Revolut
+Adyen
+Rapyd
+Chainalysis
+Kraken
+Gemini Trust
+Optiver
+IMC Trading
+Jane Street
+Two Sigma
+Squarepoint
+Millennium
+Quadeye
+Alphonso
+NoBroker
+Housing.com
+Magicbricks
+99acres
+Square Yards
+Livspace
+HomeLane
+Urban Ladder
+Pepperfry
+Stanza Living
+Zolo
+Nestaway
+Bounce Infinity
+Vogo Rentals
+Rentomojo
+Furlenco
+Cashify
+Servify
+Nobroker Technologies
+Clear
+ClearTax
+Zoho Corp
+Freshworks India
+Gojek India
+GoTo
+Grab Taxi
+Booking Holdings
+Trivago
+Skyscanner
+Expedia Group
+Klook
+Navan
+TravelPerk
+Zendesk
+Intercom
+Freshservice
+Miro
+Monday.com
+Asana
+Atlassian Corporation
+Dropbox India
+Box India
+Druva Inc
+Rubrik India
+Couchbase
+Redis
+Neo4j
+Cockroach Labs
+SingleStore
+Starburst
+Fivetran
+dbt Labs
+Airbyte
+Postgres
+Supabase
+Vercel
+Netlify
+Temporal
+PostHog
+Sentry
+LaunchDarkly
+Harness
+CircleCI
+JFrog
+Snyk
+Wiz
+Lacework
+Sumo Logic
+New Relic
+Splunk
+Cloudinary
+Contentstack
+Sprinklr India
+Highspot
+Gong
+Outreach
+Clari
+Seismic
+Mindtickle India
+Whatfix India
+Freshworks Technologies
+Chargebee Technologies
+Zuora
+Coupa
+Icertis India
+Anaplan
+Workday
+Workato
+Celonis
+UiPath
+Automation Anywhere
+Uipath India
+Nutanix India
+Pure Storage
+NetApp India
+Arista
+Juniper
+Extreme Networks
+Ciena
+Infoblox
+Gigamon
+Fortinet
+Check Point Software
+Sophos
+Trellix
+Gen Digital
+Imperva
+Akamai Technologies
+Fastly
+Zscaler India
+Palo Alto
+Tenable
+Rapid7
+Qualys
+Securonix
+Sequretek
+Cyble
+CloudSEK
+Appknox
+Lucideus
+Safe Security
+Innovaccer India
+Practo Technologies
+HealthPlix
+Eka Care
+Tata Digital
+Tata Neu
+Reliance Jio
+Jio Platforms
+Airtel Digital
+Vodafone Idea
+Paytm Money
+PhonePe Group
+Google Pay
+Amazon Pay
+Mobikwik Systems
+Razorpay Software
+Cashfree Payments
+PayU India
+Pine Labs India
+Juspay India
+Easebuzz
+Zaggle
+Open Financial Technologies
+Open Money
+RazorpayX
+Jupiter Money India
+Fi
+Groww India
+Zerodha Broking
+Upstox India
+Angel Broking
+5paisa
+Dhan
+Sensibull
+Tickertape
+Kuvera
+Scripbox
+Coin by Zerodha
+ET Money
+Smallcase Technologies
+Wint Wealth
+Stable Money
+Jar App
+Spenny
+Fold
+Uni
+OneCard India
+Slice India
+Kiwi
+Super.money
+
+# ── Curated Workday tenants (guesses — verified against the live CXS API) ─────
+Intel | workday | intel | wd1 | External
+PayPal | workday | paypal | wd1 | jobs
+Mastercard | workday | mastercard | wd1 | CorporateCareers
+Dell Technologies | workday | dell | wd1 | External
+HP Inc | workday | hp | wd5 | ExternalCareerSite
+Broadcom | workday | broadcom | wd1 | External_Career
+Red Hat | workday | redhat | wd5 | jobs
+Workday | workday | workday | wd5 | Workday
+Qualcomm | workday | qualcomm | wd5 | External
+Thomson Reuters | workday | thomsonreuters | wd5 | External_Career_Site
+Analog Devices | workday | analogdevices | wd1 | External
+Applied Materials | workday | amat | wd1 | External
+Lam Research | workday | lamresearch | wd1 | LAM
+KLA | workday | kla | wd1 | Search
+Sony | workday | sonyglobal | wd1 | SonyGlobalCareers
+Motorola Solutions | workday | motorolasolutions | wd5 | Careers
+Cadence | workday | cadence | wd1 | External_Careers
+Fidelity Investments | workday | fmr | wd1 | targeted
+Bank of America | workday | ghr | wd1 | Lateral-US
+Nasdaq | workday | nasdaq | wd1 | Global_External_Site
+CrowdStrike | workday | crowdstrike | wd5 | crowdstrikecareers
+NXP Semiconductors | workday | nxp | wd3 | careers
+Philips | workday | philips | wd3 | jobs-and-careers
+Expedia | workday | expedia | wd5 | search
+Equinix | workday | equinix | wd1 | External
+State Street | workday | statestreet | wd1 | Global
+BlackRock | workday | blackrock | wd1 | BlackRock_Professional
+Gartner | workday | gartner | wd5 | EXT
+Disney | workday | disney | wd5 | disneycareer
+Warner Bros Discovery | workday | warnerbros | wd5 | global
+Zebra Technologies | workday | zebra | wd5 | Zebra_Careers
+Western Digital | workday | wdc | wd1 | WD_Careers
+Citi | workday | citi | wd5 | 2
+Wells Fargo | workday | wf | wd1 | WellsFargoJobs
+Accenture | workday | accenture | wd103 | AccentureCareers
+Nokia | workday | nokia | wd3 | nokia
+Micron | workday | micron | wd1 | External
+AMD | workday | amd | wd1 | External
+Mercedes-Benz | workday | mercedesbenz | wd3 | MBRDI
+Walmart Global Tech | workday | walmart | wd5 | WalmartExternal
+Target India | workday | target | wd5 | targetcareers
+Adobe India | workday | adobe | wd5 | external_experienced
+Autodesk | workday | autodesk | wd1 | Ext
+BrowserStack | workday | browserstack | wd3 | External
+Nvidia | workday | nvidia | wd5 | NVIDIAExternalCareerSite
+Salesforce | workday | salesforce | wd12 | External_Career_Site

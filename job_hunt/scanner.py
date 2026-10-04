@@ -14,7 +14,7 @@ from job_hunt.log import get_logger
 from job_hunt.models import canonical_hash
 from job_hunt.notifier import is_telegram_configured, send_telegram
 from job_hunt.prefilter import should_evaluate_job
-from job_hunt.scorer import score_and_process_job
+from job_hunt.scorer import score_and_process_batch, score_and_process_job
 
 logger = get_logger()
 
@@ -119,6 +119,12 @@ def save_state(state: dict) -> None:
 
 
 _FETCH_URL_DELAY = 2.5
+
+# Opt-in batch scoring (config "gemini_scoring_mode": "batch"): jobs per Gemini call.
+# ~10 jobs x 2k-char descriptions + resume ≈ 7k tokens, well inside the 250k TPM free tier.
+# Not the default: measured 2026-10-04 on 10 live jobs, batch scores differed from
+# single-job scores by 15.5 points on average (run-to-run noise: 1.0), inflating weak fits.
+DEFAULT_GEMINI_BATCH_SIZE = 10
 
 
 def _fetch_with_ratelimit(tf: TinyFish, urls: list[str], **kwargs):
@@ -396,6 +402,9 @@ def run_scan(config: dict, companies: list[dict]) -> None:
     companies_scanned = 0
     companies_with_jobs = 0
     scoring_failures = 0
+    # Pre-filter survivors from every company; scored together after fetching so
+    # Gemini batches fill up (most companies contribute only 0-3 jobs).
+    pending_direct: list = []
 
     for idx, company in enumerate(companies, 1):
         logger.info(f"[{idx}/{total}] Scanning {company['name']}...")
@@ -405,7 +414,7 @@ def run_scan(config: dict, companies: list[dict]) -> None:
             if company.get("ats"):
                 if direct_jobs:
                     logger.info(f"  Fetched {len(direct_jobs)} job(s) directly via ATS adapter")
-                    scored_direct: list[dict] = []
+                    queued = 0
                     for job in direct_jobs:
                         seen_urls.add(job.url)
                         c_hash = canonical_hash(job.title, job.company, job.location)
@@ -429,50 +438,11 @@ def run_scan(config: dict, companies: list[dict]) -> None:
                             save_job(job, status="discovered")
                         elif prior_status != "discovered":
                             update_job_status(c_hash, "discovered")
-                        logger.info(f"  Evaluating candidate match for: {job.title}...")
+                        pending_direct.append(job)
+                        queued += 1
 
-                        if gemini_key:
-                            res = score_and_process_job(
-                                job=job,
-                                resume_text=resume,
-                                gemini_api_key=gemini_key,
-                                telegram_token=tg_token,
-                                telegram_chat_id=tg_chat_id,
-                                min_notify_score=min_score,
-                                config=config,
-                            )
-                            if res["score"] is None:
-                                scoring_failures += 1
-                                continue
-                            scored_job = {
-                                "company": job.company,
-                                "title": job.title,
-                                "extracted_title": job.title,
-                                "location": job.location,
-                                "location_remote": job.location,
-                                "url": job.url,
-                                "score": res["score"],
-                                "reason": res["reason"],
-                                "stack": "",
-                                "worth_applying": res["score"] >= min_score,
-                            }
-                            scored_direct.append(scored_job)
-                        else:
-                            job_dict = {
-                                "company": job.company,
-                                "title": job.title,
-                                "location": job.location,
-                                "url": job.url,
-                                "content": job.description_text,
-                            }
-                            batch_scored = score_jobs([job_dict], resume, config)
-                            scored_direct.extend(batch_scored)
-
-                    if scored_direct:
-                        all_scored_jobs.extend(scored_direct)
-                        companies_with_jobs += 1
-                        titles = [j.get("extracted_title") or j.get("title", "?") for j in scored_direct[:3]]
-                        logger.info(f"  {len(scored_direct)} job(s) saved: {', '.join(titles)}{' ...' if len(scored_direct) > 3 else ''}")
+                    if queued:
+                        logger.info(f"  {queued} job(s) passed the pre-filter — queued for scoring")
                 else:
                     logger.info(f"  No open jobs found via {company.get('ats')} adapter")
 
@@ -522,6 +492,65 @@ def run_scan(config: dict, companies: list[dict]) -> None:
             errors.append(msg)
             logger.error(f"  Company scan failed: {company_err}")
             continue
+
+    if pending_direct:
+        if gemini_key:
+            scored_pairs: list = []
+            if config.get("gemini_scoring_mode", "single") == "batch":
+                batch_size = max(1, int(config.get("gemini_batch_size", DEFAULT_GEMINI_BATCH_SIZE)))
+                n_batches = -(-len(pending_direct) // batch_size)
+                logger.info(f"Scoring {len(pending_direct)} job(s) in {n_batches} Gemini batch(es) of up to {batch_size}...")
+                for i in range(0, len(pending_direct), batch_size):
+                    chunk = pending_direct[i: i + batch_size]
+                    results = score_and_process_batch(
+                        jobs=chunk,
+                        resume_text=resume,
+                        gemini_api_key=gemini_key,
+                        telegram_token=tg_token,
+                        telegram_chat_id=tg_chat_id,
+                        min_notify_score=min_score,
+                        config=config,
+                    )
+                    scored_pairs.extend(zip(chunk, results))
+            else:
+                logger.info(f"Scoring {len(pending_direct)} job(s) one per Gemini call (~4.2 s each)...")
+                for job in pending_direct:
+                    res = score_and_process_job(
+                        job=job,
+                        resume_text=resume,
+                        gemini_api_key=gemini_key,
+                        telegram_token=tg_token,
+                        telegram_chat_id=tg_chat_id,
+                        min_notify_score=min_score,
+                        config=config,
+                    )
+                    scored_pairs.append((job, res))
+            for job, res in scored_pairs:
+                if res["score"] is None:
+                    scoring_failures += 1
+                    continue
+                logger.debug(f"    [{res['score']:3d}] {job.title} @ {job.company} — {res['reason'][:80]}")
+                all_scored_jobs.append({
+                    "company": job.company,
+                    "title": job.title,
+                    "extracted_title": job.title,
+                    "location": job.location,
+                    "location_remote": job.location,
+                    "url": job.url,
+                    "score": res["score"],
+                    "reason": res["reason"],
+                    "stack": "",
+                    "worth_applying": res["score"] >= min_score,
+                })
+        else:
+            # Deprecated non-Gemini providers: score_jobs already batches 10 per prompt.
+            legacy = [
+                {"company": j.company, "title": j.title, "location": j.location,
+                 "url": j.url, "content": j.description_text}
+                for j in pending_direct
+            ]
+            for i in range(0, len(legacy), 10):
+                all_scored_jobs.extend(score_jobs(legacy[i: i + 10], resume, config))
 
     state["seen_urls"] = list(seen_urls)
     state["last_scan"] = datetime.now(timezone.utc).isoformat()

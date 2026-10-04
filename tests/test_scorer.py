@@ -171,3 +171,48 @@ def test_send_telegram_notification_skips_unconfigured(mock_send, token, chat_id
     from job_hunt.scorer import send_telegram_notification
     assert send_telegram_notification(token, chat_id, job=_job(), score=90, reason="x") is False
     mock_send.assert_not_called()
+
+
+# ── batch scoring ─────────────────────────────────────────────────────────────
+
+@patch("job_hunt.scorer.score_jobs_batch_with_gemini")
+@patch("job_hunt.scorer.send_telegram_notification")
+@patch("job_hunt.scorer.time.sleep")
+def test_batch_scores_saves_and_leaves_missing_jobs_discovered(mock_sleep, mock_notify, mock_batch, test_db):
+    from job_hunt.scorer import score_and_process_batch
+    jobs = [_job("301"), _job("302"), _job("303")]
+    for j in jobs:
+        save_job(j, status="discovered", db_path=test_db)
+    # model answered 301 and 302 only; ids are positional
+    mock_batch.return_value = {"0": {"score": 91, "reason": "great"}, "1": {"score": 30, "reason": "weak"}}
+    mock_notify.return_value = False
+
+    results = score_and_process_batch(
+        jobs=jobs, resume_text="r", gemini_api_key="k", db_path=test_db,
+        min_notify_score=60, config={"gemini_model": "m"},
+    )
+
+    assert [r["score"] for r in results] == [91, 30, None]
+    assert [r["status"] for r in results] == ["scored", "scored", "discovered"]
+    mock_sleep.assert_called_once_with(4.2)               # one pacing sleep per batch call
+    sent_jobs = mock_batch.call_args.args[0]
+    assert [j["id"] for j in sent_jobs] == ["0", "1", "2"]
+    assert mock_batch.call_args.args[2]["gemini_api_key"] == "k"
+    statuses = [get_job(canonical_hash(j.title, j.company, j.location), db_path=test_db)["status"] for j in jobs]
+    assert statuses == ["scored", "scored", "discovered"]
+    mock_notify.assert_called_once()                       # only the 91 crosses 60
+
+
+@patch("job_hunt.scorer.score_jobs_batch_with_gemini")
+@patch("job_hunt.scorer.time.sleep")
+def test_batch_call_failure_leaves_all_discovered(mock_sleep, mock_batch, test_db):
+    from job_hunt.scorer import score_and_process_batch
+    jobs = [_job("401"), _job("402")]
+    for j in jobs:
+        save_job(j, status="discovered", db_path=test_db)
+    mock_batch.side_effect = RuntimeError("429 quota")
+
+    results = score_and_process_batch(jobs=jobs, resume_text="r", gemini_api_key="k", db_path=test_db)
+
+    assert [r["status"] for r in results] == ["discovered", "discovered"]
+    assert all(r["score"] is None for r in results)

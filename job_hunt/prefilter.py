@@ -27,9 +27,14 @@ TITLE_EXCLUDE_PATTERN = re.compile(
 )
 
 LOCATION_INDIA_PATTERN = re.compile(
-    r"\b(bengaluru|bangalore|pune|gurugram|gurgaon|hyderabad|noida|mumbai|chennai|india)\b",
+    r"\b(bengaluru|bangalore|pune|gurugram|gurgaon|hyderabad|noida|mumbai|chennai|delhi|ncr"
+    r"|kolkata|india)\b",
     re.IGNORECASE,
 )
+
+# SmartRecruiters appends a lowercase ISO country code ("Jaipur, RJ, in"). Deliberately
+# case-sensitive: uppercase ", IN" is the US state code for Indiana ("Indianapolis, IN").
+LOCATION_INDIA_COUNTRY_CODE = re.compile(r",\s*in\s*$")
 
 LOCATION_GLOBAL_PATTERN = re.compile(r"\b(worldwide|anywhere|global)\b", re.IGNORECASE)
 
@@ -67,7 +72,7 @@ def should_evaluate_job(job: JobPosting) -> Tuple[bool, str]:
 
     # 3. Location: India anywhere in the string wins; otherwise another region
     #    excludes; otherwise accept explicit worldwide/global or plain remote.
-    if LOCATION_INDIA_PATTERN.search(location):
+    if LOCATION_INDIA_PATTERN.search(location) or LOCATION_INDIA_COUNTRY_CODE.search(location):
         return True, "passed"
 
     m_region = LOCATION_EXCLUDE_PATTERN.search(location)

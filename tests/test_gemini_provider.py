@@ -234,3 +234,69 @@ def test_score_job_gemini_raise_on_error(monkeypatch):
     monkeypatch.setattr(llm_utils, "_get_genai_client_and_types", _boom)
     with pytest.raises(RuntimeError, match="network down"):
         llm_utils.score_job_with_gemini({"title": "t"}, "resume", {}, raise_on_error=True)
+
+
+# --- 5. Full resume, batch scoring, fallback chain ------------------------------
+
+LONG_RESUME = "# Manish Singh\n" + ("Node.js microservices, Kafka, MongoDB. " * 80) + "\n## Education\nB.Tech UNIQUE_TAIL_MARKER"
+
+
+def _capturing_client(response_text):
+    client = MagicMock()
+    resp = MagicMock()
+    resp.text = response_text
+    client.models.generate_content.return_value = resp
+    return client
+
+
+def test_single_scoring_prompt_contains_full_resume(monkeypatch):
+    assert len(LONG_RESUME) > 2500
+    client = _capturing_client('{"score": 70, "reason": "ok"}')
+    monkeypatch.setattr(llm_utils, "_get_genai_client_and_types",
+                        lambda api_key: (client, types.SimpleNamespace(GenerateContentConfig=MagicMock())))
+    llm_utils.score_job_with_gemini({"title": "Backend Engineer"}, LONG_RESUME, {"gemini_api_key": "k"})
+    prompt = client.models.generate_content.call_args.kwargs["contents"]
+    assert "UNIQUE_TAIL_MARKER" in prompt
+
+
+def test_batch_scoring_maps_ids_and_uses_json_schema(monkeypatch):
+    client = _capturing_client(json.dumps([
+        {"job_id": "j2", "score": 40, "reason": "partial"},
+        {"job_id": "j1", "score": 88, "reason": "strong Node.js fit"},
+        {"job_id": "zzz", "score": 99, "reason": "hallucinated id"},
+    ]))
+    cfg_cls = MagicMock()
+    monkeypatch.setattr(llm_utils, "_get_genai_client_and_types",
+                        lambda api_key: (client, types.SimpleNamespace(GenerateContentConfig=cfg_cls)))
+    jobs = [
+        {"id": "j1", "company": "Plane", "title": "Software Engineer, Backend (Node.js)", "location": "India", "content": "Node"},
+        {"id": "j2", "company": "Okta", "title": "ServiceNow Developer", "location": "Bengaluru", "content": "SNOW"},
+        {"id": "j3", "company": "Stripe", "title": "Software Engineer", "location": "Bengaluru", "content": "Ruby"},
+    ]
+    out = llm_utils.score_jobs_batch_with_gemini(jobs, LONG_RESUME, {"gemini_api_key": "k"})
+
+    assert out == {"j1": {"score": 88, "reason": "strong Node.js fit"},
+                   "j2": {"score": 40, "reason": "partial"}}  # j3 missing, zzz ignored
+    assert client.models.generate_content.call_count == 1
+    prompt = client.models.generate_content.call_args.kwargs["contents"]
+    assert "UNIQUE_TAIL_MARKER" in prompt and prompt.count("UNIQUE_TAIL_MARKER") == 1
+    for j in jobs:
+        assert j["id"] in prompt
+    cfg_kwargs = cfg_cls.call_args.kwargs
+    assert cfg_kwargs["response_mime_type"] == "application/json"
+    assert cfg_kwargs["response_json_schema"]["type"] == "array"
+
+
+def test_batch_scoring_raises_on_unparseable_output(monkeypatch):
+    client = _capturing_client("not json")
+    monkeypatch.setattr(llm_utils, "_get_genai_client_and_types",
+                        lambda api_key: (client, types.SimpleNamespace(GenerateContentConfig=MagicMock())))
+    with pytest.raises(Exception):
+        llm_utils.score_jobs_batch_with_gemini([{"id": "a", "title": "t"}], "r", {"gemini_api_key": "k"})
+
+
+def test_gemini_fallback_chain_skips_low_quota_models():
+    """gemini-3.8-flash has a 20 requests/day free quota — never a fallback."""
+    models = llm_utils._gemini_models({"gemini_model": "gemini-3.5-flash-lite"})
+    assert models == ["gemini-3.5-flash-lite", "gemini-3.1-flash-lite"]
+    assert llm_utils._gemini_models({"gemini_model": "gemini-x"})[0] == "gemini-x"

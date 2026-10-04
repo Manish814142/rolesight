@@ -5,6 +5,7 @@ Usage:
   autopilot doctor            — run environment and network sanity checks
   autopilot validate          — probe and prune 404/403 ATS boards from companies.json
   autopilot harvest           — probe all ATS engines and rebuild companies.json
+  autopilot discover          — verify company names against ATS boards (see job_hunt/discovery.py)
   autopilot scan              — run daily job scan
   autopilot draft #1          — draft application for job #1 from last scan
   autopilot draft https://... — draft application for a specific URL
@@ -255,6 +256,12 @@ def main() -> None:
         harvest_main(sys.argv[2:])
         return
 
+    # discover verifies company names against public ATS boards — no API keys needed
+    if cmd == "discover":
+        from job_hunt.discovery import main as discover_main
+        discover_main(sys.argv[2:])
+        return
+
     # export reads local scan state only — no API keys needed, so skip load_config()
     if cmd == "export":
         min_score, days = _parse_export_args(sys.argv)
@@ -286,7 +293,7 @@ def main() -> None:
     else:
         sys.exit(
             f"Unknown command: {cmd}\n"
-            "Use: init | doctor | validate | harvest | scan | draft | export | mcp"
+            "Use: init | doctor | validate | harvest | discover | scan | draft | export | mcp"
         )
 
 

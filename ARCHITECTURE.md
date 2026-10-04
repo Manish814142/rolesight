@@ -26,7 +26,8 @@ flowchart TD
     DEDUP -- yes --> SKIPF["skip (final)"]
     DEDUP -- "no / skipped / discovered" --> PF{"prefilter.py<br/>title + location regex"}
     PF -- reject --> SKIPPED["status = skipped"]
-    PF -- pass --> SCORE["scorer.py → llm_utils.score_job_with_gemini<br/>gemini-3.5-flash-lite, 4.2 s pacing"]
+    PF -- pass --> QUEUE["queued (all companies)"]
+    QUEUE --> SCORE["scorer.py → llm_utils.score_job_with_gemini<br/>full resume, 1 job/call, 4.2 s pacing<br/>(opt-in batch: 10 jobs/call)"]
     SCORE -- error --> DISC["status stays discovered<br/>(retried next scan)"]
     SCORE -- ok --> SCORED["status = scored (+score, reason)"]
     SCORED -- "score ≥ min_score & Telegram HTTP 200" --> NOTIFIED["status = notified"]
@@ -53,6 +54,7 @@ Companies with no `ats` field fall back to the legacy TinyFish careers-page path
 | [`scanner.py`](job_hunt/scanner.py) | `run_scan()` orchestration, state files, CSV export, scan-level Telegram digest. |
 | [`notifier.py`](job_hunt/notifier.py) | `send_telegram`, `is_telegram_configured` (empty/placeholder ⇒ off), `format_job_alert` with headcount badge. |
 | [`exporter.py`](job_hunt/exporter.py) | CSV writer that never overwrites (`jobs_DATE.csv`, `jobs_DATE_1.csv`, …). |
+| [`discovery.py`](job_hunt/discovery.py) | `autopilot discover`: name → slug candidates → probe 7 ATSs (+ curated Workday tenants) → accept only boards with live jobs, confirmed identity, ≥1 India job, newest posting ≤180 days; `--merge` re-verifies existing entries. Seeds in `scripts/company_seeds.txt`. |
 | [`harvester.py`](job_hunt/harvester.py) | Builds a company list from `india.yml`: probes the declared ATS first, then the other 6; active = HTTP 200 **and** ≥1 job; tags off-declared matches `ats_fallback_from`. Applies `validator.KNOWN_CORRECTIONS`. Headcount is metadata only. |
 | [`validator.py`](job_hunt/validator.py) | `autopilot validate` pruner. Caveat: its probe accepts HTTP 200 with 0 jobs and it auto-adds BrowserStack — prefer `harvest` + manual diff. |
 | [`company_builder.py`](job_hunt/company_builder.py) | LinkedIn headcount matching (`match_headcount`). Its `build_companies_dataset` / blocklist is legacy and not used by the CLI. |
@@ -72,7 +74,8 @@ Applied in order; all patterns are case-insensitive and word-bounded.
 1. **Title exclude** — seniority (`senior`, `sr`, `lead`, `principal`, `staff`, `manager`, `director`, `architect`), other stacks (`java`, `python`, `golang`, `.net`, `c#`, `react`, `angular`, `vue`, `ios`, `android`, `flutter`, `frontend`), `qa`/`test(er|ing)`, `intern(ship)`, `devops`, `sre`. `java` does not match "JavaScript"; `test` does not match "Latest".
 2. **Title include** — `backend`/`back-end`, `node`/`nodejs`, `sde\d*`, `software engineer`, `developer`, `full-stack`, `api`, `distributed systems`, `platform|product|infrastructure|systems engineer`.
 3. **Location**
-   - an Indian city or `india` anywhere ⇒ pass (even alongside US cities);
+   - an Indian city (incl. Delhi/NCR/Kolkata), `india`, or a trailing lowercase `, in`
+     country code ⇒ pass (even alongside US cities; uppercase `, IN` = Indiana is not India);
    - else a non-India region (`us`, `uk`, `canada`, `germany`, `europe`, `emea`, `latam`, major US/EU cities, `, CA|NY|TX|WA|IL|MA`) ⇒ reject;
    - else `worldwide|anywhere|global` ⇒ pass;
    - else `is_remote` or `remote` ⇒ pass (geography-free remote);
@@ -135,8 +138,13 @@ mypy
 - **Volume is title-bound:** of 455 Workday jobs (301 India), 7 passed the pre-filter;
   Target/BrowserStack India roles are mostly non-engineering or senior.
 - **Walmart Workday** (`walmart/wd5/WalmartExternal`) returns HTTP 422; not in the list.
-- **Location list** has no `delhi`, `kolkata`, etc., and SmartRecruiters' `", in"` country
-  code is not recognised (e.g. "New Delhi, in" is rejected).
+- **Scan length grows with the list:** 139 companies are fetched sequentially; summed
+  per-company fetch time on 2026-10-04 was ~45 min (Lever ~29 min that day, Workday ~13 min).
+  `requests` timeouts are per read, not per download, so one slow board is unbounded.
+- **Batch scoring is opt-in only:** measured mean |Δ| of 15.5 points vs single-job scores
+  (noise 1.0); weak fits inflated. Single-job scoring costs ~4.2 s per new job.
+- **SmartRecruiters** list API has no descriptions (title-only scoring) and the adapter
+  stops at 100 postings (Freshworks, Swiggy hit the cap).
 - **Harvest is not idempotent with the curated list:** rerunning it re-adds boards removed on
   evidence (wrong employer on a same-slug board). Harvest to a scratch file and diff.
 - Workday jobs without multi-location get no description, so Gemini scores them on title.

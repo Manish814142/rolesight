@@ -19,6 +19,7 @@ def direct_scan_env(tmp_path, monkeypatch):
     init_db(str(db_file))
     
     cfg = {
+        "gemini_scoring_mode": "batch",  # most tests below exercise the batch path
         "candidate": {
             "name": "Manish Singh",
             "resume_path": "resume.md",
@@ -31,7 +32,7 @@ def direct_scan_env(tmp_path, monkeypatch):
     return cfg, str(db_file)
 
 @patch("job_hunt.scanner.fetch_company_jobs")
-@patch("job_hunt.scanner.score_and_process_job")
+@patch("job_hunt.scanner.score_and_process_batch")
 def test_direct_scan_and_deduplication(mock_score, mock_fetch, direct_scan_env):
     cfg, db_path = direct_scan_env
     
@@ -58,9 +59,11 @@ def test_direct_scan_and_deduplication(mock_score, mock_fetch, direct_scan_env):
     )
     mock_fetch.return_value = [job_good, job_bad]
     def _score(**kw):
-        j = kw["job"]
-        update_job_status(canonical_hash(j.title, j.company, j.location), "scored", 85, "Node.js match")
-        return {"score": 85, "reason": "Node.js match", "status": "scored"}
+        out = []
+        for j in kw["jobs"]:
+            update_job_status(canonical_hash(j.title, j.company, j.location), "scored", 85, "Node.js match")
+            out.append({"score": 85, "reason": "Node.js match", "status": "scored"})
+        return out
 
     mock_score.side_effect = _score
     
@@ -71,7 +74,7 @@ def test_direct_scan_and_deduplication(mock_score, mock_fetch, direct_scan_env):
     
     # mock_score called once only for the good job!
     mock_score.assert_called_once()
-    assert mock_score.call_args[1]["job"].title == "Software Engineer, Backend"
+    assert [j.title for j in mock_score.call_args[1]["jobs"]] == ["Software Engineer, Backend"]
     
     # Skipped jobs recorded in DB
     skipped = get_jobs_by_status("skipped")
@@ -100,12 +103,12 @@ def _backend_job(n="9"):
 
 
 @patch("job_hunt.scanner.fetch_company_jobs")
-@patch("job_hunt.scanner.score_and_process_job")
+@patch("job_hunt.scanner.score_and_process_batch")
 def test_failed_scoring_is_retried_next_scan(mock_score, mock_fetch, direct_scan_env):
     """Scorer leaves a failed job as 'discovered'; the next scan must score it again."""
     cfg, _ = direct_scan_env
     mock_fetch.return_value = [_backend_job()]
-    mock_score.return_value = {"score": None, "reason": "Scoring failed: 429", "status": "discovered"}
+    mock_score.side_effect = lambda **kw: [{"score": None, "reason": "Scoring failed: 429", "status": "discovered"} for _ in kw['jobs']]
     companies = [{"name": "Acme", "ats": "greenhouse", "slug": "acme"}]
 
     scanner.run_scan(cfg, companies)
@@ -117,7 +120,7 @@ def test_failed_scoring_is_retried_next_scan(mock_score, mock_fetch, direct_scan
 
 
 @patch("job_hunt.scanner.fetch_company_jobs")
-@patch("job_hunt.scanner.score_and_process_job")
+@patch("job_hunt.scanner.score_and_process_batch")
 def test_previously_skipped_job_is_reevaluated(mock_score, mock_fetch, direct_scan_env):
     """Rows skipped by an older pre-filter get another pass, so filter fixes take
     effect on jobs already in the DB."""
@@ -125,7 +128,7 @@ def test_previously_skipped_job_is_reevaluated(mock_score, mock_fetch, direct_sc
     job = _backend_job("10")
     save_job(job, status="skipped", db_path=db_path)
     mock_fetch.return_value = [job]
-    mock_score.return_value = {"score": 80, "reason": "fit", "status": "scored"}
+    mock_score.side_effect = lambda **kw: [{"score": 80, "reason": "fit", "status": "scored"} for _ in kw['jobs']]
 
     scanner.run_scan(cfg, [{"name": "Acme", "ats": "greenhouse", "slug": "acme"}])
 
@@ -135,12 +138,12 @@ def test_previously_skipped_job_is_reevaluated(mock_score, mock_fetch, direct_sc
 
 
 @patch("job_hunt.scanner.fetch_company_jobs")
-@patch("job_hunt.scanner.score_and_process_job")
+@patch("job_hunt.scanner.score_and_process_batch")
 def test_scanner_passes_config_to_scorer(mock_score, mock_fetch, direct_scan_env):
     cfg, _ = direct_scan_env
     cfg["gemini_model"] = "gemini-2.5-flash"
     mock_fetch.return_value = [_backend_job("11")]
-    mock_score.return_value = {"score": 50, "reason": "meh", "status": "scored"}
+    mock_score.side_effect = lambda **kw: [{"score": 50, "reason": "meh", "status": "scored"} for _ in kw['jobs']]
 
     scanner.run_scan(cfg, [{"name": "Acme", "ats": "greenhouse", "slug": "acme"}])
 
@@ -149,13 +152,50 @@ def test_scanner_passes_config_to_scorer(mock_score, mock_fetch, direct_scan_env
 
 @patch("job_hunt.scanner.send_telegram")
 @patch("job_hunt.scanner.fetch_company_jobs")
-@patch("job_hunt.scanner.score_and_process_job")
+@patch("job_hunt.scanner.score_and_process_batch")
 def test_placeholder_telegram_is_not_sent(mock_score, mock_fetch, mock_send, direct_scan_env):
     cfg, _ = direct_scan_env
     cfg["telegram"] = {"token": "real-looking-token", "chat_id": "YOUR_TELEGRAM_CHAT_ID"}
     mock_fetch.return_value = [_backend_job("12")]
-    mock_score.return_value = {"score": 90, "reason": "fit", "status": "scored"}
+    mock_score.side_effect = lambda **kw: [{"score": 90, "reason": "fit", "status": "scored"} for _ in kw['jobs']]
 
     scanner.run_scan(cfg, [{"name": "Acme", "ats": "greenhouse", "slug": "acme"}])
 
     mock_send.assert_not_called()
+
+
+@patch("job_hunt.scanner.fetch_company_jobs")
+@patch("job_hunt.scanner.score_and_process_batch")
+def test_scanner_batches_passing_jobs_across_companies(mock_score, mock_fetch, direct_scan_env):
+    """Most companies yield 0-3 passing jobs, so batches are filled across companies."""
+    cfg, _ = direct_scan_env
+    cfg["gemini_batch_size"] = 5
+    mock_fetch.side_effect = lambda co: [_backend_job(f"{co['slug']}-{i}") for i in range(4)]
+    mock_score.side_effect = lambda **kw: [{"score": 70, "reason": "ok", "status": "scored"} for _ in kw["jobs"]]
+    companies = [{"name": f"Co{i}", "ats": "greenhouse", "slug": f"co{i}"} for i in range(3)]
+
+    scanner.run_scan(cfg, companies)
+
+    assert [len(c.kwargs["jobs"]) for c in mock_score.call_args_list] == [5, 5, 2]
+    assert len(json.loads(scanner.LAST_SCAN_FILE.read_text())) == 12
+
+
+@patch("job_hunt.scanner.fetch_company_jobs")
+@patch("job_hunt.scanner.score_and_process_batch")
+@patch("job_hunt.scanner.score_and_process_job")
+def test_default_mode_scores_one_job_per_call(mock_single, mock_batch, mock_fetch, direct_scan_env):
+    """Batch prompts measurably inflate weak fits (2026-10-04: mean |diff| 15.5 vs
+    run-to-run noise 1.0), so single-job scoring stays the default."""
+    cfg, _ = direct_scan_env
+    cfg.pop("gemini_scoring_mode")
+    mock_fetch.return_value = [_backend_job("s1"), _backend_job("s2")]
+    mock_single.side_effect = [{"score": 80, "reason": "fit", "status": "scored"},
+                               {"score": None, "reason": "Scoring failed: 429", "status": "discovered"}]
+
+    scanner.run_scan(cfg, [{"name": "Acme", "ats": "greenhouse", "slug": "acme"}])
+
+    mock_batch.assert_not_called()
+    assert mock_single.call_count == 2
+    assert mock_single.call_args.kwargs["config"] is cfg
+    saved = json.loads(scanner.LAST_SCAN_FILE.read_text())
+    assert [j["score"] for j in saved] == [80]          # failed job not reported
