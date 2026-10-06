@@ -5,11 +5,11 @@ build-backend = "hatchling.build"
 [project]
 name = "autopilot-jobhunt"
 version = "0.4.4"
-description = "AI-powered job scanner, scorer, and application drafter. Finds jobs while you sleep."
+description = "Personal job radar: direct ATS adapters, Gemini scoring, SQLite memory, CSV output. Drafts only; never applies."
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.11"
-keywords = ["job-search", "ai", "automation", "mcp", "llm", "openrouter"]
+keywords = ["job-search", "ats", "automation", "mcp", "llm", "gemini"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Programming Language :: Python :: 3",
@@ -38,11 +38,6 @@ autopilot = "job_hunt.main:main"
 # the executable from the package name (e.g. `uvx autopilot-jobhunt mcp`, per
 # server.json packageArguments) resolve to a real command.
 autopilot-jobhunt = "job_hunt.main:main"
-
-[project.urls]
-Homepage = "https://github.com/tarunlnmiit/autopilot-jobhunt"
-Repository = "https://github.com/tarunlnmiit/autopilot-jobhunt"
-Issues = "https://github.com/tarunlnmiit/autopilot-jobhunt/issues"
 
 [tool.ruff]
 line-length = 100

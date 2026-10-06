@@ -1,8 +1,9 @@
-"""Dependencies describe what the code imports (T51)."""
+"""Dependencies and packaging metadata describe this fork (T51, T55)."""
 import tomllib
 from pathlib import Path
 
 ROOT = Path(".")
+REMOVED = ("tinyfish", "openrouter")
 
 
 def _pyproject():
@@ -29,3 +30,14 @@ def test_requirements_only_name_what_the_code_imports():
     names = _requirement_names("requirements.txt")
     assert "openpyxl" not in names           # nothing in job_hunt/ imports it
     assert {"python-dotenv", "requests", "google-genai"} <= set(names)
+def test_nothing_in_packaging_names_the_removed_providers():
+    for f in ("pyproject.toml", "requirements.txt", "Dockerfile", "smithery.yaml"):
+        text = (ROOT / f).read_text().lower()
+        for word in REMOVED:
+            assert word not in text, f"{f} still mentions {word}"
+
+
+def test_project_metadata_does_not_point_at_the_upstream_repo():
+    project = _pyproject()["project"]
+    assert "urls" not in project or not any("tarunlnmiit" in u for u in project["urls"].values())
+    assert "openrouter" not in [k.lower() for k in project["keywords"]]

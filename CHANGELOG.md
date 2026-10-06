@@ -9,6 +9,9 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Changed (2026-10-06, T55)
+- Packaging describes this fork: `pyproject.toml` (description, keywords without `openrouter`, the upstream `[project.urls]` removed), the `Dockerfile` (no TinyFish/OpenRouter variables, `GEMINI_API_KEY`, no upstream source label), `smithery.yaml` (Gemini key and provider instead of TinyFish/OpenRouter) and the `server.json` description. `server.json` / `glama.json` keep the upstream registry identity fields. `tests/test_packaging.py` fails if any of these names TinyFish or OpenRouter again. `docker build` was not run (no Docker here).
+
 ### Fixed (2026-10-06, T51)
 - `google-genai` (the default Gemini provider) is a core dependency in `pyproject.toml` and `requirements.txt`; before, `pip install -r requirements.txt` gave a scanner whose every scoring call failed ("google-genai is not installed"). `openpyxl` (imported nowhere) is dropped from `requirements.txt`; the `gemini` extra is kept as an empty alias. The minimum is 2.28.0, the version tested; older ones are untested. Checked in a fresh virtualenv: `pip install -r requirements.txt` → google-genai 2.28.0, and `llm_utils._get_genai_client_and_types` builds a client from the repo code.
 

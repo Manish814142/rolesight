@@ -6,16 +6,13 @@ startCommand:
   configSchema:
     type: object
     properties:
-      TINYFISH_API_KEY:
+      GEMINI_API_KEY:
         type: string
-        description: "TinyFish API key — required for scanning and drafting (page fetch)."
+        description: "Google Gemini API key (default LLM provider; scores jobs and drafts applications)."
       LLM_PROVIDER:
         type: string
-        description: "LLM backend (openrouter | anthropic | claude_cli)."
-        default: "openrouter"
-      OPENROUTER_API_KEY:
-        type: string
-        description: "OpenRouter API key (used when LLM_PROVIDER=openrouter)."
+        description: "LLM backend (gemini | anthropic | claude_cli)."
+        default: "gemini"
       ANTHROPIC_API_KEY:
         type: string
         description: "Anthropic API key (used when LLM_PROVIDER=anthropic)."
