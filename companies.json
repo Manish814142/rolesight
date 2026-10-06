@@ -1005,6 +1005,14 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Cisco",
+    "ats": "workday",
+    "tenant": "cisco",
+    "dc": "wd5",
+    "site": "Cisco_Careers",
+    "headcount": "10,001+ employees"
+  },
+  {
     "name": "Citi",
     "ats": "workday",
     "tenant": "citi",
@@ -1061,6 +1069,14 @@
     "headcount": "Unknown"
   },
   {
+    "name": "DuPont",
+    "ats": "workday",
+    "tenant": "dupont",
+    "dc": "wd5",
+    "site": "Jobs",
+    "headcount": "Unknown"
+  },
+  {
     "name": "Equinix",
     "ats": "workday",
     "tenant": "equinix",
@@ -1106,6 +1122,14 @@
     "tenant": "trellix",
     "dc": "wd1",
     "site": "EnterpriseCareers",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Fiserv",
+    "ats": "workday",
+    "tenant": "fiserv",
+    "dc": "wd5",
+    "site": "EXT",
     "headcount": "Unknown"
   },
   {

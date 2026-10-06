@@ -62,7 +62,7 @@ the company's own job page.
 | Area | What you get |
 |---|---|
 | **Direct ATS APIs** | Adapters for Greenhouse (US and EU), Lever, Ashby, SmartRecruiters, Workday, Oracle HCM, Eightfold, Amazon Jobs, Workable, Recruitee and Personio. Parallel fetching (8 workers) with a hard time limit on every request, so one slow board can't stall a scan. |
-| **Curated company list** | `companies.json`: 220 boards, each checked to be live, to belong to the right employer and to have India jobs. `autopilot discover` adds companies from a pasted list in any format and applies the same checks. |
+| **Curated company list** | `companies.json`: 223 boards, each checked to be live, to belong to the right employer and to have India jobs. `autopilot discover` adds companies from a pasted list in any format and applies the same checks. |
 | **Local pre-filter** | Word-bounded title rules (backend / Node.js / SDE / software engineer in; staff / lead / manager / other stacks out), India-or-remote location rules, and an optional "posted within N days" window. |
 | **Full descriptions** | For Workday, SmartRecruiters, Oracle HCM and Eightfold, whose list APIs carry little or no description, the full text is fetched for survivors only, just before scoring. |
 | **Resume-aware scoring** | Gemini reads the whole resume, the candidate profile and the whole job description. It returns a score and one sentence explaining it. One job per call, by design: batching measurably inflated scores. |
@@ -160,7 +160,7 @@ autopilot scan --posted-within 7
 ls output/                              # jobs_YYYY-MM-DD.csv, best score first
 ```
 
-In this repo `companies.json` (220 India boards) is already in place. `autopilot init`, for a pip install in an
+In this repo `companies.json` (223 India boards) is already in place. `autopilot init`, for a pip install in an
 empty directory, copies the same curated list.
 
 ---

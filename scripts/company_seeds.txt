@@ -1481,3 +1481,8 @@ UKG | eightfold | apply.ukg.com | ukg.com
 Lam Research | eightfold | lamresearch.eightfold.ai | lamresearch.com
 Qualcomm | eightfold | qualcomm.eightfold.ai | qualcomm.com
 Morgan Stanley | eightfold | morganstanley.eightfold.ai | morganstanley.com
+
+# ── added via discover --add (2026-10-06) ──
+Cisco | workday | cisco | wd5 | Cisco_Careers
+DuPont | workday | dupont | wd5 | Jobs
+Fiserv | workday | fiserv | wd5 | EXT

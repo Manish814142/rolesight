@@ -5,7 +5,7 @@
 The list of job boards to scan. It is committed, **curated** and the core of the project:
 each board was checked to be live, to belong to the right employer and to have India jobs.
 
-**Counts (2026-10-06):** 220 boards: Workday 79, Greenhouse 74, Lever 23, Ashby 20,
+**Counts (2026-10-06):** 223 boards: Workday 82, Greenhouse 74, Lever 23, Ashby 20,
 SmartRecruiters 13, Oracle HCM 4, Eightfold 4, Workable 2, Amazon 1.
 
 ### Entry shapes

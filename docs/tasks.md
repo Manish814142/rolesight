@@ -396,8 +396,7 @@ more than 60 s.
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
 | T25 | Eightfold adapter (probe first) | review · claude · 3d78991 | claude | M | — |
-| T26 | Phenom adapter (probe first) | todo | — | M | — |
-| T27 | Darwinbox adapter (probe first) | todo | — | M | — |
+| T26 | Phenom adapter (probe first) | decision | — | M | — |
 | T28 | Monthly `discover --recheck` that only reports | todo | — | S | T07 |
 
 **T25–T27 · New ATS platforms.** (A previous Claude session recorded that Eightfold's PCSX endpoint returns HTTP 403 and Darwinbox needs a tenant session, tried 2026-10-04/05; that note is from memory, not in the repo, so re-check before relying on it.) The census (31cb7c0) of 458 careers pages found
@@ -407,6 +406,8 @@ Rejected with the evidence. Step 2: write the adapter, with tests on recorded fi
 (no network).
 *Done when:* `autopilot discover --add-file` accepts at least one company on that
 platform, and a scan fetches its jobs.
+
+**T25–T27 result (claude, 2026-10-06).** *T25 Eightfold:* done, in review. *T26 Phenom:* the endpoint is public (`POST {host}/widgets`, `selected_fields.country=["India"]`, `size` up to 100 honoured, full description in the job page's JSON-LD), **but Phenom mostly fronts Workday**: on Cisco, DuPont, Fiserv, HPE, Philips and WBD every sampled job's `applyUrl` is a Workday tenant. I added the three missing Workday tenants instead (Cisco, DuPont, Fiserv) through `discover`, no new adapter. The only Phenom-native census board with India jobs is BCG (91 India jobs, **2** pass the pre-filter). **Decision for Manish:** is a native Phenom adapter (~150 lines, a JSON-LD description scrape) worth 2 BCG jobs, or park it until another Phenom-native company turns up? *T27 Darwinbox:* rejected, see the Rejected table.
 
 **T28 · Scheduled recheck.** `discover --recheck --merge companies.json` (b700235)
 catches ATS migrations and dead boards, but only runs when started by hand. Run it
@@ -650,4 +651,5 @@ Don't reopen without new evidence.
 | HeadcountFilter resolver / cache sync | Antigravity | Headcount is display-only, not a filter, so it doesn't change results. |
 | "Direct ATS jump" button in HeadcountFilter | Antigravity | Belongs in the HeadcountFilter repo, not here. |
 | Thread pool for Workday detail calls | Gemini web | Superseded by parallel company fetch (ba7d4b7). T23 re-measures first. |
+| Darwinbox adapter (T27) | claude, probe 2026-10-06 | No plain-HTTP JSON endpoint found. On valid tenants (magicpin, netmeds) every `/ms/candidateapi/*` path (`companyinfo`, `job?page=1`, `job/count`, `job/filters`, even `getturnstilecaptchasitekey`), GET and POST, with and without Origin/Referer/cookie, answers 500 "Error while getting tenant info"; mpl and demo are walled by Cloudflare 403; an invalid subdomain answers "Invalid subdomain" (so the tenant is recognised and the failure is in tenant resolution for non-browser requests). The app loads a Cloudflare Turnstile challenge. Five different attempts failed; reopen only with a browser-free way to obtain the tenant context, or a decision to use Playwright. |
 | Playwright for custom portals; scraping Naukri/LinkedIn; multiple resume profiles | Gemini web, Antigravity | High cost and ban risk. Reopen only with a concrete plan and measured payoff. |
