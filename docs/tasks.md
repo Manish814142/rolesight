@@ -471,7 +471,7 @@ schema or drop both columns.
 | T37 | LinkedIn people-search link column in the CSV | todo | — | XS | — |
 | T38 | Application tracker: `autopilot mark <id> applied` | todo | — | M | T29 |
 | T39 | One rolling `output/open_matches.csv` | todo | — | S | T32, T38 |
-| T40 | Draft from the stored description (drop TinyFish) | todo | — | M | T29 |
+| T40 | Draft from the stored description (drop TinyFish) | doing · claude · 2026-10-06 | claude | M | T29 |
 
 **T37 · LinkedIn referral link** (from the Gemini web review). Add a column linking to
 `https://www.linkedin.com/search/results/people/?keywords=<company>%20software%20engineer`,
