@@ -10,7 +10,7 @@ applications (`autopilot draft`, on demand). The two choose their provider diffe
 | A Gemini key is set (`GEMINI_API_KEY` in `.env`, or `gemini_api_key` in `config.json`) | **Gemini, always**, whatever `llm_provider` says. One job per call, results stored in `data/jobs.db`. This is the supported path. |
 | No Gemini key | Legacy path: `llm_provider` scores 10 jobs per prompt, with a shorter resume and description cut. Its scores are **not written to the DB**, so the same jobs are re-scored on every scan (read in `scanner.py`, not run). Don't rely on it. |
 
-`llm_provider` also picks the model for `autopilot draft` (and the legacy TinyFish path).
+`llm_provider` also picks the model for `autopilot draft`.
 
 ## Gemini (default)
 
@@ -67,10 +67,10 @@ This uses the local `claude` binary and its login, so no API key is needed. Chec
 with `claude --print "hi"`. Each call loads your Claude Code context, which costs a lot of
 subscription usage, so use it for an occasional draft, not for daily scoring.
 
-## OpenRouter (deprecated)
+## OpenRouter (removed)
 
-It still works for `llm_provider: "openrouter"` (it logs a deprecation warning), but it
-is no longer maintained or tested against real keys. It will be removed (T42).
+`llm_provider: "openrouter"` was removed (T42); a config that still names it fails with a
+message telling you to use `gemini`, `anthropic` or `claude_cli`.
 
 ## Next
 

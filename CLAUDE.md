@@ -30,7 +30,7 @@ python scripts/measure_prefilter.py --jobs saved.json   # pre-filter survivors +
 python scripts/score_golden_set.py         # score the labelled jobs with the rubric off/on (~150 Gemini calls); --from-scores re-analyses
 autopilot doctor            # SQLite / Gemini / Telegram / ATS egress checks
 autopilot export [--min N] [--days N]   # CSV from state/ (no API keys needed)
-autopilot draft 1 | URL [--jd-file F]   # resume + cover letter draft from the stored description (no TinyFish)
+autopilot draft 1 | URL [--jd-file F]   # resume + cover letter draft from the stored description
 ```
 
 Tests / gates: `pytest` (coverage gate 85%), `ruff check job_hunt`, `mypy`.
@@ -58,14 +58,14 @@ Tests must make **no network calls** — stub `send_telegram`, adapters, and Gem
    `state/job_history.json`, incremental CSV `output/jobs_YYYY-MM-DD[_N].csv` (never overwrites),
    digest of the top `top_n`.
 
-Companies **without** an `ats` fall back to the legacy TinyFish careers-page path
-(only if `TINYFISH_API_KEY` is set; otherwise skipped).
+A company with no `ats` is detected from its `careers_url` when that names a known ATS; otherwise it is skipped
+with a warning (custom careers pages are not scanned).
 
 ### Seen-job memory
 `data/jobs.db` (SQLite, table `jobs`) is what makes daily runs show only new jobs: key =
 `(ats, global_id)`, so two openings with the same title are two rows. `state/last_scan.json` holds only the latest
 run (used by `draft N`), `state/job_history.json` the cumulative scored jobs (`export --days`),
-`state/seen_jobs.json` only the legacy TinyFish path.
+`state/seen_jobs.json` is a leftover of the old scanner (T34 retires it).
 
 ### DB status lifecycle (`data/jobs.db`, table `jobs`)
 
@@ -90,9 +90,7 @@ A Gemini failure never stores `score=0`; the row stays `discovered`.
 - **LLM:** `llm_provider` defaults to `gemini`; model from `gemini_model` / `GEMINI_MODEL`,
   fallback chain `gemini-3.5-flash-lite` → `gemini-3.1-flash-lite` only (free tier: 15 RPM,
   250k TPM, 500 RPD each; `gemini-3.8-flash` has 20 RPD and is never used as a fallback). `anthropic` and `claude_cli` still work.
-  **OpenRouter is deprecated** (logs a warning when used).
-- **TinyFish:** optional. Not required by `load_config`; only `draft` and legacy
-  careers_url companies use it.
+  TinyFish and OpenRouter were removed (T42).
 - **Telegram:** optional. Empty/placeholder `TELEGRAM_TOKEN` (alias `TELEGRAM_BOT_TOKEN`)
   or `TELEGRAM_CHAT_ID` → skipped with a debug log; the scan still writes the CSV.
 
@@ -103,6 +101,8 @@ A Gemini failure never stores `score=0`; the row stays `discovered`.
 Headcount is badge metadata only — **not** a filter (the cache is stale).
 A board counts as active only with HTTP 200 **and** ≥1 job; each company appears once.
 Matches on a non-declared ATS are tagged `ats_fallback_from`.
+
+After a `discover --merge`, copy `companies.json` to `job_hunt/data/companies.json` (what `autopilot init` ships; a test checks they match).
 
 **Adding companies (the company list is the core of this project — reuse this, never rebuild):**
 paste names into a file in any format and run
@@ -133,8 +133,8 @@ job_hunt/
   db.py           SQLite: init_db, get_job, save_job, update_job_status
   prefilter.py    title/location regexes (personal, hardcoded)
   scorer.py       Gemini scoring + DB status + optional Telegram alert
-  scanner.py      run_scan orchestration (+ legacy TinyFish path)
-  llm_utils.py    provider dispatch (gemini default; anthropic, claude_cli; openrouter deprecated)
+  scanner.py      run_scan orchestration
+  llm_utils.py    provider dispatch (gemini default; anthropic, claude_cli)
   notifier.py     send_telegram, is_telegram_configured, format_job_alert
   exporter.py     incremental CSV writer
   discovery.py    `discover`: verify/add companies (--add-file), --recheck, --census

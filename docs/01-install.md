@@ -10,7 +10,7 @@ the first scan then takes about 35 minutes (measured on 2026-10-04 with 215 comp
 - **Your resume as Markdown or plain text.** Gemini reads it as-is.
 - Optional: a Telegram bot, for alerts ([05](05-outputs-and-notifications.md#telegram-optional)).
 
-Not needed: TinyFish or OpenRouter keys. Those were part of the upstream project.
+Not needed: TinyFish or OpenRouter keys. Those were part of the upstream project and were removed here.
 
 ## 1. Install
 
@@ -75,9 +75,8 @@ write them for the person you're searching for:
 }
 ```
 
-The example config still contains upstream fields (`tinyfish_api_key`, `openrouter_*`,
-`search_seniority`, `search_keywords`). The direct-ATS pipeline ignores them, so you can
-leave them in or delete them. Every key is documented in [07](07-config-and-scoring.md).
+The example config holds only fields the pipeline reads. Every key is documented in
+[07](07-config-and-scoring.md).
 
 ## 3. Add your resume
 

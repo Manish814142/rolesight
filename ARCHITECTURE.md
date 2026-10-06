@@ -42,9 +42,9 @@ flowchart TD
     SCORED --> OUT["sorted best-first →<br/>state/last_scan.json · state/job_history.json<br/>output/jobs_YYYY-MM-DD[_N].csv · Telegram digest"]
 ```
 
-Companies with no `ats` field (and a non-ATS `careers_url`) fall back to the legacy
-TinyFish careers-page path in `scanner.py`, only if `TINYFISH_API_KEY` is set. The curated
-`companies.json` has none, and this fork doesn't use TinyFish (T42 removes the path).
+A company whose `careers_url` names a known ATS is detected automatically; one with no
+supported ATS is skipped with a warning (custom careers pages are not scanned). The old
+TinyFish careers-page path was removed (T42).
 
 ---
 
@@ -58,15 +58,15 @@ TinyFish careers-page path in `scanner.py`, only if `TINYFISH_API_KEY` is set. T
 | [`models.py`](job_hunt/models.py) | `JobPosting` (`global_id`, `ats`, `company`, `title`, `location`, `is_remote`, `url`, `description_text`, `posted_at`, `headcount`); `job_key(job)` is the dedupe key: the ATS's `global_id`, else `canonical_hash(title, company, location)` (MD5). |
 | [`db.py`](job_hunt/db.py) | SQLite `data/jobs.db`, table `jobs`: `init_db`, `get_job`, `save_job`, `update_job_status`, `get_jobs_by_status`. Location, posted date and (for queued jobs) the description are stored (T29). |
 | [`prefilter.py`](job_hunt/prefilter.py) | `should_evaluate_job` (title exclude → title include → location) and `is_too_old` / `posted_age_days` (ISO, epoch, Workday relative text). Local and deterministic. Rules in [docs/07](docs/07-config-and-scoring.md#the-pre-filter-job_huntprefilterpy). |
-| [`scanner.py`](job_hunt/scanner.py) | `run_scan()`: parallel fetch (`fetch_workers`) → per-job dedupe / pre-filter / age → enrich → score → state files, CSV, digest. Also the legacy TinyFish path and the legacy `score_jobs` batch prompt. |
+| [`scanner.py`](job_hunt/scanner.py) | `run_scan()`: parallel fetch (`fetch_workers`) → per-job dedupe / pre-filter / age → enrich → score → state files, CSV, digest. Also `score_jobs`, the batch prompt used by the non-Gemini providers. |
 | [`scorer.py`](job_hunt/scorer.py) | `score_and_process_job` (single, default) / `score_and_process_batch` (opt-in): Gemini call, 4.2 s pacing, DB status update, per-job Telegram alert. A failure returns `score=None` and leaves the row `discovered`. |
-| [`llm_utils.py`](job_hunt/llm_utils.py) | `score_job_with_gemini` / `score_jobs_batch_with_gemini` (JSON output, model fallback `gemini-3.5-flash-lite` → `gemini-3.1-flash-lite`, one retry per model on 429/503/quota); `chat_with_llm` provider dispatch for drafting (`gemini`, `anthropic`, `claude_cli`; `openrouter` deprecated). |
+| [`llm_utils.py`](job_hunt/llm_utils.py) | `score_job_with_gemini` / `score_jobs_batch_with_gemini` (JSON output, model fallback `gemini-3.5-flash-lite` → `gemini-3.1-flash-lite`, one retry per model on 429/503/quota); `chat_with_llm` provider dispatch for drafting (`gemini`, `anthropic`, `claude_cli`; `openrouter` was removed). |
 | [`exporter.py`](job_hunt/exporter.py) | CSV writer: 11 columns, never overwrites (`jobs_DATE.csv`, `jobs_DATE_1.csv`, …). |
 | [`notifier.py`](job_hunt/notifier.py) | `send_telegram`, `is_telegram_configured` (empty or placeholder ⇒ off), `format_job_alert` (with the headcount badge). |
 | [`discovery.py`](job_hunt/discovery.py) | `autopilot discover`: seeds / `--add-file` / `--add` → slug candidates → probe ATSs and curated Workday tenants → accept only if live, the right employer, ≥1 India job and the newest posting ≤180 days; `--merge`, `--recheck`, `--census`, `--emit-seeds`. `KNOWN_BAD_BOARDS` is never accepted. |
 | [`harvester.py`](job_hunt/harvester.py), [`validator.py`](job_hunt/validator.py), [`company_builder.py`](job_hunt/company_builder.py) | Older list builders. Both CLIs **write `companies.json` by default**; use `discover`. `company_builder.match_headcount` is still used by `discover` for the badge. |
 | [`doctor.py`](job_hunt/doctor.py) | `autopilot doctor`: SQLite write, a 1-token Gemini call, Telegram `getMe`, ATS egress. |
-| [`drafter.py`](job_hunt/drafter.py) | `autopilot draft N\|URL`: fetches the job description through TinyFish (required, T40) → tailored resume, cover letter, application info in `output/<company>-<date>/`. |
+| [`drafter.py`](job_hunt/drafter.py) | `autopilot draft N\|URL [--jd-file F]`: reads the job description stored in the database (T29/T40) → tailored resume, cover letter, application info in `output/<company>-<date>/`. |
 | [`main.py`](job_hunt/main.py) | CLI (`init doctor validate harvest discover scan draft export mcp`) and `load_config()`; `config.py` re-exports it. |
 | [`tools.py`](job_hunt/tools.py) / [`mcp_server.py`](job_hunt/mcp_server.py) | Protocol-agnostic tool layer and FastMCP stdio server (`scan_jobs`, `draft_application`, `export_jobs`). |
 | [`run_daily.sh`](run_daily.sh) | Runner: timestamps every output line into `data/scan.log`, exports `MIN_SCORE=70` (which `.env` overrides, T05). Not scheduled yet (T07). |
@@ -188,7 +188,6 @@ Measured on 2026-10-04 unless marked otherwise. Each one has a task.
 - **Onsite outside India:** "India anywhere in the location" passes multi-location jobs; the
   prompt then caps roles that need onsite work abroad at 30 (rubric rule 1, T24; checked on
   one job).
-- **`draft` needs TinyFish**, which this fork doesn't use (T40).
 - **Three stores** (`jobs.db`, `last_scan.json`, `job_history.json`) overlap; `export`
   ignores the DB (T31–T34). The CSV's Stack and Region columns are always empty (T36).
 - **Unreachable employers:** custom portals and platforms without a public API

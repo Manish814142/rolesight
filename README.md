@@ -131,9 +131,6 @@ As of 2026-10-04. The live list of work is the task board, [docs/tasks.md](docs/
   lowers false positives at `min_score` 70 (7 → 4 of 75 labelled jobs) but does not rank better;
   breaking ties needs sub-scores (T41). The labels behind that measurement are Claude's, not
   yours yet (T59).
-- **`draft` needs TinyFish.** `autopilot draft` still fetches the job description through
-  TinyFish, which this fork no longer uses, so drafting doesn't work without a TinyFish
-  key (T40).
 - **Telegram is unverified.** The last send attempts (2026-10-03) failed with HTTP 404, so
   treat Telegram as off (T06). The CSV is the primary output.
 - **Empty CSV columns.** Stack and Region are always empty (T36).
@@ -164,8 +161,8 @@ autopilot scan --posted-within 7
 ls output/                              # jobs_YYYY-MM-DD.csv, best score first
 ```
 
-Use the repo's own `companies.json` (215 India boards). Don't run `autopilot init` in the
-repo: it copies a different, outdated 140-company list that needs TinyFish (T50).
+In this repo `companies.json` (216 India boards) is already in place. `autopilot init`, for a pip install in an
+empty directory, copies the same curated list.
 
 ---
 
@@ -186,7 +183,7 @@ All commands run from the repo root (they read `config.json`, `companies.json` a
 | `autopilot discover --recheck --merge companies.json` | Re-verifies every board; repairs or removes dead ones | none |
 | `autopilot discover --census FILE` | Identifies which ATS each careers page uses | none |
 | `autopilot doctor` | Checks the SQLite write, a 1-token Gemini call, Telegram `getMe` and ATS reachability | Gemini (Telegram optional) |
-| `autopilot draft N \| URL` | Drafts a tailored resume and cover letter for job N of the last scan | TinyFish + LLM (see gaps) |
+| `autopilot draft N \| URL` | Drafts a tailored resume and cover letter for job N of the last scan | stored description + LLM (`--jd-file` for a pasted one) |
 | `autopilot mcp` | Starts the MCP server for Claude Code ([docs/06](docs/06-mcp-and-skill.md)) | as per tool |
 | `autopilot harvest` / `validate` | Older list builders. Don't point them at the curated list ([docs/04](docs/04-companies-and-scanning.md)) | none |
 
@@ -259,7 +256,7 @@ job_hunt/
   scanner.py        run_scan(): the whole pipeline
   prefilter.py      title / location / posted-date rules (personal, hardcoded)
   scorer.py         Gemini scoring per job, DB status updates, per-job Telegram alert
-  llm_utils.py      LLM providers (gemini default; anthropic, claude_cli; openrouter deprecated)
+  llm_utils.py      LLM providers (gemini default; anthropic, claude_cli)
   db.py, models.py  SQLite seen-job store; JobPosting + dedupe hash
   exporter.py       CSV writer (never overwrites)
   discovery.py      `discover`: verify and add companies, recheck, census
@@ -322,5 +319,5 @@ mypy
 
 Forked from [autopilot-jobhunt](https://github.com/tarunlnmiit/autopilot-jobhunt) by
 [@tarunlnmiit](https://github.com/tarunlnmiit). The original scanned careers pages
-through TinyFish and scored with OpenRouter. This fork replaced that with direct ATS APIs,
+through TinyFish and scored with OpenRouter; both were removed here (T42) in favour of direct ATS APIs,
 a local pre-filter, SQLite memory and Gemini scoring. MIT license; see [LICENSE](LICENSE).

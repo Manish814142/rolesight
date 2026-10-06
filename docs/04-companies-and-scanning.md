@@ -27,9 +27,8 @@ SmartRecruiters 13, Oracle HCM 4, Workable 2, Amazon 1.
   `personio`.
 - **`headcount`** is display metadata only, from a stale LinkedIn cache. It never filters
   anything.
-- **Legacy entries.** An entry with no `ats` but with a `careers_url` is auto-detected
-  when the URL is a known ATS. Otherwise it goes to the legacy TinyFish path, which is
-  skipped without a TinyFish key. The curated list has no such entries.
+- **Entries without an `ats`.** One with a `careers_url` is auto-detected when the URL is a
+  known ATS; otherwise it is skipped with a warning. The curated list has no such entries.
 
 ### Adding companies: `autopilot discover`
 

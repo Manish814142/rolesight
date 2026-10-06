@@ -130,7 +130,7 @@ def init_project() -> None:
             dest.write_text(data_pkg.joinpath(src_name).read_text(encoding="utf-8"), encoding="utf-8")
             print(f"✓ {label}")
 
-    _copy("companies.json", cwd / "companies.json", "companies.json created (130+ companies pre-loaded)")
+    _copy("companies.json", cwd / "companies.json", "companies.json created (200+ companies with a live job board, mostly hiring in India)")
     _copy("config.example.json", cwd / "config.json", "config.json created — fill in your API keys and profile")
     _copy("env_example", cwd / ".env", ".env created — fill in your API keys")
 

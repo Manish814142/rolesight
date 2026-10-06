@@ -23,7 +23,7 @@ every job's pre-filter decision, score and reason is there.
 | `Workday <tenant>/<site>: 600s budget spent, stopping at N jobs` | A slow Workday tenant | Jobs past N are missed for this scan only |
 | `<ATS> fetch failed for <slug>: …` (e.g. `… still downloading after 900s`), then `No open jobs found` for that company | The board errored or trickled past the hard deadline. The adapter returns no jobs for this scan. These warnings go to the console (and `data/scan.log` via `run_daily.sh`), not to `scan.log` | Retried automatically on the next scan |
 | `No open jobs found via <ats> adapter` for a company, every scan | The board has died or the company moved ATS | `autopilot discover --recheck --merge companies.json --report /tmp/r.csv` and review the diff ([04](04-companies-and-scanning.md#health-check---recheck)) |
-| `llm_provider=openrouter is deprecated` | Old config | Set `"llm_provider": "gemini"` |
+| `llm_provider 'openrouter' was removed` | Old config | Set `"llm_provider": "gemini"` |
 
 ## Results
 
@@ -40,7 +40,7 @@ every job's pre-filter decision, score and reason is there.
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| `draft`: "Drafting fetches the job description via TinyFish, but TINYFISH_API_KEY is not set" | `draft` still depends on TinyFish (T40) | None yet, short of adding a TinyFish key |
+| `draft`: "This job is not in the database" or "no stored description" | The job was never scanned, or was scanned before descriptions were stored (T29) | Re-run a scan, or pass the description with `--jd-file FILE` |
 | `draft`: `Job #N not in last scan` | N is larger than the number of jobs in `state/last_scan.json` | Use a number from the latest CSV, or pass the URL |
 | `Telegram failed: HTTP 404` | Invalid bot token (seen 2026-10-03) | New token from @BotFather; run `autopilot doctor` |
 | `Telegram failed: HTTP 400 … chat not found` | Wrong `TELEGRAM_CHAT_ID`, or you never messaged the bot | Message the bot, then read `chat.id` from `getUpdates` ([05](05-outputs-and-notifications.md#telegram-optional)) |

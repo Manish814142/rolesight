@@ -79,7 +79,7 @@ once per database.
 |---|---|---|
 | `last_scan.json` | Jobs scored in the latest scan, best first | `draft N`, `export` (no `--days`), MCP `scan_jobs` summary |
 | `job_history.json` | Every job ever scored (deduplicated by URL), with `scan_date` | `export --days N` |
-| `seen_jobs.json` | URLs seen, for the legacy TinyFish path | legacy path only |
+| `seen_jobs.json` | URLs seen (a leftover from the old scanner) | nothing reads it; retiring it is T34 |
 
 These overlap with the DB; consolidating them into SQLite is planned (T31–T34).
 
@@ -103,8 +103,9 @@ It writes `output/<company>-<date>/`: `resume_<company>.md` (a tailored resume),
 `cover_letter_<company>.md` and `application_info.txt`. **It never submits anything.**
 
 Current limits:
-- **It needs `TINYFISH_API_KEY`**, which this fork doesn't use, to fetch the job
-  description. Without it, `draft` stops with an error (T40).
+- **The description comes from the database** (stored for queued jobs since T29). For a job
+  the database doesn't have, or that was scanned before T29, pass `--jd-file FILE` with the
+  pasted description (T40).
 - It sends the whole resume to the cover-letter prompt (T14).
 - **It uses `llm_provider`** for the LLM ([02](02-providers.md)).
 

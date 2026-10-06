@@ -5,8 +5,6 @@
 | `GEMINI_API_KEY` | Scoring (and `doctor`'s Gemini check) | **Yes** | [aistudio.google.com/apikey](https://aistudio.google.com/apikey), free |
 | `TELEGRAM_TOKEN` + `TELEGRAM_CHAT_ID` | Alerts | No | [@BotFather](https://t.me/BotFather); see [05](05-outputs-and-notifications.md#telegram-optional) |
 | `ANTHROPIC_API_KEY` | Drafting with `llm_provider: anthropic` | No | [console.anthropic.com](https://console.anthropic.com) |
-| `TINYFISH_API_KEY` | Currently only `autopilot draft` (fetching the job description), plus the legacy careers-page path | No: not used in this fork; `draft` will stop needing it (T40) | — |
-| `OPENROUTER_API_KEY` | Deprecated provider | No | — |
 
 The ATS APIs themselves need **no keys**. They are public job-board endpoints.
 

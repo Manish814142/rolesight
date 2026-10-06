@@ -33,7 +33,7 @@ the three tools below.
 |---|---|---|
 | `scan_jobs` | none | A full `autopilot scan` with the current config. Returns "Scan complete. N jobs found, M scored." |
 | `export_jobs` | `min_score` (0 = all), `days` (0 = last scan only) | Same as `autopilot export --min … --days …` |
-| `draft_application` | `job_ref`: `#1`, `1` or a job URL | Same as `autopilot draft`. **Needs TinyFish today**, see [05](05-outputs-and-notifications.md#drafts-autopilot-draft) |
+| `draft_application` | `job_ref`: `#1`, `1` or a job URL | Same as `autopilot draft` (no `--jd-file` here), see [05](05-outputs-and-notifications.md#drafts-autopilot-draft) |
 
 Caveats:
 - **`scan_jobs` is slow.** It runs the whole scan (about 35 min for the first full scan),
@@ -53,7 +53,7 @@ descriptions as untrusted input (they could contain prompt-injection text).
 ```
 "Export the jobs scored 70 or more in the last 7 days and summarise the top 10"
 "Which of the last scan's matches mention Kafka or distributed systems?"
-"Draft an application for job #1 from the last scan"   (needs TinyFish until T40)
+"Draft an application for job #1 from the last scan"
 ```
 
 ## Next

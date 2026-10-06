@@ -18,8 +18,6 @@ the default shown applies.
 | `telegram.token`, `telegram.chat_id` | — | Optional alerts ([05](05-outputs-and-notifications.md#telegram-optional)) |
 | `anthropic_api_key`, `anthropic_model` | — | `llm_provider: anthropic` |
 | `claude_cli_model` | Claude's default | `llm_provider: claude_cli` |
-| `tinyfish_api_key` | — | Legacy careers-page path and `draft` only. Not used in this fork (T40, T50) |
-| `openrouter_api_key`, `openrouter_model`, `openrouter_fallback_models` | — | Deprecated provider |
 
 ### `candidate`
 
@@ -36,12 +34,11 @@ the default shown applies.
 | `scoring_mode` | `holistic` | `holistic`: one score from the prompt with the rubric. `structured`: the model reports sub-scores and facts, code applies the caps and computes the score; the CSV gets Stack/Role/Seniority/Location fit, Min years and Capped by columns (T41). Not the default: calibration was worse on the labelled set (see CHANGELOG 2026-10-06) |
 | `max_jobs_to_score_per_run` | 400 | Score at most this many jobs per run, newest first; the rest stay `discovered` for the next scan. `0` = no cap (T04) |
 | `relocation_note` | — | Added to cover-letter drafts |
-| `search_seniority`, `search_keywords` | — | Legacy TinyFish search only. Ignored by the ATS pipeline |
 
 ### `.env` overrides
 
 `GEMINI_API_KEY`, `GEMINI_MODEL`, `LLM_PROVIDER`, `ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL`,
-`CLAUDE_CLI_MODEL`, `TINYFISH_API_KEY`, `OPENROUTER_*`, `TELEGRAM_TOKEN` (or
+`CLAUDE_CLI_MODEL`, `TELEGRAM_TOKEN` (or
 `TELEGRAM_BOT_TOKEN`), `TELEGRAM_CHAT_ID`, and the candidate overrides `CANDIDATE_NAME`,
 `RESUME_PATH`, `MIN_SCORE` and `TOP_N`.
 

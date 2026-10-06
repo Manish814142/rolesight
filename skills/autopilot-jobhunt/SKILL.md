@@ -18,9 +18,9 @@ apply or submit.**
   ```
   claude mcp add jobnotify -- bash -c 'cd /path/to/JobNotify && .venv/bin/autopilot mcp'
   ```
-- Scoring needs `GEMINI_API_KEY` in the repo's `.env`. Drafting currently also needs
-  `TINYFISH_API_KEY` (it fetches the job description through TinyFish), which this fork
-  doesn't use, so drafting usually fails until task T40 is done. Say so; don't retry.
+- Scoring and drafting need `GEMINI_API_KEY` in the repo's `.env`. Drafting reads the job
+  description stored by the scan; if it says the job is not in the database, tell the user to
+  re-run a scan (or pass the description with `autopilot draft N --jd-file FILE`) and don't retry.
 
 ## Steps
 
