@@ -468,7 +468,7 @@ schema or drop both columns.
 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
-| T37 | LinkedIn people-search link column in the CSV | todo | — | XS | — |
+| T37 | LinkedIn people-search link column in the CSV | doing · claude · 2026-10-06 | claude | XS | — |
 | T38 | Application tracker: `autopilot mark <id> applied` | todo | — | M | T29 |
 | T39 | One rolling `output/open_matches.csv` | todo | — | S | T32, T38 |
 | T40 | Draft from the stored description (drop TinyFish) | review · claude · f43906f | claude | M | T29 |
