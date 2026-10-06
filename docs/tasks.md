@@ -427,7 +427,7 @@ review. Never write the real file unattended.
 | T33 | first_seen / last_seen and closed-job detection | todo | — | M | T29 |
 | T34 | Retire `last_scan.json`, `job_history.json`, `seen_jobs.json` | todo | — | S | T31, T32 |
 | T35 | Put the full funnel in the end-of-scan log line | review · claude · f35f3b1 | claude | XS | — |
-| T36 | Fill or drop the always-empty CSV Stack/Region columns | doing · claude · 2026-10-06 | claude | XS | — |
+| T36 | Fill or drop the always-empty CSV Stack/Region columns | review · claude · 8edc8d9 | claude | XS | — |
 
 **T29 · Richer `jobs` table.** The schema in `db.py` has no location, posted_at or
 description (measured), so a decision can't be audited or re-scored. Add the columns
@@ -575,6 +575,7 @@ The implementer adds a row when a task reaches `review`; the verifier removes it
 
 | ID | Commit(s) | Implementer | Evidence (command → result) |
 |---|---|---|---|
+| T36 | 8edc8d9 | claude | tests/test_exporter.py: test_a_gemini_scan_csv_has_no_always_empty_column failed before (Stack, Region empty), passes after; test_stack_column_appears_when_a_scorer_provides_it passes before and after. Real consumer: `python -m job_hunt export --min 0` in a scratch dir on a Gemini-shaped last_scan.json -> header Company, Role, Location, Posted, Application URL, Score (%), Reason, Worth Applying, Scan Date; always-empty columns: []. Gates green. Chose DROP over adding stack to the Gemini schema (a prompt change would need golden-set re-measurement). Column positions change for anything reading the CSV by position. Docs updated (README, ARCHITECTURE, docs/05, docs/08). |
 | T18 | 3a51699 | claude | Before: git blame showed 4 of 27 dated headings (lines 91/98/104/110) dated 2026-10-05 while their commits (04521db, 5f1be31) are 2026-10-04; git log has no commit on 2026-10-05. After: git blame --ignore-rev 3a51699 on every heading line -> 27 dated headings, 0 mismatches; release headings match tags v0.4.2-v0.4.4 and the 0.4.1 release commit. Also corrected the same measurement dates in 5 source/test comments (comment-only). Caveat: the only evidence is the git author dates (+0530); a wrong machine clock would make them wrong too. Gates green. |
 | T16 | 2350bdc | claude | tests/test_log_path.py: 5 new tests failed before, 7 pass after (-rA): default path data/autopilot.log, data/ created, rotation at the limit leaves exactly .1 to .3 and the newest line in the live file, defaults 5 MB x 3, adapter warning reaches file and console. Real import path in a scratch dir (JOBNOTIFY_LOG unset, import job_hunt.scanner): warning 1x on console and 1x in data/autopilot.log, debug line in file only, stderr empty, no scan.log created. Full gates green; repo scan.log 14574498 bytes before and after. Not done: run_daily.sh keeps its own unrotated data/scan.log (small: ~23 KB for the one recorded run); setup_cron.sh still points at ./scan.log (T08); old ./scan.log (14.5 MB, gitignored) left for Manish to delete. |
 | T15 | 735568b | claude | tests/test_log_path.py (2 tests) failed before, pass after (-rA). Done-when: stat -c %s scan.log = 14574498 before and 14574498 after a full pytest+ruff+mypy run; temp log dir removed after the run. Real consumer for the path test is the live autopilot logger's FileHandler.baseFilename. Gates green. |
