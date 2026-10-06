@@ -146,4 +146,4 @@ job_hunt/
 
 ## Gitignored state
 
-`data/` (jobs.db, scan.log), `state/*.json`, `output/`, `scan.log`, `*.pdf`, `.env`, `config.json`.
+`data/` (jobs.db, autopilot.log, scan.log), `state/*.json`, `output/`, `scan.log` (root: the pre-T16 log), `*.pdf`, `.env`, `config.json`.

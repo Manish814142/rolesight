@@ -92,7 +92,7 @@ They are applied in this order:
    with **no date always pass**. Dates are parsed from ISO strings, epoch timestamps and
    Workday's "Posted N Days Ago" text, where "30+ Days" counts as 30.
 
-The rejection reason for each job is logged at DEBUG level in `scan.log`.
+The rejection reason for each job is logged at DEBUG level in `data/autopilot.log`.
 
 ---
 

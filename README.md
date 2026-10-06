@@ -215,7 +215,7 @@ personal fork, and the rules are tuned to one profile.
 | `data/jobs.db` | SQLite seen-job memory: `skipped` → `discovered` → `scored` / `notified` |
 | `state/last_scan.json` | The latest scan's scored jobs, best first (`draft N` reads row N) |
 | `state/job_history.json` | Every scored job so far (`export --days N` reads it) |
-| `scan.log` | Full DEBUG log of every run, in the repo root |
+| `data/autopilot.log` | Full DEBUG log of every run; rotates at 5 MB, 3 older files kept |
 | `data/scan.log` | Timestamped console output of `run_daily.sh` runs |
 
 Details, including what each DB status means: [docs/05-outputs-and-notifications.md](docs/05-outputs-and-notifications.md).

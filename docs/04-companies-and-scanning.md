@@ -188,7 +188,7 @@ Later daily scans only score jobs not already `scored`, so they should be much s
 |---|---|
 | `--limit N` | Only the first N companies in `companies.json` |
 | `--posted-within N` | Score only jobs posted in the last N days (undated jobs always pass). Same as `candidate.max_posted_age_days` |
-| `LOG_LEVEL=DEBUG` (env) | Per-job detail on the console. `scan.log` always has it |
+| `LOG_LEVEL=DEBUG` (env) | Per-job detail on the console. `data/autopilot.log` always has it |
 
 ## Next
 

@@ -1,6 +1,6 @@
 # 08 — Troubleshooting
 
-Start with `autopilot doctor`. Then look in `scan.log` (repo root, full DEBUG detail);
+Start with `autopilot doctor`. Then look in `data/autopilot.log` (full DEBUG detail);
 every job's pre-filter decision, score and reason is there.
 
 ## Setup
@@ -21,7 +21,7 @@ every job's pre-filter decision, score and reason is there.
 | `N job(s) could not be scored (LLM error/quota) — left as 'discovered'` | Gemini failed for those jobs, usually the daily quota | Nothing is lost: they're scored on the next scan. Narrow the window (`--posted-within`) to stay under about 1,000 calls a day |
 | The log says "Gemini quota exhausted … scoring stopped" | The daily quota is gone: scoring stops once 3 jobs in a row fail on every model (T03); the rest stay `discovered` | Nothing: they are scored on the next scan |
 | `Workday <tenant>/<site>: 600s budget spent, stopping at N jobs` | A slow Workday tenant | Jobs past N are missed for this scan only |
-| `<ATS> fetch failed for <slug>: …` (e.g. `… still downloading after 900s`), then `No open jobs found` for that company | The board errored or trickled past the hard deadline. The adapter returns no jobs for this scan. These warnings go to the console (and `data/scan.log` via `run_daily.sh`), not to `scan.log` | Retried automatically on the next scan |
+| `<ATS> fetch failed for <slug>: …` (e.g. `… still downloading after 900s`), then `No open jobs found` for that company | The board errored or trickled past the hard deadline. The adapter returns no jobs for this scan. These warnings go to the console (and `data/scan.log` via `run_daily.sh`) and to `data/autopilot.log` | Retried automatically on the next scan |
 | `No open jobs found via <ats> adapter` for a company, every scan | The board has died or the company moved ATS | `autopilot discover --recheck --merge companies.json --report /tmp/r.csv` and review the diff ([04](04-companies-and-scanning.md#health-check---recheck)) |
 | `llm_provider 'openrouter' was removed` | Old config | Set `"llm_provider": "gemini"` |
 
@@ -29,12 +29,12 @@ every job's pre-filter decision, score and reason is there.
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| A job you expected isn't in today's CSV | (1) the pre-filter rejected it, (2) it was scored in an earlier scan (CSVs only hold that scan's jobs), (3) it's outside `--posted-within`, (4) Workday's India search didn't return it | `grep -i "<title words>" scan.log` shows the decision; `autopilot export --days 30` shows earlier scores |
+| A job you expected isn't in today's CSV | (1) the pre-filter rejected it, (2) it was scored in an earlier scan (CSVs only hold that scan's jobs), (3) it's outside `--posted-within`, (4) Workday's India search didn't return it | `grep -i "<title words>" data/autopilot.log` shows the decision; `autopilot export --days 30` shows earlier scores |
 | The same job appears several times | Fixed in T47 for Workday paging. If it still happens, the board may list the job twice under different requisitions | Compare the URLs; each should be a different requisition |
 | Many jobs score exactly 90 | Scores cluster; the rubric (T48) shifts calibration but not ranking | Read the Reason column to separate them; sub-scores are planned (T41) |
 | Stack / Region columns are empty | Not filled on the Gemini path (T36) | — |
 | `run_daily.sh` prints `min_score=70` but the scan uses 60 | `.env`'s `MIN_SCORE` overrides it (T05) | Set `MIN_SCORE` in `.env` to the value you want |
-| `scan.log` is huge | It's never rotated (T16) | It's safe to delete; it's recreated on the next run |
+| A large `scan.log` in the repo root | The log used to live there, unrotated; nothing writes it now (T16) | Safe to delete. `data/autopilot.log` rotates at 5 MB and keeps 3 older files |
 
 ## Drafting and Telegram
 

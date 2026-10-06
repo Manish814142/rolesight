@@ -87,7 +87,7 @@ These overlap with the DB; consolidating them into SQLite is planned (T31–T34)
 
 | File | Contents |
 |---|---|
-| `scan.log` (repo root) | Every run's full DEBUG log: each job's pre-filter decision, score and reason. It grows without limit (T16); `JOBNOTIFY_LOG=<path>` moves it |
+| `data/autopilot.log` | Every run's full DEBUG log: each job's pre-filter decision, score and reason, plus the adapters' warnings. Rotates at 5 MB and keeps 3 older files (`autopilot.log.1` to `.3`); `JOBNOTIFY_LOG=<path>` moves it |
 | `data/scan.log` | Timestamped console output of `./run_daily.sh` runs, with start and end banners and the exit code |
 
 `LOG_LEVEL=DEBUG autopilot scan` shows the per-job detail on the console as well.

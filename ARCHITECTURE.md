@@ -113,7 +113,8 @@ model and the legacy no-key path.
 | `resume/*.md` | Real resume (`candidate.resume_path`); only `YOUR_RESUME.md` is committed | ignored |
 | `data/jobs.db` | Seen-job store | ignored |
 | `data/scan.log` | `run_daily.sh` output | ignored |
-| `scan.log` | Full DEBUG log from the `autopilot` logger (root dir, unrotated, T16) | ignored |
+| `data/autopilot.log` | Full DEBUG log of every command (`autopilot` and `job_hunt.*` loggers); rotates at 5 MB, keeps 3 older files; `JOBNOTIFY_LOG` overrides the path | ignored |
+| `scan.log` | Where this log lived before T16 (root dir, unrotated); no longer written | ignored |
 | `state/last_scan.json`, `state/job_history.json`, `state/seen_jobs.json` | Latest scan (best first), cumulative history, legacy URL set. They overlap with the DB (T31–T34) | ignored |
 | `output/` | CSVs and drafts | ignored |
 | `job_hunt/data/` | Templates that `autopilot init` copies. Its `companies.json` is an outdated upstream list (T50) | committed |
