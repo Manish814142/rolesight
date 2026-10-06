@@ -833,6 +833,14 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Accenture",
+    "ats": "workday",
+    "tenant": "accenture",
+    "dc": "wd103",
+    "site": "AccentureCareers",
+    "headcount": "Unknown"
+  },
+  {
     "name": "Adobe India",
     "ats": "workday",
     "tenant": "adobe",

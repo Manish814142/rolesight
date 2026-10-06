@@ -18,7 +18,7 @@ Current as of 2026-10-04, after T47 (Workday paging), T30 (dedupe by ATS id) and
 
 ```mermaid
 flowchart TD
-    COMP["companies.json<br/>215 boards: ats + slug / tenant / host"] --> FETCH
+    COMP["companies.json<br/>216 boards: ats + slug / tenant / host"] --> FETCH
     subgraph Fetch ["1. Fetch: adapters/, 8 companies in parallel"]
         FETCH["fetch_company_jobs()"] --> LISTAPI["Greenhouse · Lever · Ashby · Workable<br/>Recruitee · Personio · Amazon<br/>(list API includes descriptions; Amazon's is cut to a stub, T57)"]
         FETCH --> WD["Workday CXS: searchText=India<br/>20/page, ≤500, 600 s budget<br/>detail call only for 'N Locations'"]
@@ -126,7 +126,7 @@ model and the legacy no-key path.
 |---|---|---|
 | Companies fetched in parallel | 8 (`fetch_workers`) | `scanner.DEFAULT_FETCH_WORKERS` |
 | Total deadline per HTTP response | 900 s | `adapters/base.DOWNLOAD_DEADLINE_SECONDS` |
-| Workday budget per tenant | 600 s; ≤500 jobs, 20 per page | `adapters/workday.py` |
+| Workday budget per tenant | 600 s; ≤2,000 jobs, 20 per page | `adapters/workday.py` |
 | SmartRecruiters / Oracle HCM / Amazon caps | 2,000 / 2,000 / 4,000 jobs | adapter `MAX_JOBS` |
 | Enrich step | parallel, `fetch_workers` threads, survivors only | `scanner._enrich_jobs` |
 | Gemini pacing | 4.2 s after each call (15 RPM) | `scorer.THROTTLE_INTERVAL_SECONDS` |

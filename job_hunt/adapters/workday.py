@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 # Workday caps a page at 20. Unfiltered, big tenants return their newest ~20 global
 # (mostly US) postings, so we full-text search for India and page up to MAX_JOBS.
 PAGE_SIZE = 20
-MAX_JOBS = 500  # Target had 302, Nvidia 276 India-search results (2026-10-05)
+MAX_JOBS = 2000  # Accenture has 2,000 India-search results, in arbitrary order (2026-10-06); Target had 302, Nvidia 276
 SEARCH_TEXT = "India"
 
 # Per-tenant wall-clock budget. Detail calls dominate (~100 s for Nvidia/Salesforce);
@@ -48,6 +48,16 @@ def workday_global_id_from_url(url: str) -> Optional[str]:
     if not (parsed.netloc.endswith("myworkdayjobs.com") and site and rest.startswith("job/")):
         return None
     return workday_global_id(parsed.netloc.split(".")[0], "/" + rest)
+
+
+def item_location(item: dict) -> str:
+    """Location of a list item. Accenture leaves `locationsText` empty and puts the city in the second
+    bullet field ("Bengaluru, Bdc4C"). Never guessed from the URL: some tenants' slugs are the job title."""
+    text = (item.get("locationsText") or "").strip()
+    if text:
+        return text
+    bullets = [str(b).strip() for b in (item.get("bulletFields") or [])[1:] if b and str(b).strip()]
+    return bullets[0] if bullets else "Not specified"
 
 
 def _fetch_detail(cxs_base: str, external_path: str) -> Tuple[str, str]:
@@ -137,7 +147,7 @@ def fetch_workday(tenant: str, dc: str, site: str, budget: float = BOARD_BUDGET_
             new_in_page += 1
 
             title = item.get("title", "").strip()
-            location = item.get("locationsText", "Not specified") or "Not specified"
+            location = item_location(item)
             posted_on = item.get("postedOn", "")
             description = ""
 

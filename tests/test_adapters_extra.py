@@ -131,3 +131,52 @@ def test_detect_ats_url_edge_cases_from_real_census():
     assert detect_ats("https://boards.greenhouse.io/embed/job_board/js?for=celigo") == ("greenhouse", "celigo")
     assert detect_ats("https://genpact.wd108.myworkdayjobs.com/External_Careers&source=x") \
         == ("workday", "genpact:wd108:External_Careers")
+
+
+# ── Workday: postings whose list item has no locationsText (T49: Accenture) ───
+
+def _wd_item(path, locations_text="", bullets=None, title="Application Developer"):
+    return {"title": title, "locationsText": locations_text, "externalPath": path, "postedOn": "Posted Today",
+            **({"bulletFields": bullets} if bullets is not None else {})}
+
+
+@patch("requests.post")
+def test_workday_blank_locations_text_falls_back_to_the_bullet_field(mock_post):
+    """Accenture's list API leaves locationsText empty and puts the city in bulletFields[1]. The adapter
+    reported 'Not specified', so the India pre-filter rejected every Accenture job."""
+    mock_post.return_value = _resp({"total": 1, "jobPostings": [
+        _wd_item("/job/Bengaluru-BDC4C/Tech-GCC-advisory-manager_R00336753", bullets=["R00336753", "Bengaluru, Bdc4C"])]})
+    job = fetch_company_jobs({"name": "Accenture", "ats": "workday", "tenant": "accenture", "dc": "wd103",
+                              "site": "AccentureCareers"})[0]
+    assert job.location == "Bengaluru, Bdc4C"
+    assert job.global_id == "workday:accenture:R00336753"
+
+
+@patch("requests.post")
+def test_workday_blank_location_is_never_guessed_from_the_url(mock_post):
+    """Hotstar's slugs are the job TITLE ('/job/Head-of-Marketing-India_JR1'): reading a 'city' from the
+    URL would turn a title into a fake location and could pass the India filter wrongly."""
+    mock_post.return_value = _resp({"total": 1, "jobPostings": [
+        _wd_item("/job/Head-of-Marketing-India_JR1", title="Head of Marketing India", bullets=["JR1"])]})
+    job = fetch_company_jobs({"name": "X", "ats": "workday", "tenant": "x", "dc": "wd1", "site": "S"})[0]
+    assert job.location == "Not specified"
+
+
+@patch("requests.post")
+def test_workday_locations_text_wins_when_present(mock_post):
+    mock_post.return_value = _resp({"total": 1, "jobPostings": [
+        _wd_item("/job/Pune/SE_R1", locations_text="Pune, India", bullets=["R1", "something else"])]})
+    assert fetch_company_jobs({"name": "X", "ats": "workday", "tenant": "x", "dc": "wd1", "site": "S"})[0].location == "Pune, India"
+
+
+@patch("requests.post")
+def test_workday_no_location_anywhere_stays_not_specified(mock_post):
+    mock_post.return_value = _resp({"total": 1, "jobPostings": [_wd_item("", bullets=["R1"])]})
+    assert fetch_company_jobs({"name": "X", "ats": "workday", "tenant": "x", "dc": "wd1", "site": "S"})[0].location == "Not specified"
+
+
+def test_workday_cap_covers_accenture():
+    """Accenture returns 2,000 India results in arbitrary order; 341 of them were posted in the last 7 days
+    but only 41 of those are in the first 500 (measured 2026-10-06)."""
+    from job_hunt.adapters import workday
+    assert workday.MAX_JOBS >= 2000

@@ -490,3 +490,17 @@ def test_reverify_existing_uses_real_adapter_for_amazon_and_oracle(monkeypatch):
 def test_evidence_url_drops_json_escape_backslash():
     text = '{"link":"https:\\/\\/x"} <script>var u="https://jobs.lever.co/dreamsports\\";</script>'
     assert disc.evidence_url(text, "lever") == "https://jobs.lever.co/dreamsports"
+
+
+@patch("requests.post")
+def test_evaluate_workday_reads_the_location_like_the_adapter_does(mock_post):
+    """T49: Accenture's list API has no locationsText (the city is in bulletFields), so discovery
+    rejected it as 'no India jobs' although its India search returns 2,000 postings."""
+    mock_post.return_value = _resp(payload={"jobPostings": [
+        {"title": "Application Developer", "locationsText": "", "externalPath": "/job/Bengaluru-BDC4C/App-Dev_R1",
+         "bulletFields": ["R1", "Bengaluru, Bdc4C"]},
+        {"title": "Software Engineer", "locationsText": "", "externalPath": "/job/Hyderabad/SE_R2",
+         "bulletFields": ["R2", "Hyderabad"]},
+        {"title": "Software Engineer", "locationsText": "Austin", "externalPath": "/job/Austin/SE_R3"}]})
+    row = disc.evaluate_workday("Accenture", "accenture", "wd103", "AccentureCareers")
+    assert row["india_jobs"] == 2 and row["prefilter_pass"] == 2 and row["accepted"] is True

@@ -44,6 +44,7 @@ import requests
 
 from job_hunt.adapters import detect_ats, fetch_company_jobs
 from job_hunt.adapters.base import DEFAULT_HEADERS
+from job_hunt.adapters.workday import item_location
 from job_hunt.company_builder import CORPORATE_SUFFIX_RE, load_linkedin_cache, match_headcount
 from job_hunt.harvester import ATS_PROBES, DEFAULT_LINKEDIN, _probe
 from job_hunt.models import JobPosting
@@ -367,7 +368,7 @@ def evaluate_workday(seed_name: str, tenant: str, dc: str, site: str) -> Dict[st
         status = f"HTTP {r.status_code}"
     except Exception as e:
         posts, status = [], str(e)[:60]
-    jobs = [JobPosting("", "workday", seed_name, p.get("title", ""), p.get("locationsText", ""), False, "")
+    jobs = [JobPosting("", "workday", seed_name, p.get("title", ""), item_location(p), False, "")
             for p in posts]
     india = sum(1 for j in jobs if _is_india(j.location))
     passing = [j for j in jobs if should_evaluate_job(j)[0]]
