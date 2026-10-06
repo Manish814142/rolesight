@@ -503,7 +503,7 @@ Keep the drafts-only rule.
 | T43 | Make `harvest` safe (exclusions file) or deprecate it for `discover` | todo | — | S | — |
 | T44 | Keyword gap analysis in `draft` | todo | — | M | T40 |
 | T45 | Local dashboard or TUI | todo | — | L | T29 |
-| T50 | Remove TinyFish from the docs, `init` and `config.example.json` | todo | — | S | T40, T42 |
+| T50 | Remove TinyFish from the docs, `init` and `config.example.json` | doing · claude · 2026-10-06 | claude | S | T40, T42 |
 
 **T50 · Remove TinyFish from the docs and setup.** Manish will not use TinyFish. SETUP.md
 L27 still says "TinyFish (required)"; PRIVACY.md L27 and SECURITY.md L27 say page
