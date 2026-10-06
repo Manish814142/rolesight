@@ -27,6 +27,17 @@ def _posted_display(posted_at: str) -> str:
     return s[:10] if len(s) >= 10 and s[4] == "-" and s[7] == "-" else s
 
 
+# Filled only by structured scoring (scoring_mode: structured, T41); the columns appear when a job has them.
+SUBSCORE_COLUMNS = {
+    "Stack fit": "stack_fit",
+    "Role fit": "role_fit",
+    "Seniority fit": "seniority_fit",
+    "Location fit": "location_fit",
+    "Min years": "min_years",
+    "Capped by": "capped_by",
+}
+
+
 def job_to_export_row(j: Dict[str, Any]) -> Dict[str, Any]:
     """Convert an internal job dictionary to a canonical export CSV row."""
     worth = j.get("worth_applying")
@@ -42,6 +53,7 @@ def job_to_export_row(j: Dict[str, Any]) -> Dict[str, Any]:
         "Reason": j.get("reason", ""),
         "Worth Applying": "Yes" if worth else ("No" if worth is False else ""),
         "Scan Date": j.get("scan_date", ""),
+        **{col: ("" if j.get(key) is None else j.get(key)) for col, key in SUBSCORE_COLUMNS.items()},
     }
 
 
@@ -80,8 +92,9 @@ def export_jobs_to_csv(
     else:
         out_path.parent.mkdir(parents=True, exist_ok=True)
 
+    extra = [col for col, key in SUBSCORE_COLUMNS.items() if any(j.get(key) not in (None, "") for j in jobs)]
     with out_path.open("w", newline="", encoding="utf-8") as fh:
-        writer = csv.DictWriter(fh, fieldnames=EXPORT_FIELDS)
+        writer = csv.DictWriter(fh, fieldnames=EXPORT_FIELDS + extra, extrasaction="ignore")
         writer.writeheader()
         for j in jobs:
             writer.writerow(job_to_export_row(j))

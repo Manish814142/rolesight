@@ -30,7 +30,7 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from job_hunt import llm_utils  # noqa: E402
-from job_hunt.llm_utils import score_job_with_gemini  # noqa: E402
+from job_hunt.llm_utils import score_job_structured_with_gemini, score_job_with_gemini  # noqa: E402
 from job_hunt.main import load_config  # noqa: E402
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -39,6 +39,8 @@ logger = logging.getLogger("golden_set_scorer")
 DEFAULT_GOLDEN_SET_PATH = Path("scripts/golden_set.csv")
 LABELS = ("apply", "maybe", "no")
 CONFIRMED_SOURCE = "manish"
+# Arm value meaning "use structured scoring (T41)" instead of a rubric text.
+STRUCTURED_ARM = "\0structured"
 REQUIRED_COLUMNS = ("id", "split", "company", "title", "location", "url", "label", "label_source",
                     "label_reason", "description")
 
@@ -139,10 +141,13 @@ def score_arms(jobs: Sequence[Dict[str, str]], resume: str, config: Dict[str, An
             payload = {"company": j["company"], "title": j["title"], "location": j["location"],
                        "content": j["description"]}
             for name, rubric in arms.items():
-                llm_utils.SCORING_RUBRIC = rubric
                 time.sleep(sleep_interval)
                 try:
-                    out[name][j["id"]] = score_job_with_gemini(payload, resume, config, raise_on_error=True)["score"]
+                    if rubric == STRUCTURED_ARM:
+                        out[name][j["id"]] = score_job_structured_with_gemini(payload, resume, config)["score"]
+                    else:
+                        llm_utils.SCORING_RUBRIC = rubric
+                        out[name][j["id"]] = score_job_with_gemini(payload, resume, config, raise_on_error=True)["score"]
                 except Exception as e:  # noqa: BLE001
                     logger.error("job %s arm %s failed: %s", j["id"], name, e)
                     out[name][j["id"]] = None
@@ -204,6 +209,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     ap.add_argument("--save-scores", help="write the scores to this JSON file")
     ap.add_argument("--from-scores", help="analyse scores saved earlier instead of calling Gemini")
     ap.add_argument("--limit", type=int, help="only the first N jobs (live runs)")
+    ap.add_argument("--structured", action="store_true", help="also score with structured scoring (T41)")
     args = ap.parse_args(argv)
 
     jobs = load_golden_set(args.csv)
@@ -217,8 +223,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         if not resume_path.is_file():
             logger.error("Resume not found at %s", resume_path)
             return 1
-        scores = score_arms(jobs, resume_path.read_text(encoding="utf-8"), config,
-                            {"off": "", "current": llm_utils.SCORING_RUBRIC})
+        arms = {"off": "", "current": llm_utils.SCORING_RUBRIC}
+        if args.structured:
+            arms["structured"] = STRUCTURED_ARM
+        scores = score_arms(jobs, resume_path.read_text(encoding="utf-8"), config, arms)
         if args.save_scores:
             Path(args.save_scores).write_text(json.dumps(scores, indent=1), encoding="utf-8")
     print_report(jobs, scores, args.min_score)

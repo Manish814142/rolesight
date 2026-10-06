@@ -239,3 +239,13 @@ def test_report_from_saved_scores_cli(tmp_path):
     assert "--- all:" in out and "--- dev:" in out and "--- held-out:" in out
     assert "AUC 1.000" in out and "AUC 0.500" in out
     assert "(Passed)" not in out and "improved" not in out.lower()
+
+
+def test_score_arms_can_score_a_structured_arm(monkeypatch):
+    """T41: the harness compares the structured method with the rubric arms on the same jobs."""
+    sgs = _golden()
+    monkeypatch.setattr(sgs, "score_job_with_gemini", lambda *a, **k: {"score": 77, "reason": "r"})
+    monkeypatch.setattr(sgs, "score_job_structured_with_gemini", lambda *a, **k: {"score": 55, "reason": "r"})
+    jobs = [{"id": "1", "company": "C", "title": "T", "location": "L", "description": "d"}]
+    out = sgs.score_arms(jobs, "resume", {}, {"current": "RUBRIC", "structured": sgs.STRUCTURED_ARM}, sleep_interval=0)
+    assert out == {"current": {"1": 77}, "structured": {"1": 55}}

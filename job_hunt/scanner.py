@@ -571,7 +571,9 @@ def run_scan(config: dict, companies: list[dict]) -> None:
         if gemini_key:
             scored_pairs: list = []
             quota_streak = 0
-            if config.get("gemini_scoring_mode", "single") == "batch":
+            if config.get("scoring_mode") == "structured" and config.get("gemini_scoring_mode") == "batch":
+                logger.warning("scoring_mode 'structured' scores one job per call; gemini_scoring_mode 'batch' is ignored")
+            if config.get("gemini_scoring_mode", "single") == "batch" and config.get("scoring_mode") != "structured":
                 batch_size = max(1, int(config.get("gemini_batch_size", DEFAULT_GEMINI_BATCH_SIZE)))
                 n_batches = -(-len(pending_direct) // batch_size)
                 logger.info(f"Scoring {len(pending_direct)} job(s) in {n_batches} Gemini batch(es) of up to {batch_size}...")
@@ -629,6 +631,7 @@ def run_scan(config: dict, companies: list[dict]) -> None:
                     "stack": "",
                     "worth_applying": res["score"] >= min_score,
                     "posted_at": job.posted_at,
+                    **(res.get("details") or {}),
                 })
         else:
             # Deprecated non-Gemini providers: score_jobs already batches 10 per prompt.

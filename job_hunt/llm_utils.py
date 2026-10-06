@@ -302,6 +302,107 @@ def score_job_with_gemini(job: dict, resume: str, config: dict, raise_on_error: 
         return {"score": 0, "reason": "Scoring failed"}
 
 
+# --- Structured scoring (T41): the model extracts facts and sub-scores, code decides the score ---------
+# Prompt wording moved calibration, not ranking (T48), and one run per job flips ambiguous postings by ~50
+# points (T60). Here the model answers narrow questions (years asked? stack accepted? onsite abroad?) and the
+# caps are applied deterministically; the weighted mean gives distinct values where one score used to tie.
+SUBSCORE_WEIGHTS = {"stack_fit": 0.35, "role_fit": 0.25, "seniority_fit": 0.25, "location_fit": 0.15}
+
+STRUCTURED_SCHEMA: dict[str, Any] = {
+    "type": "object",
+    "properties": {
+        "stack_fit": {"type": "integer", "minimum": 0, "maximum": 100},
+        "role_fit": {"type": "integer", "minimum": 0, "maximum": 100},
+        "seniority_fit": {"type": "integer", "minimum": 0, "maximum": 100},
+        "location_fit": {"type": "integer", "minimum": 0, "maximum": 100},
+        "min_years": {"type": "integer"},
+        "accepts_candidate_stack": {"type": "boolean"},
+        "onsite_outside_india": {"type": "boolean"},
+        "aimed_at_freshers": {"type": "boolean"},
+        "reason": {"type": "string"},
+    },
+    "required": ["stack_fit", "role_fit", "seniority_fit", "location_fit", "min_years",
+                 "accepts_candidate_stack", "onsite_outside_india", "aimed_at_freshers", "reason"],
+}
+
+
+def combine_subscores(f: dict) -> dict:
+    """Weighted mean of the sub-scores, then the hard caps. Returns the score and which cap (if any) bit."""
+    score = round(sum(float(f[k]) * w for k, w in SUBSCORE_WEIGHTS.items()))
+    caps: list[tuple[int, str]] = []
+    if f.get("onsite_outside_india"):
+        caps.append((30, "onsite or work authorisation outside India"))
+    if f["role_fit"] < 30:
+        caps.append((40, "role type not suitable"))
+    years = f.get("min_years")
+    if years is not None and years >= 6:
+        caps.append((50, "asks for 6+ years"))
+    if f.get("aimed_at_freshers"):
+        caps.append((50, "aimed at freshers"))
+    if not f.get("accepts_candidate_stack", True):
+        caps.append((60, "every accepted stack is outside the candidate's"))
+    capped_by = ""
+    for cap, why in sorted(caps):
+        if score > cap:
+            score, capped_by = cap, why
+        break  # only the lowest cap can matter
+    return {"score": int(score), "capped_by": capped_by}
+
+
+STRUCTURED_INSTRUCTIONS = """You are extracting facts about a job posting and rating how well it fits a candidate.
+Output ONLY a JSON object that follows the schema. Do NOT compute an overall score: the caller does that.
+
+Fields:
+- stack_fit (0-100): how well the languages/frameworks the posting requires or accepts match the candidate's stack (100 = the candidate's own stack or any language; 50 = partly; 0 = a mandatory stack the candidate does not have).
+- role_fit (0-100): how well the kind of work matches what the candidate seeks. 80-100 backend or full-stack software engineering; 0-30 pure frontend, internship, non-technical management, IT support, QA, or administering/configuring an enterprise platform (Salesforce, SAP, ServiceNow, Coupa, Workday...). Judge the work, not the employer's name: a software engineer building products at a company that makes such a platform is not platform administration.
+- seniority_fit (0-100): 100 when the posting asks for about 2-5 years; 60-80 for 5-6; 30-50 when it asks for 6+ years or is aimed at freshers; 0-30 for staff/principal/lead.
+- location_fit (0-100): 100 for India or remote open to India; low only when the job is outside India.
+- min_years: the LOWEST number of years of professional experience the posting asks for ("3-5 years" -> 3, "6+ years" -> 6); -1 if it states none.
+- accepts_candidate_stack: true if the posting accepts at least one of the candidate's languages (Node.js, TypeScript, JavaScript, Python), or says "any"/"another" language, or does not mandate a stack; false only if EVERY language or framework it requires or accepts is outside them (C#/.NET, Java/Spring Boot, Go, C++, Ruby, PHP, Rust...).
+- onsite_outside_india: true if the job requires on-site presence outside India, or citizenship / work authorisation outside India without sponsorship.
+- aimed_at_freshers: true if the posting is aimed at freshers, new graduates or entry-level hires (0-1 years).
+- reason: one sentence."""
+
+
+def score_job_structured_with_gemini(job: dict, resume: str, config: dict) -> dict:
+    """Score one job by extracting facts and sub-scores (see combine_subscores).
+
+    Returns {"score", "reason", "capped_by", "stack_fit", "role_fit", "seniority_fit", "location_fit",
+    "min_years" (None if not stated), ...}. Raises on any failure so the caller can retry the job later.
+    """
+    api_key = config.get("gemini_api_key") or os.getenv("GEMINI_API_KEY")
+    client, types = _get_genai_client_and_types(api_key)
+    prompt = (
+        f"{STRUCTURED_INSTRUCTIONS}\n\n"
+        f"CANDIDATE PROFILE:\n{_candidate_info(config)}\n"
+        f"RESUME:\n{resume}\n\n"
+        f"JOB:\n"
+        f"Company: {job.get('company', '')}\n"
+        f"Title: {job.get('title', '')}\n"
+        f"Location: {job.get('location', '')}\n"
+        f"Description:\n{_description(job)}\n"
+    )
+    cfg = types.GenerateContentConfig(temperature=0.1, response_mime_type="application/json",
+                                      response_json_schema=STRUCTURED_SCHEMA)
+    raw = _generate_with_fallback(client, prompt, cfg, _gemini_models(config))
+    data = json.loads(raw)
+    if not isinstance(data, dict):
+        raise ValueError(f"Expected a JSON object, got: {raw[:100]}")
+    missing = [k for k in STRUCTURED_SCHEMA["required"] if k not in data]
+    if missing:
+        raise ValueError(f"Structured scoring output lacks {missing}")
+    facts: dict[str, Any] = {k: max(0, min(100, int(data[k]))) for k in SUBSCORE_WEIGHTS}
+    years = int(data["min_years"])
+    facts.update(
+        min_years=years if years >= 0 else None,
+        accepts_candidate_stack=bool(data["accepts_candidate_stack"]),
+        onsite_outside_india=bool(data["onsite_outside_india"]),
+        aimed_at_freshers=bool(data["aimed_at_freshers"]),
+        reason=str(data["reason"]),
+    )
+    return {**facts, **combine_subscores(facts)}
+
+
 BATCH_SCORE_SCHEMA: dict[str, Any] = {
     "type": "array",
     "items": {

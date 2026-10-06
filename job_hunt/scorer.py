@@ -8,6 +8,7 @@ from typing import Any, Dict, List, Optional
 from job_hunt.db import DEFAULT_DB_PATH, update_job_status
 from job_hunt.llm_utils import (
     GeminiQuotaExhausted,
+    score_job_structured_with_gemini,
     score_job_with_gemini,
     score_jobs_batch_with_gemini,
 )
@@ -15,6 +16,9 @@ from job_hunt.models import JobPosting, job_key
 from job_hunt.notifier import format_job_alert, is_telegram_configured, send_telegram
 
 logger = logging.getLogger(__name__)
+
+# Facts and sub-scores returned by structured scoring (T41); they reach the CSV, not the database.
+SUBSCORE_FIELDS = ("stack_fit", "role_fit", "seniority_fit", "location_fit", "min_years", "capped_by")
 
 THROTTLE_INTERVAL_SECONDS = 4.2
 
@@ -72,13 +76,17 @@ def score_and_process_job(
         "content": job.description_text or "No full description provided.",
     }
     cfg = {**(config or {}), "gemini_api_key": gemini_api_key}
+    structured = cfg.get("scoring_mode", "holistic") == "structured"
     try:
-        scoring_result = score_job_with_gemini(
-            job=job_dict,
-            resume=resume_text,
-            config=cfg,
-            raise_on_error=True,
-        )
+        if structured:
+            scoring_result = score_job_structured_with_gemini(job_dict, resume_text, cfg)
+        else:
+            scoring_result = score_job_with_gemini(
+                job=job_dict,
+                resume=resume_text,
+                config=cfg,
+                raise_on_error=True,
+            )
     except Exception as e:
         logger.error("Scoring failed for %s @ %s — left as 'discovered' for retry: %s",
                      job.title, job.company, e)
@@ -91,11 +99,15 @@ def score_and_process_job(
 
     score = int(scoring_result.get("score", 0))
     reason = str(scoring_result.get("reason", "No reason provided."))
+    details = {k: scoring_result.get(k) for k in SUBSCORE_FIELDS} if structured else {}
+    if details.get("capped_by"):
+        reason = f"{reason} [capped at {score}: {details['capped_by']}]"
     status = _record_score(job, score, reason, telegram_token, telegram_chat_id, db_path, min_notify_score)
     return {
         "score": score,
         "reason": reason,
         "status": status,
+        "details": details,
     }
 
 

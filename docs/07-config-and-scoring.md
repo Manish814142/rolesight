@@ -33,6 +33,7 @@ the default shown applies.
 | `min_score` | `55` (the code default; the example config uses 60) | Score that counts as a match: "Worth Applying", Telegram alerts, the digest |
 | `top_n` | `5` | How many matches the digest and the log summary show |
 | `max_posted_age_days` | off | Score only jobs posted in the last N days; same as `--posted-within N` (T02 decides the default) |
+| `scoring_mode` | `holistic` | `holistic`: one score from the prompt with the rubric. `structured`: the model reports sub-scores and facts, code applies the caps and computes the score; the CSV gets Stack/Role/Seniority/Location fit, Min years and Capped by columns (T41). Not the default: calibration was worse on the labelled set (see CHANGELOG 2026-10-06) |
 | `max_jobs_to_score_per_run` | 400 | Score at most this many jobs per run, newest first; the rest stay `discovered` for the next scan. `0` = no cap (T04) |
 | `relocation_note` | — | Added to cover-letter drafts |
 | `search_seniority`, `search_keywords` | — | Legacy TinyFish search only. Ignored by the ATS pipeline |
