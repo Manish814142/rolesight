@@ -421,7 +421,7 @@ review. Never write the real file unattended.
 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
-| T29 | Store location, posted_at and description in `jobs` | todo | — | M | — |
+| T29 | Store location, posted_at and description in `jobs` | doing · claude · 2026-10-06 | claude | M | — |
 | T31 | `draft` reads SQLite | todo | — | S | T29 |
 | T32 | `export` reads SQLite | todo | — | S | T29 |
 | T33 | first_seen / last_seen and closed-job detection | todo | — | M | T29 |
