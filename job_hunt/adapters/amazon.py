@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 SEARCH_URL = "https://www.amazon.jobs/en/search.json"
 PAGE_SIZE = 100
-MAX_JOBS = 4000  # India had 2,329 open roles on 2026-10-05
+MAX_JOBS = 4000  # India had 2,329 open roles on 2026-10-04
 
 
 def _iso_date(posted: str) -> str:

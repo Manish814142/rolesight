@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 PAGE_SIZE = 100  # API maximum
-MAX_JOBS = 2000  # ServiceNow had 706 (2026-10-05); bound runaway boards
+MAX_JOBS = 2000  # ServiceNow had 706 (2026-10-04); bound runaway boards
 
 
 def _fetch_all_postings(url: str, slug: str) -> List[dict]:

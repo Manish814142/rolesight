@@ -21,7 +21,7 @@ TITLE_INCLUDE_PATTERN = re.compile(
 # '.net' and 'c#' start/end with non-word chars, where \b does not apply,
 # so they get their own boundary handling.
 # "Senior"/"Sr." are deliberately NOT excluded: at Indian companies they often mean 3-6 YOE,
-# so Gemini judges them against the resume (2026-10-05: 227 India jobs were blocked by
+# so Gemini judges them against the resume (2026-10-04: 227 India jobs were blocked by
 # that word alone). Staff/Principal/Lead/Manager stay excluded, except "Member of Technical
 # Staff" (MTS), a standard mid-level engineer title.
 # CRM / ERP / BI / RPA platform roles (T12) are configuration and integration work on someone

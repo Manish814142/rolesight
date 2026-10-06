@@ -18,7 +18,7 @@ def _resp(payload, status=200):
 
 @patch("requests.get")
 def test_smartrecruiters_paginates_past_100(mock_get):
-    """Swiggy had 168 postings but the adapter stopped at 100 (2026-10-05)."""
+    """Swiggy had 168 postings but the adapter stopped at 100 (2026-10-04)."""
     def page(url, params=None, **kw):
         off = params["offset"]
         n = max(0, min(100, 168 - off))

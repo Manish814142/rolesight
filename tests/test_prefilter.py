@@ -248,7 +248,7 @@ def test_prefilter_indiana_state_code_is_not_india(location):
     "Sr Backend Developer",
 ])
 def test_prefilter_lets_senior_titles_through_for_gemini_to_judge(title):
-    """At Indian companies "Senior" often means 3-6 YOE; 2026-10-05 measurement: 227 India
+    """At Indian companies "Senior" often means 3-6 YOE; 2026-10-04 measurement: 227 India
     jobs (38 in 7 days) were blocked by this word alone. Gemini scores them against the
     resume's experience instead of a regex dropping them."""
     passed, reason = should_evaluate_job(_job(title))
