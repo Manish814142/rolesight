@@ -324,7 +324,7 @@ once. Record in CHANGELOG: jobs fetched, India, pre-filter passes, too old, scor
 |---|---|---|---|---|---|
 | T11 | Let Adobe "Computer Scientist" titles through | review · claude · 56abafb | claude | XS | — |
 | T12 | Exclude CRM/platform "developer" roles | review · claude · 0660d1d | claude | S | — |
-| T14 | Send the full resume to `draft` | todo | — | XS | — |
+| T14 | Send the full resume to `draft` | doing · claude · 2026-10-06 | claude | XS | — |
 | T15 | Stop tests writing to the real `scan.log` | todo | — | S | — |
 | T16 | Put the logs in `data/` with rotation | todo | — | S | T15 |
 | T17 | Measure what the python/java/golang exclusions cost now | review · claude · faa8bb0 | claude | XS | — |
