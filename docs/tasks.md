@@ -322,7 +322,7 @@ once. Record in CHANGELOG: jobs fetched, India, pre-filter passes, too old, scor
 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
-| T11 | Let Adobe "Computer Scientist" titles through | doing · claude · 2026-10-06 | claude | XS | — |
+| T11 | Let Adobe "Computer Scientist" titles through | review · claude · 56abafb | claude | XS | — |
 | T12 | Exclude CRM/platform "developer" roles | review · claude · 0660d1d | claude | S | — |
 | T14 | Send the full resume to `draft` | todo | — | XS | — |
 | T15 | Stop tests writing to the real `scan.log` | todo | — | S | — |
@@ -548,6 +548,7 @@ The implementer adds a row when a task reaches `review`; the verifier removes it
 
 | ID | Commit(s) | Implementer | Evidence (command → result) |
 |---|---|---|---|
+| T11 | 56abafb | claude | `pytest tests/test_prefilter.py` → 5 new tests failed before, all pass after (accepts Computer Scientist / 2 / II / - II / Senior … Agentic AI; still rejects Frontend, Architect, C++, Java, Principal, Staff); `pytest` all pass, ruff and mypy clean. Real filter on the 34,416 jobs fetched 2026-10-06: Adobe Computer Scientist in India 1 → 8 of 14 pass. Not done: scoring those 7 newly passing jobs (needs a scan). |
 | T61 | b69171a | claude | `pytest tests/test_prefilter.py` → 13 new tests failed before the words were added, all pass after; `pytest` all pass, ruff and mypy clean. Real filter on the 34,416 jobs fetched 2026-10-06: survivors 1,109 → 1,053, 0 titles with the new words left, no labelled apply/maybe job rejected. Whole-word controls ("Rustic", "Cpp-free") pass. Not done: a live scan. |
 | T12 | 0660d1d | claude | `pytest tests/test_prefilter.py` → the 22 platform-title tests failed before the pattern, all pass after; `pytest` all pass, ruff and mypy clean. Real filter on the 34,416 jobs fetched 2026-10-06: survivors 1,191 → 1,109, 0 platform-word titles among them; all labelled apply/maybe jobs in `scripts/golden_set.csv` still pass. Negative controls (Node.js backend, ServiceNow own "Cybersecurity Integrations", "Sapient", "Dynamic Pricing", "Biometrics", company Salesforce/ServiceNow/SAP/Workday with a plain title) pass. Not done: a live scan. |
 | T58 | 9dd63f5 | claude | `pytest tests/test_scoring_rubric.py` → the rule-7 and rule-2 tests failed before, pass after; `pytest` all pass, ruff and mypy clean. Live Gemini, 82 labelled jobs, rubric v2 (committed) vs v4 (this change), 0 failures: Hevo "Associate SDE" 90 → 50 and Hevo "SDE I" 90 → 50 (target ≤ 50 met, but only just); Graviton/Thermo/HPE junior roles ≤ 40; the 3 controls untouched (90, 90, 72). ServiceNow Armis role: 5 runs under the old rule 2 = [90, 90, 35, 40, 90], under the new = [90 ×5]. All 82: at MIN_SCORE 70 false positives 5 → 2, precision 83% → 92%, AUC 0.946 vs 0.948. **Done-when not fully met:** `apply` recall 15/15 → 14/15, because Amazon "SP Support" (g27) scored 30–45 under v4. It is bimodal under every prompt (the committed one gives [30, 30, 30, 85, 88]), so this is not shown to come from the change; see T60. Labels are single-rater (T59). |
