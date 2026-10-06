@@ -499,7 +499,7 @@ Keep the drafts-only rule.
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
 | T41 | Structured sub-scores (stack, seniority, location) | review · claude · ea14a3f | claude | M | — |
-| T42 | Delete the legacy TinyFish careers-page and OpenRouter paths | todo | — | M | T40 |
+| T42 | Delete the legacy TinyFish careers-page and OpenRouter paths | doing · claude · 2026-10-06 | claude | M | T40 |
 | T43 | Make `harvest` safe (exclusions file) or deprecate it for `discover` | todo | — | S | — |
 | T44 | Keyword gap analysis in `draft` | todo | — | M | T40 |
 | T45 | Local dashboard or TUI | todo | — | L | T29 |
