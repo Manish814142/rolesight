@@ -393,3 +393,22 @@ def test_prefilter_accepts_computer_scientist_titles(title):
 ])
 def test_prefilter_computer_scientist_still_obeys_the_exclusions(title):
     assert not should_evaluate_job(_india(title))[0], title
+
+
+def test_measure_prefilter_counts_jobs_blocked_only_by_a_language_word():
+    import sys
+    from pathlib import Path
+    sys.path.insert(0, str(Path("scripts").resolve()))
+    import measure_prefilter as mp
+
+    rows = [
+        {"company": "A", "ats": "x", "title": "Software Engineer, Backend (Python)", "location": "Bengaluru, India", "posted_at": "2026-10-05"},
+        {"company": "A", "ats": "x", "title": "Senior Java Developer", "location": "Pune, India", "posted_at": ""},
+        {"company": "A", "ats": "x", "title": "Staff Java Developer", "location": "Pune, India", "posted_at": ""},       # two blockers
+        {"company": "A", "ats": "x", "title": "Python Developer", "location": "London, UK", "posted_at": ""},            # not India
+        {"company": "A", "ats": "x", "title": "Software Engineer, Backend (Node.js)", "location": "Bengaluru, India", "posted_at": ""},
+    ]
+    costs = mp.exclusion_costs(rows)
+    assert costs["python"] == {"only": 1, "recent": 0 if mp.posted_age_days("2026-10-05") > 30 else 1}
+    assert costs["java"]["only"] == 1 and "golang" not in costs
+    assert [r["title"] for r in mp.survivors(rows)] == ["Software Engineer, Backend (Node.js)"]

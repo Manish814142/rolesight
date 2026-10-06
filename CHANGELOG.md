@@ -10,6 +10,7 @@ reconstructed from git history.
 ## [Unreleased]
 
 ### Fixed (2026-10-06)
+- T17 (measurement): `scripts/measure_prefilter.py` counts what the pre-filter lets through and which language words block India jobs on their own (measured 2026-10-06, 34,416 jobs: python 33, java 93, golang 5, react/angular 6, frontend 8; seniority words ~600). It changes no behaviour; the decision on python/java is T62.
 - T11: the pre-filter accepts "Computer Scientist" titles (Adobe's engineering ladder), still subject to the exclusions (Architect, Java, C++, Frontend, Staff/Principal/Lead). Measured: Adobe's 14 India postings, 1 → 8 pass; survivors 1,053 → 1,060.
 - T61: the pre-filter rejects titles naming C++, embedded, firmware, kernel, GPU/CUDA, FPGA/Verilog, Rust, Ruby or PHP. Measured on 34,416 jobs: survivors 1,109 → 1,053 (56 fewer scoring calls per full scan), 0 such titles remain, no labelled apply/maybe job is rejected.
 - T12: the pre-filter rejects CRM / ERP / BI / RPA platform roles by title (Salesforce, ServiceNow, SAP/ABAP, Workday, Dynamics/D365, Oracle EBS/HCM/CPQ, Power BI/Platform/Apps, Tableau, Informatica, RPA, mainframe, Zuora, Boomi…). Matched on the title only, never the company; "CRM" alone is left to the scorer. Measured on the 34,416 jobs fetched 2026-10-06: survivors 1,191 → 1,109 (82 fewer scoring calls per full scan), 0 platform titles remain, and none of the labelled apply/maybe jobs is rejected.

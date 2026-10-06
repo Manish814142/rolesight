@@ -26,6 +26,8 @@ autopilot harvest           # rebuilds a list from india.yml + LinkedIn cache â€
 autopilot validate          # prunes companies.json in place (accepts empty boards) â€” prefer discover
 autopilot discover --seeds scripts/company_seeds.txt --report /tmp/r.csv --out /tmp/v.json [--merge companies.json]
                             # verify company names against ATS boards; --merge re-checks existing entries too
+python scripts/measure_prefilter.py --jobs saved.json   # pre-filter survivors + what each exclusion word costs (--save fetches all, ~9 min)
+python scripts/score_golden_set.py         # score the labelled jobs with the rubric off/on (~150 Gemini calls); --from-scores re-analyses
 autopilot doctor            # SQLite / Gemini / Telegram / ATS egress checks
 autopilot export [--min N] [--days N]   # CSV from state/ (no API keys needed)
 autopilot draft 1 | URL     # resume + cover letter draft (needs TINYFISH_API_KEY for JD fetch)
