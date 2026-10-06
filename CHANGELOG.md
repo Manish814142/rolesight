@@ -9,6 +9,9 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed (2026-10-06, T63)
+- The `anthropic` provider no longer raises `TypeError` on every call: `Messages.create` in the installed SDK (1.11.0) has no `temperature` parameter, and `_chat_with_anthropic` always passed one. It now sends `temperature` only when the SDK's `create` accepts it (older SDKs, which `pyproject.toml` still allows, keep the scorer's 0.1). Measured: before, `chat_with_llm({"llm_provider": "anthropic"}, …)` pointed at a dead local port → `TypeError`; after → `APIConnectionError` (the request is built and sent). `tests/test_anthropic_provider.py` binds the call to the installed SDK's real signature. **Not verified:** a real Anthropic API response (no key here), and `claude_cli` was not run; CLAUDE.md no longer says these providers "still work".
+
 ### Fixed (2026-10-06, T52)
 - The non-Gemini scoring path (`llm_provider: anthropic` / `claude_cli`, deprecated) stores what it scores: each job the model scored becomes `scored` with its score and reason in `data/jobs.db`, so the next scan does not pay for it again (before, every row stayed `discovered` and the whole list was re-scored each day). Jobs scored below the threshold are stored too; a job the model left out, gave no score, or whose call failed stays `discovered` and is retried (never a made-up 0). The funnel line now counts these jobs (it printed `scored 0` on this path). `scanner.score_batch` returns every parsed result (`None` when the call failed) and `score_jobs` filters it, so its output is unchanged; the CSV and `last_scan.json` still hold only the jobs the model marked worth applying to. Checked with `tests/test_legacy_scoring.py`, which stubs only `chat_with_llm` and runs the real parse, `run_scan` and SQLite twice; no real provider was called.
 

@@ -1,3 +1,4 @@
+import inspect
 import json
 import os
 import re
@@ -33,8 +34,10 @@ def _chat_with_anthropic(config: dict, messages: list[dict], temperature: float,
         "model": model,
         "messages": user_msgs,
         "max_tokens": max_tokens,
-        "temperature": temperature,
     }
+    # Newer SDK releases dropped `temperature` from Messages.create; older ones (pyproject allows >=0.30) take it.
+    if "temperature" in inspect.signature(client.messages.create).parameters:
+        kwargs["temperature"] = temperature
     if system:
         kwargs["system"] = system
     r = client.messages.create(**kwargs)
