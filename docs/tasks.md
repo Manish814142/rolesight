@@ -121,7 +121,7 @@ After this list: **T40, T50, T42** (Manish will not use TinyFish), then the rest
 |---|---|---|---|---|---|
 | T48 | Scoring rubric and a golden set | review · claude · 4ca2e17 | claude | M | — |
 | T57 | Amazon descriptions are a 202-character stub | review · claude · 0ed9567 | claude | XS | — |
-| T58 | Fresher-level roles score 88–90 | todo | — | S | — |
+| T58 | Fresher-level roles score 88–90 | doing · claude · 2026-10-06 | claude | S | — |
 | T59 | Confirm the golden-set labels | manish | — | S | T48 |
 | T49 | Check big employers that report "no India jobs" | todo | — | S | — |
 
