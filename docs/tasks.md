@@ -244,7 +244,7 @@ ever seen the old 28-board list: 15 `scored` and 816 `skipped` rows, all from 20
 | T01 | Back up the repo to a private remote | manish | — | XS | — |
 | T02 | Turn on the posted-date window by default | decision | — | XS | — |
 | T03 | Stop scoring when the Gemini daily quota runs out | review · claude · a186a99 | claude | S | — |
-| T04 | Cap the jobs scored per run, newest first | todo | — | S | T03 |
+| T04 | Cap the jobs scored per run, newest first | doing · claude · 2026-10-06 | claude | S | T03 |
 | T05 | Keep one MIN_SCORE, in one place | decision | — | XS | — |
 | T06 | Check that Telegram works | manish | — | XS | — |
 | T07 | Schedule `run_daily.sh` with a systemd user timer | todo | — | S | T02, T03, T04, T05 |
