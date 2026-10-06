@@ -14,7 +14,7 @@ from job_hunt.llm_utils import chat_with_llm
 from job_hunt.log import get_logger
 from job_hunt.models import job_key
 from job_hunt.notifier import is_telegram_configured, send_telegram
-from job_hunt.prefilter import is_too_old, posted_age_days, should_evaluate_job
+from job_hunt.prefilter import is_too_old, location_is_india, posted_age_days, should_evaluate_job
 from job_hunt.scorer import score_and_process_batch, score_and_process_job
 
 logger = get_logger()
@@ -441,6 +441,7 @@ def run_scan(config: dict, companies: list[dict]) -> None:
     companies_scanned = 0
     companies_with_jobs = 0
     scoring_failures = 0
+    fetched_total = india_total = already_scored = prefilter_rejected = scored_ok = 0
     # Pre-filter survivors from every company; scored together after fetching so
     # Gemini batches fill up (most companies contribute only 0-3 jobs).
     pending_direct: list = []
@@ -467,8 +468,10 @@ def run_scan(config: dict, companies: list[dict]) -> None:
                 if direct_jobs:
                     logger.info(f"  Fetched {len(direct_jobs)} job(s) directly via ATS adapter")
                     queued = 0
+                    fetched_total += len(direct_jobs)
                     for job in direct_jobs:
                         seen_urls.add(job.url)
+                        india_total += location_is_india(job.location)
                         j_key = job_key(job)
                         # Only scored/notified rows are final. 'skipped' rows are re-run
                         # through the (cheap, local) pre-filter so filter fixes apply to
@@ -477,11 +480,13 @@ def run_scan(config: dict, companies: list[dict]) -> None:
                         prior_status = existing["status"] if existing else None
                         if prior_status in ("scored", "notified"):
                             logger.debug(f"  Skipping previously scored job: {job.title}")
+                            already_scored += 1
                             continue
 
                         passed, reason = should_evaluate_job(job)
                         if not passed:
                             logger.debug(f"  Pre-filter skipped: {job.title} ({reason})")
+                            prefilter_rejected += 1
                             if prior_status is None:
                                 save_job(job, status="skipped")
                             continue
@@ -552,6 +557,7 @@ def run_scan(config: dict, companies: list[dict]) -> None:
             logger.error(f"  Company scan failed: {company_err}")
             continue
 
+    queued_total = len(pending_direct)
     cap = int(config.get("max_jobs_to_score_per_run", DEFAULT_MAX_JOBS_TO_SCORE))
     if 0 < cap < len(pending_direct):
         pending_direct.sort(key=lambda j: posted_age_days(j.posted_at) or 0)   # stable: ties keep fetch order
@@ -621,6 +627,7 @@ def run_scan(config: dict, companies: list[dict]) -> None:
                 if res["score"] is None:
                     scoring_failures += 1
                     continue
+                scored_ok += 1
                 logger.debug(f"    [{res['score']:3d}] {job.title} @ {job.company} — {res['reason'][:80]}")
                 all_scored_jobs.append({
                     "company": job.company,
@@ -686,6 +693,11 @@ def run_scan(config: dict, companies: list[dict]) -> None:
         )
 
     elapsed = time.time() - scan_start
+    logger.info(
+        f"Funnel: fetched {fetched_total} | India {india_total} | already scored {already_scored} | "
+        f"pre-filter rejected {prefilter_rejected} | too old {too_old} | queued {queued_total} | "
+        f"scored {scored_ok} | failed {scoring_failures} | left for next scan {queued_total - scored_ok}"
+    )
     logger.info(
         f"=== Scan complete — {companies_scanned}/{total} companies, "
         f"{len(all_scored_jobs)} jobs found, {len(top_jobs)} top matches "

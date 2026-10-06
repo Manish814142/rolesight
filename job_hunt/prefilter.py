@@ -106,6 +106,11 @@ def is_too_old(posted_at: str, max_age_days: Optional[int], today: Optional[date
     return age is not None and age > max_age_days
 
 
+def location_is_india(location: str) -> bool:
+    """True when the location text names an Indian city/country (or SmartRecruiters' lowercase ', in')."""
+    return bool(LOCATION_INDIA_PATTERN.search(location or "") or LOCATION_INDIA_COUNTRY_CODE.search(location or ""))
+
+
 def should_evaluate_job(job: JobPosting) -> Tuple[bool, str]:
     """Evaluate whether a job posting matches candidate criteria.
 
@@ -128,7 +133,7 @@ def should_evaluate_job(job: JobPosting) -> Tuple[bool, str]:
 
     # 3. Location: India anywhere in the string wins; otherwise another region
     #    excludes; otherwise accept explicit worldwide/global or plain remote.
-    if LOCATION_INDIA_PATTERN.search(location) or LOCATION_INDIA_COUNTRY_CODE.search(location):
+    if location_is_india(location):
         return True, "passed"
 
     m_region = LOCATION_EXCLUDE_PATTERN.search(location)

@@ -9,6 +9,9 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Added (2026-10-06, T35)
+- The end-of-scan log gets one funnel line: `Funnel: fetched N | India I | already scored A | pre-filter rejected R | too old T | queued Q | scored S | failed F | left for next scan L`. Real CLI run on 3 companies with `--posted-within 2` (real Gemini, scratch directory): `fetched 2325 | India 2156 | already scored 0 | pre-filter rejected 2078 | too old 235 | queued 12 | scored 12 | failed 0 | left for next scan 0` (2,325 = 2,078 + 235 + 12). `prefilter.location_is_india` is now the one India-location test.
+
 ### Added (2026-10-06, T29)
 - The `jobs` table keeps each posting's `location`, `posted_at` and `description` (idempotent `ALTER TABLE` in `init_db`; existing rows are untouched, new columns start empty). Queued jobs get the description the scorer saw, after the enrich step, so a score can be audited and redone; `skipped` rows keep location and date only (30,000+ descriptions would add ~150 MB for nothing). `db.update_job_details` fills an existing row. Checked on a copy of the production database: 30,367 rows → 30,367, statuses and the score sum unchanged, `integrity_check` ok, 0.18 s.
 

@@ -32,11 +32,6 @@ from job_hunt.prefilter import (  # noqa: E402
 WATCH = ("python", "java", "golang", "react", "reactjs", "angular", "angularjs", "vue", "frontend", "front-end")
 
 
-def _is_india(row: Dict[str, Any]) -> bool:
-    loc = row.get("location", "")
-    return bool(LOCATION_INDIA_PATTERN.search(loc) or LOCATION_INDIA_COUNTRY_CODE.search(loc))
-
-
 def _blockers(title: str) -> set:
     return {re.sub(r"\s+", " ", m.group(0).lower().strip()) for m in TITLE_EXCLUDE_PATTERN.finditer(title)}
 
@@ -52,7 +47,7 @@ def exclusion_costs(rows: List[Dict[str, Any]]) -> Dict[str, Dict[str, int]]:
     """word -> {"only": jobs blocked only by that word, "recent": of those, posted <= 30 days ago}."""
     only: Dict[str, List[Dict[str, Any]]] = collections.defaultdict(list)
     for r in rows:
-        if not (_is_india(r) and TITLE_INCLUDE_PATTERN.search(r["title"])):
+        if not (location_is_india(r.get("location", "")) and TITLE_INCLUDE_PATTERN.search(r["title"])):
             continue
         b = _blockers(r["title"])
         if len(b) == 1 and next(iter(b)) in WATCH:
