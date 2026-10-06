@@ -120,7 +120,7 @@ After this list: **T40, T50, T42** (Manish will not use TinyFish), then the rest
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
 | T48 | Scoring rubric and a golden set | review · claude · 4ca2e17 | claude | M | — |
-| T57 | Amazon descriptions are a 202-character stub | doing · claude · 2026-10-06 | claude | XS | — |
+| T57 | Amazon descriptions are a 202-character stub | review · claude · 0ed9567 | claude | XS | — |
 | T58 | Fresher-level roles score 88–90 | todo | — | S | — |
 | T59 | Confirm the golden-set labels | manish | — | S | T48 |
 | T49 | Check big employers that report "no India jobs" | todo | — | S | — |
@@ -523,6 +523,7 @@ The implementer adds a row when a task reaches `review`; the verifier removes it
 
 | ID | Commit(s) | Implementer | Evidence (command → result) |
 |---|---|---|---|
+| T57 | 0ed9567 | claude | `pytest tests/test_adapters_extra.py` → the new full-description test failed before the change, 9 passed after; `pytest` → all pass, ruff and mypy clean. Live `fetch_amazon` (2,295 India jobs, 246 pass the pre-filter): median description 1,244 → 3,871 chars, 0 raw `<br>`. DB: 23 scored Amazon rows reset to `discovered` and their 27 entries dropped from `state/job_history.json` (backup in the session scratchpad). **Not run:** a scan that re-scores them (needs Gemini quota; happens on the next scan). |
 | T48 | 0448ea6, 4ca2e17 | claude (fixing antigravity's 847e3c2) | `pytest` → 404 passed, coverage 89.99%, ruff and mypy clean; 3 mutations of the new code/data (AUC ties, failed call = 0, one description copied onto 6 rows) each make a test fail, then restored. Live Gemini, 75 labelled jobs × rubric off / committed / revised, 0 failures, `score_golden_set.py --from-scores` → at MIN_SCORE 70 false positives 7 → 4, `apply` recall 13/13, AUC 0.955 vs 0.956 (CI includes 0). Script's own live mode run on 3 jobs (6 calls). **Not done:** labels are Claude's, not Manish's (T59); held-out set has 4 positives. |
 
 ---
