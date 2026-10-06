@@ -33,6 +33,23 @@ logger = logging.getLogger(__name__)
 DEFAULT_YAML = "/home/user/Downloads/india.yml"
 DEFAULT_LINKEDIN = "/home/user/Downloads/linkedin-size-filter-backup-2026-10-03.json"
 DEFAULT_OUT = "companies.json"
+
+# Same-slug boards that belong to another employer, or are abandoned stubs: removed from companies.json on
+# evidence (CLAUDE.md), so a harvest must not bring them back. (ats, slug), compared in lower case.
+EXCLUDED_BOARDS = {
+    ("ashby", "navi"),               # San Francisco company, not Navi Technologies
+    ("ashby", "bounce"),             # Lisbon / San Francisco, not Bounce (India)
+    ("personio", "edelweiss"),       # German / UK postings
+    ("personio", "josh"),
+    ("smartrecruiters", "nobroker"),    # abandoned stubs
+    ("smartrecruiters", "upstox"),
+    ("smartrecruiters", "turtlemint"),
+    ("smartrecruiters", "whatfix"),
+}
+
+
+def is_excluded_board(entry: Dict[str, Any]) -> bool:
+    return (str(entry.get("ats", "")).lower(), str(entry.get("slug", "")).lower()) in EXCLUDED_BOARDS
 PROBE_TIMEOUT = 8
 
 # ── Workday tenants (known India-relevant MNCs) ───────────────────────────────
@@ -294,6 +311,9 @@ def run_harvest(
             company_name = futures[future]
             try:
                 entry = future.result()
+                if entry and is_excluded_board(entry):
+                    print(f"  [EXCLUDED] {entry['name']:<28} {entry['ats']}/{entry['slug']} was removed on evidence")
+                    entry = None
                 if entry:
                     comp_key = entry["name"].strip().lower()
                     if comp_key not in seen_companies:
@@ -365,6 +385,7 @@ def main(argv: Optional[List[str]] = None) -> None:
     linkedin_path = DEFAULT_LINKEDIN
     out_path = DEFAULT_OUT
     workers = 30
+    force = "--force" in argv
 
     i = 0
     while i < len(argv):
@@ -382,6 +403,15 @@ def main(argv: Optional[List[str]] = None) -> None:
             i += 2
         else:
             i += 1
+
+    if Path(out_path).exists() and not force:
+        print(
+            f"Refusing to overwrite {out_path}: harvest rebuilds the list from scratch and would drop curated entries.\n"
+            "Write to a scratch file (--out /tmp/x.json) and diff it, add companies with `autopilot discover --add-file`, "
+            "or pass --force.",
+            file=sys.stderr,
+        )
+        sys.exit(2)
 
     run_harvest(yaml_path, linkedin_path, out_path, max_workers=workers)
 

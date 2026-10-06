@@ -51,7 +51,7 @@ every job's pre-filter decision, score and reason is there.
 |---|---|
 | `sqlite3: command not found` | Use Python: see [05](05-outputs-and-notifications.md#the-seen-job-database-datajobsdb) |
 | `discover` wrote `discovery_report.csv` / `verified_companies.json` into the repo | Pass `--report` and `--out` with scratch paths |
-| `harvest` or `validate` rewrote `companies.json` | `git checkout companies.json`; use `discover` instead ([04](04-companies-and-scanning.md)) |
+| `validate` (or `harvest --force`) rewrote `companies.json` | `git checkout companies.json`; use `discover` instead ([04](04-companies-and-scanning.md)) |
 
 Still stuck? Add a row to the Inbox of the [task board](tasks.md#inbox) with what you ran
 and what you saw.

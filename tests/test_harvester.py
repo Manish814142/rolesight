@@ -383,3 +383,65 @@ def test_load_candidates_does_not_block_on_headcount(tmp_path):
     li.write_text(json.dumps({"companyCache": {"sigmoid": "11-50 employees"}, "slugCache": {}}))
     cands = load_candidates(str(yml), str(li))
     assert cands == [("Sigmoid", "sigmoid", "11-50 employees", "greenhouse")]
+
+
+# ── T43: harvest must not clobber the curated list or re-add boards removed on evidence ─
+
+def _run_cli(monkeypatch, argv):
+    calls = []
+    monkeypatch.setattr("job_hunt.harvester.run_harvest", lambda *a, **k: calls.append(a))
+    from job_hunt.harvester import main as harvester_main
+    return calls, harvester_main
+
+
+def test_harvest_cli_refuses_to_overwrite_an_existing_file(tmp_path: Path, monkeypatch, capsys) -> None:
+    import pytest
+    out = tmp_path / "companies.json"
+    out.write_text('[{"name": "curated"}]')
+    calls, harvester_main = _run_cli(monkeypatch, None)
+    with pytest.raises(SystemExit) as exc:
+        harvester_main(["--out", str(out)])
+    assert exc.value.code not in (0, None)
+    assert calls == [] and out.read_text() == '[{"name": "curated"}]'
+    assert "--force" in capsys.readouterr().err
+
+
+def test_harvest_cli_force_overwrites(tmp_path: Path, monkeypatch) -> None:
+    out = tmp_path / "companies.json"
+    out.write_text("[]")
+    calls, harvester_main = _run_cli(monkeypatch, None)
+    harvester_main(["--out", str(out), "--force"])
+    assert len(calls) == 1 and calls[0][2] == str(out)
+
+
+def test_harvest_cli_writes_a_new_file_without_force(tmp_path: Path, monkeypatch) -> None:
+    calls, harvester_main = _run_cli(monkeypatch, None)
+    harvester_main(["--out", str(tmp_path / "new.json")])
+    assert len(calls) == 1
+
+
+def test_run_harvest_drops_boards_removed_on_evidence(tmp_path: Path) -> None:
+    """ashby/navi is a San Francisco company, not Navi Technologies (CLAUDE.md); a same-slug board must not come back."""
+    yaml_file = tmp_path / "india.yml"
+    yaml_file.write_text("greenhouse:\n  - name: Navi Technologies\n    slug: navi\n    tier: '1'\n"
+                         "  - name: AcmeCo\n    slug: acmeco\n    tier: '1'\n")
+    linkedin_file = tmp_path / "linkedin.json"
+    linkedin_file.write_text(json.dumps({"companyCache": {}, "slugCache": {}, "slugOverrides": {}}))
+    out_file = tmp_path / "out.json"
+
+    def fake_get(url, headers=None, timeout=None):
+        resp = MagicMock()
+        resp.status_code = 200 if "ashbyhq" in url else 404
+        resp.json.return_value = {"jobs": [{"id": 1}]}
+        return resp
+
+    def fake_post(url, json=None, headers=None, timeout=None):
+        resp = MagicMock()
+        resp.status_code = 404
+        return resp
+
+    with patch("job_hunt.harvester.requests.get", side_effect=fake_get), \
+         patch("job_hunt.harvester.requests.post", side_effect=fake_post):
+        run_harvest(yaml_path=str(yaml_file), linkedin_path=str(linkedin_file), out_path=str(out_file), max_workers=2)
+
+    assert [(e["name"], e["ats"]) for e in json.loads(out_file.read_text())] == [("AcmeCo", "ashby")]
