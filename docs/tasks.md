@@ -327,7 +327,7 @@ once. Record in CHANGELOG: jobs fetched, India, pre-filter passes, too old, scor
 | T14 | Send the full resume to `draft` | todo | — | XS | — |
 | T15 | Stop tests writing to the real `scan.log` | todo | — | S | — |
 | T16 | Put the logs in `data/` with rotation | todo | — | S | T15 |
-| T17 | Measure what the python/java/golang exclusions cost now | doing · claude · 2026-10-06 | claude | XS | — |
+| T17 | Measure what the python/java/golang exclusions cost now | review · claude · faa8bb0 | claude | XS | — |
 | T18 | Fix the CHANGELOG dates | todo | — | XS | — |
 
 **T11 · "Computer Scientist" titles.** On 2026-10-04, 16 of the 19 "Computer
@@ -549,6 +549,7 @@ The implementer adds a row when a task reaches `review`; the verifier removes it
 
 | ID | Commit(s) | Implementer | Evidence (command → result) |
 |---|---|---|---|
+| T17 | faa8bb0 | claude | Measurement only, no behaviour change. `python scripts/measure_prefilter.py --jobs <saved fetch of 34,416 jobs, 2026-10-06>` → 1,060 pass the pre-filter; India jobs blocked only by one word: python 33 (21 in 30 days), java 93 (75), golang 5, react 3 + reactjs 2 + angular 1, frontend 8. Numbers and the question for Manish posted as Inbox T62. `pytest` all pass; the script has a unit test on synthetic rows. |
 | T11 | 56abafb | claude | `pytest tests/test_prefilter.py` → 5 new tests failed before, all pass after (accepts Computer Scientist / 2 / II / - II / Senior … Agentic AI; still rejects Frontend, Architect, C++, Java, Principal, Staff); `pytest` all pass, ruff and mypy clean. Real filter on the 34,416 jobs fetched 2026-10-06: Adobe Computer Scientist in India 1 → 8 of 14 pass. Not done: scoring those 7 newly passing jobs (needs a scan). |
 | T61 | b69171a | claude | `pytest tests/test_prefilter.py` → 13 new tests failed before the words were added, all pass after; `pytest` all pass, ruff and mypy clean. Real filter on the 34,416 jobs fetched 2026-10-06: survivors 1,109 → 1,053, 0 titles with the new words left, no labelled apply/maybe job rejected. Whole-word controls ("Rustic", "Cpp-free") pass. Not done: a live scan. |
 | T12 | 0660d1d | claude | `pytest tests/test_prefilter.py` → the 22 platform-title tests failed before the pattern, all pass after; `pytest` all pass, ruff and mypy clean. Real filter on the 34,416 jobs fetched 2026-10-06: survivors 1,191 → 1,109, 0 platform-word titles among them; all labelled apply/maybe jobs in `scripts/golden_set.csv` still pass. Negative controls (Node.js backend, ServiceNow own "Cybersecurity Integrations", "Sapient", "Dynamic Pricing", "Biometrics", company Salesforce/ServiceNow/SAP/Workday with a plain title) pass. Not done: a live scan. |
