@@ -327,7 +327,7 @@ once. Record in CHANGELOG: jobs fetched, India, pre-filter passes, too old, scor
 | T14 | Send the full resume to `draft` | todo | — | XS | — |
 | T15 | Stop tests writing to the real `scan.log` | todo | — | S | — |
 | T16 | Put the logs in `data/` with rotation | todo | — | S | T15 |
-| T17 | Measure what the python/java/golang exclusions cost now | todo | — | XS | — |
+| T17 | Measure what the python/java/golang exclusions cost now | doing · claude · 2026-10-06 | claude | XS | — |
 | T18 | Fix the CHANGELOG dates | todo | — | XS | — |
 
 **T11 · "Computer Scientist" titles.** On 2026-10-04, 16 of the 19 "Computer
