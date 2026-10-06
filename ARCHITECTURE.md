@@ -188,8 +188,7 @@ Measured on 2026-10-04 unless marked otherwise. Each one has a task.
 - **Onsite outside India:** "India anywhere in the location" passes multi-location jobs; the
   prompt then caps roles that need onsite work abroad at 30 (rubric rule 1, T24; checked on
   one job).
-- **`draft` needs TinyFish**, which this fork doesn't use (T40), and it cuts the resume
-  at 2,500 chars (T14).
+- **`draft` needs TinyFish**, which this fork doesn't use (T40).
 - **Three stores** (`jobs.db`, `last_scan.json`, `job_history.json`) overlap; `export`
   ignores the DB (T31–T34). The CSV's Stack and Region columns are always empty (T36).
 - **Unreachable employers:** custom portals and platforms without a public API

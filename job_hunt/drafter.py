@@ -111,7 +111,7 @@ JOB DESCRIPTION:
 {jd_truncated}
 
 CANDIDATE RESUME:
-{resume[:2500]}
+{resume}
 
 Output ONLY the cover letter. No preamble."""}],
         temperature=0.3,

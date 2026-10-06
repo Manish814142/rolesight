@@ -105,7 +105,7 @@ It writes `output/<company>-<date>/`: `resume_<company>.md` (a tailored resume),
 Current limits:
 - **It needs `TINYFISH_API_KEY`**, which this fork doesn't use, to fetch the job
   description. Without it, `draft` stops with an error (T40).
-- **It sends only the first 2,500 characters of the resume** (T14).
+- It sends the whole resume to the cover-letter prompt (T14).
 - **It uses `llm_provider`** for the LLM ([02](02-providers.md)).
 
 ## Telegram (optional)

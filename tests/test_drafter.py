@@ -70,3 +70,15 @@ def test_draft_without_tinyfish_key_gives_clear_error(draft_env):
     draft_env.pop("tinyfish_api_key")
     with pytest.raises(RuntimeError, match="TINYFISH_API_KEY"):
         drafter.draft_application(draft_env, "https://acme.co/jobs/mle")
+
+
+def test_cover_letter_prompt_gets_the_whole_resume(draft_env, monkeypatch, tmp_path):
+    """T14: the cover-letter prompt used resume[:2500], cutting the Projects/Education the scorer sees."""
+    long_resume = "Experience line.\n" * 300 + "END_OF_RESUME_MARKER"
+    assert len(long_resume) > 2500
+    (tmp_path / "resume" / "r.md").write_text(long_resume)
+    prompts = []
+    monkeypatch.setattr(drafter, "chat_with_llm", lambda config, messages, **k: prompts.append(messages[0]["content"]) or "OUT")
+    drafter.draft_application(draft_env, "https://acme.co/jobs/mle")
+    cover = next(p for p in prompts if "cover letter" in p)
+    assert "END_OF_RESUME_MARKER" in cover
