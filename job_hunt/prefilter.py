@@ -24,11 +24,23 @@ TITLE_INCLUDE_PATTERN = re.compile(
 # so Gemini judges them against the resume (2026-10-05: 227 India jobs were blocked by
 # that word alone). Staff/Principal/Lead/Manager stay excluded, except "Member of Technical
 # Staff" (MTS), a standard mid-level engineer title.
+# CRM / ERP / BI / RPA platform roles (T12) are configuration and integration work on someone
+# else's product, not backend engineering: 82 of 1,191 survivors were scored for nothing. Matched on
+# the title only, never the company, so "Software Engineer" at Salesforce or ServiceNow still passes.
+# "crm" alone is left to the scorer: it is also a product domain at SaaS companies.
+_PLATFORM_ROLE_WORDS = (
+    r"salesforce|apex|servicenow|dynamics(\s*365)?|d365|sap|abap|netsuite|peoplesoft|coupa|workday"
+    r"|cpq|zuora|mulesoft|boomi|informatica|tableau|bi|rpa|uipath|reltio|lims|mainframe|cobol"
+    r"|sharepoint|siebel|pega|agentforce"
+)
 TITLE_EXCLUDE_PATTERN = re.compile(
     r"\b(lead|principal|(?<!technical\s)staff|manager|director|architect|front[\s-]?end"
     r"|react(\.?js)?|angular(js)?|vue(\.?js)?|ios|android|flutter|qa|test(er|ers|ing)?"
     r"|intern(s|ship)?|devops|sre|java|golang|python)\b"
-    r"|\.net\b|\bc#(?!\w)",
+    r"|\.net\b|\bc#(?!\w)"
+    rf"|\b({_PLATFORM_ROLE_WORDS})\b"
+    r"|\boracle\s+(ebs|fusion|hcm|erp|cpq|apps|cloud)\b|\bpower\s*(bi|platform|apps|automate)\b"
+    r"|\bblue\s*prism\b|\bmarketing\s+cloud\b",
     re.IGNORECASE,
 )
 

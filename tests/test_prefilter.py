@@ -277,3 +277,60 @@ def test_prefilter_accepts_sde_and_mts_titles(title):
                                    "Staff Software Development Engineer"])
 def test_prefilter_mts_rules_keep_principal_lead_staff_blocked(title):
     assert should_evaluate_job(_job(title))[0] is False
+
+
+# T12: CRM / ERP / BI-platform roles are not backend engineering and were scored for nothing
+# (82 of 1,191 survivors, measured on 34,416 jobs fetched 2026-10-06). Titles only, never the company.
+def _india(title, company="Acme"):
+    return JobPosting(global_id="g", ats="workday", company=company, title=title,
+                      location="Bengaluru, India", is_remote=False, url="u")
+
+
+@pytest.mark.parametrize("title", [
+    "Salesforce Developer",
+    "Senior Salesforce Developer, Service Cloud",
+    "Software Engineer III - Salesforce Platform Developer",
+    "ServiceNow Developer SAM",
+    "ServiceNow Platform & ITSM Developer",
+    "Senior Developer(SAP DM Support) - ECF2",
+    "Software Engineer - SAP ABAP",
+    "SAP BTP Full Stack Developer",
+    "Workday Extend Developer",
+    "Senior Workday Integration Developer",
+    "Software Development Engineer 3 - Microsoft Dynamics Developer",
+    "D365 Finance Developer",
+    "Senior Developer (Oracle EBS)",
+    "SR PROGRAMMER 10001 - Oracle CPQ (BigMachines) Developer",
+    "Informatica Developer",
+    "Power Platform Developer",
+    "BI Developer (Power BI + Tableau)",
+    "Seniore Power BI developer",
+    "RPA Developer",
+    "Zuora Billing- Senior Developer",
+    "Mainframe Developer",
+    "Boomi Integration Developer",
+])
+def test_prefilter_rejects_crm_erp_bi_platform_roles(title):
+    ok, reason = should_evaluate_job(_india(title))
+    assert not ok and "exclude" in reason
+
+
+@pytest.mark.parametrize("title", [
+    "Software Engineer, Backend (Node.js)",
+    "Senior Software Engineer - Cybersecurity Integrations",   # ServiceNow's own role, no platform word
+    "Software Engineer III - Data Engineer",
+    "Backend Engineer",
+    "Software Development Engineer II, Payments",
+    "Specialist CRM Software Engineer",                         # CRM alone is left to the scorer
+    "Software Engineer, Sapient Platform",                      # 'sap' only as a whole word
+    "Full Stack Developer - Dynamic Pricing",                   # 'dynamic' is not 'dynamics'
+    "API Developer (Biometrics)",                               # 'bi' only as a whole word
+])
+def test_prefilter_keeps_real_backend_titles_near_the_platform_words(title):
+    assert should_evaluate_job(_india(title))[0], title
+
+
+def test_prefilter_platform_exclusion_ignores_the_company_field():
+    """A role at Salesforce or ServiceNow is judged by its title; only the title is matched."""
+    for company in ("Salesforce", "ServiceNow", "SAP", "Workday"):
+        assert should_evaluate_job(_india("Software Engineer, Backend", company=company))[0], company
