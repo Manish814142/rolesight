@@ -37,21 +37,6 @@ def test_send_telegram_exception(monkeypatch):
     assert notifier.send_telegram("tok", "chat", "hi") is False
 
 
-def test_send_whatsapp_success(monkeypatch):
-    monkeypatch.setattr(notifier.requests, "get", lambda *a, **k: _Resp(200))
-    assert notifier.send_whatsapp("123", "key", "hi there") is True
-
-
-def test_send_whatsapp_http_error(monkeypatch):
-    monkeypatch.setattr(notifier.requests, "get", lambda *a, **k: _Resp(500, "err"))
-    assert notifier.send_whatsapp("123", "key", "hi") is False
-
-
-def test_send_whatsapp_exception(monkeypatch):
-    monkeypatch.setattr(notifier.requests, "get", lambda *a, **k: (_ for _ in ()).throw(OSError("x")))
-    assert notifier.send_whatsapp("123", "key", "hi") is False
-
-
 def test_format_job_alert():
     msg = notifier.format_job_alert(
         company="Razorpay",

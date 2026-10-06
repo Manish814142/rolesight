@@ -8,6 +8,7 @@ import csv
 import pytest
 
 from job_hunt import scanner
+from job_hunt.models import JobPosting
 
 
 @pytest.fixture
@@ -16,17 +17,14 @@ def scan_env(tmp_path, monkeypatch):
     resume = tmp_path / "resume.md"
     resume.write_text("Senior ML/AI engineer, 10 YOE.")
 
-    # Stub the whole discovery/fetch/score pipeline so the test is deterministic
-    # and makes no network or LLM calls.
-    monkeypatch.setattr(scanner, "TinyFish", lambda **_: object())
-    monkeypatch.setattr(scanner, "discover_job_urls", lambda tf, co, seen, cand=None: [
-        {"url": "https://x.co/jobs/1", "title": "ML Engineer",
-         "company": co["name"], "location": co["location"], "region": co["region"]},
-    ])
-    monkeypatch.setattr(scanner, "fetch_job_details", lambda tf, jobs: jobs)
+    # Stub the fetch and the scorer so the test is deterministic and makes no network or LLM calls.
+    # llm_provider "anthropic" + no Gemini key = the non-Gemini scoring path (score_jobs).
+    job = JobPosting(global_id="greenhouse:acme:1", ats="greenhouse", company="Acme", title="Backend Engineer",
+                     location="Bengaluru, India", is_remote=False, url="https://x.co/jobs/1", description_text="Node.js")
+    monkeypatch.setattr(scanner, "fetch_company_jobs", lambda c: [job])
     monkeypatch.setattr(scanner, "score_jobs", lambda jobs, resume, config: [
-        {**jobs[0], "score": 90, "extracted_title": "ML Engineer",
-         "stack": "Python, LLMs", "location_remote": "Remote", "reason": "Strong fit"},
+        {**jobs[0], "score": 90, "extracted_title": "Backend Engineer",
+         "stack": "", "location_remote": "Bengaluru, India", "reason": "Strong fit"},
     ])
 
     calls = []
@@ -34,11 +32,10 @@ def scan_env(tmp_path, monkeypatch):
                         lambda token, chat, msg: calls.append((token, chat, msg)) or True)
 
     base_config = {
-        "tinyfish_api_key": "sk-x",
+        "llm_provider": "anthropic",
         "candidate": {"name": "Tarun", "resume_path": str(resume), "min_score": 40, "top_n": 5},
     }
-    companies = [{"name": "Acme", "careers_url": "https://x.co", "search_domain": "x.co",
-                  "location": "Berlin", "region": "EU"}]
+    companies = [{"name": "Acme", "ats": "greenhouse", "slug": "acme"}]
     return tmp_path, base_config, companies, calls
 
 

@@ -25,8 +25,6 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 _PLACEHOLDERS = {
-    "YOUR_TINYFISH_API_KEY", "your_tinyfish_api_key_here",
-    "YOUR_OPENROUTER_API_KEY", "your_openrouter_api_key_here",
     "YOUR_ANTHROPIC_API_KEY", "your_anthropic_api_key_here",
     "YOUR_GEMINI_API_KEY", "your_gemini_api_key_here",
 }
@@ -57,11 +55,7 @@ def load_config() -> dict:
     config = json.loads(p.read_text())
 
     env_mapping = {
-        "TINYFISH_API_KEY": "tinyfish_api_key",
         "LLM_PROVIDER": "llm_provider",
-        "OPENROUTER_API_KEY": "openrouter_api_key",
-        "OPENROUTER_MODEL": "openrouter_model",
-        "OPENROUTER_FALLBACK_MODELS": "openrouter_fallback_models",
         "CLAUDE_CLI_MODEL": "claude_cli_model",
         "ANTHROPIC_API_KEY": "anthropic_api_key",
         "ANTHROPIC_MODEL": "anthropic_model",
@@ -72,20 +66,11 @@ def load_config() -> dict:
     for env_key, config_key in env_mapping.items():
         val = os.getenv(env_key)
         if val is not None and _use_env(val):
-            if env_key == "OPENROUTER_FALLBACK_MODELS":
-                config[config_key] = [m.strip() for m in val.split(",")]
-            else:
-                config[config_key] = val
+            config[config_key] = val
 
     config.setdefault("gemini_model", "gemini-3.5-flash-lite")
-    # Direct-ATS + Gemini is the canonical pipeline; OpenRouter is deprecated.
+    # Direct ATS adapters + Gemini is the pipeline; TinyFish and OpenRouter were removed (T42).
     config.setdefault("llm_provider", "gemini")
-
-    # TinyFish is optional: direct ATS adapters need no key. It is only used for
-    # legacy careers_url companies and by `draft` (which checks for it itself).
-    tinyfish_key = config.get("tinyfish_api_key", "")
-    if tinyfish_key and _is_placeholder(tinyfish_key):
-        config.pop("tinyfish_api_key")
 
     # Telegram is optional. Placeholder values from the templates are dropped so
     # every downstream check sees "not configured" rather than a bogus chat_id.
@@ -239,7 +224,7 @@ def main() -> None:
         mcp.run()
         return
 
-    # doctor runs diagnostics without requiring TinyFish API key
+    # doctor runs diagnostics without a full config
     if cmd == "doctor":
         from job_hunt.doctor import run_doctor
         success = run_doctor()

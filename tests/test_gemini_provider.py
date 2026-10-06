@@ -184,19 +184,14 @@ def test_score_job_gemini_malformed_json_fallback(monkeypatch):
 
 # --- 4. Scanner integration without invoking Claude CLI or OpenRouter ----------
 
-def test_scanner_scoring_with_gemini_does_not_invoke_openrouter_or_claude(monkeypatch):
-    """Verify scanner uses GEMINI_API_KEY and doesn't invoke OpenRouter or Claude CLI."""
-    # Ensure neither OpenRouter nor Claude CLI are invoked
-    def openrouter_must_not_be_called(*a, **k):
-        raise AssertionError("OpenRouter must not be called when provider is gemini")
-
+def test_scanner_scoring_with_gemini_does_not_invoke_claude_or_anthropic(monkeypatch):
+    """Verify scanner uses GEMINI_API_KEY and doesn't invoke Anthropic or Claude CLI."""
     def claude_cli_must_not_be_called(*a, **k):
         raise AssertionError("Claude CLI must not be called when provider is gemini")
 
     def anthropic_must_not_be_called(*a, **k):
         raise AssertionError("Anthropic API must not be called when provider is gemini")
 
-    monkeypatch.setattr(llm_utils, "chat_with_fallback", openrouter_must_not_be_called)
     monkeypatch.setattr(llm_utils, "_chat_with_claude_cli", claude_cli_must_not_be_called)
     monkeypatch.setattr(llm_utils, "_chat_with_anthropic", anthropic_must_not_be_called)
 

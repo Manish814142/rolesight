@@ -4,81 +4,21 @@ import sys
 import types
 
 import pytest
-from openai import RateLimitError
 
 from job_hunt import llm_utils
 
-# --- OpenRouter fallback chain -------------------------------------------------
-
-class _Choice:
-    def __init__(self, content):
-        self.message = types.SimpleNamespace(content=content)
-
-
-class _Usage:
-    prompt_tokens = 10
-    completion_tokens = 5
-
-
-class _Resp:
-    def __init__(self, content, usage=True):
-        self.choices = [_Choice(content)]
-        self.usage = _Usage() if usage else None
-
-
-def _client(create):
-    return types.SimpleNamespace(chat=types.SimpleNamespace(completions=types.SimpleNamespace(create=create)))
-
-
-def test_fallback_first_model_succeeds():
-    llm = _client(lambda **k: _Resp("answer"))
-    out = llm_utils.chat_with_fallback(llm, {}, [{"role": "user", "content": "hi"}])
-    assert out == "answer"
-
-
-def test_fallback_no_usage_branch():
-    llm = _client(lambda **k: _Resp("answer", usage=False))
-    assert llm_utils.chat_with_fallback(llm, {}, [{"role": "user", "content": "hi"}]) == "answer"
-
-
-def _rate_limit_error():
-    # Build without __init__ (which needs a real httpx.Response) — we only need isinstance.
-    return RateLimitError.__new__(RateLimitError)
-
-
-def test_fallback_switches_model_on_quota(monkeypatch):
-    monkeypatch.setattr(llm_utils.time, "sleep", lambda *_: None)
-    calls = {"n": 0}
-
-    def create(model, **k):
-        calls["n"] += 1
-        if model == "primary":
-            raise _rate_limit_error()
-        return _Resp("from fallback")
-
-    cfg = {"openrouter_model": "primary", "openrouter_fallback_models": ["backup"]}
-    out = llm_utils.chat_with_fallback(_client(create), cfg, [{"role": "user", "content": "x"}])
-    assert out == "from fallback"
-    # primary retried twice (2 rate-limit hits) then backup succeeds
-    assert calls["n"] == 3
-
-
-def test_fallback_all_models_fail(monkeypatch):
-    monkeypatch.setattr(llm_utils.time, "sleep", lambda *_: None)
-
-    def create(**k):
-        raise RuntimeError("boom")
-
-    with pytest.raises(RuntimeError, match="All LLM models failed"):
-        llm_utils.chat_with_fallback(_client(create), {}, [{"role": "user", "content": "x"}])
-
-
 # --- provider dispatch ---------------------------------------------------------
 
-def test_chat_with_llm_routes_openrouter(monkeypatch):
-    monkeypatch.setattr(llm_utils, "chat_with_fallback", lambda *a, **k: "OR")
-    monkeypatch.setattr(llm_utils, "_make_openrouter_client", lambda cfg: object())
-    assert llm_utils.chat_with_llm({"llm_provider": "openrouter"}, []) == "OR"
+def test_openrouter_was_removed_with_a_clear_message():
+    with pytest.raises(ValueError, match="openrouter' was removed"):
+        llm_utils.chat_with_llm({"llm_provider": "openrouter"}, [])
+
+
+def test_unknown_provider_is_an_error_not_a_silent_fallback():
+    with pytest.raises(ValueError, match="Unsupported llm_provider"):
+        llm_utils.chat_with_llm({"llm_provider": "nonsense"}, [])
+    with pytest.raises(ValueError, match="Unsupported llm_provider"):
+        llm_utils.chat_with_llm({}, [])
 
 
 def test_chat_with_llm_routes_anthropic(monkeypatch):

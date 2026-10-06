@@ -3,8 +3,7 @@ MCP server for autopilot-jobs.
 
 Register with Claude Code (one command):
   claude mcp add autopilot-jobs \\
-    --env TINYFISH_API_KEY=your_key \\
-    --env OPENROUTER_API_KEY=your_key \\
+    --env GEMINI_API_KEY=your_key \\
     --env TELEGRAM_TOKEN=your_token \\
     --env TELEGRAM_CHAT_ID=your_chat_id \\
     -- python -m job_hunt.mcp_server

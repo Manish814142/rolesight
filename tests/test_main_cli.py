@@ -142,42 +142,50 @@ def test_load_config_missing(tmp_path, monkeypatch):
 
 def test_load_config_env_override(tmp_path, monkeypatch, clean_env):
     monkeypatch.chdir(tmp_path)
-    (tmp_path / "config.json").write_text(json.dumps({"tinyfish_api_key": "sk-config"}))
-    monkeypatch.setenv("TINYFISH_API_KEY", "sk-env-real")
+    (tmp_path / "config.json").write_text(json.dumps({"gemini_api_key": "sk-config"}))
+    monkeypatch.setenv("GEMINI_API_KEY", "sk-env-real")
     cfg = main.load_config()
-    assert cfg["tinyfish_api_key"] == "sk-env-real"
+    assert cfg["gemini_api_key"] == "sk-env-real"
 
 
 def test_load_config_placeholder_does_not_clobber(tmp_path, monkeypatch, clean_env):
     monkeypatch.chdir(tmp_path)
-    (tmp_path / "config.json").write_text(json.dumps({"tinyfish_api_key": "sk-config-real"}))
-    monkeypatch.setenv("TINYFISH_API_KEY", "your_tinyfish_api_key_here")
+    (tmp_path / "config.json").write_text(json.dumps({"gemini_api_key": "sk-config-real"}))
+    monkeypatch.setenv("GEMINI_API_KEY", "your_gemini_api_key_here")
     cfg = main.load_config()
-    assert cfg["tinyfish_api_key"] == "sk-config-real"
+    assert cfg["gemini_api_key"] == "sk-config-real"
 
 
 def test_load_config_telegram_and_candidate_env(tmp_path, monkeypatch, clean_env):
     monkeypatch.chdir(tmp_path)
-    (tmp_path / "config.json").write_text(json.dumps({"tinyfish_api_key": "sk-real"}))
+    (tmp_path / "config.json").write_text(json.dumps({"gemini_api_key": "sk-real"}))
     monkeypatch.setenv("TELEGRAM_TOKEN", "tok")
     monkeypatch.setenv("TELEGRAM_CHAT_ID", "42")
     monkeypatch.setenv("CANDIDATE_NAME", "Ada")
     monkeypatch.setenv("MIN_SCORE", "70")
     monkeypatch.setenv("TOP_N", "3")
-    monkeypatch.setenv("OPENROUTER_FALLBACK_MODELS", "a/b:free, c/d:free")
     cfg = main.load_config()
     assert cfg["telegram"] == {"token": "tok", "chat_id": "42"}
     assert cfg["candidate"]["name"] == "Ada"
     assert cfg["candidate"]["min_score"] == 70 and cfg["candidate"]["top_n"] == 3
-    assert cfg["openrouter_fallback_models"] == ["a/b:free", "c/d:free"]
 
 
-def test_load_config_without_tinyfish_key_does_not_exit(tmp_path, monkeypatch, clean_env):
-    """Direct-ATS scanning needs no TinyFish key; only the legacy careers_url path does."""
+def test_load_config_without_any_api_key_does_not_exit(tmp_path, monkeypatch, clean_env):
+    """A config with no keys loads (doctor and export need none); scoring fails later with a clear message."""
     monkeypatch.chdir(tmp_path)
     (tmp_path / "config.json").write_text(json.dumps({"name": "x"}))
     cfg = main.load_config()
-    assert not cfg.get("tinyfish_api_key")
+    assert not cfg.get("gemini_api_key") and cfg["llm_provider"] == "gemini"
+
+
+def test_removed_providers_keys_are_ignored(tmp_path, monkeypatch, clean_env):
+    """TinyFish and OpenRouter were removed (T42): their env vars no longer reach the config."""
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "config.json").write_text(json.dumps({}))
+    monkeypatch.setenv("TINYFISH_API_KEY", "sk-x")
+    monkeypatch.setenv("OPENROUTER_API_KEY", "sk-y")
+    cfg = main.load_config()
+    assert "tinyfish_api_key" not in cfg and "openrouter_api_key" not in cfg
 
 
 def test_load_config_defaults_provider_to_gemini(tmp_path, monkeypatch, clean_env):

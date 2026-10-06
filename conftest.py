@@ -5,6 +5,8 @@ scanner/drafter stubs the one seam — `job_hunt.llm_utils.chat_with_llm`, impor
 as a module-level name into `scanner` and `drafter`. `fake_llm` patches it in place;
 `clean_env` strips host API keys so a developer's shell can't leak into assertions.
 """
+import os
+
 import pytest
 
 # Every credential/config env var that could leak from the host shell into a test.
@@ -21,6 +23,29 @@ _ENV_KEYS = (
     "TELEGRAM_CHAT_ID",
     "LOG_LEVEL",
 )
+
+
+@pytest.fixture(autouse=True)
+def isolated_environment(monkeypatch):
+    """Every test starts without API keys and cannot leak environment changes to the next one.
+
+    `main.load_config` runs `load_dotenv(override=True)`, which writes the real `.env` into os.environ
+    for the rest of the session; a later scan test then reached the real Gemini API (quota spent).
+    """
+    saved = dict(os.environ)
+    for key in _ENV_KEYS:
+        monkeypatch.delenv(key, raising=False)
+    yield
+    os.environ.clear()
+    os.environ.update(saved)
+
+
+@pytest.fixture(autouse=True)
+def no_real_gemini(monkeypatch):
+    """Constructing the real Gemini client fails loudly; tests that need a client stub it themselves."""
+    def blocked(api_key):
+        raise RuntimeError("a test tried to create a real Gemini client; stub llm_utils._get_genai_client_and_types")
+    monkeypatch.setattr("job_hunt.llm_utils._get_genai_client_and_types", blocked)
 
 
 @pytest.fixture(autouse=True)
@@ -77,13 +102,9 @@ def fake_llm(monkeypatch):
 
 @pytest.fixture
 def sample_config():
-    """Minimal valid config dict (OpenRouter provider) for scanner/drafter tests."""
+    """Minimal valid config dict (Gemini provider, no key) for scanner/drafter tests."""
     return {
-        "tinyfish_api_key": "sk-test-tinyfish",
-        "llm_provider": "openrouter",
-        "openrouter_api_key": "sk-test-openrouter",
-        "openrouter_model": "test/model:free",
-        "openrouter_fallback_models": [],
+        "llm_provider": "gemini",
         "candidate": {
             "name": "Test Candidate",
             "resume_path": "resume/YOUR_RESUME.md",

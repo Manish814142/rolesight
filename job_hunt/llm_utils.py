@@ -4,9 +4,7 @@ import re
 import subprocess
 import time
 import warnings
-from typing import Any, cast
-
-from openai import OpenAI, RateLimitError
+from typing import Any
 
 from job_hunt.log import get_logger
 
@@ -15,20 +13,9 @@ warnings.filterwarnings("ignore", message=".*automatic function calling.*")
 logger = get_logger()
 
 # Per-request timeout (seconds) for HTTP-based LLM providers. Without this the
-# openai/anthropic SDKs default to 600s, so a single stalled free-tier model can
+# anthropic SDK defaults to 600s, so a single stalled free-tier model can
 # freeze a scan for 10 minutes. claude_cli has its own subprocess timeout (300s).
 _LLM_REQUEST_TIMEOUT = 120.0
-
-_openrouter_deprecation_warned = False
-
-
-def _make_openrouter_client(config: dict) -> OpenAI:
-    return OpenAI(
-        api_key=config.get("openrouter_api_key") or os.getenv("OPENROUTER_API_KEY"),
-        base_url="https://openrouter.ai/api/v1",
-        timeout=_LLM_REQUEST_TIMEOUT,
-    )
-
 
 def _chat_with_anthropic(config: dict, messages: list[dict], temperature: float, max_tokens: int) -> str:
     try:
@@ -482,56 +469,8 @@ def chat_with_llm(
         return _chat_with_anthropic(config, messages, temperature, max_tokens)
     if provider == "claude_cli":
         return _chat_with_claude_cli(config, messages, temperature, max_tokens)
-    global _openrouter_deprecation_warned
-    if not _openrouter_deprecation_warned:
-        logger.warning("llm_provider=openrouter is deprecated — set llm_provider=gemini in config.json")
-        _openrouter_deprecation_warned = True
-    return chat_with_fallback(_make_openrouter_client(config), config, messages, temperature, max_tokens)
+    if provider == "openrouter":
+        raise ValueError("llm_provider 'openrouter' was removed; use 'gemini' (default), 'anthropic' or 'claude_cli'")
+    raise ValueError(f"Unsupported llm_provider {provider!r}: use 'gemini' (default), 'anthropic' or 'claude_cli'")
 
 
-def chat_with_fallback(
-    llm: OpenAI,
-    config: dict,
-    messages: list[dict],
-    temperature: float = 0.1,
-    max_tokens: int = 4096,
-) -> str:
-    primary = config.get("openrouter_model", "nvidia/nemotron-3-super-120b-a12b:free")
-    fallbacks = config.get("openrouter_fallback_models", [])
-    models = [primary] + [m for m in fallbacks if m != primary]
-
-    for model_idx, model in enumerate(models):
-        label = f"[model {model_idx + 1}/{len(models)}] {model}"
-        for attempt in range(2):
-            try:
-                logger.debug(f"LLM call → {label} (attempt {attempt + 1})")
-                t0 = time.time()
-                resp = llm.chat.completions.create(
-                    model=model,
-                    messages=cast("Any", messages),
-                    temperature=temperature,
-                    max_tokens=max_tokens,
-                )
-                elapsed = time.time() - t0
-                text = resp.choices[0].message.content or ""
-                usage = resp.usage
-                if usage:
-                    logger.debug(
-                        f"LLM response: {len(text)} chars in {elapsed:.1f}s "
-                        f"(in={usage.prompt_tokens} out={usage.completion_tokens} tokens) via {model}"
-                    )
-                else:
-                    logger.debug(f"LLM response: {len(text)} chars in {elapsed:.1f}s via {model}")
-                return text
-            except RateLimitError:
-                if attempt == 0:
-                    logger.warning(f"Rate-limited on {model} — retrying in 3s...")
-                    time.sleep(3)
-                    continue
-                logger.warning(f"Rate-limited on {model} (quota exhausted) — trying next model...")
-                break
-            except Exception as e:
-                logger.error(f"LLM error ({model}): {e}")
-                break
-
-    raise RuntimeError("All LLM models failed. Check your OpenRouter API key and quota.")

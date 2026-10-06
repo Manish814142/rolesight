@@ -9,6 +9,10 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Removed (2026-10-06, T42)
+- The legacy TinyFish careers-page scanner (`discover_job_urls`, `fetch_job_details`, the URL regexes, the `tinyfish` client in `run_scan`), the OpenRouter provider (`chat_with_fallback`, `llm_provider: openrouter`, `OPENROUTER_*` settings; a config that still names it now fails with a clear message) and the dead `notifier.send_whatsapp` (T54) are deleted, and `tinyfish` and `openai` are no longer dependencies. `anthropic` and `claude_cli` providers and `score_jobs` (their scorer) stay. A company with no supported ATS is skipped with a warning; a company that only has a `careers_url` is now scanned when its ATS can be detected from it (it was silently routed to the TinyFish path). A scoring exception in the non-Gemini path is logged and no longer aborts the scan.
+- **Test isolation (found while doing this):** a full run reached the *real* Gemini API (genuine 429s in the log), because `load_dotenv(override=True)` in one test put the real key into the process environment for every later test. `conftest.py` now restores the environment after each test and blocks the real Gemini client unless a test stubs it; `tests/test_isolation.py` pins both.
+
 ### Changed (2026-10-06, T40)
 - `autopilot draft` no longer uses TinyFish. The job description comes from the database (T29 stores it for queued jobs); `--jd-file FILE` takes a pasted description for a job the database doesn't have, and the error says so. The prompts get the whole description (up to 20,000 characters; it was cut at 4,000, where requirements often start). A URL ref names the output folder after the stored company. `db.get_job_by_url` looks a job up by URL. Real CLI run (`python -m job_hunt draft 1`, TINYFISH_API_KEY unset, real Gemini, scratch directory from a real scan): exit 0, resume, cover letter and application info written, the letter citing details only present in that posting.
 

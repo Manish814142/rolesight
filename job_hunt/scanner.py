@@ -1,12 +1,9 @@
 import json
 import os
-import re
 import time
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from pathlib import Path
-
-from tinyfish import RateLimitError, TinyFish
 
 from job_hunt.adapters import enrich_job, fetch_company_jobs
 from job_hunt.db import get_job, init_db, save_job, update_job_details, update_job_status
@@ -22,37 +19,6 @@ logger = get_logger()
 STATE_FILE = Path("state/seen_jobs.json")
 LAST_SCAN_FILE = Path("state/last_scan.json")
 JOB_HISTORY_FILE = Path("state/job_history.json")
-
-JOB_URL_RE = re.compile(
-    r"/(job|jobs|opening|openings|position|positions|vacancy|vacancies|role|roles|apply)"
-    r"/[a-zA-Z0-9_%@.-]{4,}",
-    re.IGNORECASE,
-)
-ATS_JOB_RE = re.compile(
-    r"(greenhouse\.io/.+/jobs/\d+"
-    r"|lever\.co/[^/]+/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
-    r"|myworkdayjobs\.com/[^?#]+"
-    r"|smartrecruiters\.com/[^/]+/[A-Z0-9]+"
-    r"|ashbyhq\.com/[^/]+/[a-f0-9-]{32,})",
-    re.IGNORECASE,
-)
-ATS_LISTING_RE = re.compile(
-    r"^https?://(jobs\.lever\.co|boards\.greenhouse\.io|apply\.workable\.com"
-    r"|jobs\.smartrecruiters\.com)/[^/?#]+/?(\?.*)?$",
-    re.IGNORECASE,
-)
-
-DEFAULT_SEARCH_SENIORITY = "senior OR staff OR principal OR lead"
-DEFAULT_SEARCH_KEYWORDS = (
-    '"data scientist" OR "ML engineer" OR "machine learning engineer" '
-    'OR "AI engineer" OR MLOps OR "deep learning"'
-)
-
-
-def build_search_query(domain: str, candidate: dict) -> str:
-    seniority = candidate.get("search_seniority") or DEFAULT_SEARCH_SENIORITY
-    keywords = candidate.get("search_keywords") or DEFAULT_SEARCH_KEYWORDS
-    return f'site:{domain} ({seniority}) ({keywords})'
 
 SCORE_PROMPT = """You are evaluating job postings for a candidate. Output ONLY a JSON array, no other text.
 
@@ -100,14 +66,6 @@ def _build_candidate_profile(config: dict) -> str:
     return "\n".join(lines)
 
 
-def is_job_url(url: str) -> bool:
-    return bool(JOB_URL_RE.search(url)) or bool(ATS_JOB_RE.search(url))
-
-
-def is_ats_listing(url: str) -> bool:
-    return bool(ATS_LISTING_RE.match(url))
-
-
 def load_state() -> dict:
     if STATE_FILE.exists():
         return json.loads(STATE_FILE.read_text())
@@ -118,8 +76,6 @@ def save_state(state: dict) -> None:
     STATE_FILE.parent.mkdir(exist_ok=True)
     STATE_FILE.write_text(json.dumps(state, indent=2))
 
-
-_FETCH_URL_DELAY = 2.5
 
 # Opt-in batch scoring (config "gemini_scoring_mode": "batch"): jobs per Gemini call.
 # ~10 jobs x 2k-char descriptions + resume ≈ 7k tokens, well inside the 250k TPM free tier.
@@ -164,116 +120,6 @@ def _enrich_jobs(jobs: list, workers: int) -> int:
     with ThreadPoolExecutor(max_workers=max(1, workers)) as ex:
         list(ex.map(enrich_job, jobs))
     return sum(j.description_text != b for j, b in zip(jobs, before))
-
-
-def _fetch_with_ratelimit(tf: TinyFish, urls: list[str], **kwargs):
-    for attempt in range(2):
-        try:
-            resp = tf.fetch.get_contents(urls, **kwargs)
-            time.sleep(len(urls) * _FETCH_URL_DELAY)
-            return resp
-        except RateLimitError:
-            logger.warning("Fetch rate-limited — waiting 65s before retry...")
-            time.sleep(65)
-        except Exception as e:
-            logger.error(f"Fetch error for {urls[:1]}: {e}")
-            time.sleep(len(urls) * _FETCH_URL_DELAY)
-            return None
-    return None
-
-
-def _fetch_links(tf: TinyFish, urls: list[str]) -> dict[str, list[str]]:
-    result = {}
-    for i in range(0, len(urls), 10):
-        batch = urls[i: i + 10]
-        resp = _fetch_with_ratelimit(tf, batch, format="markdown", links=True)
-        if resp:
-            for r in resp.results:
-                result[r.url] = r.links
-    return result
-
-
-def discover_job_urls(
-    tf: TinyFish, company: dict, seen_urls: set, candidate: dict | None = None
-) -> list[dict]:
-    found_urls: set[str] = set()
-
-    logger.debug(f"  [{company['name']}] Fetching careers page: {company['careers_url']}")
-    resp = _fetch_with_ratelimit(tf, [company["careers_url"]], format="markdown", links=True)
-    if resp and resp.results:
-        links = resp.results[0].links
-        direct = [link for link in links if is_job_url(link) and link not in seen_urls]
-        ats_pages = list({link for link in links if is_ats_listing(link)})
-        found_urls.update(direct)
-        logger.debug(f"  [{company['name']}] Careers page: {len(direct)} direct job links, {len(ats_pages)} ATS listing pages")
-
-        if ats_pages:
-            logger.debug(f"  [{company['name']}] Expanding {len(ats_pages)} ATS listing page(s)...")
-            ats_link_map = _fetch_links(tf, ats_pages[:5])
-            ats_jobs = 0
-            for page_links in ats_link_map.values():
-                for link in page_links:
-                    if is_job_url(link) and link not in seen_urls:
-                        found_urls.add(link)
-                        ats_jobs += 1
-            logger.debug(f"  [{company['name']}] ATS expansion: {ats_jobs} additional job links")
-
-    query = build_search_query(company["search_domain"], candidate or {})
-    logger.debug(f"  [{company['name']}] Search query: {query}")
-    for attempt in range(2):
-        try:
-            resp = tf.search.query(query, language="en")
-            search_new = 0
-            for r in resp.results:
-                if is_job_url(r.url) and r.url not in seen_urls:
-                    found_urls.add(r.url)
-                    search_new += 1
-            logger.debug(f"  [{company['name']}] Search: {len(resp.results)} results, {search_new} new job URLs")
-            time.sleep(13)
-            break
-        except RateLimitError:
-            logger.warning(f"  [{company['name']}] Search rate-limited — waiting 60s...")
-            time.sleep(62)
-        except Exception as e:
-            logger.error(f"  [{company['name']}] Search error: {e}")
-            time.sleep(13)
-            break
-
-    new = [
-        {
-            "url": u,
-            "title": u.split("/")[-1].replace("-", " ").title(),
-            "snippet": "",
-            "company": company["name"],
-            "location": company["location"],
-            "region": company["region"],
-        }
-        for u in found_urls
-    ]
-    return new
-
-
-def fetch_job_details(tf: TinyFish, jobs: list[dict]) -> list[dict]:
-    enriched = []
-    for i in range(0, len(jobs), 10):
-        batch = jobs[i: i + 10]
-        urls = [j["url"] for j in batch]
-        logger.debug(f"  Fetching details for {len(batch)} job(s): {[j['title'][:40] for j in batch]}")
-        resp = _fetch_with_ratelimit(tf, urls, format="markdown")
-        if not resp:
-            enriched.extend(batch)
-            continue
-        fetched = {r.url: r for r in resp.results}
-        for job in batch:
-            r = fetched.get(job["url"])
-            if r and r.text:
-                job["content"] = r.text[:3000]
-                job["title"] = r.title or job["title"]
-                logger.debug(f"    Fetched '{job['title']}' — {len(r.text)} chars")
-            else:
-                logger.debug(f"    No content for: {job['url']}")
-            enriched.append(job)
-    return enriched
 
 
 def score_job(job: dict, resume: str, config: dict) -> dict:
@@ -405,20 +251,10 @@ def run_scan(config: dict, companies: list[dict]) -> None:
     provider = config.get("llm_provider") or "gemini"
     model_by_provider = {
         "gemini": config.get("gemini_model") or "gemini-3.5-flash-lite",
-        "openrouter": config.get("openrouter_model", "default"),
         "anthropic": config.get("anthropic_model", "default"),
         "claude_cli": config.get("claude_cli_model") or "claude default",
     }
     logger.info(f"LLM provider: {provider} | Model: {model_by_provider.get(provider, 'default')}")
-
-    tf = None
-    tf_key = config.get("tinyfish_api_key")
-    if tf_key:
-        try:
-            tf = TinyFish(api_key=tf_key)
-            logger.debug("TinyFish client initialised")
-        except Exception as e:
-            logger.warning(f"TinyFish init warning: {e}")
 
     resume_path = Path(config.get("candidate", {}).get("resume_path", "resume/YOUR_RESUME.md"))
     resume = resume_path.read_text()
@@ -439,7 +275,6 @@ def run_scan(config: dict, companies: list[dict]) -> None:
     all_scored_jobs: list[dict] = []
     errors: list[str] = []
     companies_scanned = 0
-    companies_with_jobs = 0
     scoring_failures = 0
     fetched_total = india_total = already_scored = prefilter_rejected = scored_ok = 0
     # Pre-filter survivors from every company; scored together after fetching so
@@ -464,7 +299,7 @@ def run_scan(config: dict, companies: list[dict]) -> None:
             direct_jobs, fetch_error = prefetched[idx - 1]
             if fetch_error:
                 raise RuntimeError(fetch_error)
-            if company.get("ats"):
+            if company.get("ats") or direct_jobs:
                 if direct_jobs:
                     logger.info(f"  Fetched {len(direct_jobs)} job(s) directly via ATS adapter")
                     queued = 0
@@ -513,42 +348,8 @@ def run_scan(config: dict, companies: list[dict]) -> None:
                 companies_scanned += 1
                 continue
 
-            # 2. Fallback to TinyFish for custom portals
-            if not tf or "careers_url" not in company:
-                logger.warning(f"  Skipping {company['name']}: No direct ATS detected and no valid careers_url")
-                companies_scanned += 1
-                continue
-
-            new_jobs = discover_job_urls(tf, company, seen_urls, config.get("candidate", {}))
-            if not new_jobs:
-                logger.info("  No new job URLs found")
-                companies_scanned += 1
-                continue
-
-            logger.info(f"  {len(new_jobs)} new job URL(s) — fetching details...")
-            new_jobs = fetch_job_details(tf, new_jobs)
-            seen_urls.update(j["url"] for j in new_jobs)
-
-            logger.info(f"  Scoring {len(new_jobs)} job(s)...")
-            scored = []
-            try:
-                for i in range(0, len(new_jobs), 10):
-                    batch = new_jobs[i: i + 10]
-                    logger.debug(f"  Scoring batch {i // 10 + 1} ({len(batch)} jobs)...")
-                    batch_scored = score_jobs(batch, resume, config)
-                    scored.extend(batch_scored)
-            except Exception as score_err:
-                logger.error(f"  Scoring failed: {score_err}")
-                errors.append(f"⚠️ Scoring failed for {company['name']}: {score_err}")
-                logger.warning(f"  Saving {len(new_jobs)} unscored job(s) as fallback")
-                scored = new_jobs
-
-            if scored:
-                all_scored_jobs.extend(scored)
-                companies_with_jobs += 1
-                titles = [j.get("extracted_title") or j.get("title", "?") for j in scored[:3]]
-                logger.info(f"  {len(scored)} job(s) saved: {', '.join(titles)}{' ...' if len(scored) > 3 else ''}")
-
+            # No adapter could fetch this company (custom careers pages are not scanned).
+            logger.warning(f"  Skipping {company['name']}: no supported ATS (custom careers pages are not scanned)")
             companies_scanned += 1
 
         except Exception as company_err:
@@ -650,8 +451,12 @@ def run_scan(config: dict, companies: list[dict]) -> None:
                  "url": j.url, "content": j.description_text}
                 for j in pending_direct
             ]
-            for i in range(0, len(legacy), 10):
-                all_scored_jobs.extend(score_jobs(legacy[i: i + 10], resume, config))
+            try:
+                for i in range(0, len(legacy), 10):
+                    all_scored_jobs.extend(score_jobs(legacy[i: i + 10], resume, config))
+            except Exception as score_err:
+                logger.error(f"Scoring failed with provider '{provider}': {score_err} — jobs left as 'discovered'")
+                errors.append(f"⚠️ Scoring failed: {score_err}")
 
     state["seen_urls"] = list(seen_urls)
     state["last_scan"] = datetime.now(timezone.utc).isoformat()

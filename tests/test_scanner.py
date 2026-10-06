@@ -1,10 +1,11 @@
-"""Scanner pipeline — TinyFish + LLM mocked, filesystem in tmp_path."""
+"""Scanner pipeline (non-Gemini scoring path) — fetch + LLM mocked, filesystem in tmp_path."""
 import json
 import types
 
 import pytest
 
 from job_hunt import scanner
+from job_hunt.models import JobPosting
 
 
 @pytest.fixture(autouse=True)
@@ -14,43 +15,14 @@ def _no_sleep(monkeypatch):
 
 # --- pure helpers --------------------------------------------------------------
 
-def test_is_job_url():
-    assert scanner.is_job_url("https://x.co/jobs/ml-engineer-123")
-    assert scanner.is_job_url("https://boards.greenhouse.io/acme/jobs/456789")
-    assert not scanner.is_job_url("https://x.co/about")
 
 
-def test_is_ats_listing():
-    assert scanner.is_ats_listing("https://jobs.lever.co/acme")
-    assert not scanner.is_ats_listing("https://x.co/careers")
 
 
-def test_build_search_query_defaults():
-    expected = (
-        'site:x.co (senior OR staff OR principal OR lead) '
-        '("data scientist" OR "ML engineer" OR "machine learning engineer" '
-        'OR "AI engineer" OR MLOps OR "deep learning")'
-    )
-    assert scanner.build_search_query("x.co", {}) == expected
 
 
-def test_build_search_query_empty_string_fields_fall_back_to_defaults():
-    same_as_absent = scanner.build_search_query("x.co", {})
-    out = scanner.build_search_query(
-        "x.co", {"search_seniority": "", "search_keywords": ""}
-    )
-    assert out == same_as_absent
 
 
-def test_build_search_query_custom_fields():
-    out = scanner.build_search_query(
-        "x.co",
-        {
-            "search_seniority": "junior OR entry",
-            "search_keywords": '"full stack developer" OR "react developer"',
-        },
-    )
-    assert out == 'site:x.co (junior OR entry) ("full stack developer" OR "react developer")'
 
 
 def test_build_candidate_profile():
@@ -108,48 +80,6 @@ def test_score_jobs_llm_raises(monkeypatch):
     assert scanner.score_jobs([{"company": "A", "location": "L", "title": "T", "url": "u"}], "r", {}) == []
 
 
-# --- discover / fetch (fake TinyFish) -----------------------------------------
-
-def _fake_tf(links=None, search_urls=None, contents=None):
-    links = links or []
-    search_urls = search_urls or []
-    contents = contents or {}
-
-    def get_contents(urls, **kwargs):
-        results = []
-        for u in urls:
-            results.append(types.SimpleNamespace(
-                url=u, links=links, text=contents.get(u, "JD text"), title="Fetched Title"))
-        return types.SimpleNamespace(results=results, errors=[])
-
-    def query(q, **kwargs):
-        return types.SimpleNamespace(results=[types.SimpleNamespace(url=u) for u in search_urls])
-
-    return types.SimpleNamespace(
-        fetch=types.SimpleNamespace(get_contents=get_contents),
-        search=types.SimpleNamespace(query=query),
-    )
-
-
-def test_discover_job_urls(monkeypatch):
-    tf = _fake_tf(links=["https://x.co/jobs/ml-engineer-abcd"],
-                  search_urls=["https://x.co/jobs/staff-ai-wxyz"])
-    company = {"name": "Acme", "careers_url": "https://x.co/careers",
-               "search_domain": "x.co", "location": "Remote", "region": "EU"}
-    out = scanner.discover_job_urls(tf, company, set())
-    urls = {j["url"] for j in out}
-    assert "https://x.co/jobs/ml-engineer-abcd" in urls
-    assert "https://x.co/jobs/staff-ai-wxyz" in urls
-    assert all(j["company"] == "Acme" for j in out)
-
-
-def test_fetch_job_details(monkeypatch):
-    tf = _fake_tf(contents={"https://x.co/jobs/1": "Full job description here"})
-    jobs = [{"url": "https://x.co/jobs/1", "title": "old"}]
-    out = scanner.fetch_job_details(tf, jobs)
-    assert out[0]["content"].startswith("Full job") and out[0]["title"] == "Fetched Title"
-
-
 # --- export --------------------------------------------------------------------
 
 def test_export_to_csv(tmp_path, monkeypatch):
@@ -166,18 +96,16 @@ def test_export_to_csv(tmp_path, monkeypatch):
 @pytest.fixture
 def scan_setup(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
-    (tmp_path / "resume.md").write_text("Senior ML engineer, 10 YOE.")
-    monkeypatch.setattr(scanner, "TinyFish", lambda **_: object())
-    monkeypatch.setattr(scanner, "discover_job_urls", lambda tf, co, seen, cand=None: [
-        {"url": "https://x.co/jobs/1", "title": "MLE", "company": co["name"],
-         "location": co["location"], "region": co["region"]}])
-    monkeypatch.setattr(scanner, "fetch_job_details", lambda tf, jobs: jobs)
+    (tmp_path / "resume.md").write_text("Backend engineer, 3 YOE.")
+    job = JobPosting(global_id="greenhouse:acme:1", ats="greenhouse", company="Acme", title="Backend Engineer",
+                     location="Bengaluru, India", is_remote=False, url="https://x.co/jobs/1", description_text="Node")
+    monkeypatch.setattr(scanner, "fetch_company_jobs", lambda c: [job])
     monkeypatch.setattr(scanner, "score_jobs", lambda jobs, resume, cfg: [
-        {**jobs[0], "score": 90, "extracted_title": "MLE", "reason": "fit", "stack": "Py"}])
-    cfg = {"tinyfish_api_key": "k", "candidate": {"name": "Ada", "resume_path": "resume.md",
-                                                  "min_score": 55, "top_n": 5}}
-    companies = [{"name": "Acme", "careers_url": "c", "search_domain": "x.co",
-                  "location": "Remote", "region": "EU"}]
+        {**jobs[0], "score": 90, "extracted_title": "Backend Engineer", "reason": "fit", "stack": ""}])
+    # llm_provider "anthropic" and no Gemini key: the non-Gemini scoring path
+    cfg = {"llm_provider": "anthropic", "candidate": {"name": "Ada", "resume_path": "resume.md",
+                                                      "min_score": 55, "top_n": 5}}
+    companies = [{"name": "Acme", "ats": "greenhouse", "slug": "acme"}]
     return cfg, companies
 
 
@@ -201,13 +129,30 @@ def test_run_scan_with_telegram(scan_setup, monkeypatch):
     assert sent and "matches" in sent[0]
 
 
-def test_run_scan_scoring_failure_fallback(scan_setup, monkeypatch):
+def test_run_scan_scoring_failure_does_not_abort_the_scan(scan_setup, monkeypatch):
+    """A scoring exception (non-Gemini provider) is logged; the scan finishes and the job stays 'discovered'."""
     def boom(*a, **k):
         raise RuntimeError("score boom")
 
     monkeypatch.setattr(scanner, "score_jobs", boom)
     monkeypatch.setattr(scanner, "send_telegram", lambda *a: True)
     cfg, companies = scan_setup
-    scanner.run_scan(cfg, companies)
-    saved = json.loads(scanner.LAST_SCAN_FILE.read_text())
-    assert saved  # unscored fallback saved
+    scanner.run_scan(cfg, companies)           # must not raise
+    from job_hunt.db import get_jobs_by_status
+    assert [j["title"] for j in get_jobs_by_status("discovered")] == ["Backend Engineer"]
+
+
+def test_company_with_only_a_careers_url_is_scanned_when_its_ats_is_detected(scan_setup, monkeypatch):
+    """fetch_company_jobs detects the ATS from a careers_url; run_scan must use those jobs (T42)."""
+    monkeypatch.setattr(scanner, "send_telegram", lambda *a: True)
+    cfg, _ = scan_setup
+    scanner.run_scan(cfg, [{"name": "Acme", "careers_url": "https://boards.greenhouse.io/acme"}])
+    from job_hunt.db import get_jobs_by_status
+    assert len(get_jobs_by_status("discovered")) == 1
+
+
+def test_company_with_no_supported_ats_is_skipped_not_fatal(scan_setup, monkeypatch):
+    monkeypatch.setattr(scanner, "fetch_company_jobs", lambda c: [])
+    monkeypatch.setattr(scanner, "send_telegram", lambda *a: True)
+    cfg, _ = scan_setup
+    scanner.run_scan(cfg, [{"name": "Custom Portal Inc", "careers_url": "https://custom.example/careers"}])
