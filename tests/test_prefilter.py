@@ -368,3 +368,28 @@ def test_prefilter_rejects_non_target_stack_titles(title):
 ])
 def test_prefilter_keeps_titles_that_only_resemble_the_new_words(title):
     assert should_evaluate_job(_india(title))[0], title
+
+
+# T11: Adobe's engineering ladder is "Computer Scientist"; 13 of its 14 India postings were rejected for
+# having no include word (measured 2026-10-06), though MTS titles at other firms already pass.
+@pytest.mark.parametrize("title", [
+    "Computer Scientist",
+    "Computer Scientist 2",
+    "Computer Scientist II",
+    "Computer Scientist - II",
+    "Senior Computer Scientist - Agentic AI",
+])
+def test_prefilter_accepts_computer_scientist_titles(title):
+    assert should_evaluate_job(_india(title))[0], title
+
+
+@pytest.mark.parametrize("title", [
+    "Computer Scientist I (Frontend)",
+    "Senior Computer Scientist (Architect)",
+    "Computer Scientist- C++",
+    "Computer Scientist - Java, Microservices, Agentic AI",
+    "Principal Computer Scientist",
+    "Staff Computer Scientist",
+])
+def test_prefilter_computer_scientist_still_obeys_the_exclusions(title):
+    assert not should_evaluate_job(_india(title))[0], title

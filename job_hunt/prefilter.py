@@ -12,7 +12,7 @@ from job_hunt.models import JobPosting
 # Product startups often title backend roles "Product/Platform/Infrastructure Engineer".
 TITLE_INCLUDE_PATTERN = re.compile(
     r"\b(back[\s-]?end|node(\.?js)?|sde\d*|software\s*engineer|software\s+development\s+engineer"
-    r"|member\s+of\s+technical\s+staff|mts|developer|full[\s-]*stack"
+    r"|member\s+of\s+technical\s+staff|mts|computer\s+scientist|developer|full[\s-]*stack"
     r"|api|distributed(\s*systems)?|platform\s*engineer|product\s*engineer"
     r"|infrastructure\s*engineer|systems\s*engineer)\b",
     re.IGNORECASE,
