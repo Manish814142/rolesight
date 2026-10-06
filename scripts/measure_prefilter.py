@@ -21,10 +21,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from job_hunt.models import JobPosting  # noqa: E402
 from job_hunt.prefilter import (  # noqa: E402
-    LOCATION_INDIA_COUNTRY_CODE,
-    LOCATION_INDIA_PATTERN,
     TITLE_EXCLUDE_PATTERN,
     TITLE_INCLUDE_PATTERN,
+    location_is_india,
     posted_age_days,
     should_evaluate_job,
 )
