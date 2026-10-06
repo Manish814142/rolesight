@@ -40,7 +40,9 @@ TITLE_EXCLUDE_PATTERN = re.compile(
     r"|\.net\b|\bc#(?!\w)"
     rf"|\b({_PLATFORM_ROLE_WORDS})\b"
     r"|\boracle\s+(ebs|fusion|hcm|erp|cpq|apps|cloud)\b|\bpower\s*(bi|platform|apps|automate)\b"
-    r"|\bblue\s*prism\b|\bmarketing\s+cloud\b",
+    r"|\bblue\s*prism\b|\bmarketing\s+cloud\b"
+    # Languages and domains outside the target stack (T61): 56 of 1,191 survivors named one of these.
+    r"|(?<![\w+])c\+\+|\b(embedded|firmware|kernel|gpu|cuda|fpga|verilog|rust|ruby|php)\b",
     re.IGNORECASE,
 )
 

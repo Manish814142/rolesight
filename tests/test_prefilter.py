@@ -334,3 +334,37 @@ def test_prefilter_platform_exclusion_ignores_the_company_field():
     """A role at Salesforce or ServiceNow is judged by its title; only the title is matched."""
     for company in ("Salesforce", "ServiceNow", "SAP", "Workday"):
         assert should_evaluate_job(_india("Software Engineer, Backend", company=company))[0], company
+
+
+# T61: titles that name a language or domain outside the target stack (C++, embedded, kernel, GPU,
+# Rust, Ruby, PHP) were 56 of 1,191 survivors (4.7%, measured 2026-10-06); every labelled example is a `no`.
+@pytest.mark.parametrize("title", [
+    "Software Engineer (C++)",
+    "Senior Software Engineer - C/C++, Linux/ Unix, Cloud",
+    "Senior Software Engineer - Layer1 - C++",
+    "Sr. Software Development Engineer (Backend Dev - C/C++)",
+    "Embedded SDE - Security, Silicon & Systems Group",
+    "Senior SDE- Kernel Engineer, SSG",
+    "SDE IV - GPU Engineer",
+    "CUDA Software Engineer",
+    "Firmware Engineer",
+    "Low Latency FPGA Developer",
+    "Senior Backend Engineer (Ruby), Production Engineering",
+    "Software Engineer, Backend (Rust)",
+    "Full Stack Developer (PHP)",
+])
+def test_prefilter_rejects_non_target_stack_titles(title):
+    ok, reason = should_evaluate_job(_india(title))
+    assert not ok and "exclude" in reason
+
+
+@pytest.mark.parametrize("title", [
+    "Software Engineer, Backend (Node.js)",
+    "Backend Engineer - Distributed Systems",
+    "Software Engineer - Payments",
+    "Software Engineer, Rustic Analytics",       # whole words only
+    "Backend Engineer, Cpp-free Platform",       # not C++
+    "Software Engineer (TypeScript, Kafka)",
+])
+def test_prefilter_keeps_titles_that_only_resemble_the_new_words(title):
+    assert should_evaluate_job(_india(title))[0], title
