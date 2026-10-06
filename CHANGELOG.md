@@ -9,6 +9,9 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed (2026-10-06)
+- T57: the Amazon adapter uses the API's full `description` (HTML stripped, then the qualification bullets) instead of `description_short`, which Amazon cuts mid-sentence at 202 characters. Live: median description 1,244 → 3,871 characters over 2,295 India postings; falls back to the stub when `description` is empty. The 23 already-scored Amazon rows in `data/jobs.db` were reset to `discovered` (and their entries dropped from `state/job_history.json`) so the next scan scores them on the full text.
+
 ### Docs (2026-10-04)
 - Documentation rewritten to the current direct-ATS + Gemini pipeline (it still described upstream's TinyFish + OpenRouter careers-page scanner).
   - **README:** overview, features, how it works (with the first real scan's measured funnel), current status and known gaps, commands, config, outputs, the company list, layout.

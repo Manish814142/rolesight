@@ -67,6 +67,27 @@ def test_amazon_adapter_paginates_and_maps_fields(mock_get):
     assert mock_get.call_args_list[0].kwargs["params"]["country"] == "IND"
 
 
+@patch("requests.get")
+def test_amazon_uses_the_full_description_not_the_202_char_stub(mock_get):
+    """description_short is cut mid-sentence at 202 chars; `description` holds the whole text (T57)."""
+    full = ("We build the sports data platform for Prime Video.<br/>Key job responsibilities<br/>"
+            "- Design distributed services in Java or Python<br/>- Operate them on AWS")
+    item = {**_amazon_job(0), "description": full, "description_short": full[:40]}
+    mock_get.return_value = _resp({"hits": 1, "jobs": [item]})
+    text = fetch_company_jobs({"name": "Amazon", "ats": "amazon"})[0].description_text
+    assert "Design distributed services in Java or Python" in text and "Operate them on AWS" in text
+    assert "<br" not in text
+    assert text.index("sports data platform") < text.index("3+ years")        # role first, qualifications after
+    assert text.count("We build the sports data") == 1                        # the stub is not repeated
+
+
+@patch("requests.get")
+def test_amazon_falls_back_to_the_stub_when_there_is_no_full_description(mock_get):
+    item = {**_amazon_job(0), "description": "", "description_short": "Short blurb"}
+    mock_get.return_value = _resp({"hits": 1, "jobs": [item]})
+    assert "Short blurb" in fetch_company_jobs({"name": "Amazon", "ats": "amazon"})[0].description_text
+
+
 # ── Oracle HCM ────────────────────────────────────────────────────────────────
 
 BASE = "https://jpmc.fa.oraclecloud.com/hcmRestApi/resources/latest/recruitingCEJobRequisitions"

@@ -40,8 +40,10 @@ def fetch_amazon(country: str = "IND") -> List[JobPosting]:
         for item in page:
             location = item.get("normalized_location") or item.get("location") or "Not specified"
             title = (item.get("title") or "").strip()
-            description = "\n\n".join(strip_html(item.get(k) or "") for k in
-                                       ("description_short", "basic_qualifications", "preferred_qualifications"))
+            # `description_short` is cut mid-sentence at ~200 chars; `description` is the whole text.
+            body = item.get("description") or item.get("description_short")
+            description = "\n\n".join(strip_html(part or "") for part in
+                                       (body, item.get("basic_qualifications"), item.get("preferred_qualifications")))
             jobs.append(JobPosting(
                 global_id=f"amazon:{item.get('id_icims') or item.get('id')}",
                 ats="amazon",
