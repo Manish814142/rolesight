@@ -9,6 +9,9 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Added (2026-10-06, T37)
+- CSV column **LinkedIn people**: a link to a LinkedIn people search for `<company> software engineer` (`https://www.linkedin.com/search/results/people/?keywords=…`, percent-encoded by `exporter.linkedin_people_search_url`), for finding someone to ask for a referral. Checked: `tests/test_exporter.py`, and a CSV written by the real `autopilot export` for five companies (including `Ben & Jerry's, Inc. #1?` and `Société Générale`) parsed with `urllib.parse` gives back exactly `<company> software engineer` as the only query parameter. **Not verified:** that LinkedIn opens and shows people for this URL (it needs a logged-in session; no browser here). Column positions shift again; read the CSV by header name.
+
 ### Changed (2026-10-06, T36)
 - The CSV no longer has the always-empty **Stack** and **Region** columns. Region was never set by any scorer (only old test fixtures had it); Stack is now written only when some job has one (the deprecated non-Gemini scorer returns it; the Gemini path does not), like the structured-scoring sub-score columns. Dropped rather than filled: adding `stack` to the Gemini scoring schema changes the scoring prompt and would need re-measuring against the golden set. A default Gemini scan's CSV has 9 columns. Checked through the real `autopilot export` on a `last_scan.json` shaped like a Gemini scan: the header is Company, Role, Location, Posted, Application URL, Score (%), Reason, Worth Applying, Scan Date, and no column is empty. Column positions changed: anything reading the CSV by position (not by header name) breaks.
 

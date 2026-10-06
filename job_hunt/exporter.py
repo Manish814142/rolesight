@@ -5,6 +5,7 @@ import csv
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
+from urllib.parse import quote
 
 EXPORT_FIELDS: List[str] = [
     "Company",
@@ -12,11 +13,20 @@ EXPORT_FIELDS: List[str] = [
     "Location",
     "Posted",
     "Application URL",
+    "LinkedIn people",
     "Score (%)",
     "Reason",
     "Worth Applying",
     "Scan Date",
 ]
+
+
+def linkedin_people_search_url(company: str) -> str:
+    """LinkedIn people search for engineers at `company`: a way to find someone for a referral. "" without a name."""
+    name = (company or "").strip()
+    if not name:
+        return ""
+    return "https://www.linkedin.com/search/results/people/?keywords=" + quote(f"{name} software engineer", safe="")
 
 
 def _posted_display(posted_at: str) -> str:
@@ -47,6 +57,7 @@ def job_to_export_row(j: Dict[str, Any]) -> Dict[str, Any]:
         "Location": j.get("location_remote") or j.get("location", ""),
         "Posted": _posted_display(j.get("posted_at", "")),
         "Application URL": j.get("url", ""),
+        "LinkedIn people": linkedin_people_search_url(j.get("company", "")),
         "Score (%)": j.get("score", ""),
         "Reason": j.get("reason", ""),
         "Worth Applying": "Yes" if worth else ("No" if worth is False else ""),

@@ -16,6 +16,7 @@ is job N of `state/last_scan.json`, which `draft N` reads.
 | Location | Raw location string from the ATS |
 | Posted | `YYYY-MM-DD`, or Workday's relative text ("Posted 5 Days Ago") |
 | Application URL | The company's own posting. Apply there |
+| LinkedIn people | A LinkedIn people search for `<company> software engineer`, to find someone for a referral. Opening it needs you to be logged in to LinkedIn |
 | Score (%) | Gemini's 0–100 fit score |
 | Reason | Gemini's one sentence on why it scored that way. **Read this before trusting the number** |
 | Worth Applying | `Yes` if score ≥ `min_score` |

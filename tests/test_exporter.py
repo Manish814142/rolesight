@@ -111,3 +111,24 @@ def test_stack_column_appears_when_a_scorer_provides_it(tmp_path: Path) -> None:
     with path.open(encoding="utf-8") as f:
         rows = list(csv.DictReader(f))
     assert [r["Stack"] for r in rows] == ["Node.js, Postgres", ""]
+
+
+# --- T37: LinkedIn people-search link ---------------------------------------------------
+
+def test_linkedin_people_search_url_is_percent_encoded() -> None:
+    from job_hunt.exporter import linkedin_people_search_url
+
+    assert linkedin_people_search_url("Acme") == (
+        "https://www.linkedin.com/search/results/people/?keywords=Acme%20software%20engineer")
+    # characters that would end or split the query string must not survive unencoded
+    url = linkedin_people_search_url("Ben & Jerry's, Inc. #1?")
+    query = url.split("keywords=", 1)[1]
+    assert query == "Ben%20%26%20Jerry%27s%2C%20Inc.%20%231%3F%20software%20engineer"
+    assert linkedin_people_search_url("") == "" and linkedin_people_search_url("   ") == ""
+
+
+def test_csv_has_a_linkedin_link_column(tmp_path: Path) -> None:
+    path = export_jobs_to_csv([_gemini_path_job(1)], base_name="li", out_dir=tmp_path)
+    with path.open(encoding="utf-8") as f:
+        row = next(csv.DictReader(f))
+    assert row["LinkedIn people"] == "https://www.linkedin.com/search/results/people/?keywords=Acme%201%20software%20engineer"
