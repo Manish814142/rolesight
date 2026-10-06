@@ -125,7 +125,7 @@ After this list: **T40, T50, T42** (Manish will not use TinyFish), then the rest
 | T59 | Confirm the golden-set labels | manish | — | S | T48 |
 | T60 | Scores flip by ~50 points between runs on ambiguous postings | todo | — | S | — |
 | T61 | Pre-filter: C++ / embedded / kernel / GPU / Rust / Ruby / PHP titles | review · claude · b69171a | claude | XS | — |
-| T49 | Check big employers that report "no India jobs" | todo | — | S | — |
+| T49 | Check big employers that report "no India jobs" | doing · claude · 2026-10-06 | claude | S | — |
 
 **T48 · Scoring rubric and a golden set.** The prompt (`llm_utils.score_job_with_gemini`)
 asks for "score 0-100" with no scale. First real scan, measured: 21 of 203 jobs tie at
