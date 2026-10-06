@@ -13,8 +13,6 @@ EXPORT_FIELDS: List[str] = [
     "Posted",
     "Application URL",
     "Score (%)",
-    "Stack",
-    "Region",
     "Reason",
     "Worth Applying",
     "Scan Date",
@@ -27,8 +25,10 @@ def _posted_display(posted_at: str) -> str:
     return s[:10] if len(s) >= 10 and s[4] == "-" and s[7] == "-" else s
 
 
-# Filled only by structured scoring (scoring_mode: structured, T41); the columns appear when a job has them.
-SUBSCORE_COLUMNS = {
+# Written only when some job has a value, so no column is always empty (T36): Stack comes from the deprecated
+# non-Gemini scorer, the rest from structured scoring (scoring_mode: structured, T41).
+OPTIONAL_COLUMNS = {
+    "Stack": "stack",
     "Stack fit": "stack_fit",
     "Role fit": "role_fit",
     "Seniority fit": "seniority_fit",
@@ -48,12 +48,10 @@ def job_to_export_row(j: Dict[str, Any]) -> Dict[str, Any]:
         "Posted": _posted_display(j.get("posted_at", "")),
         "Application URL": j.get("url", ""),
         "Score (%)": j.get("score", ""),
-        "Stack": j.get("stack", ""),
-        "Region": j.get("region", ""),
         "Reason": j.get("reason", ""),
         "Worth Applying": "Yes" if worth else ("No" if worth is False else ""),
         "Scan Date": j.get("scan_date", ""),
-        **{col: ("" if j.get(key) is None else j.get(key)) for col, key in SUBSCORE_COLUMNS.items()},
+        **{col: ("" if j.get(key) is None else j.get(key)) for col, key in OPTIONAL_COLUMNS.items()},
     }
 
 
@@ -92,7 +90,7 @@ def export_jobs_to_csv(
     else:
         out_path.parent.mkdir(parents=True, exist_ok=True)
 
-    extra = [col for col, key in SUBSCORE_COLUMNS.items() if any(j.get(key) not in (None, "") for j in jobs)]
+    extra = [col for col, key in OPTIONAL_COLUMNS.items() if any(j.get(key) not in (None, "") for j in jobs)]
     with out_path.open("w", newline="", encoding="utf-8") as fh:
         writer = csv.DictWriter(fh, fieldnames=EXPORT_FIELDS + extra, extrasaction="ignore")
         writer.writeheader()

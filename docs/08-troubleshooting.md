@@ -32,7 +32,6 @@ every job's pre-filter decision, score and reason is there.
 | A job you expected isn't in today's CSV | (1) the pre-filter rejected it, (2) it was scored in an earlier scan (CSVs only hold that scan's jobs), (3) it's outside `--posted-within`, (4) Workday's India search didn't return it | `grep -i "<title words>" data/autopilot.log` shows the decision; `autopilot export --days 30` shows earlier scores |
 | The same job appears several times | Fixed in T47 for Workday paging. If it still happens, the board may list the job twice under different requisitions | Compare the URLs; each should be a different requisition |
 | Many jobs score exactly 90 | Scores cluster; the rubric (T48) shifts calibration but not ranking | Read the Reason column to separate them; sub-scores are planned (T41) |
-| Stack / Region columns are empty | Not filled on the Gemini path (T36) | — |
 | `run_daily.sh` prints `min_score=70` but the scan uses 60 | `.env`'s `MIN_SCORE` overrides it (T05) | Set `MIN_SCORE` in `.env` to the value you want |
 | A large `scan.log` in the repo root | The log used to live there, unrotated; nothing writes it now (T16) | Safe to delete. `data/autopilot.log` rotates at 5 MB and keeps 3 older files |
 

@@ -17,11 +17,13 @@ is job N of `state/last_scan.json`, which `draft N` reads.
 | Posted | `YYYY-MM-DD`, or Workday's relative text ("Posted 5 Days Ago") |
 | Application URL | The company's own posting. Apply there |
 | Score (%) | Gemini's 0–100 fit score |
-| Stack | Always empty for now (T36) |
-| Region | Always empty for now (T36) |
 | Reason | Gemini's one sentence on why it scored that way. **Read this before trusting the number** |
 | Worth Applying | `Yes` if score ≥ `min_score` |
 | Scan Date | UTC date of the scan |
+
+A column appears only when some job in the file has a value for it: **Stack** (from the deprecated non-Gemini
+scorer) and, with `scoring_mode: structured`, **Stack fit**, **Role fit**, **Seniority fit**, **Location fit**,
+**Min years** and **Capped by**. A default Gemini scan writes none of them (T36).
 
 A CSV contains only jobs scored in that scan. Jobs scored on earlier days are in earlier
 CSVs and in `state/job_history.json`.

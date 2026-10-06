@@ -133,7 +133,6 @@ As of 2026-10-04. The live list of work is the task board, [docs/tasks.md](docs/
   yours yet (T59).
 - **Telegram is unverified.** The last send attempts (2026-10-03) failed with HTTP 404, so
   treat Telegram as off (T06). The CSV is the primary output.
-- **Empty CSV columns.** Stack and Region are always empty (T36).
 
 ---
 
@@ -211,7 +210,7 @@ personal fork, and the rules are tuned to one profile.
 
 | Path | Contents |
 |---|---|
-| `output/jobs_YYYY-MM-DD.csv` | One file per scan (`_1`, `_2`, … if one already exists). Columns: Company, Role, Location, Posted, Application URL, Score (%), Stack, Region, Reason, Worth Applying, Scan Date. Best score first. |
+| `output/jobs_YYYY-MM-DD.csv` | One file per scan (`_1`, `_2`, … if one already exists). Columns: Company, Role, Location, Posted, Application URL, Score (%), Reason, Worth Applying, Scan Date (plus Stack, Stack fit, Role fit, … only when a scorer provides them). Best score first. |
 | `data/jobs.db` | SQLite seen-job memory: `skipped` → `discovered` → `scored` / `notified` |
 | `state/last_scan.json` | The latest scan's scored jobs, best first (`draft N` reads row N) |
 | `state/job_history.json` | Every scored job so far (`export --days N` reads it) |

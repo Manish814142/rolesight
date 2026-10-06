@@ -190,7 +190,7 @@ Measured on 2026-10-04 unless marked otherwise. Each one has a task.
   prompt then caps roles that need onsite work abroad at 30 (rubric rule 1, T24; checked on
   one job).
 - **Three stores** (`jobs.db`, `last_scan.json`, `job_history.json`) overlap; `export`
-  ignores the DB (T31–T34). The CSV's Stack and Region columns are always empty (T36).
+  ignores the DB (T31–T34).
 - **Unreachable employers:** custom portals and platforms without a public API
   (Darwinbox, Eightfold, Phenom, Zoho Recruit…). The census found 52% of 458 careers pages
   JS-only or unidentified. Some large employers (Accenture, Sony, Western Digital) were

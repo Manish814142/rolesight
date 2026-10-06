@@ -83,3 +83,31 @@ def test_export_row_includes_posted_date():
     assert job_to_export_row({"posted_at": "2026-09-03T13:30:34-04:00"})["Posted"] == "2026-09-03"
     assert job_to_export_row({"posted_at": "Posted 5 Days Ago"})["Posted"] == "Posted 5 Days Ago"
     assert job_to_export_row({})["Posted"] == ""
+
+
+# --- T36: no column is always empty ---------------------------------------------------
+
+def _gemini_path_job(n: int) -> dict:
+    """The dict run_scan builds for a Gemini-scored job: `stack` is "" and nothing sets `region`."""
+    return {"company": f"Acme {n}", "title": "Backend Engineer", "extracted_title": "Backend Engineer",
+            "location": "Bengaluru, India", "location_remote": "Bengaluru, India", "url": f"https://x.co/{n}",
+            "score": 80 + n, "reason": "fits", "stack": "", "worth_applying": True,
+            "posted_at": "2026-10-06", "scan_date": "2026-10-06"}
+
+
+def test_a_gemini_scan_csv_has_no_always_empty_column(tmp_path: Path) -> None:
+    path = export_jobs_to_csv([_gemini_path_job(1), _gemini_path_job(2)], base_name="gemini", out_dir=tmp_path)
+    with path.open(encoding="utf-8") as f:
+        rows = list(csv.DictReader(f))
+    empty = [col for col in rows[0] if not any(r[col] != "" for r in rows)]
+    assert empty == []
+    assert "Stack" not in rows[0] and "Region" not in rows[0]
+
+
+def test_stack_column_appears_when_a_scorer_provides_it(tmp_path: Path) -> None:
+    """The non-Gemini scorer returns a stack per job; the column is written then (and only then)."""
+    jobs = [{**_gemini_path_job(1), "stack": "Node.js, Postgres"}, _gemini_path_job(2)]
+    path = export_jobs_to_csv(jobs, base_name="legacy", out_dir=tmp_path)
+    with path.open(encoding="utf-8") as f:
+        rows = list(csv.DictReader(f))
+    assert [r["Stack"] for r in rows] == ["Node.js, Postgres", ""]

@@ -9,6 +9,9 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Changed (2026-10-06, T36)
+- The CSV no longer has the always-empty **Stack** and **Region** columns. Region was never set by any scorer (only old test fixtures had it); Stack is now written only when some job has one (the deprecated non-Gemini scorer returns it; the Gemini path does not), like the structured-scoring sub-score columns. Dropped rather than filled: adding `stack` to the Gemini scoring schema changes the scoring prompt and would need re-measuring against the golden set. A default Gemini scan's CSV has 9 columns. Checked through the real `autopilot export` on a `last_scan.json` shaped like a Gemini scan: the header is Company, Role, Location, Posted, Application URL, Score (%), Reason, Worth Applying, Scan Date, and no column is empty. Column positions changed: anything reading the CSV by position (not by header name) breaks.
+
 ### Fixed (2026-10-06, T18)
 - Four entries were headed 2026-10-05; the commits that added them (04521db, 5f1be31) are dated 2026-10-04, and `git log` has no commit on 2026-10-05 at all. The headings, the two measurement dates inside the entries (Amazon's 2,329 India roles; the end-to-end funnel) and the same dates in five source/test comments now say 2026-10-04. The only evidence is the git author dates (+0530); if the machine clock was off when the commits were made, these dates are off with it. Every dated heading now equals the date of the commit that introduced it (checked with `git blame` on each heading line); the release headings match their tags.
 
