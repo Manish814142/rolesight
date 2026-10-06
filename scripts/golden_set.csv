@@ -3105,3 +3105,351 @@ Knowledge and working experience in -
 4+ years in Linux
 3+ years in Configuration management tools (Puppet/Ansible)
 2+ years in Containerization"
+j1,dev,Graviton Research Capital,Software Engineer (2027 Graduate),"Gurugram, Haryana, India",https://job-boards.greenhouse.io/gravitonresearchcapital/jobs/8764240002,no,claude-2026-10-06,"Graviton new-grad programme (2027 graduates), C++ trading infrastructure","Software Engineer
+Build technology where every nanosecond matters.
+At Graviton, software isn't just a tool that supports trading. It is the infrastructure behind every research breakthrough, every trading decision and every competitive advantage.
+As a Software Engineer , you'll work on systems where performance, reliability and precision matter at an extraordinary scale. You'll partner closely with software engineers and quantitative researchers to build technology that processes enormous volumes of market data, powers quantitative research and supports live trading.
+You'll take on problems that don't have obvious answers — from designing high-performance systems and distributed infrastructure to eliminating bottlenecks measured in microseconds and building tools that make our researchers and engineers faster.
+Your work will go into production, be measured against real-world performance and have a direct impact on how our trading systems operate.
+If you enjoy solving hard engineering problems, understanding systems at a deep level and pushing technology to its limits, you'll feel right at home.
+What You'll Work On
+You'll work across the engineering stack that powers our quantitative research and trading platforms.
+Depending on your team, your work may include:
+Designing and building high-performance, low-latency systems in modern C++.
+Building distributed systems that process and analyze massive volumes of market data .
+Designing systems where latency, throughput and reliability directly influence trading performance .
+Working on Linux systems, networking, concurrency and multithreaded applications.
+Profiling systems, identifying bottlenecks and optimizing performance at the hardware and software level.
+Building robust infrastructure that supports quantitative research and live trading.
+Debugging complex production systems and solving problems where correctness and reliability are critical.
+Designing internal platforms and developer tools that accelerate research and engineering productivity.
+Exploring AI-powered developer tools and intelligent automation to improve engineering workflows.
+Collaborating with quantitative researchers to turn ideas and models into reliable production systems.
+Participating in architecture discussions, technical design reviews and code reviews.
+Taking ownership of systems from design and implementation through deployment, monitoring and continuous improvement .
+The problems are hard. The systems are real. And the impact is measurable.
+The Engineering Challenge
+At Graviton, you'll encounter engineering problems where traditional solutions aren't always good enough.
+You'll think about questions like:
+How do you make a system faster without compromising correctness?
+How do you process enormous amounts of data without introducing unnecessary latency?
+How do you design software that remains reliable under extreme workloads?
+How do you find a bottleneck that exists for only a few microseconds?
+How do you build infrastructure that enables researchers to experiment faster?
+How do you balance performance, simplicity and maintainability in systems that operate at extraordinary speed?
+You'll be expected not just to write code, but to understand the system, challenge assumptions and find better ways to solve the problem.
+Ownership From Day One
+At Graviton, engineers are trusted with meaningful problems early.
+You'll work closely with experienced engineers and quantitative researchers, receive thoughtful technical feedback and have the opportunity to own projects end-to-end.
+That means going beyond implementation:
+Understand the problem → design the solution → build it → measure it → improve it → take it to production.
+You'll participate in code reviews, architecture discussions and technical design sessions, while learning from people who have spent years building high-performance systems.
+What Success Looks Like
+Over time, successful engineers at Graviton:
+Own critical systems and engineering projects end-to-end.
+Build software that directly supports quantitative research and live trading.
+Solve complex performance, scalability and reliability challenges.
+Make systems faster, simpler and more robust.
+Develop a deep understanding of the systems they build — from application code down to hardware and networking.
+Challenge existing approaches and introduce better solutions.
+Become trusted technical partners to quantitative researchers and other engineers.
+Continuously raise the engineering standards of the teams they work with.
+Your impact isn't measured by how much code you write. It's measured by what that code enables.
+Who We're Looking For
+We're looking for exceptional engineers who enjoy building things, understanding how systems work and solving problems that require deep technical thinking.
+Education
+Degree in Computer Science, Mathematics, Electrical Engineering or another highly analytical field.
+CGPA of 8.5 or above .
+No active backlogs.
+Technical Foundation
+You should have:
+Strong programming skills, preferably in C++ .
+Excellent understanding of data structures, algorithms and object-oriented programming.
+Strong fundamentals in operating systems, computer architecture and networking.
+Strong analytical and problem-solving ability.
+A passion for writing clean, efficient and reliable software.
+Prior experience with high-performance computing, distributed systems, Linux, networking or quantitative trading is valuable, but we care more about your ability to learn, reason and solve difficult problems.
+What We Value
+Beyond technical skills, we're interested in how you think.
+We look for engineers who are:
+Curious enough to understand how things work beneath the surface.
+Analytical enough to break down complex problems.
+Persistent enough to keep digging when the obvious solution doesn't work.
+Pragmatic enough to balance performance, correctness and simplicity.
+Detail-oriented enough to care about the edge cases.
+Collaborative enough to challenge and learn from others.
+Ambitious enough to keep raising the bar.
+Why Graviton?
+Real Engineering Problems: Work on systems where performance, reliability and correctness have a direct impact on trading.
+Exceptional People: Learn alongside some of the strongest software engineers and quantitative researchers in the industry.
+Technology at the Edge: Work with high-performance computing, low-latency networks, distributed systems and advanced engineering infrastructure.
+Meaningful Ownership: Take responsibility for real systems and projects from design through production.
+Flat by Design: There are no layers between a good idea and the people who can build it. Ideas matter more than titles.
+Rewards That Match Impact: Competitive compensation with performance-driven growth and the opportunity to build a long-term career at one of the world's most technically demanding trading firms.
+About Graviton Research Capital: Founded in 2014, Graviton Research Capital has grown from a small team of researchers and technologists into a global quantitative trading firm.
+Our success is built on exceptional people, rigorous research and world-class engineering.
+Across specialized trading teams, quantitative researchers and engineers work together to solve some of the most challenging problems in financial markets. Teams operate with significant autonomy while sharing a common ambition: to continuously push the boundaries of mathematics, technology and quantitative research.
+We believe that exceptional outcomes come from giving exceptional people the freedom to think deeply, move quickly and build things that matter.
+Build What Moves Markets.
+Solve hard problems. Build exceptional systems. Make an impact."
+j2,dev,Hevo Data,SDE I,"Bangalore, India (Full time)",https://jobs.lever.co/hevodata/6cbbe304-e065-4711-bf3e-756795d2bc2a,no,claude-2026-10-06,"Hevo SDE I: 0-1 years, fresher-level connector work","What you’ll own as SDE I at Hevo:
+ 
+. Implement SaaS connectors for assigned applications, learning application specific nuances like basic auth and data extraction.
+. Assist in building simple REST API components, focusing on clean implementation and testing.
+. Debug and optimize code for data pipeline efficiency under mentorship.
+. Contribute to feature breakdown, coding, and documentation for smaller tasks.
+. Apply logical thinking to solve integration issues and improve component quality.
+ 
+What you’ll bring to the table:
+ 
+. Basic object-oriented programming skills and familiarity with design principles.
+. Exposure to data pipelines or APIs; eagerness to learn concurrency and performance basics.
+. Foundational knowledge of REST APIs (e.g., making calls, handling JSON) – no deep expertise needed.
+. Proficiency in Java/TypeScript/Python, good problem-solving with data structures and algorithms.
+. Strong analytical and logical thinking for real-world challenges.
+ 
+Candidate Persona:
+ 
+. 0-1 years in software development, ideally with internships in integrations or data tools.
+. B Tech in Computer Science or equivalent from a reputed college."
+j3,dev,Thermo Fisher,Associate Systems Developer,"Bangalore, India",https://thermofisher.wd5.myworkdayjobs.com/ThermoFisherCareers/job/Bangalore-India/Associate-Systems-Developer_R-01369454,no,claude-2026-10-06,"Thermo Fisher Associate Systems Developer: 1-2 yrs, L1 RPA/Power Platform support","Work Schedule
+Standard (Mon-Fri)
+Environmental Conditions
+Office
+Job Description
+Proposed role profile - Automation Support
+Associate Systems Developer
+Automation Support
+Experience
+1-2 years
+Primary Focus
+L1 / L1.5 automation operations, testing and minor enhancements
+About the Role
+The Associate Systems Developer supports the day-to-day operation, monitoring, testing and maintenance of business automation solutions built primarily on Microsoft Power Platform and RPA technologies. The role focuses on first-level troubleshooting, documented recovery procedures, testing and production support, while providing opportunities to contribute to low-complexity enhancements under the guidance of experienced developers.
+Key Responsibilities
+
+Monitor scheduled automation jobs and identify failed, terminated or incomplete executions.
+
+Perform initial troubleshooting using execution logs, error messages, alerts and approved support procedures.
+
+Restart, reprocess or recover automation jobs by following documented Runbooks and validate successful completion.
+
+Create, update and track incidents/service requests with clear evidence; escalate issues requiring deeper technical investigation to L2 support.
+
+Execute regression testing for application patches, upgrades, migrations and configuration changes; prepare test data and capture evidence.
+
+Support BAT/UAT, production deployments, hypercare and post-deployment validation for new or changed automations.
+
+Maintain PDDs, SDDs, Runbooks, known-error records and troubleshooting documentation.
+
+Perform routine maintenance, minor configuration changes and low-complexity automation enhancements.
+
+Develop or modify basic Power Automate workflows and Power Apps components; work with SharePoint, Dataverse and SQL as required.
+
+Use existing APIs/connectors according to solution specifications and support basic Power Automate Desktop or Blue Prism activities where applicable.
+
+Identify recurring failures and improvement opportunities and work with L2 developers to improve automation stability.
+
+Participate in scheduled support rotations and communicate clearly with business, application and technical teams during incidents.
+Required Skills
+
+1-2 years of relevant experience in RPA, automation development, application support or software development.
+
+Working knowledge of Microsoft Power Automate and exposure to Power Apps, SharePoint, Dataverse and SQL.
+
+Basic understanding of REST APIs, system integrations, programming/scripting and relational databases.
+
+Ability to interpret logs and troubleshoot routine automation failures using structured procedures.
+
+Strong analytical, problem-solving, documentation and communication skills.
+
+Ability to manage multiple priorities, follow defined procedures and work independently on routine issues.
+
+Exposure to ServiceNow or another incident/change management platform is desirable.
+Qualifications
+Bachelor's degree in Computer Science, Information Technology, Engineering or a related discipline, or an equivalent combination of education and relevant experience.
+Role Outcome
+Reliably operate and support the automation estate at L1/L1.5, resolving routine issues without unnecessary developer intervention and building the technical capability to progress into L2 engineering."
+j4,dev,Hewlett Packard Enterprise,Systems/Software Engineer I,"Bengaluru, Karnātaka, India",https://hpe.wd5.myworkdayjobs.com/Jobsathpe/job/Bengaluru-Karntaka-India/Systems-Software-Engineer-I_1210150-2,no,claude-2026-10-06,HPE Systems/Software Engineer I: 1-3 yrs software testing/QA with networking cert,"Systems/Software Engineer I
+This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office.
+Who We Are:
+Hewlett Packard Enterprise is the global edge-to-cloud company advancing the way people live and work. We help companies connect, protect, analyze, and act on their data and applications wherever they live, from edge to cloud, so they can turn insights into outcomes at the speed required to thrive in today’s complex world. Our culture thrives on finding new and better ways to accelerate what’s next. We know varied backgrounds are valued and succeed here. We have the flexibility to manage our work and personal needs. We make bold moves, together, and are a force for good. If you are looking to stretch and grow your career our culture will embrace you. Open up opportunities with HPE.
+Job Description:
+Job Family Definition:
+Designs, developes and executes quality assurance strategies to validate software enhancements and new products. Ensures product quality across systems such as networking, utilities, databases, and internet-related tools through test planning, defect analysis, and continuous quality improvement.
+Job Level Definition:
+Contributes to assignments of limited scope by applying QA concepts and foundational technical knowledge gained through education, training, or early experience. Works as a team member by providing test analysis, quality insights, and recommendations. Exercises independent judgment within defined processes and quality standards.
+What You'll Do:
+Designs, develops, and maintains test cases, test scripts, and test data for system and subsystem validation. Executes system, functional, regression, integration, and basic performance tests for assigned modules. Identifies logs, tracks and verifies defects; collaborates with development teams to support timely resolution. Participates in requirement and design reviews to ensure testability and quality coverage. Validates fixes and conducts impact analysis to prevent regression issues. Contributes to test automation efforts and continuous improvement of QA processes and documentation. Collaborates with internal and outsourced partners to deliver reliable, cost-effective, and high-quality solutions for low to moderately complex products.
+What You Need To Bring:
+Education and Experience Required:
+Bachelor’s or Master’s degree in Computer Science, Information Systems, or equivalent.
+Typically 1-3 years of experience in software testing or quality assurance and having Networking certification (e.g. CCNA)
+Knowledge and Skills:
+Understanding of software testing principles, test design techniques, and defect life cycle management.
+Familiarity with manual testing and basic test automation tools/frameworks.
+Basic knowledge of API, UI, L2-L3 networking protocols, system-level testing concepts.
+Good analytical, troubleshooting, and problem-solving skills.
+Knowledge of Gen AI Tools.
+Understanding of SDLC/STLC, quality metrics, and release validation practices.
+Good written and verbal communication skills; proficiency in English and local language.
+What We Can Offer You:
+Health & Wellbeing
+We strive to provide our team members and their loved ones with a comprehensive suite of benefits that supports their physical, financial and emotional wellbeing.
+Personal & Professional Development
+We also invest in your career because the better you are, the better we all are. We have specific programs catered to helping you reach any career goals you have — whether you want to become a knowledge expert in your field or apply your skills to another division.
+Unconditional Inclusion
+We are unconditionally inclusive in the way we work and celebrate individual uniqueness. We know varied backgrounds are valued and succeed here. We have the flexibility to manage our work and personal needs. We make bold moves, together, and are a force for good.
+Let's Stay Connected:
+Follow @HPECareers on Instagram to see the latest on people, culture and tech at HPE.
+#india
+#networking
+Job:
+Engineering
+Job Level:
+TCP_01
+HPE is an Equal Employment Opportunity/ Veterans/Disabled/LGBT employer. We do not discriminate on the basis of race, gender, or any other protected category, and all decisions we make are made on the basis of qualifications, merit, and business need. Our goal is to be one global team that is representative of our customers, in an inclusive environment where we can continue to innovate and grow together. Please click here: Equal Employment Opportunity .
+Hewlett Packard Enterprise is EEO Protected Veteran/ Individual with Disabilities.
+HPE will comply with all applicable laws related to employer use of arrest and conviction records, including laws requiring employers to consider for employment qualified applicants with criminal histories.
+Recruitment Fraud Alert
+We have become aware of an increase in fraudulent recruitment activities in which individuals impersonate our company or authorized recruitment agencies to offer fake employment opportunities. These scams may occur through false websites, emails, social media, or chat-based applications and often aim to obtain personal information or money. Please note that Hewlett Packard Enterprise (HPE), its direct and indirect subsidiaries and affiliated companies, and its authorized recruitment agencies/vendors will never charge a candidate a registration fee, hiring fee, or any other fee in connection with its recruitment and hiring process. We also never request personal information such as back account details, Social Security numbers, or national IDs via social media or chat applications.
+All legitimate job opportunities will come through official company channels, and candidates are responsible for verifying the credentials of any third party claiming to represent the company. Any reliance on fraudulent communication is at the individual’s own risk, and HPE disclaims legal liability for any resulting damages. If you suspect recruitment fraud, do not share personal information or make any payments and report the incident to your local authorities immediately."
+j5,dev,Amgen,Associate Software Engineer - Full Stack,India - Hyderabad,https://amgen.wd1.myworkdayjobs.com/Careers/job/India---Hyderabad/Associate-Software-Engineer--Full-Stack-_R-246001,maybe,claude-2026-10-06,"Amgen Associate full stack: asks 2-4 yrs (title says Associate, not junior); UI-heavy React with Python/SQL","Career Category
+Information Systems
+Job Description
+What you will do
+We are seeking a motivated Associate Full Stack Software Engineer to join our team. In this role, you will contribute to the design, development, testing, and deployment of scalable software applications under the guidance of senior engineers. You will work across both front-end and back-end technologies, with a strong focus on developing responsive, user-friendly web interfaces. You will collaborate with product, business, data, design, and engineering partners to deliver reliable, maintainable solutions while building your full-stack and cloud engineering expertise.
+Roles & Responsibilities
+Develop and enhance front-end and back-end application components using established engineering standards and guidance from senior team members.
+Develop responsive, accessible, and user-friendly web interfaces using React, TypeScript/JavaScript, HTML5, and CSS.
+Translate user stories, wireframes, and design specifications into high-quality, reusable UI components.
+Build reusable front-end components and integrate them with backend APIs, databases, and data services.
+Ensure UI solutions are consistent across supported browsers, devices, and screen sizes.
+Build and consume REST APIs, integrate data sources, and support data-processing pipelines.
+Create rapid prototypes to validate technical approaches and translate approved concepts into production-ready code.
+Write clean, reusable, well-documented, secure, and testable code.
+Participate in code reviews and incorporate feedback to improve code quality, performance, accessibility, and maintainability.
+Contribute to unit, integration, UI, and automated testing activities.
+Support debugging, root-cause analysis, and resolution of application defects and production issues.
+Assist with application deployment, configuration, and operational support across cloud environments.
+Create and maintain technical documentation, including design notes, API documentation, deployment procedures, and runbooks.
+Work closely with product owners, business stakeholders, UX/design teams, data engineers, QA engineers, and other technology teams.
+Follow Agile practices, contribute to sprint planning and effort estimation, and provide timely status updates.
+Continuously build knowledge of modern full-stack, cloud, AI, and DevOps technologies.
+What we expect of you
+Basic Qualifications
+Bachelor’s degree in Computer Science, Engineering, Information Systems, or another STEM field, with 2–4 years of relevant software development experience; a Master’s degree is a plus.
+Hands-on experience through professional work, internships, academic projects, or personal projects in full-stack software development.
+Demonstrated capability in UI development using JavaScript or TypeScript, React, HTML5, CSS, NPM, and responsive web-design principles.
+Knowledge of user-interface development practices, including component-based design, cross-browser compatibility, accessibility, and usability.
+Proficiency in Python and SQL; familiarity with relational and/or NoSQL databases.
+Understanding of RESTful APIs, API integration, and basic data-pipeline concepts.
+Familiarity with cloud services and cloud-native design principles in AWS, Azure, or similar platforms.
+Basic understanding of microservices, containerization, Docker, and Kubernetes.
+Understanding of software development lifecycle practices, version control tools such as Git, and Agile delivery methods.
+Ability to troubleshoot issues, analyze root causes, and escalate complex technical challenges appropriately.
+Preferred Qualifications
+Exposure to CI/CD pipelines, DevOps practices, and automated build and deployment tools.
+Familiarity with software design patterns, data structures, test-driven development, and secure coding practices.
+Experience with UI testing frameworks such as Jest, React Testing Library, Cypress, or similar tools.
+Familiarity with observability and monitoring tools such as Grafana, Prometheus, or cloud-native monitoring services.
+Experience or interest in developing data, analytics, AI, or generative-AI-enabled applications.
+Familiarity with enterprise architecture principles, authentication and authorization concepts, and API security.
+AWS Certified Developer, AWS Cloud Practitioner, Azure Fundamentals, or equivalent cloud certification.
+SAFe Agile certification or familiarity with Agile frameworks.
+Education and Professional Certifications
+Master’s degree in OR Bachelor’s degree in computer science or STEM majors with a minimum of 2 to 5 years of Information Systems experience.
+AWS Developer certification (preferred)
+Any SAFe Agile certification (preferred)
+Soft Skills
+Strong problem-solving skills with the ability to break down requirements into clear, manageable tasks.
+Ability to document problem statements, technical decisions, and effort estimates clearly.
+Effective verbal and written communication skills.
+Collaborative mindset and ability to work effectively with global, cross-functional, and virtual teams.
+Willingness to learn, seek feedback, and adapt to evolving priorities and technologies.
+Ownership mindset with persistence to complete assigned work, even when challenges arise.
+Strong attention to detail, quality, user experience, and customer/business outcomes.
+."
+j6,dev,Amgen,Sr Associate Software Engineer – Full stack & AI,India - Hyderabad,https://amgen.wd1.myworkdayjobs.com/Careers/job/India---Hyderabad/Sr-Associate-Software-Engineer_R-235756,apply,claude-2026-10-06,"Amgen Sr Associate full stack & AI: React + Node.js + Python microservices + LLM APIs, 2-4/4-6 yrs","Career Category
+Information Systems
+Job Description
+ABOUT AMGEN
+Amgen harnesses the best of biology and technology to fight the world’s toughest diseases, and make people’s lives easier, fuller and longer. We discover, develop, manufacture and deliver innovative medicines to help millions of patients. Amgen helped establish the biotechnology industry more than 40 years ago and remains on the cutting-edge of innovation, using technology and human genetic data to push beyond what’s known today.
+ABOUT THE ROLE
+Role Description:
+In this role, you build and deliver AI-enabled full-stack solutions that support Contracting Operations and Revenue Management platforms within Amgen’s Global Commercial Operations and Corporate Functions Technology organization.
+Your work will focus on integrating AI capabilities into practical full-stack solutions that reduce manual effort, improve data quality and increase process efficiency. This role is suited for engineers who are comfortable working across multiple systems, learning new domains over time and owning delivery from concept through implementation. You will operate within a defined problem space, partnering with senior leaders to shape solution approaches and guide implementation across a small team.
+Roles & Responsibilities:
+Build and deliver scalable, enterprise-grade full-stack AI applications using React, Node.js, Python and Large Language Model APIs.
+Develop and manage robust integrations leveraging Databricks as the middleware platform, enabling seamless data and service orchestration.
+Contribute to AI-driven use cases, including workflow automation and lightweight assistant capabilities that enhance user productivity.
+Collaborate closely with architecture, AI platform teams and cross-functional partners to ensure alignment with enterprise standards and best practices.
+Collaborate with QA and DevOps teams to drive CI/CD pipeline enhancements.
+Participate in testing (unit, integration) and support defect resolution, data fixes and issue troubleshooting within scope.
+Ensure adherence to design standards, best practices and documentation for maintainability and consistency.
+Escalate risks, dependencies, or design issues beyond scope and continuously expand skills across platforms and technologies
+Technology Focus Areas:
+Implement end-to-end generative AI full-stack applications and AI-driven automation solutions that enable workflow orchestration and process optimization.
+Develop scalable backend services using Node.js and Python-based microservices, along with well-defined APIs to support enterprise applications.
+Build and integrate responsive frontend experiences using React, ensuring seamless interaction with AI-powered backend systems with Databricks Integration.
+Leverage enterprise platforms such as Salesforce, Conga CLM/CPQ, Model N, Databricks, and Anaplan to deliver integrated, business-critical solutions.
+Utilize AI orchestration frameworks, APIs and machine learning libraries to develop intelligent, scalable, and production-ready solutions.
+Work with AI assistants and copilots, incorporating vector search, embedding-based retrieval and prompt-driven workflows within enterprise ecosystems.
+Integrate with enterprise AI services such as Azure OpenAI and similar platforms to enable advanced generative AI capabilities within applications.
+Basic Qualifications and Experience:
+Master’s degree and 2-4 years of experience
+OR
+Bachelor’s degree and 4-6 years of experience
+AND
+Experience developing enterprise-grade, AI-enabled and automation-driven applications, with strong full-stack expertise across frontend, middleware and backend layers.
+Proficient in full-stack development using Python, JavaScript and SQL/NoSQL with experience building scalable microservices and React-based applications.
+Experience developing integrations using Databricks as a middleware platform, along with APIs and event-driven architectures.
+Experience in AI experimentation and GenAI systems (LLMs, RAG, agent orchestration) with rapid prototyping and outcome-driven development.
+Strong problem-solving and analytical skills, with the ability to quickly learn, collaborate across product/engineering teams.
+Preferred Qualifications:
+Familiarity with AI orchestration frameworks, APIs and machine learning libraries.
+Experience configuring workflows, rules or automation within enterprise platforms.
+Experience supporting system integrations or data synchronization processes.
+Experience working in Agile or iterative development environments.
+Demonstrated progression in taking on increasingly complex technical responsibilities within a team setting.
+Soft Skills:
+Strong attention to detail and commitment to quality
+Problem-solving mindset with the ability to follow structured approaches and escalate when needed
+Clear and concise communication within teams and with cross-functional stakeholders.
+Ability to take direction, ask clarifying questions, and execute tasks reliably
+Strong organizational skills and ability to manage assigned work effectively
+Curiosity and willingness to learn new systems and technologies
+Collaborative mindset and openness to feedback
+."
+j7,dev,Thermo Fisher,"Software Engineer I, AI Solutions & Platforms","Bengaluru, India",https://thermofisher.wd5.myworkdayjobs.com/ThermoFisherCareers/job/Bengaluru-India/Software-Engineer-I--Applied-AI-Solutions_R-01358883,apply,claude-2026-10-06,"Thermo Fisher 'Software Engineer I' but asks 3+ yrs: Python microservices/FastAPI, LLM/RAG integration","Work Schedule
+Standard (Mon-Fri)
+Environmental Conditions
+Office
+Job Description
+About the Role
+At Thermo Fisher Scientific, you’ll do meaningful work that makes a positive global impact. Join our colleagues in bringing our Mission to life every single day to enable our customers to make the world healthier, cleaner, and safer. With industry-leading R&D investment, we empower our teams to solve complex scientific challenges—from environmental protection to advancing healthcare and cancer research.
+As a Software Engineer, AI Solutions & Platforms, you will play a hands-on technical role in designing, developing, and delivering enterprise-grade AI and Generative AI solutions. You will build production-ready AI services, integrating AI models, including Large Language Models, Retrieval-Augmented Generation (RAG) solutions and agentic workflows into internal and external customer-facing systems. You will also contribute to system design and development using modern AI frameworks, backend technologies, and cloud platforms. In this role, you will write high-quality production code, collaborate closely with product owners, business stakeholders, architects and engineering teams to translate requirements into reliable technical solutions. You will develop reusable components, services, and AI solutions that are scalable, secure, reliable, and maintainable.
+Key Responsibilities
+Design, develop, and deploy production-grade Generative AI, including RAG based solutions and agentic workflows.
+Build and maintain Python based microservices and APIs.
+Contribute hands-on to system design, including APIs, service architecture, data models, workflows, and integrations with existing backend and scientific applications.
+Integrate LLMs using Azure OpenAI, Anthropic Claude, and OpenAI-compatible APIs.
+Design and develop secure, scalable RESTful APIs and backend services with a focus on performance, reliability, authentication, rate limiting, and observability.
+Develop and optimize data pipelines using Pandas and NumPy, and implement vector-search solutions using PostgreSQL/pgvector and Qdrant.
+Collaborate with cross-functional teams, including R&D, engineering, data science, IT, Q&A, and regulatory, to define requirements, specifications, and development objectives.
+Work closely with product managers, architects, and other engineers to translate requirements into reliable solutions, and deliver against agile/scrum commitments.
+Write clean, maintainable, well-tested production code, and help troubleshoot, optimize systems as they move into production.
+Contribute to technical documentation, knowledge sharing, code reviews, and engineering best practices.
+Candidate Requirement:
+Education and Experience:
+Bachelor’s degree in computer science, engineering, or a related technical field. Master’s degree preferred.
+3+ years of experience in software engineering and developing AI solutions.
+Strong experience building backend systems with Python and REST APIs. FastAPI experience preferred.
+Experience working in agile/scrum development environments.
+Proficiency with Git-based workflows, CI/CD pipelines, and automated testing strategies.
+Familiarity with building ETL/data pipelines, and data processing workflows using tools such as Pandas and NumPy.
+Experience integrating LLMs using Azure OpenAI or Anthropic Claude, or OpenAI-compatible APIs.
+Experience integrating or building retrieval-augmented generation (RAG) solutions.
+Strong communication and collaboration skills, with the ability to explain technical concepts clearly.
+Nice-to-Have: Familiarity with MLOps tools (MLflow, Kubeflow), ML Frameworks (scikit-learn, PyTorch), and model evaluation frameworks.
+Nice-to-Have: Experience developing and deploying applications on cloud platforms such as Azure, AWS, or GCP."

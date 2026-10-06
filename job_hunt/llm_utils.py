@@ -214,7 +214,8 @@ SCORING_RUBRIC = """SCORING RUBRIC & HARD ANCHORS (strictly enforce):
 1. Location & Work Authorization Cap (score <= 30):
    If the job requires on-site presence outside India, or requires foreign citizenship / work authorization without visa sponsorship, cap score at <= 30. (India-based roles, India hybrid, or remote roles are eligible for higher scores).
 2. Unsuitable Role Type Cap (score <= 40):
-   If the role matches candidate's explicit 'Not suitable' criteria (e.g. pure frontend with zero backend, internship, non-technical management, IT support, or enterprise platform administration like Salesforce/Coupa/ServiceNow), cap score at <= 40.
+   If the role matches candidate's explicit 'Not suitable' criteria (e.g. pure frontend with zero backend, internship, non-technical management, IT support, or administering/configuring an enterprise platform such as Salesforce, Coupa, SAP or ServiceNow for a customer or internal business team), cap score at <= 40.
+   Judge the work, not the employer's name: a software engineer building products or integrations at a company that makes such a platform (for example ServiceNow or Salesforce) is not platform administration.
 3. Seniority Gap Cap (score <= 50):
    The candidate has ~3.3 years of experience. If the role strictly requires 6+ years of professional experience (Lead, Staff, Principal, Architect), cap score at <= 50. (Roles requiring 2-4 years are optimal; 4-5 years is acceptable up to 75-80 if stack matches).
 4. Primary Stack Mismatch Cap (score <= 60):
@@ -226,7 +227,9 @@ SCORING_RUBRIC = """SCORING RUBRIC & HARD ANCHORS (strictly enforce):
    - Experience target fits candidate's seniority (2-5 years / SDE-2 / Mid-level).
    - Location fits (India or Remote).
 6. Moderate Match (65-84):
-   Solid backend fit with minor stack or seniority stretch."""
+   Solid backend fit with minor stack or seniority stretch.
+7. Too-Junior Cap (score <= 50):
+   If the posting is aimed at freshers, new graduates or entry-level hires (it says fresher, new grad, graduate programme or campus hiring, or asks for 0-1 years), cap at <= 50. Judge by the experience the posting asks for, not by the title: an 'Associate' or 'Engineer I' role that asks for 2+ years (for example 3+) is NOT too junior."""
 
 
 def score_job_with_gemini(job: dict, resume: str, config: dict, raise_on_error: bool = False) -> dict:

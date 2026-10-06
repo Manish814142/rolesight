@@ -44,6 +44,27 @@ def test_stack_cap_has_explicit_exceptions():
     assert "prefer" in rule4                                       # a preferred (not mandated) stack is not a mismatch
 
 
+def test_platform_cap_judges_the_work_not_the_employer_name():
+    """T58 evaluation: with rule 7 added, ServiceNow's own 2-5 yr Python integration engineer (a software
+    role at the company that makes the platform) fell 90 -> 40 on two runs, capped as 'ServiceNow
+    platform administration'. The cap must be about the work, not the company name."""
+    rule2 = llm_utils.SCORING_RUBRIC.split("2.")[1].split("3.")[0].lower()
+    assert "40" in rule2 and "administer" in rule2 or "administration" in rule2
+    assert "not the employer" in rule2
+    assert "software engineer building" in rule2 and "servicenow" in rule2 and "is not platform administration" in rule2
+
+
+def test_too_junior_cap_judges_by_experience_asked_not_by_title():
+    """T58: a fresher-level 'Associate SDE' scored 88-90 under every prompt. But 'Associate' is not junior
+    everywhere (Amgen: 'Associate Software Engineer' asks 2-6 yrs, 'Sr Associate' 4-9; Thermo 'Software
+    Engineer I' asks 3+), so the cap must key on what the posting asks for."""
+    rule7 = llm_utils.SCORING_RUBRIC.split("7.")[1].lower()
+    assert "50" in rule7
+    assert "fresher" in rule7 and "graduate" in rule7 and "0-1" in rule7
+    assert "not by the title" in rule7 or "not the title" in rule7
+    assert "3+" in rule7                      # an 'Associate'/'Engineer I' that asks for 3+ years is not too junior
+
+
 def test_rubric_does_not_ask_for_arbitrary_score_spread():
     """Measured on 59 jobs: asking the model to 'avoid clustering' left 2 distinct scores >= 85 and a
     tie of 8, so the instruction was a no-op. Ties need sub-scores (T41), not jitter."""

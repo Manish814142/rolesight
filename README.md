@@ -129,6 +129,7 @@ As of 2026-10-04. The live list of work is the task board, [docs/tasks.md](docs/
   lost, but time is wasted (T03, T04).
 - **Amazon jobs are scored on a stub.** Their description is cut to 202 characters although
   the API has the full text (T57).
+- **Scores are noisy on ambiguous postings.** The same prompt can give 30 on one run and 85 on the next for a posting with a stray requirement (T60).
 - **Coarse scores.** Many jobs tie at 90 (21 of 203 in the first scan). The rubric (T48)
   lowers false positives at `min_score` 70 (7 → 4 of 75 labelled jobs) but does not rank better;
   breaking ties needs sub-scores (T41). The labels behind that measurement are Claude's, not

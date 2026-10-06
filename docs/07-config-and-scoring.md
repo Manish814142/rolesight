@@ -112,7 +112,9 @@ One Gemini call per job. The prompt contains:
   run-to-run noise (CHANGELOG 2026-10-04).
 - **rubric anchors** (`llm_utils.SCORING_RUBRIC`, T48): cap 30 for onsite work or work
   authorisation outside India; cap 40 for roles in your `not_suitable` list or platform
-  administration (Salesforce, Coupa, ServiceNow); cap 50 for roles that need 6+ years; cap 60
+  administration of Salesforce, Coupa, SAP or ServiceNow (judged by the work, not the employer's
+  name); cap 50 for roles that need 6+ years; cap 50 for roles aimed at freshers or asking 0-1
+  years (by what the posting asks, not by its title: T58); cap 60
   when every language the posting accepts is outside your stack (a posting that accepts
   Python, or "another language", is not a mismatch); 85+ only when stack, seniority and
   location all fit. The text is tuned to one candidate (about 3.3 years; Node.js, TypeScript,
