@@ -281,7 +281,7 @@ def score_job_with_gemini(job: dict, resume: str, config: dict, raise_on_error: 
         )
 
         cfg = types.GenerateContentConfig(
-            temperature=0.1,
+            temperature=float(config.get("gemini_temperature", 0.1)),
             response_mime_type="application/json",
         )
         raw_text = _generate_with_fallback(client, prompt, cfg, _gemini_models(config))

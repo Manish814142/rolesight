@@ -249,3 +249,22 @@ def test_score_arms_can_score_a_structured_arm(monkeypatch):
     jobs = [{"id": "1", "company": "C", "title": "T", "location": "L", "description": "d"}]
     out = sgs.score_arms(jobs, "resume", {}, {"current": "RUBRIC", "structured": sgs.STRUCTURED_ARM}, sleep_interval=0)
     assert out == {"current": {"1": 77}, "structured": {"1": 55}}
+
+
+def test_variance_report_counts_wide_spreads_and_decision_flips(tmp_path):
+    import json
+    import subprocess
+    import sys
+
+    runs = {"a": [90, 90, 90], "b": [45, 85, 50], "c": [58, 62, 61], "d": [75, 75, 69]}
+    sys.path.insert(0, "scripts")
+    import measure_score_variance as msv
+
+    rep = msv.spread_report(runs)
+    assert rep["wide"] == ["b"] and rep["jobs"] == 4
+    assert rep["flips"][60] == ["b", "c"] and rep["flips"][70] == ["b", "d"]
+    f = tmp_path / "runs.json"
+    f.write_text(json.dumps(runs))
+    res = subprocess.run([sys.executable, "scripts/measure_score_variance.py", "--from-runs", str(f)], capture_output=True, text=True)
+    assert res.returncode == 0, res.stderr
+    assert "4 jobs" in res.stdout and "['b']" in res.stdout

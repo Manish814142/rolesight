@@ -9,6 +9,9 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Added (2026-10-06, T60)
+- `scripts/measure_score_variance.py` runs the labelled jobs N times and reports spreads and decision flips; `gemini_temperature` (default 0.1, unchanged) is a config key so it can be tried. **Measured (real Gemini, 20 hardest labelled jobs × 5 runs, 200 calls):** at 0.1, 2 of 20 jobs spread over 20 points (mean spread 6.0) and 2 / 3 crossed MIN_SCORE 60 / 70 between runs; at temperature 0, 4 of 20 (mean 8.2) and 4 / 4. So temperature 0 is worse and stays unused. Re-scoring the 45-80 band twice and taking the median would cut a single run's disagreement with the job's majority decision from about 3-4% to 2-3% (resampled from the 5 runs), for roughly two extra calls on each borderline job: not adopted. The ~50-point flips seen earlier (Amazon "SP Support" [30, 30, 30, 85, 88]) belonged to older prompt versions: under the current prompt it scores [45, 45, 40, 45, 45]. **No scoring behaviour changed.**
+
 ### Added (2026-10-06, T35)
 - The end-of-scan log gets one funnel line: `Funnel: fetched N | India I | already scored A | pre-filter rejected R | too old T | queued Q | scored S | failed F | left for next scan L`. Real CLI run on 3 companies with `--posted-within 2` (real Gemini, scratch directory): `fetched 2325 | India 2156 | already scored 0 | pre-filter rejected 2078 | too old 235 | queued 12 | scored 12 | failed 0 | left for next scan 0` (2,325 = 2,078 + 235 + 12). `prefilter.location_is_india` is now the one India-location test.
 

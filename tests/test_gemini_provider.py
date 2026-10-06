@@ -335,3 +335,15 @@ def test_gemini_fallback_chain_skips_low_quota_models():
     models = llm_utils._gemini_models({"gemini_model": "gemini-3.5-flash-lite"})
     assert models == ["gemini-3.5-flash-lite", "gemini-3.1-flash-lite"]
     assert llm_utils._gemini_models({"gemini_model": "gemini-x"})[0] == "gemini-x"
+
+
+def test_scoring_temperature_defaults_to_0_1_and_is_configurable(monkeypatch):
+    """T60: temperature is a config key so its effect on score variance can be measured."""
+    captured = []
+    client = _capturing_client('{"score": 70, "reason": "ok"}')
+    cfg_cls = lambda **kw: captured.append(kw) or MagicMock()  # noqa: E731
+    monkeypatch.setattr(llm_utils, "_get_genai_client_and_types",
+                        lambda api_key: (client, types.SimpleNamespace(GenerateContentConfig=cfg_cls)))
+    llm_utils.score_job_with_gemini({"title": "t"}, "r", {"gemini_api_key": "k"})
+    llm_utils.score_job_with_gemini({"title": "t"}, "r", {"gemini_api_key": "k", "gemini_temperature": 0})
+    assert [c["temperature"] for c in captured] == [0.1, 0.0]

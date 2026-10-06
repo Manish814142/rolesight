@@ -178,7 +178,7 @@ Measured on 2026-10-04 unless marked otherwise. Each one has a task.
 - **Score resolution:** 21 of 203 distinct jobs tied at 90 in the first scan. The rubric (T48)
   shifts calibration (at `min_score` 70: false positives 7 → 4 on 75 labelled jobs, `apply`
   recall unchanged) but not ranking (AUC 0.955 vs 0.956). Ties need sub-scores (T41). The
-  labels are Claude's, not Manish's (T59). Fresher-level roles are capped at 50 by rubric rule 7 (T58); scores of ambiguous postings can flip by ~50 points between runs of the same prompt (T60).
+  labels are Claude's, not Manish's (T59). Fresher-level roles are capped at 50 by rubric rule 7 (T58); on the 20 hardest labelled jobs a score moves by more than 20 points between runs for 2 of 20 (temperature 0: 4 of 20), so the borderline band is uncertain (T60).
 - **Amazon descriptions:** the adapter uses `description_short` (cut at 202 characters) although
   the API has a full `description` (2,796 characters on one record). Amazon is the biggest
   source of matches, so those jobs are scored without the role description (T57).
