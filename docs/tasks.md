@@ -94,14 +94,14 @@ before everything else. **Division of work:** Antigravity implements; Claude rev
 (see [Verifying](#verifying)). Claude's own tasks in the Review queue should be verified
 by Antigravity.
 
-Pick from this list top to bottom (T47, T30 and T24 are done: see the Done log; T48 is in review). Status lives in the task's own row (below, or in its
+Pick from this list top to bottom (T47, T30 and T24 are done: see the Done log; T48, T57 and T58 are in review). Status lives in the task's own row (below, or in its
 P-table); this list only sets the order.
 
 | # | Task | Why it changes the score or the accuracy | Evidence |
 |---|---|---|---|
-| 1 | **T57** Amazon descriptions are a 202-character stub | Amazon is the biggest source and is scored without the role description | measured |
-| 2 | **T58** Fresher-level roles score 88–90 | Too-junior roles pass the filter and the score | measured (1 job) |
-| 3 | **T12** CRM / platform "developer" titles | Wastes scoring calls on Salesforce / Dynamics / ServiceNow roles | measured on the old list, inferred for 215 boards |
+| 1 | **T60** Scores flip by ~50 points between runs on ambiguous postings | One run per job misplaces ambiguous jobs across MIN_SCORE | measured |
+| 2 | **T12** CRM / platform "developer" titles | Wastes scoring calls on Salesforce / Dynamics / ServiceNow roles | measured on the old list, inferred for 215 boards |
+| 3 | **T61** C++ / embedded / kernel / GPU / Rust / Ruby / PHP titles | 4.7% of survivors are scored for nothing | measured |
 | 4 | **T11** "Computer Scientist" titles | 16 of 19 were skipped by the pre-filter | measured |
 | 5 | **T17** Cost of the python/java/golang title exclusions (measure only) | Manish's resume has Python, yet a "Python" title word is excluded | measured: exclusion list in `prefilter.py` |
 | 6 | **T49** Big employers that report "no India jobs" | Possible missed jobs at Accenture, Sony, Western Digital | assumed, not investigated |
@@ -123,6 +123,8 @@ After this list: **T40, T50, T42** (Manish will not use TinyFish), then the rest
 | T57 | Amazon descriptions are a 202-character stub | review · claude · 0ed9567 | claude | XS | — |
 | T58 | Fresher-level roles score 88–90 | doing · claude · 2026-10-06 | claude | S | — |
 | T59 | Confirm the golden-set labels | manish | — | S | T48 |
+| T60 | Scores flip by ~50 points between runs on ambiguous postings | todo | — | S | — |
+| T61 | Pre-filter: C++ / embedded / kernel / GPU / Rust / Ruby / PHP titles | todo | — | XS | — |
 | T49 | Check big employers that report "no India jobs" | todo | — | S | — |
 
 **T48 · Scoring rubric and a golden set.** The prompt (`llm_utils.score_job_with_gemini`)
@@ -196,6 +198,29 @@ disagree with, and set `label_source` to `manish` on rows you checked (about 15 
 assumed). Then run `python scripts/score_golden_set.py` (live: about 150 Gemini calls, 14
 minutes).
 *Done when:* the report prints no "NOT CONFIRMED BY MANISH" banner.
+
+**T60 · Scores flip by ~50 points between runs on ambiguous postings.** Measured 2026-10-06,
+five runs of the same prompt on the same text: Amazon SDE II "SP Support" (a stray "3+ years
+of Video Games Industry" requirement) scored [30, 30, 30, 85, 88] under the committed
+rubric; ServiceNow's Armis integration role scored [90, 90, 35, 40, 90] under an earlier
+rubric wording. Temperature is 0.1. The earlier "3.3 points of noise" holds only for clear
+postings. So one run per job misplaces ambiguous jobs on either side of MIN_SCORE, and
+comparisons of one or two jobs on the golden set mean nothing. Measure first: 5 runs on 20
+jobs, report the spread per job. Then try, cheapest first: temperature 0; re-scoring only
+results between 45 and 80 two more times and keeping the median (costs about 2 extra calls
+for the minority of jobs in that band; count how many).
+*Done when:* the harness (or a small script) shows the share of jobs whose 5-run spread
+exceeds 20 points, before and after the change.
+
+**T61 · Pre-filter: C++ / embedded / kernel / GPU / Rust / Ruby / PHP titles.** 56 of the
+1,191 pre-filter survivors (4.7%) name one of these in the title (measured on the 34,416
+jobs fetched 2026-10-06: C++ 17, embedded 15, GPU 8, kernel 4, firmware 4, Rust 3, Ruby 2,
+FPGA/PHP/CUDA 1 each). Each costs a scoring call, and all the labelled examples
+(HPE C++, Nvidia embedded, Graviton C++, Quadric LLVM) are `no`. Add them to the title
+exclusions with unit tests; keep a negative control ("Software Engineer, Backend (Node.js)").
+Same policy family as T17, which only measures.
+*Done when:* those 56 titles no longer pass, and the labelled `apply`/`maybe` jobs in
+`scripts/golden_set.csv` all still pass the pre-filter.
 
 **T49 · Big employers that report "no India jobs".** `discover` rejected Accenture, Sony
 and Western Digital because the first page of their Workday India search had no India
