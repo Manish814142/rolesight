@@ -506,7 +506,7 @@ Keep the drafts-only rule.
 | T50 | Remove TinyFish from the docs, `init` and `config.example.json` | review · claude · e7a72f9 | claude | S | T40, T42 |
 | T51 | `requirements.txt` has `google-genai` commented out | review · claude · ea77ab5 | claude | XS | — |
 | T52 | The non-Gemini scoring path never writes scores to the database | todo | — | S | — |
-| T55 | Packaging metadata is still upstream's (pyproject, Dockerfile, smithery, server.json) | todo | — | S | T42, T51 |
+| T55 | Packaging metadata is still upstream's (pyproject, Dockerfile, smithery, server.json) | doing · claude · 2026-10-06 | claude | S | T42, T51 |
 
 **T50 · Remove TinyFish from the docs and setup.** Manish will not use TinyFish. SETUP.md
 L27 still says "TinyFish (required)"; PRIVACY.md L27 and SECURITY.md L27 say page
