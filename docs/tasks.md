@@ -426,7 +426,7 @@ review. Never write the real file unattended.
 | T32 | `export` reads SQLite | todo | — | S | T29 |
 | T33 | first_seen / last_seen and closed-job detection | todo | — | M | T29 |
 | T34 | Retire `last_scan.json`, `job_history.json`, `seen_jobs.json` | todo | — | S | T31, T32 |
-| T35 | Put the full funnel in the end-of-scan log line | todo | — | XS | — |
+| T35 | Put the full funnel in the end-of-scan log line | doing · claude · 2026-10-06 | claude | XS | — |
 | T36 | Fill or drop the always-empty CSV Stack/Region columns | todo | — | XS | — |
 
 **T29 · Richer `jobs` table.** The schema in `db.py` has no location, posted_at or
