@@ -506,6 +506,7 @@ Keep the drafts-only rule.
 | T50 | Remove TinyFish from the docs, `init` and `config.example.json` | review · claude · e7a72f9 | claude | S | T40, T42 |
 | T51 | `requirements.txt` has `google-genai` commented out | review · claude · ea77ab5 | claude | XS | — |
 | T52 | The non-Gemini scoring path never writes scores to the database | review · claude · 4061a76 | claude | S | — |
+| T63 | The `anthropic` provider raises `TypeError` on every call: `_chat_with_anthropic` passes `temperature`, which `Messages.create` in the installed SDK (1.11.0) does not accept — *measured:* `chat_with_llm({"llm_provider": "anthropic"}, …)` against a dead local port → `TypeError: Messages.create() got an unexpected keyword argument 'temperature'` (`llm_utils.py:34-38`). CLAUDE.md says the provider "still works". | doing · claude · 2026-10-06 | claude | XS | — |
 | T55 | Packaging metadata is still upstream's (pyproject, Dockerfile, smithery, server.json) | review · claude · 4f10709 | claude | S | T42, T51 |
 
 **T50 · Remove TinyFish from the docs and setup.** Manish will not use TinyFish. SETUP.md
@@ -559,7 +560,7 @@ CLAUDE.md), and `discover` has become the main way to add companies.
 
 ## Inbox
 
-New findings go here with the next free ID (next: **T63**), an evidence tag and the
+New findings go here with the next free ID (next: **T64**), an evidence tag and the
 file:line. Manish or the triaging agent moves each one into a priority table.
 
 | ID | Finding | Evidence | Added by |
