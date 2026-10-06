@@ -9,7 +9,7 @@ Usage:
   autopilot scan              — run daily job scan
   autopilot scan --posted-within 3  — only score jobs posted in the last 3 days (undated jobs kept)
   autopilot draft #1          — draft application for job #1 from last scan
-  autopilot draft https://... — draft application for a specific URL
+  autopilot draft https://... — draft application for a specific URL (add --jd-file FILE to paste the description)
   autopilot export            — export last scan to CSV (output/jobs_YYYY-MM-DD.csv)
   autopilot export --min 60   — export only jobs with score >= 60
   autopilot export --days 7   — export jobs from last 7 days (requires scan history)
@@ -292,10 +292,19 @@ def main() -> None:
         run_scan(config, comps)
 
     elif cmd == "draft":
-        if len(sys.argv) < 3:
-            sys.exit("Usage: autopilot draft #N  or  autopilot draft URL")
+        args = sys.argv[2:]
+        jd_file = None
+        if "--jd-file" in args:
+            k = args.index("--jd-file")
+            try:
+                jd_file = args[k + 1]
+            except IndexError:
+                sys.exit("--jd-file requires a path")
+            del args[k:k + 2]
+        if not args:
+            sys.exit("Usage: autopilot draft #N | URL [--jd-file FILE]")
         from job_hunt.drafter import draft_application
-        draft_application(config, sys.argv[2])
+        draft_application(config, args[0], jd_file=jd_file)
 
     else:
         sys.exit(

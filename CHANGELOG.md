@@ -9,6 +9,9 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Changed (2026-10-06, T40)
+- `autopilot draft` no longer uses TinyFish. The job description comes from the database (T29 stores it for queued jobs); `--jd-file FILE` takes a pasted description for a job the database doesn't have, and the error says so. The prompts get the whole description (up to 20,000 characters; it was cut at 4,000, where requirements often start). A URL ref names the output folder after the stored company. `db.get_job_by_url` looks a job up by URL. Real CLI run (`python -m job_hunt draft 1`, TINYFISH_API_KEY unset, real Gemini, scratch directory from a real scan): exit 0, resume, cover letter and application info written, the letter citing details only present in that posting.
+
 ### Fixed (2026-10-06, T14)
 - `autopilot draft` sends the whole resume to the cover-letter prompt (it was cut at 2,500 characters, dropping Projects and Education; the scorer got the full resume since cd5df8e).
 

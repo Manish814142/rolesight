@@ -30,7 +30,7 @@ python scripts/measure_prefilter.py --jobs saved.json   # pre-filter survivors +
 python scripts/score_golden_set.py         # score the labelled jobs with the rubric off/on (~150 Gemini calls); --from-scores re-analyses
 autopilot doctor            # SQLite / Gemini / Telegram / ATS egress checks
 autopilot export [--min N] [--days N]   # CSV from state/ (no API keys needed)
-autopilot draft 1 | URL     # resume + cover letter draft (needs TINYFISH_API_KEY for JD fetch)
+autopilot draft 1 | URL [--jd-file F]   # resume + cover letter draft from the stored description (no TinyFish)
 ```
 
 Tests / gates: `pytest` (coverage gate 85%), `ruff check job_hunt`, `mypy`.

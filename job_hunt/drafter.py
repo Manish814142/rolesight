@@ -3,9 +3,8 @@ import re
 from datetime import datetime
 from pathlib import Path
 
-from tinyfish import TinyFish
-
-from job_hunt.llm_utils import chat_with_llm
+from job_hunt.db import get_job_by_url
+from job_hunt.llm_utils import MAX_DESCRIPTION_CHARS, chat_with_llm
 from job_hunt.log import get_logger
 
 logger = get_logger()
@@ -35,15 +34,25 @@ def _resolve_job(job_ref: str) -> tuple[str, str]:
     return job["url"], _slug(job.get("company", "company"))
 
 
-def draft_application(config: dict, job_ref: str) -> None:
-    tf_key = config.get("tinyfish_api_key")
-    if not tf_key:
+def _job_description(url: str, jd_file: str | None) -> tuple[str, str | None]:
+    """The text of the posting and, when known, its company: from --jd-file, else the database (T29/T40)."""
+    if jd_file:
+        return Path(jd_file).read_text(encoding="utf-8"), None
+    row = get_job_by_url(url)
+    if row is None:
         raise RuntimeError(
-            "Drafting fetches the job description via TinyFish, but TINYFISH_API_KEY is not set.\n"
-            "Add it to .env (get a key at https://agent.tinyfish.ai)."
+            f"This job is not in the database: {url}\n"
+            "Run a scan that finds it, or paste its description into a file and pass --jd-file FILE."
         )
-    tf = TinyFish(api_key=tf_key)
+    if not (row.get("description") or "").strip():
+        raise RuntimeError(
+            f"The database has no stored description for {url} (it was scanned before descriptions were kept).\n"
+            "Re-run a scan, or pass the description with --jd-file FILE."
+        )
+    return row["description"], row.get("company")
 
+
+def draft_application(config: dict, job_ref: str, jd_file: str | None = None) -> None:
     cand = config.get("candidate", {})
     candidate_name = cand.get("name", "the candidate")
     resume_path = Path(cand.get("resume_path", "resume/YOUR_RESUME.md"))
@@ -53,14 +62,11 @@ def draft_application(config: dict, job_ref: str) -> None:
 
     job_url, company_slug = _resolve_job(job_ref)
 
-    logger.info(f"Fetching JD: {job_url}")
-    fetch_resp = tf.fetch.get_contents([job_url], format="markdown")
-    if not fetch_resp.results or not fetch_resp.results[0].text:
-        raise RuntimeError(f"Failed to fetch JD. Errors: {fetch_resp.errors}")
-
-    jd = fetch_resp.results[0].text
-    jd_truncated = jd[:4000]
-    logger.debug(f"JD fetched: {len(jd)} chars (using first {len(jd_truncated)} for prompts)")
+    jd, db_company = _job_description(job_url, jd_file)
+    if db_company and company_slug == "company":
+        company_slug = _slug(db_company)
+    jd_truncated = jd[:MAX_DESCRIPTION_CHARS]   # requirements usually follow the company blurb: never cut at 4,000
+    logger.debug(f"JD: {len(jd)} chars (using {len(jd_truncated)} for prompts)")
 
     date_str = datetime.now().strftime("%Y-%m-%d")
     out_dir = OUTPUT_DIR / f"{company_slug}-{date_str}"

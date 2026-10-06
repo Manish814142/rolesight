@@ -304,6 +304,15 @@ def get_job(
         return dict(row) if row else None
 
 
+def get_job_by_url(url: str, db_path: str = DEFAULT_DB_PATH) -> Optional[Dict[str, Any]]:
+    """The stored row for a job URL (matched on url_hash), or None."""
+    init_db(db_path)
+    with sqlite3.connect(db_path) as conn:
+        conn.row_factory = sqlite3.Row
+        row = conn.execute("SELECT * FROM jobs WHERE url_hash = ? LIMIT 1;", (url_hash(url),)).fetchone()
+        return dict(row) if row else None
+
+
 def get_jobs_by_status(
     status: str, db_path: str = DEFAULT_DB_PATH
 ) -> List[Dict[str, Any]]:
