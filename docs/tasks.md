@@ -380,7 +380,7 @@ and the in-text dates.
 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
-| T23 | Workday: check titles before the detail call (measure first) | todo | — | S | — |
+| T23 | Workday: check titles before the detail call (measure first) | doing · claude · 2026-10-06 | claude | S | — |
 
 **T23 · Workday title check before detail calls.** "N Locations" detail calls run for
 every such job, before the title filter. The earlier review measured about 100 s each
