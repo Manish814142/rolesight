@@ -38,10 +38,26 @@ def test_scan_dispatch(monkeypatch):
 def test_draft_dispatch(monkeypatch):
     monkeypatch.setattr(main, "load_config", lambda: {})
     got = {}
-    monkeypatch.setattr("job_hunt.drafter.draft_application", lambda cfg, ref: got.update(ref=ref))
+    monkeypatch.setattr("job_hunt.drafter.draft_application", lambda cfg, ref, jd_file=None: got.update(ref=ref, jd=jd_file))
     _argv(monkeypatch, "draft", "#3")
     main.main()
-    assert got["ref"] == "#3"
+    assert got == {"ref": "#3", "jd": None}
+
+
+def test_draft_passes_jd_file(monkeypatch):
+    monkeypatch.setattr(main, "load_config", lambda: {})
+    got = {}
+    monkeypatch.setattr("job_hunt.drafter.draft_application", lambda cfg, ref, jd_file=None: got.update(ref=ref, jd=jd_file))
+    _argv(monkeypatch, "draft", "https://x.co/j/1", "--jd-file", "jd.txt")
+    main.main()
+    assert got == {"ref": "https://x.co/j/1", "jd": "jd.txt"}
+
+
+def test_draft_jd_file_needs_a_path(monkeypatch):
+    monkeypatch.setattr(main, "load_config", lambda: {})
+    _argv(monkeypatch, "draft", "https://x.co/j/1", "--jd-file")
+    with pytest.raises(SystemExit):
+        main.main()
 
 
 def test_draft_requires_arg(monkeypatch):
