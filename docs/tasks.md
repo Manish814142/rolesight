@@ -504,7 +504,7 @@ Keep the drafts-only rule.
 | T44 | Keyword gap analysis in `draft` | todo | — | M | T40 |
 | T45 | Local dashboard or TUI | todo | — | L | T29 |
 | T50 | Remove TinyFish from the docs, `init` and `config.example.json` | review · claude · e7a72f9 | claude | S | T40, T42 |
-| T51 | `requirements.txt` has `google-genai` commented out | todo | — | XS | — |
+| T51 | `requirements.txt` has `google-genai` commented out | doing · claude · 2026-10-06 | claude | XS | — |
 | T52 | The non-Gemini scoring path never writes scores to the database | todo | — | S | — |
 | T55 | Packaging metadata is still upstream's (pyproject, Dockerfile, smithery, server.json) | todo | — | S | T42, T51 |
 
