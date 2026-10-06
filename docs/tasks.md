@@ -355,7 +355,7 @@ Make the path configurable (e.g. a `JOBNOTIFY_LOG` env var) and point it at `tmp
 in `conftest.py`.
 *Done when:* `stat -c %s scan.log` prints the same number before and after `pytest`.
 
-**T16 · Log location and rotation.** `./scan.log` is 2.2 MB and grows without limit
+**T16 · Log location and rotation.** (Also fold in: warnings from module loggers such as `job_hunt.adapters.*` and `job_hunt.scorer` never reach `scan.log`, because only the `autopilot` logger has the file handler. Measured: `grep -c "fetch failed for" scan.log` → 0.) `./scan.log` is 2.2 MB and grows without limit
 (plain `FileHandler`). `run_daily.sh` also writes a second log, `data/scan.log`. Move
 the Python log into `data/`, give the two files clear names, and use
 `RotatingFileHandler` (e.g. 5 MB × 3). Update `.gitignore` and the docs.
@@ -400,7 +400,7 @@ more than 60 s.
 | T27 | Darwinbox adapter (probe first) | todo | — | M | — |
 | T28 | Monthly `discover --recheck` that only reports | todo | — | S | T07 |
 
-**T25–T27 · New ATS platforms.** The census (31cb7c0) of 458 careers pages found
+**T25–T27 · New ATS platforms.** (A previous Claude session recorded that Eightfold's PCSX endpoint returns HTTP 403 and Darwinbox needs a tenant session, tried 2026-10-04/05; that note is from memory, not in the repo, so re-check before relying on it.) The census (31cb7c0) of 458 careers pages found
 Eightfold and Phenom on 7% each and Darwinbox on 6%, while 52% were unidentified (per
 CHANGELOG). Step 1: find a public JSON endpoint; if there is none, move the task to
 Rejected with the evidence. Step 2: write the adapter, with tests on recorded fixtures
@@ -504,6 +504,9 @@ Keep the drafts-only rule.
 | T44 | Keyword gap analysis in `draft` | todo | — | M | T40 |
 | T45 | Local dashboard or TUI | todo | — | L | T29 |
 | T50 | Remove TinyFish from the docs, `init` and `config.example.json` | review · claude · e7a72f9 | claude | S | T40, T42 |
+| T51 | `requirements.txt` has `google-genai` commented out | todo | — | XS | — |
+| T52 | The non-Gemini scoring path never writes scores to the database | todo | — | S | — |
+| T55 | Packaging metadata is still upstream's (pyproject, Dockerfile, smithery, server.json) | todo | — | S | T42, T51 |
 
 **T50 · Remove TinyFish from the docs and setup.** Manish will not use TinyFish. SETUP.md
 L27 still says "TinyFish (required)"; PRIVACY.md L27 and SECURITY.md L27 say page
@@ -521,6 +524,34 @@ SECURITY.md and `docs/` now describe TinyFish as unused, needed only by `draft` 
 Still open: `autopilot init`'s company list, `config.example.json`, and the `grep` check
 (which will keep finding the T40 notes until T40/T42 remove the code).
 
+**T51 · `requirements.txt` without `google-genai`.** Line 8 comments it out, so `pip install -r
+requirements.txt` gives a scanner that scores nothing (every call fails "google-genai is not
+installed"). Gemini is the default provider, so make it a core dependency in both
+`requirements.txt` and `pyproject.toml` (the `gemini` extra becomes redundant). Also drop
+`openpyxl` from `requirements.txt` if nothing imports it (nothing in `job_hunt/` did on
+2026-10-06).
+*Done when:* in a fresh virtualenv, `pip install -r requirements.txt` followed by
+`python -c "from job_hunt import llm_utils; llm_utils._get_genai_client_and_types('x')"` does not
+raise ImportError.
+
+**T52 · Non-Gemini scores are never stored.** With no Gemini key, `run_scan` scores survivors
+through `score_jobs` (`anthropic` / `claude_cli`), but nothing calls `update_job_status`, so the
+same jobs stay `discovered` and are scored again on every scan. Write each score (and reason)
+to the database like the Gemini path does, keyed by the job; a failure leaves the row alone.
+*Done when:* a unit test through `run_scan` with `llm_provider: anthropic` and a stubbed
+`score_jobs` shows the row `scored` with its score, and a second scan does not call the scorer
+again for it.
+
+**T55 · Packaging metadata.** `pyproject.toml` still has upstream's URLs and an `openrouter`
+keyword; the `Dockerfile` sets `TINYFISH_API_KEY` / `OPENROUTER_API_KEY` and labels the upstream
+repo; `smithery.yaml` offers an `openrouter` provider and a TinyFish key; `server.json` /
+`glama.json` are upstream's registry listing. Make them describe this fork (Gemini; no TinyFish
+or OpenRouter) and drop the upstream URLs; leave the registry files' identity fields alone but
+fix their description. A test should fail if `pyproject.toml`, `requirements.txt`, the
+`Dockerfile` or `smithery.yaml` name TinyFish or OpenRouter again.
+*Done when:* `grep -rniE "tinyfish|openrouter" pyproject.toml requirements.txt Dockerfile smithery.yaml`
+returns nothing, and `docker build` is not needed (assumed: no Docker here; say so).
+
 T43 context: re-running `harvest` re-adds boards that were removed on evidence (see
 CLAUDE.md), and `discover` has become the main way to add companies.
 
@@ -533,11 +564,6 @@ file:line. Manish or the triaging agent moves each one into a priority table.
 
 | ID | Finding | Evidence | Added by |
 |---|---|---|---|
-| T51 | `requirements.txt` has `google-genai` commented out, so an install from it scores nothing (every call fails "google-genai is not installed"). Add it, or delete `requirements.txt` in favour of the `gemini` extra | measured: `requirements.txt` L8–9; error text in `llm_utils._get_genai_client_and_types` | claude (docs rewrite) |
-| T52 | Without a Gemini key, the legacy `score_jobs` path scores survivors but never writes the score to the DB, so the same jobs stay `discovered` and are re-scored every scan | inferred from `scanner.run_scan` (legacy `else` branch after the Gemini block, no `update_job_status`); not run | claude (docs rewrite) |
-| T53 | Warnings from module loggers (`job_hunt.adapters.*`, `job_hunt.scorer`, …) never reach `scan.log`. Only the `autopilot` logger has the file handler (`log.py`), so e.g. "Greenhouse fetch failed for …" appears on the console only. Fold into T16 | inferred from `log.py`; `grep -c "fetch failed for" scan.log` → 0 (measured) | claude (docs rewrite) |
-| T55 | Packaging metadata is still upstream's: `pyproject.toml` URLs, description and `openrouter` keyword; `tinyfish` and `openai` are core dependencies; the `Dockerfile` sets `TINYFISH_API_KEY` / `OPENROUTER_API_KEY` and installs `.[mcp]` without `gemini`. `server.json`, `smithery.yaml` and `glama.json` describe the upstream registry listing | measured: read the files | claude (docs rewrite) |
-| T56 | Before T25/T27: a previous Claude session recorded that Eightfold (PCSX endpoint → HTTP 403) and Darwinbox (needs a tenant session) have no easy public API (tried 2026-10-04/05). Check that record before re-probing | assumed: Claude memory, not re-checked, not in the repo | claude (docs rewrite) |
 | T62 | **Decision for Manish (T17's result):** the language words in the title exclusion block, among India jobs that name a target role and have no other blocker: **python 33** (21 posted in the last 30 days; 21 look like backend/SDE/full-stack, e.g. JPMorgan "Software Engineer III - Python LLM Engineer", Plane "Software Engineer, Backend (Python)"), **java 93** (75), golang 5, react/angular 6, frontend 8. Seniority words (staff, lead, principal, manager, architect) block about 600 more, as intended. Allow "python" in titles? It would add about 33 scoring calls to a full scan (+3%), and your resume lists Python. Java and golang: say which. Each is a one-word change plus a test | measured on 34,416 jobs fetched 2026-10-06: `python scripts/measure_prefilter.py --jobs <saved fetch>` | claude |
 
 ---
