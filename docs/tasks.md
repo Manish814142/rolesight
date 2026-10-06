@@ -125,7 +125,7 @@ After this list: **T40, T50, T42** (Manish will not use TinyFish), then the rest
 | T59 | Confirm the golden-set labels | manish | — | S | T48 |
 | T60 | Scores flip by ~50 points between runs on ambiguous postings | todo | — | S | — |
 | T61 | Pre-filter: C++ / embedded / kernel / GPU / Rust / Ruby / PHP titles | review · claude · b69171a | claude | XS | — |
-| T49 | Check big employers that report "no India jobs" | doing · claude · 2026-10-06 | claude | S | — |
+| T49 | Check big employers that report "no India jobs" | review · claude · 5d3a26e | claude | S | — |
 
 **T48 · Scoring rubric and a golden set.** The prompt (`llm_utils.score_job_with_gemini`)
 asks for "score 0-100" with no scale. First real scan, measured: 21 of 203 jobs tie at
@@ -549,6 +549,7 @@ The implementer adds a row when a task reaches `review`; the verifier removes it
 
 | ID | Commit(s) | Implementer | Evidence (command → result) |
 |---|---|---|---|
+| T49 | 5d3a26e | claude | Probed all three boards directly. **Accenture:** false negative, fixed and added (216 companies): list API has empty `locationsText`, city in `bulletFields[1]`; 2,000 India results in arbitrary order (341 posted in 7 days, only 41 in the first 500) so the Workday cap rose 500 → 2,000. `discover --add-file … --merge companies.json --no-recheck` → verified, 20/20 India on the first page; `git diff companies.json` = one new entry. Through the real adapter: 2,000 jobs in 264 s, 470 pass the pre-filter, 36 posted ≤ 7 days. **Sony:** correct rejection (Workday facets list 11 countries, none India; 94 India-text hits, 0 with an India location). **Western Digital:** SmartRecruiters board 331 postings, 1 in India; Workday site not found (guessed 63 tenant/dc/site combinations); left out. New tests failed before (location, cap, discovery); `pytest` all pass, ruff and mypy clean. Not done: scoring Accenturè's jobs; 418 of the 470 survivors are titled just "Custom Software Engineer", so the scorer must judge them from the description. |
 | T17 | faa8bb0 | claude | Measurement only, no behaviour change. `python scripts/measure_prefilter.py --jobs <saved fetch of 34,416 jobs, 2026-10-06>` → 1,060 pass the pre-filter; India jobs blocked only by one word: python 33 (21 in 30 days), java 93 (75), golang 5, react 3 + reactjs 2 + angular 1, frontend 8. Numbers and the question for Manish posted as Inbox T62. `pytest` all pass; the script has a unit test on synthetic rows. |
 | T11 | 56abafb | claude | `pytest tests/test_prefilter.py` → 5 new tests failed before, all pass after (accepts Computer Scientist / 2 / II / - II / Senior … Agentic AI; still rejects Frontend, Architect, C++, Java, Principal, Staff); `pytest` all pass, ruff and mypy clean. Real filter on the 34,416 jobs fetched 2026-10-06: Adobe Computer Scientist in India 1 → 8 of 14 pass. Not done: scoring those 7 newly passing jobs (needs a scan). |
 | T61 | b69171a | claude | `pytest tests/test_prefilter.py` → 13 new tests failed before the words were added, all pass after; `pytest` all pass, ruff and mypy clean. Real filter on the 34,416 jobs fetched 2026-10-06: survivors 1,109 → 1,053, 0 titles with the new words left, no labelled apply/maybe job rejected. Whole-word controls ("Rustic", "Cpp-free") pass. Not done: a live scan. |
