@@ -124,7 +124,7 @@ After this list: **T40, T50, T42** (Manish will not use TinyFish), then the rest
 | T58 | Fresher-level roles score 88–90 | review · claude · 9dd63f5 | claude | S | — |
 | T59 | Confirm the golden-set labels | manish | — | S | T48 |
 | T60 | Scores flip by ~50 points between runs on ambiguous postings | todo | — | S | — |
-| T61 | Pre-filter: C++ / embedded / kernel / GPU / Rust / Ruby / PHP titles | todo | — | XS | — |
+| T61 | Pre-filter: C++ / embedded / kernel / GPU / Rust / Ruby / PHP titles | doing · claude · 2026-10-06 | claude | XS | — |
 | T49 | Check big employers that report "no India jobs" | todo | — | S | — |
 
 **T48 · Scoring rubric and a golden set.** The prompt (`llm_utils.score_job_with_gemini`)
