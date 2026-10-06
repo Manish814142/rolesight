@@ -323,7 +323,7 @@ once. Record in CHANGELOG: jobs fetched, India, pre-filter passes, too old, scor
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
 | T11 | Let Adobe "Computer Scientist" titles through | todo | — | XS | — |
-| T12 | Exclude CRM/platform "developer" roles | todo | — | S | — |
+| T12 | Exclude CRM/platform "developer" roles | doing · claude · 2026-10-06 | claude | S | — |
 | T14 | Send the full resume to `draft` | todo | — | XS | — |
 | T15 | Stop tests writing to the real `scan.log` | todo | — | S | — |
 | T16 | Put the logs in `data/` with rotation | todo | — | S | T15 |
