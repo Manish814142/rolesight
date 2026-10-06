@@ -4,6 +4,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Optional
 
 from job_hunt.adapters import enrich_job, fetch_company_jobs
 from job_hunt.db import get_job, init_db, save_job, update_job_details, update_job_status
@@ -158,6 +159,24 @@ def score_jobs(jobs: list[dict], resume: str, config: dict) -> list[dict]:
         return sorted(results, key=lambda x: x["score"], reverse=True)
 
 
+    scored = score_batch(jobs, resume, config) or []
+    return sorted((j for j in scored if j["worth_applying"]), key=lambda x: x["score"], reverse=True)
+
+
+def _as_score(value) -> Optional[int]:
+    """The model's score as an int, or None when it is missing or not a number (never a made-up 0)."""
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return None
+    return round(value)
+
+
+def score_batch(jobs: list[dict], resume: str, config: dict) -> Optional[list[dict]]:
+    """Score `jobs` in one prompt (deprecated non-Gemini providers).
+
+    Returns one dict per job the model scored, passing or not, each with `score`, `reason` and
+    `worth_applying`. A job the model left out or gave no score is absent, so the caller leaves it
+    for the next scan. Returns None when the call or its JSON failed.
+    """
     jobs_text = "\n\n".join(
         f"JOB {i + 1}:\nCompany: {j['company']} | Location: {j['location']}\n"
         f"Title: {j['title']}\nURL: {j['url']}\n"
@@ -187,39 +206,37 @@ def score_jobs(jobs: list[dict], resume: str, config: dict) -> list[dict]:
         start, end = raw.find("["), raw.rfind("]") + 1
         if start == -1:
             logger.error("  LLM returned no JSON array")
-            return []
+            return None
         scored = json.loads(raw[start:end])
         logger.debug(f"  LLM scoring complete in {elapsed:.1f}s — {len(scored)} results parsed")
     except Exception as e:
         logger.error(f"  Scoring error: {e}")
-        return []
+        return None
 
-    results = []
+    results: dict[int, dict] = {}
     for item in scored:
-        score = item.get("score", 0)
+        score = _as_score(item.get("score"))
+        idx = item.get("job_number", 0) - 1
+        if score is None or not 0 <= idx < len(jobs) or idx in results:
+            continue
         title = item.get("title", "?")
         reason = item.get("reason", "")
-        worth = item.get("worth_applying", False)
         logger.debug(f"    [{score:3d}] {title} — {reason[:80]}")
-        if not worth:
-            continue
-        idx = item.get("job_number", 0) - 1
-        if 0 <= idx < len(jobs):
-            job = jobs[idx].copy()
-            job.update(
-                {
-                    "score": score,
-                    "extracted_title": title,
-                    "stack": item.get("stack", ""),
-                    "location_remote": item.get("location_remote", job["location"]),
-                    "reason": reason,
-                }
-            )
-            results.append(job)
+        job = jobs[idx].copy()
+        job.update(
+            {
+                "score": score,
+                "extracted_title": title,
+                "stack": item.get("stack", ""),
+                "location_remote": item.get("location_remote", job["location"]),
+                "reason": reason,
+                "worth_applying": bool(item.get("worth_applying", False)),
+            }
+        )
+        results[idx] = job
 
-    passing = len(results)
-    logger.debug(f"  {passing}/{len(scored)} jobs passed min_score threshold")
-    return sorted(results, key=lambda x: x["score"], reverse=True)
+    logger.debug(f"  {sum(j['worth_applying'] for j in results.values())}/{len(scored)} jobs passed min_score threshold")
+    return list(results.values())
 
 
 def format_telegram_message(top_jobs: list[dict], date_str: str) -> str:
@@ -445,15 +462,26 @@ def run_scan(config: dict, companies: list[dict]) -> None:
                     **(res.get("details") or {}),
                 })
         else:
-            # Deprecated non-Gemini providers: score_jobs already batches 10 per prompt.
+            # Deprecated non-Gemini providers: score_batch puts 10 jobs in one prompt. Every job the model
+            # scored is stored (so the next scan does not pay for it again); the rest stay 'discovered'.
             legacy = [
                 {"company": j.company, "title": j.title, "location": j.location,
-                 "url": j.url, "content": j.description_text}
+                 "url": j.url, "content": j.description_text, "job_key": job_key(j)}
                 for j in pending_direct
             ]
             try:
                 for i in range(0, len(legacy), 10):
-                    all_scored_jobs.extend(score_jobs(legacy[i: i + 10], resume, config))
+                    chunk = legacy[i: i + 10]
+                    scored = score_batch(chunk, resume, config)
+                    if scored is None:
+                        scoring_failures += len(chunk)
+                        continue
+                    scoring_failures += len(chunk) - len(scored)
+                    for item in scored:
+                        update_job_status(item["job_key"], "scored", item["score"], item["reason"])
+                        scored_ok += 1
+                        if item["worth_applying"]:
+                            all_scored_jobs.append(item)
             except Exception as score_err:
                 logger.error(f"Scoring failed with provider '{provider}': {score_err} — jobs left as 'discovered'")
                 errors.append(f"⚠️ Scoring failed: {score_err}")

@@ -18,12 +18,12 @@ def scan_env(tmp_path, monkeypatch):
     resume.write_text("Senior ML/AI engineer, 10 YOE.")
 
     # Stub the fetch and the scorer so the test is deterministic and makes no network or LLM calls.
-    # llm_provider "anthropic" + no Gemini key = the non-Gemini scoring path (score_jobs).
+    # llm_provider "anthropic" + no Gemini key = the non-Gemini scoring path (score_batch).
     job = JobPosting(global_id="greenhouse:acme:1", ats="greenhouse", company="Acme", title="Backend Engineer",
                      location="Bengaluru, India", is_remote=False, url="https://x.co/jobs/1", description_text="Node.js")
     monkeypatch.setattr(scanner, "fetch_company_jobs", lambda c: [job])
-    monkeypatch.setattr(scanner, "score_jobs", lambda jobs, resume, config: [
-        {**jobs[0], "score": 90, "extracted_title": "Backend Engineer",
+    monkeypatch.setattr(scanner, "score_batch", lambda jobs, resume, config: [
+        {**jobs[0], "score": 90, "extracted_title": "Backend Engineer", "worth_applying": True,
          "stack": "", "location_remote": "Bengaluru, India", "reason": "Strong fit"},
     ])
 

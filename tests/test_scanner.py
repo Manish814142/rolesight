@@ -100,8 +100,9 @@ def scan_setup(tmp_path, monkeypatch):
     job = JobPosting(global_id="greenhouse:acme:1", ats="greenhouse", company="Acme", title="Backend Engineer",
                      location="Bengaluru, India", is_remote=False, url="https://x.co/jobs/1", description_text="Node")
     monkeypatch.setattr(scanner, "fetch_company_jobs", lambda c: [job])
-    monkeypatch.setattr(scanner, "score_jobs", lambda jobs, resume, cfg: [
-        {**jobs[0], "score": 90, "extracted_title": "Backend Engineer", "reason": "fit", "stack": ""}])
+    monkeypatch.setattr(scanner, "score_batch", lambda jobs, resume, cfg: [
+        {**jobs[0], "score": 90, "extracted_title": "Backend Engineer", "reason": "fit", "stack": "",
+         "worth_applying": True}])
     # llm_provider "anthropic" and no Gemini key: the non-Gemini scoring path
     cfg = {"llm_provider": "anthropic", "candidate": {"name": "Ada", "resume_path": "resume.md",
                                                       "min_score": 55, "top_n": 5}}
@@ -134,7 +135,7 @@ def test_run_scan_scoring_failure_does_not_abort_the_scan(scan_setup, monkeypatc
     def boom(*a, **k):
         raise RuntimeError("score boom")
 
-    monkeypatch.setattr(scanner, "score_jobs", boom)
+    monkeypatch.setattr(scanner, "score_batch", boom)
     monkeypatch.setattr(scanner, "send_telegram", lambda *a: True)
     cfg, companies = scan_setup
     scanner.run_scan(cfg, companies)           # must not raise
@@ -147,8 +148,8 @@ def test_company_with_only_a_careers_url_is_scanned_when_its_ats_is_detected(sca
     monkeypatch.setattr(scanner, "send_telegram", lambda *a: True)
     cfg, _ = scan_setup
     scanner.run_scan(cfg, [{"name": "Acme", "careers_url": "https://boards.greenhouse.io/acme"}])
-    from job_hunt.db import get_jobs_by_status
-    assert len(get_jobs_by_status("discovered")) == 1
+    from job_hunt.db import get_job
+    assert get_job("greenhouse:acme:1")["status"] == "scored"
 
 
 def test_company_with_no_supported_ats_is_skipped_not_fatal(scan_setup, monkeypatch):
