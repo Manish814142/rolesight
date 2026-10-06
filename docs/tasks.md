@@ -395,7 +395,7 @@ more than 60 s.
 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
-| T25 | Eightfold adapter (probe first) | todo | — | M | — |
+| T25 | Eightfold adapter (probe first) | doing · claude · 2026-10-06 | claude | M | — |
 | T26 | Phenom adapter (probe first) | todo | — | M | — |
 | T27 | Darwinbox adapter (probe first) | todo | — | M | — |
 | T28 | Monthly `discover --recheck` that only reports | todo | — | S | T07 |
