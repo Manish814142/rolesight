@@ -9,6 +9,7 @@ from urllib.parse import urlparse
 
 from job_hunt.adapters.base import DEFAULT_HEADERS, http_get, http_post, strip_html
 from job_hunt.models import JobPosting
+from job_hunt.prefilter import title_is_candidate
 
 logger = logging.getLogger(__name__)
 
@@ -18,8 +19,8 @@ PAGE_SIZE = 20
 MAX_JOBS = 2000  # Accenture has 2,000 India-search results, in arbitrary order (2026-10-06); Target had 302, Nvidia 276
 SEARCH_TEXT = "India"
 
-# Per-tenant wall-clock budget. Detail calls dominate (~100 s for Nvidia/Salesforce);
-# once spent, remaining multi-location items keep their list text and paging stops.
+# Per-tenant wall-clock budget. Paging and the detail calls (only for "N Locations" jobs whose title can pass
+# the pre-filter, T23) count against it; once spent, remaining multi-location items keep their list text and paging stops.
 BOARD_BUDGET_SECONDS = 600.0
 
 # List items with several locations show "5 Locations" instead of cities.
@@ -151,7 +152,9 @@ def fetch_workday(tenant: str, dc: str, site: str, budget: float = BOARD_BUDGET_
             posted_on = item.get("postedOn", "")
             description = ""
 
-            if external_path and _MULTI_LOCATION_RE.match(location) and time.monotonic() - start <= budget:
+            # The detail call is one HTTP request per job; skip it when the title alone rules the job out (T23).
+            if (external_path and _MULTI_LOCATION_RE.match(location) and title_is_candidate(title)
+                    and time.monotonic() - start <= budget):
                 detail_locs, description = _fetch_detail(cxs_base, external_path)
                 location = detail_locs or location
 

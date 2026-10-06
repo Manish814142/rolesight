@@ -180,3 +180,45 @@ def test_workday_cap_covers_accenture():
     but only 41 of those are in the first 500 (measured 2026-10-06)."""
     from job_hunt.adapters import workday
     assert workday.MAX_JOBS >= 2000
+
+
+# ── T23: Workday detail calls only for titles the pre-filter could accept ──────────
+
+def _wd_items(titles, locations_text="5 Locations"):
+    return _resp({"jobPostings": [
+        {"title": t, "locationsText": locations_text, "externalPath": f"/job/X/J_{i}", "bulletFields": [f"R{i}"]}
+        for i, t in enumerate(titles)
+    ]})
+
+
+@patch("requests.get")
+@patch("requests.post")
+def test_workday_skips_the_detail_call_for_titles_the_prefilter_rejects(mock_post, mock_get):
+    """The 'N Locations' detail call (one HTTP request each) was made for every such job, ~95% of them
+    for titles the pre-filter rejects whatever their locations. Salesforce: 180 calls, 251 s."""
+    from job_hunt.adapters.workday import fetch_workday
+
+    mock_post.return_value = _wd_items(["Senior Account Executive", "Backend Engineer", "Recruiting Coordinator"])
+    mock_get.return_value = _resp({"jobPostingInfo": {"location": "India, Pune", "additionalLocations": [],
+                                                      "jobDescription": "<p>Node.js</p>"}})
+    jobs = {j.title: j for j in fetch_workday("sfdc", "wd12", "site")}
+
+    assert mock_get.call_count == 1
+    assert mock_get.call_args.args[0].endswith("/job/X/J_1")                     # the Backend Engineer only
+    assert jobs["Backend Engineer"].location == "India, Pune"
+    assert jobs["Senior Account Executive"].location == "5 Locations"            # rejected on its title anyway
+    assert len(jobs) == 3                                                         # still returned; the pre-filter decides
+
+
+def test_title_check_agrees_with_the_prefilter():
+    """The adapter's early check must never keep a job the pre-filter would reject on title, or drop one it accepts."""
+    from job_hunt.models import JobPosting
+    from job_hunt.prefilter import should_evaluate_job, title_is_candidate
+
+    titles = ["Backend Engineer", "Senior Software Engineer", "Software Engineer (Python)", "Staff Engineer",
+              "Account Executive", "Principal Software Engineer, Platform", "SDE II", "Software Engineer - Java",
+              "Member of Technical Staff", "Recruiter", "Engineering Manager", "Frontend Engineer", "", "   "]
+    for t in titles:
+        job = JobPosting(global_id="x", ats="workday", company="c", title=t, location="Bengaluru, India",
+                         is_remote=False, url="u")
+        assert title_is_candidate(t) == should_evaluate_job(job)[0], t

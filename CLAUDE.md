@@ -27,6 +27,7 @@ autopilot validate          # prunes companies.json in place (accepts empty boar
 autopilot discover --seeds scripts/company_seeds.txt --report /tmp/r.csv --out /tmp/v.json [--merge companies.json]
                             # verify company names against ATS boards; --merge re-checks existing entries too
 python scripts/measure_prefilter.py --jobs saved.json   # pre-filter survivors + what each exclusion word costs (--save fetches all, ~9 min)
+python scripts/measure_workday_tenants.py   # per-tenant Workday fetch time, detail calls, survivors (~4-9 min, real network)
 python scripts/score_golden_set.py         # score the labelled jobs with the rubric off/on (~150 Gemini calls); --from-scores re-analyses
 autopilot doctor            # SQLite / Gemini / Telegram / ATS egress checks
 autopilot export [--min N] [--days N]   # CSV from state/ (no API keys needed)
@@ -119,9 +120,9 @@ Harvest into a scratch file (`--out /tmp/x.json`) and diff. Boards removed on ev
 NoBroker/Upstox/Turtlemint/Whatfix SmartRecruiters stubs, Walmart Workday (HTTP 422).
 
 ### Workday adapter
-`searchText="India"`, 20/page up to 2,000 jobs (Accenture has 2,000, in arbitrary order), 600 s budget per tenant; a blank `locationsText` falls back to the second bullet field (Accenture); "N Locations" items get one
+`searchText="India"`, 20/page up to 2,000 jobs (Accenture has 2,000, in arbitrary order), 600 s budget per tenant; a blank `locationsText` falls back to the second bullet field (Accenture); "N Locations" items whose title can pass the pre-filter get one
 detail call (`GET …/wday/cxs/{tenant}/{site}{externalPath}`) for real locations + description during
-the fetch; single-location survivors get their description in the enrich step. Paging stops at the
+the fetch (a title-rejected job is rejected whatever its locations, so it keeps "N Locations" and is not counted in the funnel's `India`; T23); single-location survivors get their description in the enrich step. Paging stops at the
 tenant's `total` or when a page adds nothing new (some tenants repeat postings past it; T47).
 
 ## Package map

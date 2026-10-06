@@ -167,7 +167,9 @@ The pre-filter and scoring rules are spelled out in [07](07-config-and-scoring.m
 **Workday caveats**
 - **India search.** Only jobs that Workday's search matches for "India" are fetched.
   Postings listed as "N Locations" get one detail call each during the fetch, to read
-  their real locations.
+  their real locations, unless their title already fails the title pre-filter (T23): that job is
+  rejected whatever its locations, so it keeps "N Locations" and the scan log's `India` count
+  leaves it out.
 - **Repeated postings.** Some tenants (Sabre, Warner Bros Discovery, Danaher) keep
   returning earlier postings once the offset passes their total. Paging stops at the
   tenant's `total` and when a page adds nothing new (T47, checked on all 78 tenants:
@@ -178,6 +180,10 @@ The pre-filter and scoring rules are spelled out in [07](07-config-and-scoring.m
 The first full scan (2026-10-04, 215 companies, `--posted-within 7`) took **34.3 min**:
 8.9 min fetching, 32 s fetching descriptions (170 of 226 survivors), and about 24 min
 scoring 226 jobs. Scoring time grows with the number of new jobs: about 6.3 s each.
+
+Workday was most of that fetch time. Skipping the detail call for title-rejected jobs (T23) cut a Workday-only fetch of all
+79 tenants from 534 s to 255 s (measured 2026-10-06, 8 workers, `python scripts/measure_workday_tenants.py`); a full
+scan's total was not re-measured.
 
 Later daily scans only score jobs not already `scored`, so they should be much shorter
 (*inferred*; not yet measured on a repeat run).

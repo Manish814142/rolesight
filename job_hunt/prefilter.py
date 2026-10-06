@@ -111,6 +111,22 @@ def location_is_india(location: str) -> bool:
     return bool(LOCATION_INDIA_PATTERN.search(location or "") or LOCATION_INDIA_COUNTRY_CODE.search(location or ""))
 
 
+def _title_rejection(title: str) -> str:
+    """Why the title alone rejects a job, or "" when it can pass (location is checked after this)."""
+    m_exclude = TITLE_EXCLUDE_PATTERN.search(title)
+    if m_exclude:
+        return f"Title matched exclude pattern: '{m_exclude.group(0)}'"
+    if not TITLE_INCLUDE_PATTERN.search(title):
+        return "Title did not match include pattern"
+    return ""
+
+
+def title_is_candidate(title: str) -> bool:
+    """True when the title can pass the pre-filter. A job that fails this is rejected whatever its location,
+    so an adapter may skip paid per-job calls (Workday's detail request) for it."""
+    return not _title_rejection(title or "")
+
+
 def should_evaluate_job(job: JobPosting) -> Tuple[bool, str]:
     """Evaluate whether a job posting matches candidate criteria.
 
@@ -121,15 +137,10 @@ def should_evaluate_job(job: JobPosting) -> Tuple[bool, str]:
     title = job.title or ""
     location = job.location or ""
 
-    # 1. Exclude unwanted roles/seniority/stacks
-    m_exclude = TITLE_EXCLUDE_PATTERN.search(title)
-    if m_exclude:
-        return False, f"Title matched exclude pattern: '{m_exclude.group(0)}'"
-
-    # 2. Must match target include roles
-    m_include = TITLE_INCLUDE_PATTERN.search(title)
-    if not m_include:
-        return False, "Title did not match include pattern"
+    # 1-2. The title decides first: exclude unwanted roles/seniority/stacks, then require a target role
+    reason = _title_rejection(title)
+    if reason:
+        return False, reason
 
     # 3. Location: India anywhere in the string wins; otherwise another region
     #    excludes; otherwise accept explicit worldwide/global or plain remote.
