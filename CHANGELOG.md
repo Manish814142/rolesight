@@ -9,6 +9,9 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed (2026-10-06, T15)
+- The test suite no longer writes to the repo's `scan.log`. The log path comes from `JOBNOTIFY_LOG` (default `./scan.log`, unchanged for real runs) and `conftest.py` points it at a temporary directory, removed when pytest ends, before `job_hunt` is imported. Measured: `stat -c %s scan.log` → 14,574,498 bytes before and after a full `pytest` + ruff + mypy run (the file had grown from 2.2 MB to 14.5 MB today from repeated runs). `tests/test_log_path.py` checks the env var and that the live logger's file is outside the repo.
+
 ### Fixed (2026-10-06, T63)
 - The `anthropic` provider no longer raises `TypeError` on every call: `Messages.create` in the installed SDK (1.11.0) has no `temperature` parameter, and `_chat_with_anthropic` always passed one. It now sends `temperature` only when the SDK's `create` accepts it (older SDKs, which `pyproject.toml` still allows, keep the scorer's 0.1). Measured: before, `chat_with_llm({"llm_provider": "anthropic"}, …)` pointed at a dead local port → `TypeError`; after → `APIConnectionError` (the request is built and sent). `tests/test_anthropic_provider.py` binds the call to the installed SDK's real signature. **Not verified:** a real Anthropic API response (no key here), and `claude_cli` was not run; CLAUDE.md no longer says these providers "still work".
 

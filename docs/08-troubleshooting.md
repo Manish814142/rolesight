@@ -34,7 +34,7 @@ every job's pre-filter decision, score and reason is there.
 | Many jobs score exactly 90 | Scores cluster; the rubric (T48) shifts calibration but not ranking | Read the Reason column to separate them; sub-scores are planned (T41) |
 | Stack / Region columns are empty | Not filled on the Gemini path (T36) | — |
 | `run_daily.sh` prints `min_score=70` but the scan uses 60 | `.env`'s `MIN_SCORE` overrides it (T05) | Set `MIN_SCORE` in `.env` to the value you want |
-| `scan.log` is huge | It's never rotated, and the test suite writes to it too (T15, T16) | It's safe to delete; it's recreated on the next run |
+| `scan.log` is huge | It's never rotated (T16) | It's safe to delete; it's recreated on the next run |
 
 ## Drafting and Telegram
 

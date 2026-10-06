@@ -20,7 +20,7 @@ Last recorded: 398 tests passing, coverage 89.99%, after the T30 review fix (202
 - Stub `requests.get` / `requests.post` (or `adapters.base.http_get` / `http_post`) for
   adapters, `score_job_with_gemini` / `_get_genai_client_and_types` for Gemini, and
   `scanner.send_telegram` for Telegram.
-- Known side effect: tests still write to the real `./scan.log` (T15).
+- The suite logs to a temporary directory (`JOBNOTIFY_LOG`, set by `conftest.py`); it never touches `./scan.log`.
 
 **CI.** `.github/workflows/ci.yml` runs the same gates on Python 3.11, 3.12 and 3.13, plus a
 gitleaks secret scan. This fork isn't pushed anywhere yet (T01), so **CI doesn't run for

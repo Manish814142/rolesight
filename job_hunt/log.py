@@ -3,6 +3,13 @@ import os
 import sys
 from pathlib import Path
 
+LOG_PATH_ENV = "JOBNOTIFY_LOG"
+
+
+def log_path() -> Path:
+    """Where the DEBUG log goes: $JOBNOTIFY_LOG, else ./scan.log (the test suite sets the variable)."""
+    return Path(os.getenv(LOG_PATH_ENV) or "scan.log")
+
 
 def get_logger(name: str = "autopilot") -> logging.Logger:
     logger = logging.getLogger(name)
@@ -25,8 +32,7 @@ def get_logger(name: str = "autopilot") -> logging.Logger:
     logger.addHandler(console)
 
     try:
-        log_path = Path("scan.log")
-        file_handler = logging.FileHandler(log_path, encoding="utf-8")
+        file_handler = logging.FileHandler(log_path(), encoding="utf-8")
         file_handler.setLevel(logging.DEBUG)
         file_handler.setFormatter(fmt)
         logger.addHandler(file_handler)
