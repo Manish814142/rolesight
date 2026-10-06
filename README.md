@@ -124,9 +124,9 @@ As of 2026-10-04. The live list of work is the task board, [docs/tasks.md](docs/
   `setup_cron.sh` installs an outdated command, so don't use it (T08).
 - **Score threshold confusion.** `run_daily.sh` announces `MIN_SCORE=70`, but `.env`'s
   value wins (T05).
-- **No quota guard.** If Gemini's daily quota runs out mid-scan, the remaining jobs still
-  each try a call before failing. They stay `discovered` and retry next scan, so nothing is
-  lost, but time is wasted (T03, T04).
+- **No per-run limit.** When Gemini's daily quota runs out, scoring stops after 3 jobs in a
+  row fail on every model (T03) and the rest stay `discovered` for the next scan. Until then a
+  scan tries every pending job; a per-run cap, newest first, is T04.
 - **Amazon jobs are scored on a stub.** Their description is cut to 202 characters although
   the API has the full text (T57).
 - **Scores are noisy on ambiguous postings.** The same prompt can give 30 on one run and 85 on the next for a posting with a stray requirement (T60).

@@ -138,9 +138,24 @@ def _gemini_models(config: dict) -> list[str]:
     return [primary] + [m for m in GEMINI_FALLBACK_MODELS if m != primary]
 
 
+class GeminiQuotaExhausted(RuntimeError):
+    """Every model in the fallback chain answered with a rate-limit / quota error (T03).
+
+    Scoring more jobs cannot succeed until the quota resets, so callers may stop early.
+    """
+
+
+def _is_quota_error(message: str) -> bool:
+    return any(t in message for t in ("429", "RESOURCE_EXHAUSTED", "ResourceExhausted", "quota"))
+
+
 def _generate_with_fallback(client: Any, contents: str, cfg: Any, models: list[str]) -> str:
-    """Call generate_content across `models`, retrying once on rate-limit/transient errors."""
+    """Call generate_content across `models`, retrying once on rate-limit/transient errors.
+
+    Raises GeminiQuotaExhausted when every model failed with a quota error.
+    """
     last_err: Exception | None = None
+    quota_models = 0
     for m in models:
         for attempt in range(2):
             try:
@@ -162,6 +177,10 @@ def _generate_with_fallback(client: Any, contents: str, cfg: Any, models: list[s
                     continue
                 logger.warning(f"Gemini model {m} failed ({e}), trying next model...")
                 break
+        if last_err is not None and _is_quota_error(str(last_err)):
+            quota_models += 1
+    if last_err is not None and models and quota_models == len(models):
+        raise GeminiQuotaExhausted(str(last_err)) from last_err
     raise last_err or RuntimeError("All Gemini models failed.")
 
 

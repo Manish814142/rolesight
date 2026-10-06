@@ -127,6 +127,11 @@ _FETCH_URL_DELAY = 2.5
 # single-job scores by 15.5 points on average (run-to-run noise: 1.0), inflating weak fits.
 DEFAULT_GEMINI_BATCH_SIZE = 10
 
+# Stop scoring after this many consecutive jobs (or batches) failed with a quota error on every Gemini
+# model: the daily quota is gone, and each further job would burn ~20-30 s of retries for nothing (T03).
+# The rest stay 'discovered' and are scored on the next scan.
+QUOTA_BREAKER_THRESHOLD = 3
+
 # Companies fetched concurrently (config "fetch_workers"). Fetching is network-bound;
 # DB writes and scoring stay sequential. Each HTTP call has a hard total deadline
 # (adapters/base.py) and Workday tenants a per-board budget, so no board can stall a scan.
@@ -551,11 +556,14 @@ def run_scan(config: dict, companies: list[dict]) -> None:
                     f"in {time.time() - enrich_start:.0f} s")
         if gemini_key:
             scored_pairs: list = []
+            quota_streak = 0
             if config.get("gemini_scoring_mode", "single") == "batch":
                 batch_size = max(1, int(config.get("gemini_batch_size", DEFAULT_GEMINI_BATCH_SIZE)))
                 n_batches = -(-len(pending_direct) // batch_size)
                 logger.info(f"Scoring {len(pending_direct)} job(s) in {n_batches} Gemini batch(es) of up to {batch_size}...")
                 for i in range(0, len(pending_direct), batch_size):
+                    if quota_streak >= QUOTA_BREAKER_THRESHOLD:
+                        break
                     chunk = pending_direct[i: i + batch_size]
                     results = score_and_process_batch(
                         jobs=chunk,
@@ -567,6 +575,7 @@ def run_scan(config: dict, companies: list[dict]) -> None:
                         config=config,
                     )
                     scored_pairs.extend(zip(chunk, results))
+                    quota_streak = quota_streak + 1 if all(r.get("quota_exhausted") for r in results) else 0
             else:
                 logger.info(f"Scoring {len(pending_direct)} job(s) one per Gemini call (~4.2 s each)...")
                 for job in pending_direct:
@@ -580,6 +589,15 @@ def run_scan(config: dict, companies: list[dict]) -> None:
                         config=config,
                     )
                     scored_pairs.append((job, res))
+                    quota_streak = quota_streak + 1 if res.get("quota_exhausted") else 0
+                    if quota_streak >= QUOTA_BREAKER_THRESHOLD:
+                        break
+            if quota_streak >= QUOTA_BREAKER_THRESHOLD:
+                succeeded = sum(1 for _, r in scored_pairs if r["score"] is not None)
+                logger.warning(
+                    f"Gemini quota exhausted ({quota_streak} in a row failed on every model): scoring stopped after "
+                    f"{succeeded} scored; {len(pending_direct) - succeeded} job(s) are left as 'discovered' for the next scan"
+                )
             for job, res in scored_pairs:
                 if res["score"] is None:
                     scoring_failures += 1

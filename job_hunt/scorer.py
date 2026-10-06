@@ -6,7 +6,11 @@ import time
 from typing import Any, Dict, List, Optional
 
 from job_hunt.db import DEFAULT_DB_PATH, update_job_status
-from job_hunt.llm_utils import score_job_with_gemini, score_jobs_batch_with_gemini
+from job_hunt.llm_utils import (
+    GeminiQuotaExhausted,
+    score_job_with_gemini,
+    score_jobs_batch_with_gemini,
+)
 from job_hunt.models import JobPosting, job_key
 from job_hunt.notifier import format_job_alert, is_telegram_configured, send_telegram
 
@@ -79,7 +83,8 @@ def score_and_process_job(
         logger.error("Scoring failed for %s @ %s — left as 'discovered' for retry: %s",
                      job.title, job.company, e)
         time.sleep(THROTTLE_INTERVAL_SECONDS)
-        return {"score": None, "reason": f"Scoring failed: {e}", "status": "discovered"}
+        return {"score": None, "reason": f"Scoring failed: {e}", "status": "discovered",
+                "quota_exhausted": isinstance(e, GeminiQuotaExhausted)}
 
     # 2. Strict 4.2s sleep interval to respect 15 RPM cap
     time.sleep(THROTTLE_INTERVAL_SECONDS)
@@ -134,6 +139,7 @@ def score_and_process_batch(
     and stay 'discovered' in the DB so the next scan retries them.
     """
     cfg = {**(config or {}), "gemini_api_key": gemini_api_key}
+    quota_exhausted = False
     payload = [
         {
             "id": str(i),
@@ -150,6 +156,7 @@ def score_and_process_batch(
     except Exception as e:
         logger.error("Batch scoring failed for %d job(s) — left as 'discovered' for retry: %s", len(jobs), e)
         scored, failure = {}, str(e)
+        quota_exhausted = isinstance(e, GeminiQuotaExhausted)
     # One pacing sleep per API call keeps us under the 15 RPM free-tier cap.
     time.sleep(THROTTLE_INTERVAL_SECONDS)
 
@@ -157,7 +164,8 @@ def score_and_process_batch(
     for i, job in enumerate(jobs):
         r = scored.get(str(i))
         if r is None:
-            results.append({"score": None, "reason": f"Scoring failed: {failure}", "status": "discovered"})
+            results.append({"score": None, "reason": f"Scoring failed: {failure}", "status": "discovered",
+                            "quota_exhausted": quota_exhausted})
             continue
         status = _record_score(job, r["score"], r["reason"], telegram_token, telegram_chat_id, db_path, min_notify_score)
         results.append({"score": r["score"], "reason": r["reason"], "status": status})
