@@ -43,13 +43,14 @@ Tests must make **no network calls** — stub `send_telegram`, adapters, and Gem
 2. `adapters.fetch_company_jobs` → `JobPosting`s from public ATS JSON APIs, fetched in parallel
    (`fetch_workers`, 8) with a 900 s total deadline per HTTP call and 600 s per Workday tenant
    (greenhouse, lever, ashby, smartrecruiters, workday, recruitee, personio, workable, oracle_hcm,
-   amazon). Oracle HCM entries carry `host` + `site`; Amazon is `{"ats": "amazon"}`.
+   eightfold, amazon). Oracle HCM entries carry `host` + `site`; Eightfold entries `host` + `domain`
+   (PCSX search, 10/page, retried on HTTP 429); Amazon is `{"ats": "amazon"}`.
 3. Dedupe by `(ats, global_id)` (the ATS's own job id) in `data/jobs.db`; `canonical_hash` is the
    fallback for rows without an id.
 4. `prefilter.should_evaluate_job` — word-bounded title include/exclude + location regex; then
    `prefilter.is_too_old` when `--posted-within N` / `candidate.max_posted_age_days` is set.
 5. Enrich: `adapters.enrich_job` fetches the full description for survivors whose ATS list API
-   lacks one (`ENRICHERS`: workday, smartrecruiters, oracle_hcm), in parallel; failures keep the
+   lacks one (`ENRICHERS`: workday, smartrecruiters, oracle_hcm, eightfold), in parallel; failures keep the
    list text.
 6. After all companies are fetched, survivors are scored: default one job per Gemini call
    (`scorer.score_and_process_job`, full resume, 4.2 s pacing = 15 RPM). Opt-in
@@ -109,7 +110,7 @@ After a `discover --merge`, copy `companies.json` to `job_hunt/data/companies.js
 paste names into a file in any format and run
 `autopilot discover --add-file paste.txt --report /tmp/r.csv --out /tmp/v.json --merge companies.json`
 (or `--add "A, B, C"`). New names are appended to `scripts/company_seeds.txt`; Workday tenants go
-in as `Name | workday | tenant | dc | site` lines. Back up `companies.json` and read the report first. Accepted only with live jobs, confirmed identity, ≥1 India job and
+in as `Name | workday | tenant | dc | site` lines and Eightfold sites as `Name | eightfold | host | domain`. Back up `companies.json` and read the report first. Accepted only with live jobs, confirmed identity, ≥1 India job and
 a posting ≤180 days old (abandoned SmartRecruiters boards from 2015–2020 exist). Custom portals
 (Google, Flipkart, Swiggy careers sites, Darwinbox/Freshteam/Zoho Recruit…) are not reachable.
 

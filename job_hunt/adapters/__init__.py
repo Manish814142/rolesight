@@ -7,6 +7,8 @@ from typing import Any, Callable, Dict, List, Optional, Tuple
 
 from job_hunt.adapters.amazon import fetch_amazon
 from job_hunt.adapters.ashby import fetch_ashby
+from job_hunt.adapters.eightfold import fetch_description as eightfold_description
+from job_hunt.adapters.eightfold import fetch_eightfold
 from job_hunt.adapters.greenhouse import fetch_greenhouse
 from job_hunt.adapters.lever import fetch_lever
 from job_hunt.adapters.oracle_hcm import fetch_description as oracle_hcm_description
@@ -117,6 +119,9 @@ def fetch_company_jobs(company_info: Dict[str, Any]) -> List[JobPosting]:
 
     if ats == "amazon":
         return fetch_amazon()
+    if ats == "eightfold":
+        host, domain = company_info.get("host"), company_info.get("domain")
+        return fetch_eightfold(host, domain, company=company_name) if host and domain else []
     if ats == "oracle_hcm":
         host, site = company_info.get("host"), company_info.get("site")
         if not (host and site) and slug and ":" in str(slug):
@@ -174,6 +179,7 @@ def fetch_company_jobs(company_info: Dict[str, Any]) -> List[JobPosting]:
 # list API gave. Only pre-filter survivors are enriched, just before scoring, so detail
 # calls are paid for jobs Gemini will actually read.
 ENRICHERS: Dict[str, Callable[[JobPosting], str]] = {
+    "eightfold": eightfold_description,
     "oracle_hcm": oracle_hcm_description,
     "smartrecruiters": smartrecruiters_description,
     "workday": workday_description,
@@ -212,4 +218,5 @@ __all__ = [
     "fetch_workable",
     "fetch_amazon",
     "fetch_oracle_hcm",
+    "fetch_eightfold",
 ]

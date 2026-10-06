@@ -125,6 +125,34 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Lam Research",
+    "ats": "eightfold",
+    "host": "lamresearch.eightfold.ai",
+    "domain": "lamresearch.com",
+    "headcount": "10,001+ employees"
+  },
+  {
+    "name": "Morgan Stanley",
+    "ats": "eightfold",
+    "host": "morganstanley.eightfold.ai",
+    "domain": "morganstanley.com",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Qualcomm",
+    "ats": "eightfold",
+    "host": "qualcomm.eightfold.ai",
+    "domain": "qualcomm.com",
+    "headcount": "10,001+ employees"
+  },
+  {
+    "name": "UKG",
+    "ats": "eightfold",
+    "host": "apply.ukg.com",
+    "domain": "ukg.com",
+    "headcount": "Unknown"
+  },
+  {
     "name": "Adyen",
     "ats": "greenhouse",
     "slug": "adyen",

@@ -18,7 +18,7 @@ Current as of 2026-10-04, after T47 (Workday paging), T30 (dedupe by ATS id) and
 
 ```mermaid
 flowchart TD
-    COMP["companies.json<br/>216 boards: ats + slug / tenant / host"] --> FETCH
+    COMP["companies.json<br/>220 boards: ats + slug / tenant / host"] --> FETCH
     subgraph Fetch ["1. Fetch: adapters/, 8 companies in parallel"]
         FETCH["fetch_company_jobs()"] --> LISTAPI["Greenhouse · Lever · Ashby · Workable<br/>Recruitee · Personio · Amazon<br/>(list API includes descriptions; Amazon's is cut to a stub, T57)"]
         FETCH --> WD["Workday CXS: searchText=India<br/>20/page, ≤500, 600 s budget<br/>detail call only for 'N Locations' jobs whose title can pass"]
@@ -34,7 +34,7 @@ flowchart TD
     PF -- pass --> AGE{"prefilter.is_too_old<br/>(--posted-within N)"}
     AGE -- "known date > N days" --> SKIPPED
     AGE -- "within N / undated" --> QUEUE["status = discovered<br/>queued (all companies)"]
-    QUEUE --> ENRICH["adapters.enrich_job (parallel)<br/>ENRICHERS: workday, smartrecruiters, oracle_hcm<br/>failure → keep list-API text"]
+    QUEUE --> ENRICH["adapters.enrich_job (parallel)<br/>ENRICHERS: workday, smartrecruiters, oracle_hcm, eightfold<br/>failure → keep list-API text"]
     ENRICH --> SCORE["scorer.score_and_process_job → llm_utils.score_job_with_gemini<br/>full resume + full JD (≤20k chars), 1 job/call, 4.2 s pacing"]
     SCORE -- error --> DISC["stays discovered<br/>(retried next scan)"]
     SCORE -- ok --> SCORED["status = scored (+score, reason)"]

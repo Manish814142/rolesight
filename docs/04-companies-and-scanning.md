@@ -5,8 +5,8 @@
 The list of job boards to scan. It is committed, **curated** and the core of the project:
 each board was checked to be live, to belong to the right employer and to have India jobs.
 
-**Counts (2026-10-06):** 216 boards: Workday 79, Greenhouse 74, Lever 23, Ashby 20,
-SmartRecruiters 13, Oracle HCM 4, Workable 2, Amazon 1.
+**Counts (2026-10-06):** 220 boards: Workday 79, Greenhouse 74, Lever 23, Ashby 20,
+SmartRecruiters 13, Oracle HCM 4, Eightfold 4, Workable 2, Amazon 1.
 
 ### Entry shapes
 
@@ -23,8 +23,9 @@ SmartRecruiters 13, Oracle HCM 4, Workable 2, Amazon 1.
 
 - **`name`** replaces whatever company name the ATS returns, in every output.
 - **`ats`** is one of: `greenhouse`, `greenhouse_eu`, `lever`, `ashby`,
-  `smartrecruiters`, `workday`, `oracle_hcm`, `amazon`, `workable`, `recruitee`,
-  `personio`.
+  `smartrecruiters`, `workday`, `oracle_hcm`, `eightfold`, `amazon`, `workable`, `recruitee`,
+  `personio`. Eightfold entries carry `host` (the careers site) and `domain` (the employer's domain), like
+  `{"name": "Qualcomm", "ats": "eightfold", "host": "qualcomm.eightfold.ai", "domain": "qualcomm.com"}`.
 - **`headcount`** is display metadata only, from a stale LinkedIn cache. It never filters
   anything.
 - **Entries without an `ats`.** One with a `careers_url` is auto-detected when the URL is a
@@ -160,6 +161,7 @@ The pre-filter and scoring rules are spelled out in [07](07-config-and-scoring.m
 | SmartRecruiters | `api.smartrecruiters.com/v1/companies/{slug}/postings` | 100/page, ≤2,000 | no → enriched | `releasedDate` |
 | Workday | `POST {tenant}.{dc}.myworkdayjobs.com/wday/cxs/{tenant}/{site}/jobs`, `searchText="India"` | 20/page, ≤500, 600 s/tenant | no → enriched | "Posted N Days Ago" text |
 | Oracle HCM | `{host}/hcmRestApi/resources/latest/recruitingCEJobRequisitions`, India location facet | 100/page, ≤2,000 | short only → enriched | `PostedDate` |
+| Eightfold | `{host}/api/pcsx/search?domain={domain}&location=India`, details from `/api/pcsx/position_details` | 10/page, ≤1,000, 600 s/board; 429 → retry after 3–48 s | no → enriched | `postedTs` (epoch) |
 | Amazon | `www.amazon.jobs/en/search.json?country=IND` | 100/page, ≤4,000 | yes | `posted_date` |
 | Workable | `apply.workable.com/api/v1/widget/accounts/{slug}?details=true` | whole board | yes | `published_on` |
 | Recruitee | `{slug}.recruitee.com/api/offers` | whole board | yes | `published_at` |

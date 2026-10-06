@@ -504,3 +504,42 @@ def test_evaluate_workday_reads_the_location_like_the_adapter_does(mock_post):
         {"title": "Software Engineer", "locationsText": "Austin", "externalPath": "/job/Austin/SE_R3"}]})
     row = disc.evaluate_workday("Accenture", "accenture", "wd103", "AccentureCareers")
     assert row["india_jobs"] == 2 and row["prefilter_pass"] == 2 and row["accepted"] is True
+
+
+# --- T25: Eightfold boards (host + employer domain) ----------------------------------------
+
+def test_parse_seeds_reads_eightfold_lines():
+    seeds = parse_seeds("UKG | eightfold | apply.ukg.com | ukg.com\nMicron | eightfold | micron.eightfold.ai | micron.com\n")
+    assert seeds[0] == {"name": "UKG", "eightfold": {"host": "apply.ukg.com", "domain": "ukg.com"}}
+    assert seeds[1]["eightfold"] == {"host": "micron.eightfold.ai", "domain": "micron.com"}
+
+
+def test_discover_verifies_eightfold_seeds_with_real_adapter_and_does_not_slug_probe(monkeypatch):
+    from datetime import date
+    asked = []
+
+    def fake_fetch(c):
+        asked.append(c.get("ats"))
+        return [_jp("Software Engineer III", "Bengaluru, India", posted=date.today().isoformat())] if c.get("ats") == "eightfold" else []
+
+    monkeypatch.setattr(disc, "load_linkedin_cache", lambda path: ({}, {}))
+    monkeypatch.setattr(disc, "fetch_company_jobs", fake_fetch)
+    verified, rows = disc.discover(parse_seeds("UKG | eightfold | apply.ukg.com | ukg.com\n"), workers=2)
+    assert verified == [{"name": "UKG", "ats": "eightfold", "host": "apply.ukg.com", "domain": "ukg.com", "headcount": "Unknown"}]
+    assert set(asked) == {"eightfold"}                       # no greenhouse/lever/... slug guesses for an Eightfold seed
+
+
+def test_merge_treats_eightfold_boards_by_host_and_domain():
+    existing = [{"name": "UKG", "ats": "eightfold", "host": "apply.ukg.com", "domain": "ukg.com"}]
+    new = [{"name": "Twilio", "ats": "eightfold", "host": "jobs.twilio.com", "domain": "twilio.com"},
+           {"name": "Ultimate Kronos Group", "ats": "eightfold", "host": "apply.ukg.com", "domain": "ukg.com"}]
+    assert [c["name"] for c in merge_companies(existing, new)] == ["Twilio", "UKG"]
+
+
+def test_reverify_existing_uses_the_real_adapter_for_eightfold(monkeypatch):
+    from datetime import date
+    seen = []
+    monkeypatch.setattr(disc, "fetch_company_jobs", lambda c: seen.append(c) or [_jp(posted=date.today().isoformat())])
+    kept, _ = disc.reverify_existing([{"name": "UKG", "ats": "eightfold", "host": "apply.ukg.com", "domain": "ukg.com"}])
+    assert [c["name"] for c in kept] == ["UKG"]
+    assert seen[0]["host"] == "apply.ukg.com" and seen[0]["domain"] == "ukg.com"

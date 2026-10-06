@@ -16,7 +16,7 @@ autopilot scan --posted-within 7
 
 Only a Gemini API key is required. TinyFish and OpenRouter, which the upstream
 project's setup needed, were removed from this fork. In this repo `companies.json`
-(216 India-hiring boards) is already in place; `autopilot init` copies the same list.
+(220 India-hiring boards) is already in place; `autopilot init` copies the same list.
 
 More: [README](README.md) · [all docs](docs/README.md) ·
 [MCP / Claude Code](docs/06-mcp-and-skill.md) · [troubleshooting](docs/08-troubleshooting.md)

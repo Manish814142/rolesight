@@ -1475,3 +1475,9 @@ Unisys | https://unisys.wd5.myworkdayjobs.com/en-US/External/?q=
 Visa Careers | https://visa.wd5.myworkdayjobs.com/Visa
 Western Digital | https://careers.smartrecruiters.com/WesternDigital
 Yugabyte | https://boards.greenhouse.io/yugabyte
+
+# ── added via discover --add (2026-10-06) ──
+UKG | eightfold | apply.ukg.com | ukg.com
+Lam Research | eightfold | lamresearch.eightfold.ai | lamresearch.com
+Qualcomm | eightfold | qualcomm.eightfold.ai | qualcomm.com
+Morgan Stanley | eightfold | morganstanley.eightfold.ai | morganstanley.com
