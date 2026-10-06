@@ -326,7 +326,7 @@ once. Record in CHANGELOG: jobs fetched, India, pre-filter passes, too old, scor
 | T12 | Exclude CRM/platform "developer" roles | review · claude · 0660d1d | claude | S | — |
 | T14 | Send the full resume to `draft` | review · claude · 9d3f0f9 | claude | XS | — |
 | T15 | Stop tests writing to the real `scan.log` | review · claude · 735568b | claude | S | — |
-| T16 | Put the logs in `data/` with rotation | doing · claude · 2026-10-06 | claude | S | T15 |
+| T16 | Put the logs in `data/` with rotation | review · claude · 2350bdc | claude | S | T15 |
 | T17 | Measure what the python/java/golang exclusions cost now | review · claude · faa8bb0 | claude | XS | — |
 | T18 | Fix the CHANGELOG dates | todo | — | XS | — |
 
@@ -575,6 +575,7 @@ The implementer adds a row when a task reaches `review`; the verifier removes it
 
 | ID | Commit(s) | Implementer | Evidence (command → result) |
 |---|---|---|---|
+| T16 | 2350bdc | claude | tests/test_log_path.py: 5 new tests failed before, 7 pass after (-rA): default path data/autopilot.log, data/ created, rotation at the limit leaves exactly .1 to .3 and the newest line in the live file, defaults 5 MB x 3, adapter warning reaches file and console. Real import path in a scratch dir (JOBNOTIFY_LOG unset, import job_hunt.scanner): warning 1x on console and 1x in data/autopilot.log, debug line in file only, stderr empty, no scan.log created. Full gates green; repo scan.log 14574498 bytes before and after. Not done: run_daily.sh keeps its own unrotated data/scan.log (small: ~23 KB for the one recorded run); setup_cron.sh still points at ./scan.log (T08); old ./scan.log (14.5 MB, gitignored) left for Manish to delete. |
 | T15 | 735568b | claude | tests/test_log_path.py (2 tests) failed before, pass after (-rA). Done-when: stat -c %s scan.log = 14574498 before and 14574498 after a full pytest+ruff+mypy run; temp log dir removed after the run. Real consumer for the path test is the live autopilot logger's FileHandler.baseFilename. Gates green. |
 | T63 | 6fbb1ab | claude | tests/test_anthropic_provider.py (3 tests; the first binds the call to the installed SDK's real Messages.create signature): 2 failed with TypeError before, all pass after (-rA, not skipped). Real function against a dead local port: TypeError before, APIConnectionError after. Full gates green. Not verified: a real Anthropic API response (no key) and claude_cli (not run); CLAUDE.md now says so. |
 | T52 | 4061a76 | claude | tests/test_legacy_scoring.py (7 tests) stub only chat_with_llm and run the real parse + run_scan + SQLite twice: scored/below-threshold rows stored with score+reason, 2nd scan makes 0 LLM calls, a job the model omitted or failed call stays discovered with score NULL. Red first (3 of 6 failed as predicted), then full gates green. Not verified: a real anthropic/claude_cli call (no key; see T63). |
