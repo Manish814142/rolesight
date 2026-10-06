@@ -14,7 +14,7 @@ from job_hunt.llm_utils import chat_with_llm
 from job_hunt.log import get_logger
 from job_hunt.models import job_key
 from job_hunt.notifier import is_telegram_configured, send_telegram
-from job_hunt.prefilter import is_too_old, should_evaluate_job
+from job_hunt.prefilter import is_too_old, posted_age_days, should_evaluate_job
 from job_hunt.scorer import score_and_process_batch, score_and_process_job
 
 logger = get_logger()
@@ -131,6 +131,11 @@ DEFAULT_GEMINI_BATCH_SIZE = 10
 # model: the daily quota is gone, and each further job would burn ~20-30 s of retries for nothing (T03).
 # The rest stay 'discovered' and are scored on the next scan.
 QUOTA_BREAKER_THRESHOLD = 3
+
+# At most this many jobs are scored per run, newest first (config "max_jobs_to_score_per_run"; 0 = no cap, T04).
+# The free tier allows about 500 calls per model per day, and the rest simply stay 'discovered' for the next
+# scan. Jobs with no known posted date count as newest, so they are never starved.
+DEFAULT_MAX_JOBS_TO_SCORE = 400
 
 # Companies fetched concurrently (config "fetch_workers"). Fetching is network-bound;
 # DB writes and scoring stay sequential. Each HTTP call has a hard total deadline
@@ -546,6 +551,15 @@ def run_scan(config: dict, companies: list[dict]) -> None:
             errors.append(msg)
             logger.error(f"  Company scan failed: {company_err}")
             continue
+
+    cap = int(config.get("max_jobs_to_score_per_run", DEFAULT_MAX_JOBS_TO_SCORE))
+    if 0 < cap < len(pending_direct):
+        pending_direct.sort(key=lambda j: posted_age_days(j.posted_at) or 0)   # stable: ties keep fetch order
+        logger.warning(f"{len(pending_direct)} job(s) are pending but at most {cap} are scored per run: the newest "
+                       f"{cap} go first, {len(pending_direct) - cap} stay 'discovered' for the next scan")
+        del pending_direct[cap:]
+    elif pending_direct:
+        pending_direct.sort(key=lambda j: posted_age_days(j.posted_at) or 0)
 
     if pending_direct:
         # Workday/SmartRecruiters/Oracle list APIs carry little or no description;

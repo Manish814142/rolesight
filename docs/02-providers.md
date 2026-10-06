@@ -29,8 +29,8 @@ applications (`autopilot draft`, on demand). The two choose their provider diffe
   verified live): 15 requests per minute, 250k tokens per minute and **500 requests per
   day per model**. With 2 models that is roughly 1,000 scoring calls a day.
   Use `--posted-within N` to keep a scan inside that budget. A scan stops scoring
-  once 3 jobs in a row fail with a quota error on every model (T03); the rest wait for the next
-  scan. A per-run cap is T04.
+  once 3 jobs in a row fail with a quota error on every model (T03), and scores at most
+  `max_jobs_to_score_per_run` jobs (default 400), newest first (T04); the rest wait for the next scan.
 - **Model choice:** `gemini-3.8-flash` (20 requests a day) and `gemini-flash-latest` are
   deliberately not used as fallbacks, so a fallback never burns a tiny quota.
 

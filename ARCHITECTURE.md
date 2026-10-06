@@ -170,8 +170,8 @@ Measured on 2026-10-04 unless marked otherwise. Each one has a task.
 - **Gemini quota:** about 1,270 jobs pass the pre-filter across 215 companies, but the
   free tier allows about 1,000 calls a day (2 Flash Lite models × 500 a day; Google's
   published figure, not verified live). When the quota runs out, scoring stops after 3 jobs in
-  a row fail on every model and the rest stay `discovered` (T03); there is no per-run cap yet
-  (T04). Use `--posted-within`.
+  a row fail on every model and the rest stay `discovered` (T03). A scan scores at most
+  `max_jobs_to_score_per_run` jobs (default 400), newest first (T04). Use `--posted-within`.
 - **Old counts:** figures reported before T47 (for example "36,228 jobs fetched" and
   "Sabre 26 in 7 days") counted Workday postings that some tenants repeat past their
   total. Paging now stops there (T47).
