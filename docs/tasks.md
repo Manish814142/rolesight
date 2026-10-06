@@ -328,7 +328,7 @@ once. Record in CHANGELOG: jobs fetched, India, pre-filter passes, too old, scor
 | T15 | Stop tests writing to the real `scan.log` | review · claude · 735568b | claude | S | — |
 | T16 | Put the logs in `data/` with rotation | review · claude · 2350bdc | claude | S | T15 |
 | T17 | Measure what the python/java/golang exclusions cost now | review · claude · faa8bb0 | claude | XS | — |
-| T18 | Fix the CHANGELOG dates | todo | — | XS | — |
+| T18 | Fix the CHANGELOG dates | doing · claude · 2026-10-06 | claude | XS | — |
 
 **T11 · "Computer Scientist" titles.** On 2026-10-04, 16 of the 19 "Computer
 Scientist" / MTS titles in the DB were `skipped` (measured). MTS is now included
