@@ -9,7 +9,7 @@ from pathlib import Path
 from tinyfish import RateLimitError, TinyFish
 
 from job_hunt.adapters import enrich_job, fetch_company_jobs
-from job_hunt.db import get_job, init_db, save_job, update_job_status
+from job_hunt.db import get_job, init_db, save_job, update_job_details, update_job_status
 from job_hunt.llm_utils import chat_with_llm
 from job_hunt.log import get_logger
 from job_hunt.models import job_key
@@ -568,6 +568,9 @@ def run_scan(config: dict, companies: list[dict]) -> None:
         enriched = _enrich_jobs(pending_direct, workers)
         logger.info(f"Full descriptions fetched for {enriched} of {len(pending_direct)} survivor(s) "
                     f"in {time.time() - enrich_start:.0f} s")
+        for job in pending_direct:  # keep what the scorer sees, so a score can be audited and redone (T29)
+            update_job_details(job_key(job), location=job.location, posted_at=job.posted_at,
+                               description=job.description_text)
         if gemini_key:
             scored_pairs: list = []
             quota_streak = 0

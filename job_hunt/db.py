@@ -96,6 +96,18 @@ def _migrate_db(conn: sqlite3.Connection) -> None:
         conn.commit()
 
 
+# What a posting looked like when it was scored (T29): the decision can be audited and re-scored later.
+DETAIL_COLUMNS = ("location", "posted_at", "description")
+
+
+def _ensure_detail_columns(conn: sqlite3.Connection) -> None:
+    """Add the detail columns to a database that predates them (idempotent; no row is touched)."""
+    have = {row[1] for row in conn.execute("PRAGMA table_info(jobs)")}
+    for col in DETAIL_COLUMNS:
+        if col not in have:
+            conn.execute(f"ALTER TABLE jobs ADD COLUMN {col} TEXT")
+
+
 def init_db(db_path: str = DEFAULT_DB_PATH) -> sqlite3.Connection:
     """Initialize SQLite database, run migrations, and create indexes."""
     db_dir = os.path.dirname(db_path)
@@ -123,6 +135,7 @@ def init_db(db_path: str = DEFAULT_DB_PATH) -> sqlite3.Connection:
         """
     )
     _migrate_db(conn)
+    _ensure_detail_columns(conn)
     conn.execute("CREATE INDEX IF NOT EXISTS idx_jobs_canonical ON jobs(canonical_hash);")
     conn.execute("CREATE INDEX IF NOT EXISTS idx_jobs_status ON jobs(status);")
     conn.execute(
@@ -178,8 +191,9 @@ def save_job(
                 """
                 INSERT INTO jobs (
                     canonical_hash, url_hash, global_id, title,
-                    company, ats, url, status, discovered_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+                    company, ats, url, status, discovered_at,
+                    location, posted_at, description
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
                 """,
                 (
                     c_hash,
@@ -191,12 +205,37 @@ def save_job(
                     job.url,
                     status,
                     datetime.now(timezone.utc).isoformat(),
+                    job.location,
+                    job.posted_at,
+                    # Skipped postings (30,000+) would add ~5 kB each for nothing.
+                    "" if status == "skipped" else job.description_text,
                 ),
             )
             conn.commit()
             return True
         except sqlite3.IntegrityError:
             return False
+
+
+def update_job_details(
+    key: str,
+    location: Optional[str] = None,
+    posted_at: Optional[str] = None,
+    description: Optional[str] = None,
+    db_path: str = DEFAULT_DB_PATH,
+) -> None:
+    """Fill the detail columns of an existing row (by global_id, else canonical_hash); None leaves a column alone."""
+    init_db(db_path)
+    fields = {"location": location, "posted_at": posted_at, "description": description}
+    sets = {k: v for k, v in fields.items() if v is not None}
+    if not sets:
+        return
+    assignments = ", ".join(f"{k} = ?" for k in sets)
+    with sqlite3.connect(db_path) as conn:
+        cur = conn.execute(f"UPDATE jobs SET {assignments} WHERE global_id = ?;", (*sets.values(), key))
+        if cur.rowcount == 0:
+            conn.execute(f"UPDATE jobs SET {assignments} WHERE canonical_hash = ?;", (*sets.values(), key))
+        conn.commit()
 
 
 def update_job_status(

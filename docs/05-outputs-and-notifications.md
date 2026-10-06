@@ -47,8 +47,9 @@ It reads `state/last_scan.json` / `state/job_history.json`, not the DB (T32).
 SQLite, table `jobs`. Columns: `global_id` (the ATS's job ID; with `ats` it is the unique
 key), `canonical_hash` (MD5 of title + company + location; fallback key and an index),
 `url_hash`, `title`, `company`, `ats`,
-`url`, `score`, `score_reason`, `status`, `discovered_at`, `scored_at`. Location,
-description and posted date are **not** stored (T29).
+`url`, `score`, `score_reason`, `status`, `discovered_at`, `scored_at`, and (T29) `location`,
+`posted_at` and `description`. Skipped postings keep location and date only; queued ones keep
+the description the scorer saw. Rows from before T29 have these empty.
 
 | status | meaning | next scan |
 |---|---|---|
