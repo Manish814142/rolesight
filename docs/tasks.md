@@ -325,7 +325,7 @@ once. Record in CHANGELOG: jobs fetched, India, pre-filter passes, too old, scor
 | T11 | Let Adobe "Computer Scientist" titles through | review · claude · 56abafb | claude | XS | — |
 | T12 | Exclude CRM/platform "developer" roles | review · claude · 0660d1d | claude | S | — |
 | T14 | Send the full resume to `draft` | review · claude · 9d3f0f9 | claude | XS | — |
-| T15 | Stop tests writing to the real `scan.log` | doing · claude · 2026-10-06 | claude | S | — |
+| T15 | Stop tests writing to the real `scan.log` | review · claude · 735568b | claude | S | — |
 | T16 | Put the logs in `data/` with rotation | todo | — | S | T15 |
 | T17 | Measure what the python/java/golang exclusions cost now | review · claude · faa8bb0 | claude | XS | — |
 | T18 | Fix the CHANGELOG dates | todo | — | XS | — |
@@ -575,6 +575,7 @@ The implementer adds a row when a task reaches `review`; the verifier removes it
 
 | ID | Commit(s) | Implementer | Evidence (command → result) |
 |---|---|---|---|
+| T15 | 735568b | claude | tests/test_log_path.py (2 tests) failed before, pass after (-rA). Done-when: stat -c %s scan.log = 14574498 before and 14574498 after a full pytest+ruff+mypy run; temp log dir removed after the run. Real consumer for the path test is the live autopilot logger's FileHandler.baseFilename. Gates green. |
 | T63 | 6fbb1ab | claude | tests/test_anthropic_provider.py (3 tests; the first binds the call to the installed SDK's real Messages.create signature): 2 failed with TypeError before, all pass after (-rA, not skipped). Real function against a dead local port: TypeError before, APIConnectionError after. Full gates green. Not verified: a real Anthropic API response (no key) and claude_cli (not run); CLAUDE.md now says so. |
 | T52 | 4061a76 | claude | tests/test_legacy_scoring.py (7 tests) stub only chat_with_llm and run the real parse + run_scan + SQLite twice: scored/below-threshold rows stored with score+reason, 2nd scan makes 0 LLM calls, a job the model omitted or failed call stays discovered with score NULL. Red first (3 of 6 failed as predicted), then full gates green. Not verified: a real anthropic/claude_cli call (no key; see T63). |
 | T55 | 4f10709 | claude | `pytest tests/test_packaging.py` → 2 new tests failed before, 4 pass after. `grep -rniE "tinyfish|openrouter" pyproject.toml requirements.txt Dockerfile smithery.yaml` → 0 lines (the task's done-when). `pyproject.toml`, `server.json` and `smithery.yaml` parse. `pytest` all pass, ruff and mypy clean. **Not run:** `docker build` (no Docker here; assumed to work as before since only ENV/LABEL lines changed). `server.json`/`glama.json` keep upstream identity fields (name `io.github.tarunlnmiit/…`, repository URL): this fork is not published to a registry, so I only fixed the description. |
