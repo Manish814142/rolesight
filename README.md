@@ -144,7 +144,7 @@ Full walkthrough: [docs/01-install.md](docs/01-install.md).
 ```bash
 # 1. Install (Python 3.11+); run from the repo root
 python3 -m venv .venv && source .venv/bin/activate
-pip install -e '.[gemini,dev]'          # the gemini extra is required for scoring
+pip install -e '.[dev]'                 # google-genai (Gemini) is a core dependency
 
 # 2. Configure
 cp config.example.json config.json      # edit the candidate profile (see docs/07)
@@ -301,7 +301,7 @@ The design: [ARCHITECTURE.md](ARCHITECTURE.md).
 ## Development
 
 ```bash
-pip install -e '.[gemini,dev]'
+pip install -e '.[dev]'
 pytest                 # coverage gate 85%
 ruff check job_hunt
 mypy

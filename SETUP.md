@@ -7,7 +7,7 @@ In short:
 
 ```bash
 python3 -m venv .venv && source .venv/bin/activate
-pip install -e '.[gemini,dev]'
+pip install -e '.[dev]'
 cp config.example.json config.json         # candidate profile
 cp job_hunt/data/env_example .env          # GEMINI_API_KEY
 autopilot doctor

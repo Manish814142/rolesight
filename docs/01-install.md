@@ -19,10 +19,10 @@ From the repo root:
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -e '.[gemini,dev]'
+pip install -e '.[dev]'
 ```
 
-Or with `uv`: `uv venv --python 3.12 && uv pip install -e '.[gemini,dev]'`.
+Or with `uv`: `uv venv --python 3.12 && uv pip install -e '.[dev]'`.
 
 - The **`gemini` extra is required.** It installs `google-genai`; without it, every scoring
   call fails and jobs stay unscored.

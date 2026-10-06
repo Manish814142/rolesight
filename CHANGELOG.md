@@ -9,6 +9,9 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed (2026-10-06, T51)
+- `google-genai` (the default Gemini provider) is a core dependency in `pyproject.toml` and `requirements.txt`; before, `pip install -r requirements.txt` gave a scanner whose every scoring call failed ("google-genai is not installed"). `openpyxl` (imported nowhere) is dropped from `requirements.txt`; the `gemini` extra is kept as an empty alias. The minimum is 2.28.0, the version tested; older ones are untested. Checked in a fresh virtualenv: `pip install -r requirements.txt` → google-genai 2.28.0, and `llm_utils._get_genai_client_and_types` builds a client from the repo code.
+
 ### Fixed (2026-10-06, T50)
 - `autopilot init` ships the curated 216-company list (it copied 140 careers-URL-only upstream entries that could only be scanned through TinyFish, so a new user's first scan fetched nothing) and a config and `.env` template without TinyFish, OpenRouter or the legacy `search_*` fields; the docs say TinyFish and OpenRouter were removed. `tests/test_packaged_defaults.py` fails if the packaged list drifts from `companies.json`: after `discover --merge`, copy `companies.json` to `job_hunt/data/companies.json`. Checked with the real CLI in an empty directory: `init` → 216 companies, all with an ATS, no TinyFish/OpenRouter keys in `config.json`; `scan --limit 3 --posted-within 1` with those keys unset → exit 0, `fetched 2321 … scored 11 | failed 0`.
 
