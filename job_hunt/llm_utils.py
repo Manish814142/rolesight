@@ -5,6 +5,7 @@ import re
 import subprocess
 import time
 import warnings
+from datetime import datetime, timedelta
 from typing import Any
 
 from job_hunt.log import get_logger
@@ -145,6 +146,18 @@ def _is_quota_error(message: str) -> bool:
 _DAILY_QUOTA_EXHAUSTED: dict[str, float] = {}
 
 
+def _next_midnight_pacific(now: float) -> float | None:
+    """Per-day quotas reset at midnight Pacific time (Google's rate-limit docs). Google's own retryDelay overstated
+    it: at 00:40 UTC on 2026-10-07 it said ~23 h, and the model answered again by 08:05 UTC (T64)."""
+    try:
+        from zoneinfo import ZoneInfo
+        pacific = ZoneInfo("America/Los_Angeles")
+    except Exception:  # no tz database on this machine: fall back to retryDelay alone
+        return None
+    local = datetime.fromtimestamp(now, pacific)
+    return (local + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0).timestamp()
+
+
 def _daily_quota_reset_seconds(message: str) -> float | None:
     """Seconds until a per-day quota resets when `message` is that 429 (its quotaId names a per-day limit)."""
     if "PerDay" not in message or not _is_quota_error(message):
@@ -178,7 +191,10 @@ def _generate_with_fallback(client: Any, contents: str, cfg: Any, models: list[s
                 err_msg = str(e)
                 reset = _daily_quota_reset_seconds(err_msg)
                 if reset is not None:
-                    _DAILY_QUOTA_EXHAUSTED[m] = time.time() + reset
+                    now = time.time()
+                    midnight = _next_midnight_pacific(now)
+                    _DAILY_QUOTA_EXHAUSTED[m] = min(now + reset, midnight) if midnight else now + reset
+                    reset = _DAILY_QUOTA_EXHAUSTED[m] - now
                     logger.warning(f"Gemini model {m}: daily quota exhausted; skipped for the next {reset / 3600:.1f} h")
                     break
                 if attempt == 0 and ("503" in err_msg or "429" in err_msg or "ResourceExhausted" in err_msg or "temporary" in err_msg or "quota" in err_msg):

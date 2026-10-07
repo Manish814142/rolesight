@@ -62,7 +62,8 @@ def test_the_skip_lasts_until_the_reset_given_by_retry_delay():
     client = _client({"m1": Exception(DAILY_ERR), "m2": OK_JSON})
     before = time.time()
     llm_utils._generate_with_fallback(client, "p", MagicMock(), ["m1", "m2"])
-    assert before + 84006 <= llm_utils._DAILY_QUOTA_EXHAUSTED["m1"] <= time.time() + 84006
+    until = llm_utils._DAILY_QUOTA_EXHAUSTED["m1"]
+    assert before < until <= time.time() + 84006          # never past retryDelay (and capped at midnight Pacific)
     llm_utils._DAILY_QUOTA_EXHAUSTED["m1"] = time.time() - 1      # the quota has reset
     client.calls.clear()
     llm_utils._generate_with_fallback(client, "p", MagicMock(), ["m1", "m2"])
@@ -106,3 +107,26 @@ def test_a_scan_with_the_primary_model_out_for_the_day_asks_it_once(tmp_path, mo
                       "telegram": {}}, [{"name": "X", "ats": "greenhouse", "slug": "x"}])
     assert client.calls.count(primary) == 1 and client.calls.count(fallback) == 10
     assert len(get_jobs_by_status("scored")) == 10
+
+
+def test_the_skip_never_outlasts_the_next_midnight_pacific(monkeypatch):
+    """Google's docs: per-day quotas reset at midnight Pacific. Measured 2026-10-07: at 00:40 UTC the 429 said
+    'retry in 23h20m' (retryDelay 84006 s), yet gemini-3.5-flash-lite answered again at 08:05 UTC. So a long-lived
+    process must not trust retryDelay past the next Pacific midnight (07:00 UTC in October, PDT)."""
+    from datetime import datetime, timezone
+
+    now = datetime(2026, 10, 7, 0, 40, tzinfo=timezone.utc).timestamp()
+    monkeypatch.setattr(llm_utils.time, "time", lambda: now)
+    client = _client({"m1": Exception(DAILY_ERR), "m2": OK_JSON})
+    llm_utils._generate_with_fallback(client, "p", MagicMock(), ["m1", "m2"])
+    assert llm_utils._DAILY_QUOTA_EXHAUSTED["m1"] == datetime(2026, 10, 7, 7, 0, tzinfo=timezone.utc).timestamp()
+
+
+def test_a_short_retry_delay_is_kept_when_it_ends_before_midnight_pacific(monkeypatch):
+    from datetime import datetime, timezone
+
+    now = datetime(2026, 10, 7, 6, 0, tzinfo=timezone.utc).timestamp()      # 23:00 PDT
+    monkeypatch.setattr(llm_utils.time, "time", lambda: now)
+    client = _client({"m1": Exception(DAILY_ERR.replace("84006s", "600s")), "m2": OK_JSON})
+    llm_utils._generate_with_fallback(client, "p", MagicMock(), ["m1", "m2"])
+    assert llm_utils._DAILY_QUOTA_EXHAUSTED["m1"] == now + 600
