@@ -412,3 +412,18 @@ def test_measure_prefilter_counts_jobs_blocked_only_by_a_language_word():
     assert costs["python"] == {"only": 1, "recent": 0 if mp.posted_age_days("2026-10-05") > 30 else 1}
     assert costs["java"]["only"] == 1 and "golang" not in costs
     assert [r["title"] for r in mp.survivors(rows)] == ["Software Engineer, Backend (Node.js)"]
+
+
+def test_measure_prefilter_counts_a_job_posted_today_as_recent():
+    """Age 0 is falsy: `(age or 9999) <= 30` counted every job posted on the day of the fetch as old
+    (407 of the 34,416 jobs fetched 2026-10-06), so T62's '<= 30 days' column was understated."""
+    import sys
+    from datetime import date
+    from pathlib import Path
+    sys.path.insert(0, str(Path("scripts").resolve()))
+    import measure_prefilter as mp
+
+    rows = [{"company": "A", "ats": "x", "title": "Software Engineer, Backend (Python)",
+             "location": "Bengaluru, India", "posted_at": date.today().isoformat()},
+            {"company": "A", "ats": "x", "title": "Python Developer", "location": "Pune, India", "posted_at": ""}]
+    assert mp.exclusion_costs(rows)["python"] == {"only": 2, "recent": 1}   # undated is not recent

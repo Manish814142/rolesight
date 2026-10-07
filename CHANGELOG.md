@@ -9,6 +9,10 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed (2026-10-07, review of T03 / T17 / T58)
+- `scripts/measure_prefilter.py` counted a job posted on the day of the fetch as old: age 0 is falsy, so `(age or 9999) <= 30` was false (407 of the 34,416 jobs fetched 2026-10-06 were posted that day). Recomputed as of 2026-10-06 on the same fetch: python-only blocks 33, of which **24** (not 21) were posted in 30 days; java 93, **85** (not 75). The blocked counts themselves were right.
+- Tests only: T58's rule-2 assertion passed even with the cap removed (`a and b or c`); batch-mode scoring now has a test for T03's quota breaker (removing the batch breaker failed no test before).
+
 ### Added (2026-10-06, T26/T27 probes)
 - `companies.json` 220 → 223 (also `job_hunt/data/companies.json`): **Cisco** (`cisco.wd5/Cisco_Careers`: 320 jobs, 254 in India, 51 pass the pre-filter), **Fiserv** (`fiserv.wd5/EXT`: 37 / 30 / 1) and **DuPont** (`dupont.wd5/Jobs`: 4 / 1 / 0, a marginal board that meets the acceptance rules). Found by the Phenom probe (T26): the Phenom careers sites of Cisco, DuPont, Fiserv, HPE, Philips and WBD return a Workday `applyUrl` for every sampled job, so the Workday adapter that already exists reads them (added with `discover --add-file --merge`; full fetch of the three through the scanner's `_prefetch_jobs` took 46 s, no warnings). The Phenom `widgets` endpoint itself is public, but the only Phenom-native census board with India jobs is BCG (91 India jobs, 2 pass the pre-filter): no adapter written, **decision for Manish** (T26).
 - **Darwinbox (T27) rejected**: no plain-HTTP job endpoint. On valid tenants every `/ms/candidateapi/*` path answers 500 "Error while getting tenant info" (five attempts: paths, GET/POST, Origin/Referer/cookies, even the Turnstile site-key call); other tenants are behind Cloudflare 403. Evidence is in the board's Rejected table.

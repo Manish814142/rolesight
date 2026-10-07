@@ -53,7 +53,8 @@ def exclusion_costs(rows: List[Dict[str, Any]]) -> Dict[str, Dict[str, int]]:
             only[next(iter(b))].append(r)
     out = {}
     for w, v in only.items():
-        out[w] = {"only": len(v), "recent": sum((posted_age_days(r.get("posted_at", "")) or 9999) <= 30 for r in v)}
+        ages = [posted_age_days(r.get("posted_at", "")) for r in v]
+        out[w] = {"only": len(v), "recent": sum(a is not None and a <= 30 for a in ages)}  # age 0 is today, not unknown
     return out
 
 
