@@ -49,7 +49,7 @@ def test_platform_cap_judges_the_work_not_the_employer_name():
     role at the company that makes the platform) fell 90 -> 40 on two runs, capped as 'ServiceNow
     platform administration'. The cap must be about the work, not the company name."""
     rule2 = llm_utils.SCORING_RUBRIC.split("2.")[1].split("3.")[0].lower()
-    assert "40" in rule2 and "administer" in rule2 or "administration" in rule2
+    assert "40" in rule2 and ("administer" in rule2 or "administration" in rule2)
     assert "not the employer" in rule2
     assert "software engineer building" in rule2 and "servicenow" in rule2 and "is not platform administration" in rule2
 
