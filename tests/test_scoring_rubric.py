@@ -268,3 +268,114 @@ def test_variance_report_counts_wide_spreads_and_decision_flips(tmp_path):
     res = subprocess.run([sys.executable, "scripts/measure_score_variance.py", "--from-runs", str(f)], capture_output=True, text=True)
     assert res.returncode == 0, res.stderr
     assert "4 jobs" in res.stdout and "['b']" in res.stdout
+
+
+# --- T70: compare Gemini models on the golden set -------------------------------------------------------------
+
+def test_score_arms_with_a_pinned_model_never_falls_back(monkeypatch):
+    """Comparing models needs every score from the named model. The normal chain silently answers from the
+    fallback model when the first fails (on 2026-10-06 about 9 of T60's 200 calls did); --model forbids that."""
+    import types
+    from unittest.mock import MagicMock
+
+    sgs = _golden()
+    monkeypatch.setattr(llm_utils.time, "sleep", lambda s: None)
+    calls = []
+    client = MagicMock()
+
+    def generate(model, contents, config):
+        calls.append(model)
+        if model == "m-pinned":
+            raise Exception("503 UNAVAILABLE")
+        return types.SimpleNamespace(text='{"score": 88, "reason": "answered by another model"}')
+
+    client.models.generate_content.side_effect = generate
+    monkeypatch.setattr(llm_utils, "_get_genai_client_and_types",
+                        lambda api_key: (client, types.SimpleNamespace(GenerateContentConfig=MagicMock())))
+    jobs = [{"id": "1", "company": "C", "title": "T", "location": "L", "description": "d"}]
+    config = {"gemini_api_key": "k", "gemini_model": "m-pinned"}
+
+    assert sgs.score_arms(jobs, "r", config, {"current": "RUBRIC"}, sleep_interval=0) == {"current": {"1": 88}}
+    calls.clear()
+    out = sgs.score_arms(jobs, "r", config, {"current": "RUBRIC"}, sleep_interval=0, model="m-pinned")
+    assert out == {"current": {"1": None}} and set(calls) == {"m-pinned"}
+    assert llm_utils._gemini_models({})[0] != "m-pinned"          # the chain is restored afterwards
+
+
+def test_score_agreement_between_two_arms():
+    sgs = _golden()
+    a = {"1": 90, "2": 50, "3": 70, "4": 65}
+    b = {"1": 80, "2": 50, "3": 60, "4": None}           # job 4 failed in b: left out, never counted as 0
+    ag = sgs.score_agreement(a, b, (60, 70))
+    assert ag["jobs"] == 3 and abs(ag["mean_abs_diff"] - 20 / 3) < 1e-9 and ag["within_10"] == 3
+    assert ag["decision_changes"] == {60: [], 70: ["3"]}
+
+
+def test_main_names_arms_after_a_pinned_model_and_scores_only_the_chosen_arms(tmp_path, monkeypatch):
+    import json
+
+    sgs = _golden()
+    resume = tmp_path / "r.md"
+    resume.write_text("Node.js")
+    monkeypatch.setattr(sgs, "load_config", lambda: {"candidate": {"resume_path": str(resume)}})
+    seen = {}
+
+    def fake_score_arms(jobs, resume_text, config, arms, sleep_interval=4.2, model=None):
+        seen.update(arms=dict(arms), model=model, n=len(jobs))
+        return {name: {j["id"]: 70 for j in jobs} for name in arms}
+
+    monkeypatch.setattr(sgs, "score_arms", fake_score_arms)
+    out = tmp_path / "s.json"
+    assert sgs.main(["--arms", "current", "--model", "gemini-x", "--limit", "2", "--save-scores", str(out)]) == 0
+    assert seen == {"arms": {"current@gemini-x": llm_utils.SCORING_RUBRIC}, "model": "gemini-x", "n": 2}
+    assert list(json.loads(out.read_text())) == ["current@gemini-x"]
+
+
+def test_from_scores_merges_several_files_and_prints_agreement(tmp_path):
+    import json
+    import subprocess
+    import sys
+
+    sgs = _golden()
+    rows = sgs.load_golden_set()
+    f1, f2 = tmp_path / "a.json", tmp_path / "b.json"
+    f1.write_text(json.dumps({"current@m1": {r["id"]: {"apply": 90, "maybe": 65, "no": 30}[r["label"]] for r in rows}}))
+    f2.write_text(json.dumps({"current@m2": {r["id"]: {"apply": 85, "maybe": 75, "no": 30}[r["label"]] for r in rows}}))
+    res = subprocess.run([sys.executable, "scripts/score_golden_set.py", "--from-scores", str(f1), str(f2)],
+                         capture_output=True, text=True)
+    assert res.returncode == 0, res.stderr
+    assert "current@m1" in res.stdout and "current@m2" in res.stdout
+    n_fit = sum(r["label"] != "no" for r in rows)
+    expected = (5 * sum(r["label"] == "apply" for r in rows) + 10 * sum(r["label"] == "maybe" for r in rows)) / len(rows)
+    assert f"current@m1 vs current@m2: {len(rows)} jobs, mean |difference| {expected:.1f}" in res.stdout
+    assert "maybe" in res.stdout and n_fit > 0
+    dup = subprocess.run([sys.executable, "scripts/score_golden_set.py", "--from-scores", str(f1), str(f1)],
+                         capture_output=True, text=True)
+    assert dup.returncode != 0 and "twice" in dup.stderr
+
+
+def test_variance_script_can_pin_a_model_and_pick_jobs(tmp_path, monkeypatch):
+    """T70: re-checking T60 on one model means named jobs, that model only, and the chain restored after."""
+    import json
+    import sys
+
+    sys.path.insert(0, "scripts")
+    import measure_score_variance as msv
+
+    resume = tmp_path / "r.md"
+    resume.write_text("Node.js")
+    monkeypatch.setattr(msv, "load_config", lambda: {"candidate": {"resume_path": str(resume)}})
+    monkeypatch.setattr(msv.time, "sleep", lambda s: None)
+    seen = []
+
+    def fake(payload, resume_text, config, raise_on_error=False):
+        seen.append((payload["title"], llm_utils._gemini_models(config), config.get("gemini_temperature")))
+        return {"score": 60, "reason": "r"}
+
+    monkeypatch.setattr(msv, "score_job_with_gemini", fake)
+    out = tmp_path / "runs.json"
+    assert msv.main(["--ids", "g27,ab5", "--runs", "2", "--model", "gemini-x", "--temperature", "0",
+                     "--save", str(out)]) == 0
+    assert sorted(json.loads(out.read_text())) == ["ab5", "g27"]
+    assert len(seen) == 4 and all(models == ["gemini-x"] and temp == 0 for _, models, temp in seen)
+    assert llm_utils._gemini_models({})[0] != "gemini-x"

@@ -9,6 +9,12 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Added (2026-10-07, T70 — which Gemini model)
+- `scripts/score_golden_set.py --model M` scores with one model and no fallback (a failed call is `None`, never the other model's answer), `--arms current` scores only the chosen prompt(s) (82 calls a run), and `--from-scores` takes several files and prints a job-by-job agreement section (mean |difference|, share within 10 points, pass/fail changes at each MIN_SCORE). `scripts/measure_score_variance.py` takes `--model` and `--ids`.
+- **Measured** (current prompt, 82 labelled jobs; 3.5-flash-lite from T58's saved run of 2026-10-06, which the old `./scan.log` shows ran before 3.5's quota errors began at 19:52; 3.1-flash-lite twice on 2026-10-07, 164/164 answered): ranking is the same (AUC 0.961 vs 0.959 / 0.954); 3.1 is steadier (its two runs differ by 0.7 points, no pass/fail change) but scores weak fits higher (+7.5 on `no` jobs, +5.8 on `maybe`, +0.7 on `apply`); between the models 10–11 jobs change pass/fail. At MIN_SCORE 70 both find 14/14 `apply` jobs, with 2 false positives on 3.5 and 10 on 3.1; at 80 and above the two are identical. 3.5 has only one run so far (its quota was reached on 2026-10-07): the comparison is completed on 3.5 later.
+- Golden set: Manish relabelled g27 (Amazon "SP Support", which requires 3+ years in the video-games industry) from `apply` to `no` (`label_source` `manish`): he skips postings that require a skill or domain he lacks. With it, the current prompt finds 14/14 `apply` jobs at MIN_SCORE 60 and 70 (T58's saved scores).
+- Found while answering this: the T60 variance runs of 2026-10-06 were partly answered by 3.1 (about 9 of 200 calls, after 3.5's daily quota ran out at 19:52), so T60 is back in review for a 3.5-only re-check.
+
 ### Fixed (2026-10-07, T67)
 - `autopilot discover --help` prints its usage. Before, `discover` ignored any argument it did not know, so `--help` or a mistyped flag (`--add-flie paste.txt`) silently ran a full discovery of every seed in `scripts/company_seeds.txt` (~1,100 names, 40 workers, minutes of network) and wrote `discovery_report.csv` / `verified_companies.json` in the current directory. Now an unknown or value-less argument exits 1 with a message. Real CLI: `discover --help` → usage, exit 0; `discover --add-flie x.txt` → "unknown or incomplete argument '--add-flie'", exit 1. Every flag used in the docs (`--add`, `--add-file`, `--census`, `--emit-seeds`, `--merge`, `--no-recheck`, `--out`, `--recheck`, `--report`, `--seeds`, `--workers`) is still accepted.
 
