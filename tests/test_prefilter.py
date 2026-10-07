@@ -267,6 +267,11 @@ def test_prefilter_still_blocks_staff_lead_principal(title):
     "Member of Technical Staff",                       # Salesforce/Oracle-style engineer title
     "Senior Member of Technical Staff - Backend",
     "MTS 2, Platform",
+    # T72: Amazon also spells it "Software Dev Engineer": 55 India jobs never reached Gemini (fetch of 2026-10-06)
+    "Software Dev Engineer II, FinTech Tax",
+    "Software Dev Engineer-II, Infra Supply Chain Automation",
+    "Sr. Software Dev Engineer, Amazon Freight",
+    "Software Dev Engineer 2, AFT Inventory",
 ])
 def test_prefilter_accepts_sde_and_mts_titles(title):
     passed, reason = should_evaluate_job(_job(title))
@@ -274,7 +279,8 @@ def test_prefilter_accepts_sde_and_mts_titles(title):
 
 
 @pytest.mark.parametrize("title", ["Principal Member of Technical Staff", "Lead Member of Technical Staff",
-                                   "Staff Software Development Engineer"])
+                                   "Staff Software Development Engineer", "Software Dev Engineer, Frontend",
+                                   "Principal Software Dev Engineer", "Software Dev Manager, Alexa"])
 def test_prefilter_mts_rules_keep_principal_lead_staff_blocked(title):
     assert should_evaluate_job(_job(title))[0] is False
 

@@ -9,6 +9,9 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed (2026-10-07, T72)
+- The pre-filter accepts Amazon's "Software **Dev** Engineer" spelling (`software\s+dev(elopment)?\s+engineer`). The 2026-10-04 fix only matched "Software Development Engineer", so every "Software Dev Engineer I/II/III" and "Sr. Software Dev Engineer" title — Amazon's most common SDE spelling after it — was rejected before Gemini. Measured on the 34,416 jobs fetched 2026-10-06: survivors 1,060 → 1,115, all 55 added are Amazon SDE roles (several on the same team as golden-set `apply` job g3), 0 removed; no labelled `apply`/`maybe` job is rejected; "Software Dev Engineer, Frontend", "Principal Software Dev Engineer" and "Software Dev Manager" stay rejected.
+
 ### Added (2026-10-07, T70 — which Gemini model)
 - `scripts/score_golden_set.py --model M` scores with one model and no fallback (a failed call is `None`, never the other model's answer), `--arms current` scores only the chosen prompt(s) (82 calls a run), and `--from-scores` takes several files and prints a job-by-job agreement section (mean |difference|, share within 10 points, pass/fail changes at each MIN_SCORE). `scripts/measure_score_variance.py` takes `--model` and `--ids`.
 - **Measured** (current prompt, 82 labelled jobs; 3.5-flash-lite from T58's saved run of 2026-10-06, which the old `./scan.log` shows ran before 3.5's quota errors began at 19:52; 3.1-flash-lite twice on 2026-10-07, 164/164 answered): ranking is the same (AUC 0.961 vs 0.959 / 0.954); 3.1 is steadier (its two runs differ by 0.7 points, no pass/fail change) but scores weak fits higher (+7.5 on `no` jobs, +5.8 on `maybe`, +0.7 on `apply`); between the models 10–11 jobs change pass/fail. At MIN_SCORE 70 both find 14/14 `apply` jobs, with 2 false positives on 3.5 and 10 on 3.1; at 80 and above the two are identical. 3.5 has only one run so far (its quota was reached on 2026-10-07): the comparison is completed on 3.5 later.
