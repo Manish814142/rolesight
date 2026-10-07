@@ -117,7 +117,7 @@ model and the legacy no-key path.
 | `scan.log` | Where this log lived before T16 (root dir, unrotated); no longer written | ignored |
 | `state/last_scan.json`, `state/job_history.json`, `state/seen_jobs.json` | Latest scan (best first), cumulative history, legacy URL set. They overlap with the DB (T31–T34) | ignored |
 | `output/` | CSVs and drafts | ignored |
-| `job_hunt/data/` | Templates that `autopilot init` copies. Its `companies.json` is an outdated upstream list (T50) | committed |
+| `job_hunt/data/` | Templates that `autopilot init` copies, including a copy of the curated `companies.json` (a test checks they match; T50) | committed |
 
 ---
 
@@ -163,40 +163,36 @@ mypy
 
 ## 7. Known limitations
 
-Measured on 2026-10-04 unless marked otherwise. Each one has a task.
+Measured on the date given. Each one has a task.
 
-- **Scan time:** the first full scan took 34.3 min: 8.9 min fetching, 32 s enriching
-  170 of 226 survivors, and about 24 min scoring 226 jobs at about 6.3 s each.
-  Repeat daily scans only score new jobs (shorter; *not yet measured*).
-- **Gemini quota:** about 1,270 jobs pass the pre-filter across 215 companies, but the
-  free tier allows about 1,000 calls a day (2 Flash Lite models × 500 a day; Google's
-  published figure, not verified live). When the quota runs out, scoring stops after 3 jobs in
-  a row fail on every model and the rest stay `discovered` (T03). A scan scores at most
-  `max_jobs_to_score_per_run` jobs (default 400), newest first (T04). Use `--posted-within`.
-- **Old counts:** figures reported before T47 (for example "36,228 jobs fetched" and
-  "Sabre 26 in 7 days") counted Workday postings that some tenants repeat past their
-  total. Paging now stops there (T47).
-- **Score resolution:** 21 of 203 distinct jobs tied at 90 in the first scan. The rubric (T48)
-  shifts calibration (at `min_score` 70: false positives 7 → 4 on 75 labelled jobs, `apply`
-  recall unchanged) but not ranking (AUC 0.955 vs 0.956). Ties need sub-scores (T41). The
-  labels are Claude's, not Manish's (T59). Fresher-level roles are capped at 50 by rubric rule 7 (T58); on the 20 hardest labelled jobs a score moves by more than 20 points between runs for 2 of 20 (temperature 0: 4 of 20), so the borderline band is uncertain (T60).
-- **Amazon descriptions:** the adapter uses `description_short` (cut at 202 characters) although
-  the API has a full `description` (2,796 characters on one record). Amazon is the biggest
-  source of matches, so those jobs are scored without the role description (T57).
-- **Pre-filter gaps:** "Computer Scientist" (Adobe) isn't included (T11); "developer"
-  admits CRM-platform roles (T12); `python` / `java` / `golang` title words are excluded
-  although the resume lists Python (T17 measures the cost).
+- **Scan time:** the first full scan (2026-10-04) took 34.3 min: 8.9 min fetching, 32 s enriching,
+  about 24 min scoring 226 jobs at ~6.3 s each. A full fetch of 223 companies took 10.0 min on
+  2026-10-07; daily scans only score new jobs.
+- **Gemini quota:** 500 calls per model per day, reset at midnight Pacific (Google's docs; measured
+  2026-10-07). A scan scores at most `max_jobs_to_score_per_run` (400), newest first (T04); scoring
+  stops when every model is out of quota (T03); a model out for the day is skipped until the reset
+  (T64). **Model choice matters** (T70, 82 labelled jobs, two runs each): `gemini-3.1-flash-lite`
+  ranks like `gemini-3.5-flash-lite` but scores weak fits ~8 points higher (10 vs 2 false positives at
+  `min_score` 70), so a scan that falls back to 3.1 mixes two calibrations; which model scored a job
+  is not recorded yet (T71).
+- **Score noise:** two runs of 3.5 differ by ~3 points on average. With the T73 rubric no pass/fail
+  decision changed between two runs of all 82 labelled jobs; ambiguous postings can still flip, and
+  temperature 0 does not help (T60).
+- **Labels:** the 82 golden-set labels are Claude's except g27 (Manish's). Rubric results are only as
+  good as the labels (T59).
+- **Pre-filter recall** (measured 2026-10-07; jobs blocked before Gemini sees them): titles with
+  "python" (9 of 32 score ≥ 80; decision T62) and "AI Engineer" / "Forward Deployed Engineer"
+  (21 of 68 score ≥ 70 on 3.5; decision T74). Amazon's "Software Dev Engineer" spelling was blocked
+  until T72 (33 of 56 score ≥ 80). Generic "Senior Engineer" / "Engineer II" titles (~250 India jobs,
+  mostly hardware companies) are not scanned.
 - **Onsite outside India:** "India anywhere in the location" passes multi-location jobs; the
-  prompt then caps roles that need onsite work abroad at 30 (rubric rule 1, T24; checked on
-  one job).
+  prompt caps roles that need onsite work abroad at 30 (rubric rule 1, T24).
 - **Three stores** (`jobs.db`, `last_scan.json`, `job_history.json`) overlap; `export`
   ignores the DB (T31–T34).
-- **Unreachable employers:** custom portals and platforms without a public API
-  (Darwinbox, Eightfold, Phenom, Zoho Recruit…). The census found 52% of 458 careers pages
-  JS-only or unidentified. Some large employers (Accenture, Sony, Western Digital) were
-  rejected by `discover` for "no India jobs", which may be a search issue (T49).
-- **Operations:** not scheduled (T07); `setup_cron.sh` is outdated (T08); logs are
-  unrotated and polluted by tests (T15, T16); no off-machine backup (T01).
+- **Unreachable employers:** custom portals and platforms without a public API (Darwinbox,
+  Zoho Recruit…; Phenom mostly fronts Workday, T26). The census found 52% of 458 careers pages
+  JS-only or unidentified.
+- **Operations:** not scheduled (T07); `setup_cron.sh` is outdated (T08); no off-machine backup (T01).
 
 ---
 
