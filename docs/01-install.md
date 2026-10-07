@@ -24,11 +24,13 @@ pip install -e '.[dev]'
 
 Or with `uv`: `uv venv --python 3.12 && uv pip install -e '.[dev]'`.
 
-- The **`gemini` extra is required.** It installs `google-genai`; without it, every scoring
-  call fails and jobs stay unscored.
+- **`google-genai`** (Gemini) is a core dependency (T51), so every install above includes it;
+  without it every scoring call fails and jobs stay unscored. The `gemini` extra is kept as an
+  empty alias.
 - **`dev`** adds pytest, ruff and mypy.
 - **`mcp`** (optional) adds the Claude Code MCP server ([06](06-mcp-and-skill.md)).
-- **Don't install from `requirements.txt`.** `google-genai` is commented out there.
+- **`pip install -r requirements.txt`** also works: runtime dependencies only (no pytest/ruff/mypy),
+  and no `autopilot` command; run `python -m job_hunt …` from the repo root.
 - **Don't run `pip install autopilot-jobhunt`.** That installs the upstream package from
   PyPI, not this fork.
 
