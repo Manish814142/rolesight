@@ -543,3 +543,23 @@ def test_reverify_existing_uses_the_real_adapter_for_eightfold(monkeypatch):
     kept, _ = disc.reverify_existing([{"name": "UKG", "ats": "eightfold", "host": "apply.ukg.com", "domain": "ukg.com"}])
     assert [c["name"] for c in kept] == ["UKG"]
     assert seen[0]["host"] == "apply.ukg.com" and seen[0]["domain"] == "ukg.com"
+
+
+@pytest.mark.parametrize("argv", [["--help"], ["-h"], ["--add-flie", "paste.txt", "--merge", "companies.json"]])
+def test_main_never_starts_a_full_discovery_on_help_or_an_unknown_flag(argv, tmp_path, monkeypatch, capsys):
+    """T67: unknown arguments were ignored, so `discover --help` or a mistyped flag ran discover() on every
+    seed (~1,100 names, 40 workers, minutes of network) instead of printing usage."""
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "scripts").mkdir()
+    (tmp_path / "scripts" / "company_seeds.txt").write_text("Stripe\n")
+    before = sorted(p.name for p in tmp_path.rglob("*"))
+    monkeypatch.setattr(disc, "discover", lambda *a, **k: pytest.fail("a full discovery was started"))
+    monkeypatch.setattr(disc, "recheck_companies", lambda *a, **k: pytest.fail("a recheck was started"))
+    with pytest.raises(SystemExit) as ei:
+        disc.main(argv)
+    out = capsys.readouterr()
+    if argv[0] in ("--help", "-h"):
+        assert ei.value.code in (0, None) and "--add-file" in out.out
+    else:
+        assert ei.value.code not in (0, None) and "--add-flie" in str(ei.value.code) + out.err
+    assert sorted(p.name for p in tmp_path.rglob("*")) == before   # nothing written

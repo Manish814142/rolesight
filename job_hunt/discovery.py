@@ -668,6 +668,19 @@ def main(argv: Optional[List[str]] = None) -> None:
     opts = {"--seeds": "scripts/company_seeds.txt", "--report": "discovery_report.csv",
             "--out": "verified_companies.json", "--merge": "", "--workers": "40",
             "--add": "", "--add-file": ""}
+    # Unknown arguments used to be ignored, so `--help` or a mistyped flag ran a full discovery of every seed (T67).
+    if "-h" in argv or "--help" in argv:
+        print(__doc__)
+        sys.exit(0)
+    value_flags, bool_flags = set(opts) | {"--census", "--emit-seeds"}, {"--recheck", "--no-recheck"}
+    i = 0
+    while i < len(argv):
+        if argv[i] in value_flags and i + 1 < len(argv):
+            i += 2
+        elif argv[i] in bool_flags:
+            i += 1
+        else:
+            sys.exit(f"discover: unknown or incomplete argument {argv[i]!r}; see `autopilot discover --help`")
     for i, a in enumerate(argv):
         if a in opts and i + 1 < len(argv):
             opts[a] = argv[i + 1]

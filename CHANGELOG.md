@@ -9,6 +9,9 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed (2026-10-07, T67)
+- `autopilot discover --help` prints its usage. Before, `discover` ignored any argument it did not know, so `--help` or a mistyped flag (`--add-flie paste.txt`) silently ran a full discovery of every seed in `scripts/company_seeds.txt` (~1,100 names, 40 workers, minutes of network) and wrote `discovery_report.csv` / `verified_companies.json` in the current directory. Now an unknown or value-less argument exits 1 with a message. Real CLI: `discover --help` → usage, exit 0; `discover --add-flie x.txt` → "unknown or incomplete argument '--add-flie'", exit 1. Every flag used in the docs (`--add`, `--add-file`, `--census`, `--emit-seeds`, `--merge`, `--no-recheck`, `--out`, `--recheck`, `--report`, `--seeds`, `--workers`) is still accepted.
+
 ### Fixed (2026-10-07, T66)
 - `pyyaml` is a declared dependency (`pyproject.toml` and `requirements.txt`). `discovery`, `harvester` and `company_builder` import `yaml`, but nothing declared it, so on a fresh `pip install -r requirements.txt` `autopilot discover` (the company-list tool) died with `ModuleNotFoundError: No module named 'yaml'` (measured in a fresh virtualenv while verifying T51; the dev `.venv` had PyYAML only because it was installed by hand). After: a fresh Python 3.11 virtualenv from `requirements.txt` runs `python -m job_hunt discover --add "Stripe"` to exit 0 (verified, 731 jobs, 44 India). `tests/test_packaging.py` now fails if any third-party import in `job_hunt/` (other than the optional anthropic / MCP ones) is missing from either file. Also corrected `docs/01-install.md`, which still said `google-genai` was optional.
 
