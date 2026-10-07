@@ -121,6 +121,16 @@ def test_a_success_resets_the_streak(monkeypatch, scan_env):
     assert len(get_jobs_by_status("discovered")) == 19
 
 
+def test_batch_mode_also_stops_after_three_quota_failed_batches(monkeypatch, scan_env):
+    """CHANGELOG T03 says batch mode stops too; no test covered it (review 2026-10-07)."""
+    client = _client(Exception(QUOTA_ERR))
+    scan_env.update({"gemini_scoring_mode": "batch", "gemini_batch_size": 5})   # 50 jobs = 10 batches
+    _run(monkeypatch, scan_env, client, 50)
+    models = len(llm_utils._gemini_models(scan_env))
+    assert client.models.generate_content.call_count == scanner.QUOTA_BREAKER_THRESHOLD * models * 2
+    assert len(get_jobs_by_status("discovered")) == 50
+
+
 def test_non_quota_failures_never_trip_the_breaker(monkeypatch, scan_env):
     client = _client(Exception("500 INTERNAL"))
     _run(monkeypatch, scan_env, client, 8)
