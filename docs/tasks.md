@@ -6,8 +6,8 @@ Antigravity, or any other agent.
 - **Told to "work from docs/tasks.md"?** Follow the [Working loop](#working-loop).
 - **Told to "verify the tasks"?** Follow [Verifying](#verifying).
 
-**Last re-evaluated:** 2026-10-07 against commit `4ac4c68`: all 30 tasks in the review queue verified by a fresh
-Claude session at Manish's request (instead of Antigravity); T64–T67 added and implemented (587 tests pass,
+**Last re-evaluated:** 2026-10-07 against commit `9445456`: all 30 tasks in the review queue verified by a fresh
+Claude session at Manish's request (instead of Antigravity); T64–T67 and T70 added and implemented, T60 sent back (592 tests pass,
 coverage 91.9%, ruff and mypy clean — measured). File:line references drift; search for the named function if
 a line has moved.
 
@@ -95,9 +95,17 @@ before everything else. **Division of work:** Antigravity implements; Claude rev
 (see [Verifying](#verifying)). Claude's own tasks in the Review queue should be verified
 by Antigravity. (2026-10-07: Manish asked Claude to verify the 30 queued tasks instead; a fresh session did.)
 
-**Every task in this list is done and verified (Done log, 2026-10-07).** It is kept as the record of the order.
-What still moves the score: Manish's labels (T59, and whether g27 is `apply`), T68 (Accenture's generic titles,
-a decision) and the decisions below.
+**From 2026-10-07 (Manish):** a separate Claude agent works this board: it implements `todo` tasks and verifies
+what is in the Review queue (T64–T67, T70, T60's re-check), **without asking Manish anything**; it writes its
+questions into the tasks and the Inbox for the end. After that, the reviewing Claude session reviews the agent's
+work and fixes what it finds. The open decisions (T02, T05, T62, T26) are not urgent: Manish answers them last.
+Gemini quota: about 500 calls per model per day; a normal day uses 200–300. If `gemini-3.5-flash-lite` is out
+for the day, live checks may use `gemini-3.1-flash-lite`, but a task whose verdict depends on 3.5's scores stays
+`review` with the remark "3.5 quota reached on <date>; verify on 3.5" instead of being marked done.
+
+**Every task in this list is done and verified (Done log, 2026-10-07) except T60**, which went back to review: part
+of its measurement ran on the fallback model. What still moves the score: T60's re-check and T70 (which Gemini
+model), Manish's labels (T59) and the decisions below.
 
 | # | Task | Why it changes the score or the accuracy | Evidence |
 |---|---|---|---|
@@ -122,8 +130,11 @@ After this list: **T40, T50, T42** (Manish will not use TinyFish; all three veri
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
 | T59 | Confirm the golden-set labels | manish | — | S | T48 |
+| T60 | Scores flip between runs: re-check on 3.5 (temperature 0 vs 0.1) | review · claude · da2ed06 | claude | XS | — |
+| T70 | Compare gemini-3.1-flash-lite with 3.5-flash-lite on the golden set | review · claude · 9445456 · 3.5 quota reached 2026-10-07, verify on 3.5 | claude | S | — |
+| T71 | Record which Gemini model scored each job | todo | — | S | — |
 
-T48, T57, T58, T60, T61 and T49 were verified 2026-10-07 (Done log).
+T48, T57, T58, T61 and T49 were verified 2026-10-07 (Done log).
 
 **T59 · Confirm the golden-set labels (Manish).** The 82 labels are Claude's, with one line of
 reasoning each in `label_reason`. Sort `scripts/golden_set.csv` by `label`, fix any you
@@ -131,11 +142,54 @@ disagree with, and set `label_source` to `manish` on rows you checked (about 15 
 assumed). Then run `python scripts/score_golden_set.py` (live: about 164 Gemini calls, ~15
 minutes).
 *Done when:* the report prints no "NOT CONFIRMED BY MANISH" banner.
-**Question from the T58 review (2026-10-07):** g27, Amazon SDE II "SP Support", is labelled `apply`, but its
-posting lists "3+ years of Video Games Industry … experience" as a *basic* qualification. Gemini caps it every
-time under the current prompt (40–45 on 3.5-flash-lite ×5, 40 and 40 on 3.1-flash-lite, reason: "lacks the
-mandatory 3+ years of experience in the Video Games Industry"). If you would not apply, relabel it `no` or
-`maybe`: it is the one `apply` job the current prompt misses.
+**g27 answered by Manish (2026-10-07):** he skips a posting that *requires* a skill or domain he lacks (here
+3+ years in the video-games industry), so g27 is now `no` with `label_source` `manish`. His rule for the other
+rows: `apply` only when the required stack and experience match his and the day-to-day work does too. With g27
+relabelled, the current prompt (3.5, saved T58 scores) finds 14/14 `apply` jobs at MIN_SCORE 60 and 70.
+
+**T60 · back to review (2026-10-07): 3.5 quota reached during the original measurement; verify on 3.5.** The
+code (a `gemini_temperature` key, `scripts/measure_score_variance.py`) is verified. The conclusion is not: the old
+`./scan.log` shows `gemini-3.5-flash-lite`'s real daily-quota errors from 2026-10-06 19:52 to 19:54, the last
+minutes of T60's runs (saved 19:54), so about 9 of its 200 calls were answered by 3.1 (2 warnings per fallback,
+18 warnings; inferred), and which jobs got them is not in any log. "Temperature 0 is worse" rests on 2 extra
+wide-spread jobs (g20, g27), so a 3.1 answer in those runs would explain it. Re-check on a day 3.5 has quota
+(40 calls): `python scripts/measure_score_variance.py --ids ab5,g20,g27,h10 --model gemini-3.5-flash-lite
+--temperature 0 --save t0.json`, the same with `--temperature 0.1`, then `--from-runs` each.
+*Done when:* both temperatures were measured on 3.5 only, and T60's conclusion is kept or changed by the result.
+
+**T70 · Which Gemini model scores better?** (Manish's question, 2026-10-07: is 3.1-flash-lite's output the
+same as 3.5-flash-lite's, so he can spend quota wisely?) `score_golden_set.py --model M` scores with one model
+and no fallback, and `--from-scores a.json b.json …` adds a job-by-job agreement section (mean |difference|,
+share within 10 points, pass/fail changes at each MIN_SCORE). Two runs of one model show its run-to-run noise;
+the gap between models only counts beyond that. Each run is 82 calls with `--arms current`.
+*Done when:* two 3.1 runs and two 3.5 runs of the current prompt on the 82 jobs are compared, and the
+recommendation (which model to make primary) is written here.
+**Result so far (2026-10-07; 3.5 quota reached that day, so 3.5 has one run, 2026-10-06, from T58's clean
+saved scores — before 3.5's quota errors began at 19:52):** measured, current prompt, 82 jobs, g27 relabelled:
+- *Ranking is the same:* AUC 3.5 0.961, 3.1 0.959 / 0.954 (95% CI of the difference includes 0).
+- *3.1 is steadier:* its two runs differ by 0.7 points on average, 0 pass/fail changes; 3.5's runs on T60's 20
+  hard jobs differ by 3.0 (3.1 on the same 20: 0.5).
+- *3.1 is more lenient on weak fits:* 3.1 − 3.5 = +7.5 points on `no` jobs, +5.8 on `maybe`, +0.7 on `apply`;
+  between models the mean |difference| is 7.6–7.9, ~10× 3.1's own noise; 10–11 jobs change pass/fail.
+- *At MIN_SCORE 70:* both find 14/14 `apply`; false positives 3.5 **2** vs 3.1 **10** (precision 92% vs 71%).
+  At 75: 2 vs 7. At 80 and 85 the two are identical (19 pass, 12/14 `apply`, 0 false positives), so no 3.1
+  threshold matches 3.5 at 70 (this threshold scan is tuned on the same 82 jobs: optimistic).
+- 3.1 call time: median 1.8 s (90th percentile 6.8 s) plus the 4.2 s pacing.
+*Inferred recommendation:* keep `gemini-3.5-flash-lite` primary for daily scoring (a normal day's 200–300 calls fit
+its 500); 3.1 is fine as the fallback and for functional checks, but its scores in the 60–79 band run ~7 points
+high, so a scan that falls back mixes two calibrations (T71). Code does not depend on the model; the prompt's
+calibration does, so re-run this comparison (2 × 82 calls) whenever the model changes.
+**Still to do (verify on 3.5):** two 3.5 runs on the same day — `python scripts/score_golden_set.py --arms current
+--model gemini-3.5-flash-lite --save-scores 35a.json` (and `35b.json`), then `--from-scores` with the 3.1 files
+(kept in the session scratchpad; re-run 3.1 if they are gone).
+
+**T71 · Record which Gemini model scored each job.** Measured in T70: 3.1-flash-lite scores weak fits ~7 points
+higher than 3.5-flash-lite, and a scan silently falls back to 3.1 when 3.5 fails or is out of quota (T64), so one
+CSV can mix two calibrations with nothing to show it. Store the answering model with each score (a `jobs`
+column, the scorer's result, the CSV when more than one model scored, and the funnel line, e.g.
+`scored 6 (gemini-3.5-flash-lite 4, gemini-3.1-flash-lite 2)`). No prompt or score change.
+*Done when:* a test with a stub client whose first model fails shows the fallback model stored on that row and
+in the CSV; a live scan's funnel line names the model(s).
 
 ---
 
@@ -344,13 +398,12 @@ T41, T42, T43, T50, T51, T52, T55 and T63 were verified 2026-10-07 (Done log).
 
 ## Inbox
 
-New findings go here with the next free ID (next: **T70**), an evidence tag and the
+New findings go here with the next free ID (next: **T71**), an evidence tag and the
 file:line. Manish or the triaging agent moves each one into a priority table.
 
 | ID | Finding | Evidence | Added by |
 |---|---|---|---|
 | T62 | **Decision for Manish (T17's result):** the language words in the title exclusion block, among India jobs that name a target role and have no other blocker: **python 33** (24 posted in the last 30 days, corrected 2026-10-07 from 21; 21 look like backend/SDE/full-stack, e.g. JPMorgan "Software Engineer III - Python LLM Engineer", Plane "Software Engineer, Backend (Python)"), **java 93** (85, corrected from 75), golang 5, react/angular 6, frontend 8. Seniority words (staff, lead, principal, manager, architect) block about 600 more, as intended. Allow "python" in titles? It would add about 33 scoring calls to a full scan (+3%), and your resume lists Python. Java and golang: say which. Each is a one-word change plus a test | measured on 34,416 jobs fetched 2026-10-06: `python scripts/measure_prefilter.py --jobs <saved fetch>`; the 30-day column was undercounted (jobs posted that day counted as old) until 55aa663 | claude |
-| T68 | **Decision for Manish:** Accenture's generic "Custom Software Engineer" title (418 of its ~470 pre-filter survivors) hides platform and senior roles that T12's title words would have rejected. In the live scan of 2026-10-07 all 6 jobs the newest-first cap picked were Accenture's ("Posted Today"), and all scored 30–40 for SAP BRIM, Varicent administration, automotive HIL testing or 7.5+ years. Option: read Accenture's "Must have skills : …" description line in the pre-filter (needs the description, i.e. a detail call per survivor). Cost of doing nothing: up to ~36 scoring calls a week on mostly low scores (inferred from 36–37 posted per 7 days) | measured: 6 of 6 scored jobs (scratch-dir scan, 2026-10-07); inferred: the weekly cost | claude |
 | T69 | Low-priority notes from the 2026-10-07 review, no action proposed: (a) structured scoring (T41) hard-codes temperature 0.1 and ignores `gemini_temperature` (T60) — `llm_utils.score_job_structured_with_gemini`; (b) the deprecated non-Gemini scorer still cuts the resume at 2,500 and each JD at 1,500 characters — `scanner.score_batch`; (c) the T61 word `embedded` would also reject "Backend Engineer – Embedded Finance" (0 such titles in 34,416); (d) one full scan writes ~5.3 MB of DEBUG log, so T16's 5 MB × 3 rotation keeps about the last 3 scans; (e) the production `data/jobs.db` still has the pre-T29 schema and `user_version` 0: its next scan runs T29's columns and T30's one-time Workday repair (checked on a copy: 30,367 rows kept, 0.19 s) | measured (a, b by reading the code; c, d, e by running it) | claude |
 
 ---
@@ -361,6 +414,8 @@ The implementer adds a row when a task reaches `review`; the verifier removes it
 
 | ID | Commit(s) | Implementer | Evidence (command → result) |
 |---|---|---|---|
+| T70 | 9445456 | claude | **Remark: Gemini 3.5-flash-lite daily quota reached 2026-10-07; the 3.5 half must be verified on 3.5 (see the task).** Tooling: `pytest tests/test_scoring_rubric.py` → the 5 new tests failed before, 22 pass after (pinned model never falls back, while the same stub without `--model` does; agreement metrics; `--arms`/`--model` arm names; several `--from-scores` files merged, a duplicate arm refused; `measure_score_variance.py --ids --model`). Live: `score_golden_set.py --arms current --model gemini-3.1-flash-lite` twice → 164/164 answered by 3.1, 0 failed; `--from-scores` with T58's saved 3.5 scores → the numbers in the task. g27 relabelled `no` per Manish before the comparison. |
+| T60 | da2ed06 | claude | **Sent back by the verifier (2026-10-07): 3.5 quota reached during the original runs; verify on 3.5.** The code and the saved numbers check out (see the task), but ~9 of the 200 calls were answered by 3.1 (real quota errors 19:52–19:54 in `./scan.log`, the runs were saved at 19:54), so the temperature comparison is not a clean 3.5 measurement. Re-check: 40 calls, commands in the task. |
 | T67 | 4ac4c68 | claude | `pytest tests/test_discovery.py -k never_starts` → 3 failed before ("a full discovery was started", once the test had a seeds file), pass after. Real CLI: `python -m job_hunt discover --help` → usage, exit 0; `discover --add-flie x.txt` → "unknown or incomplete argument '--add-flie'", exit 1. Every flag used in the docs (grep of CLAUDE.md, README, docs/, code) is in the accepted set. Gates green. |
 | T66 | 83a573d | claude | Fresh venv (`python3 -m venv`, `pip install -r requirements.txt`): importing every module → `discovery`, `harvester`, `company_builder` fail `No module named 'yaml'`. New `test_every_third_party_import_is_a_declared_dependency` failed ("pyproject.toml lacks pyyaml"), passes after. After: fresh Python 3.11 venv from `requirements.txt` → `python -m job_hunt discover --add "Stripe" --report r.csv --out v.json --no-recheck` (scratch cwd with a copy of the seeds file) → exit 0, Stripe verified (731 jobs, 44 India). Not run: `docker build` (no Docker; it installs from pyproject). |
 | T65 | 0fcb546 | claude | New adapter test failed before (0 detail calls), passes after. Live `fetch_workday("accenture", "wd103", "AccentureCareers")` with `_fetch_detail` counted: 2,000 jobs, 7 detail calls (the candidate titles among 498 "Location Negotiable"), 5 resolved to US offices (still rejected), 2 to Bengaluru/Hyderabad (now pass): pre-filter passes 471 → 473; 245 s. Gates green. |
@@ -388,7 +443,7 @@ and CHANGELOG (inferred), and their numbers from CHANGELOG unless marked measure
 | T24 | Penalise onsite work outside India | 847e3c2 (inside T48's rubric) | Rule 1 of `SCORING_RUBRIC` is in both prompts (unit test). Live, 1 job (the US-only Salesforce role): 45 without the rubric, 25 and 25 with it. Only the one job tested; the current pre-filter now rejects this job's all-US location before scoring | verified · claude · 2026-10-04 |
 | T48 | Scoring rubric and a golden set | 0448ea6, 4ca2e17 (+ test fix 5602d1d) | `pytest tests/test_scoring_rubric.py` → 17 passed. Live `score_golden_set.py --limit 3` → 6 calls, report with the unconfirmed-labels banner (3.5-flash-lite was out of daily quota; 3.1 answered). `--from-scores` on the saved 75-job scores reproduces every number: FP at 70 7 → 4, precision 77% → 85%, `apply` 13/13, AUC 0.955 vs 0.956, CI [-0.028, +0.029], biggest top tie 11 → 10. 5 random `label_reason`s read against their descriptions: 5/5 match. The only full duplicate description is two ServiceNow requisitions (documented). Fixed: a rule-2 test assertion (`a and b or c`) that passed with the cap removed | verified · claude · 2026-10-07 |
 | T57 | Amazon full description, not the 202-char stub | 0ed9567 | Adapter tests pass. Live `fetch_amazon()`: 2,304 India jobs, median description 3,923 chars (≥ 2,500), 0 under 500, 0 raw HTML. `data/jobs.db` (read-only): 23 Amazon rows `discovered`, score and reason NULL; `state/job_history.json` has 0 Amazon entries | verified · claude · 2026-10-07 |
-| T58 | Fresher cap (rubric rule 7); rule 2 judges the work | 9dd63f5 | Saved v2/v4 scores re-analysed: Hevo 90 → 50, FP at 70 5 → 2, precision 83% → 92%, AUC 0.946 vs 0.948, `apply` 15/15 → 14/15. **Done-when partly unmet, as its evidence said:** g27 (Amazon "SP Support") is missed, and under the current prompt not bimodal but always capped ([45, 45, 40, 45, 45] in T60's runs; 40 and 40 live on 3.1, reason: the posting's 3+ years of video-games experience) — a labelling question, now in T59. Not in its evidence: `apply+maybe` recall at 70 fell 89% → 82% (Nike g20 75 → 50) | verified · claude · 2026-10-07 |
+| T58 | Fresher cap (rubric rule 7); rule 2 judges the work | 9dd63f5 | Saved v2/v4 scores re-analysed: Hevo 90 → 50, FP at 70 5 → 2, precision 83% → 92%, AUC 0.946 vs 0.948, `apply` 15/15 → 14/15. **Done-when partly unmet, as its evidence said:** g27 (Amazon "SP Support") is missed, and under the current prompt not bimodal but always capped ([45, 45, 40, 45, 45] in T60's runs, which may include 3.1 answers; 40 and 40 live on 3.1, reason: the posting's 3+ years of video-games experience) — a labelling question: Manish relabelled g27 `no` (T59), after which the current prompt finds 14/14 `apply` at 60 and 70. Not in its evidence: `apply+maybe` recall at 70 fell 89% → 82% (Nike g20 75 → 50) | verified · claude · 2026-10-07 |
 | T12 | Reject CRM/ERP/BI platform titles | 0660d1d | Saved 34,416-job fetch (2026-10-06) through each commit's real `should_evaluate_job`: survivors 1,191 → 1,109 (−82, 0 added). All 82 removed titles read: platform roles only (Salesforce, SAP/ABAP, ServiceNow, Power BI/Platform, Informatica, Oracle EBS/CPQ, Workday, D365…). Labelled `apply`/`maybe` jobs: 0 rejected. Controls pass (Node.js backend, "Dynamic Pricing") | verified · claude · 2026-10-07 |
 | T61 | Reject C++/embedded/kernel/GPU/Rust/Ruby/PHP titles | b69171a | Same method: 1,109 → 1,053 (−56, 0 added); all 56 titles read (Arista, Nvidia, HPE, NXP, Applied Materials…; nearest calls Zscaler "Backend Dev - C/C++", GitLab "Backend Engineer (Ruby)"). Labelled `apply`/`maybe`: 0 rejected. Limit: "Embedded Finance" would be rejected (0 such titles; T69) | verified · claude · 2026-10-07 |
 | T11 | Accept "Computer Scientist" titles | 56abafb | Same method: 1,053 → 1,060 (+7, all Adobe: Computer Scientist / 2 / II / Senior … Agentic AI); "Computer Scientist I (Frontend)" still rejected | verified · claude · 2026-10-07 |
@@ -399,7 +454,6 @@ and CHANGELOG (inferred), and their numbers from CHANGELOG unless marked measure
 | T41 | Structured scoring, opt-in | ea14a3f | 19 tests pass. Saved facts of 82 jobs through the current `combine_subscores`: 82/82 equal the stored scores; vs the current prompt AUC 0.950 vs 0.948, precision at 60 61% vs 86%, `apply` at 70 13/15 vs 14/15, top scores 8 vs 3 distinct values. Default unchanged (`config.json` sets no `scoring_mode`). Note: ignores `gemini_temperature` (T69) | verified · claude · 2026-10-07 |
 | T29 | Location, posted date and description in `jobs` | ad47c73 | 7 tests pass (its evidence said 8; the commit had 7). `init_db` on a copy of `data/jobs.db`: 30,367 rows before and after, statuses and score sum (5,692) equal, `integrity_check` ok, 0.19 s; later calls 0.2 ms. Live scan: the 6 scored rows carry location, date and 3,171–5,119-char descriptions; 39,118 skipped rows have a location and no description. The production DB is still unmigrated (T69 e) | verified · claude · 2026-10-07 |
 | T35 | One funnel line at the end of every scan | f35f3b1 (+ 26f5493) | Live `./run_daily.sh --posted-within 1` from a scratch copy (`init` + `.env` with only the Gemini key, all 223 companies, cap 6): one line in `data/scan.log`: `Funnel: fetched 39235 \| India 19995 \| already scored 0 \| pre-filter rejected 37576 \| too old 1549 \| queued 110 \| scored 6 \| failed 0 \| left for next scan 104` (37,576 + 1,549 + 110 = 39,235); log ends "Scan finished with exit code 0"; 10.0 min | verified · claude · 2026-10-07 |
-| T60 | Score variance measured; temperature 0 rejected | da2ed06 | `measure_score_variance.py --from-runs` on the saved runs (13 maybe + 7 apply, 5 runs each): temp 0.1 → 2/20 spread > 20, mean 6.0, flips 2 / 3 at 60 / 70; temp 0 → 4/20, mean 8.2, 4 / 4. Not re-derived: the resampled median-of-3 figures (not adopted) | verified · claude · 2026-10-07 |
 | T14 | Whole resume in the draft prompt | 9d3f0f9 | The test passes; reverting to `resume[:2500]` makes it fail. The deprecated non-Gemini scorer still cuts the resume (T69) | verified · claude · 2026-10-07 |
 | T40 | Draft from the stored description, no TinyFish | f43906f + 2e1b2c9 | Drafter and CLI tests pass. Real CLI in the scratch scan directory: `env -u TINYFISH_API_KEY python -m job_hunt draft 1` → exit 0; resume, cover letter and application_info written; ends "Review, edit, then submit manually"; the letter uses terms found only in the JD | verified · claude · 2026-10-07 |
 | T42 | TinyFish careers-page path, OpenRouter, WhatsApp deleted; tests isolated | bce3983 | All 34 `job_hunt` modules import with `tinyfish`/`openai` blocked. The whole suite passes with no network (`unshare -rn`): 587 passed. The live scan and draft above ran with TINYFISH/OPENROUTER unset | verified · claude · 2026-10-07 |
@@ -441,4 +495,5 @@ Don't reopen without new evidence.
 | "Direct ATS jump" button in HeadcountFilter | Antigravity | Belongs in the HeadcountFilter repo, not here. |
 | Thread pool for Workday detail calls | Gemini web | Superseded by parallel company fetch (ba7d4b7). T23 re-measures first. |
 | Darwinbox adapter (T27) | claude, probe 2026-10-06 | No plain-HTTP JSON endpoint found. On valid tenants (magicpin, netmeds) every `/ms/candidateapi/*` path (`companyinfo`, `job?page=1`, `job/count`, `job/filters`, even `getturnstilecaptchasitekey`), GET and POST, with and without Origin/Referer/cookie, answers 500 "Error while getting tenant info"; mpl and demo are walled by Cloudflare 403; an invalid subdomain answers "Invalid subdomain" (so the tenant is recognised and the failure is in tenant resolution for non-browser requests). The app loads a Cloudflare Turnstile challenge. Five different attempts failed; reopen only with a browser-free way to obtain the tenant context, or a decision to use Playwright. |
+| Pre-filter Accenture's generic "Custom Software Engineer" titles by the "Must have skills" line (T68) | claude, 2026-10-07 | Manish, 2026-10-07: a title or skills-line rule would also drop real fits; Gemini reads the whole description and decides, which is the safe side. Cost accepted: some scoring calls on low-fit Accenture roles (6 of 6 scored 30–40 in one scan). |
 | Playwright for custom portals; scraping Naukri/LinkedIn; multiple resume profiles | Gemini web, Antigravity | High cost and ban risk. Reopen only with a concrete plan and measured payoff. |
