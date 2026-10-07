@@ -9,6 +9,9 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed (2026-10-07, T66)
+- `pyyaml` is a declared dependency (`pyproject.toml` and `requirements.txt`). `discovery`, `harvester` and `company_builder` import `yaml`, but nothing declared it, so on a fresh `pip install -r requirements.txt` `autopilot discover` (the company-list tool) died with `ModuleNotFoundError: No module named 'yaml'` (measured in a fresh virtualenv while verifying T51; the dev `.venv` had PyYAML only because it was installed by hand). After: a fresh Python 3.11 virtualenv from `requirements.txt` runs `python -m job_hunt discover --add "Stripe"` to exit 0 (verified, 731 jobs, 44 India). `tests/test_packaging.py` now fails if any third-party import in `job_hunt/` (other than the optional anthropic / MCP ones) is missing from either file. Also corrected `docs/01-install.md`, which still said `google-genai` was optional.
+
 ### Fixed (2026-10-07, T65)
 - Workday: a list item whose location is the placeholder "Location Negotiable" now gets the same detail call as "N Locations" when its title can pass the pre-filter, so its real cities decide the location test (it was always rejected as not India). Found while verifying T49: 498 of Accenture's 2,000 India-search results carry it; 8 of 12 sampled were in India by the detail endpoint; 7 of the 498 have a candidate title. Live Accenture fetch through the adapter after the change: 7 detail calls, 5 resolved to US offices (still rejected), **2 resolved to Bengaluru/Hyderabad and now pass** (pre-filter passes 471 → 473); 245 s (219 s before; network noise). `tests/test_adapters_extra.py` has a test for it. Also: ARCHITECTURE.md still said the Workday cap was 500 (T49 raised it to 2,000).
 
