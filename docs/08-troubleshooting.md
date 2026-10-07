@@ -19,6 +19,7 @@ every job's pre-filter decision, score and reason is there.
 |---|---|---|
 | `Temporary issue or rate-limit on gemini-…, retrying in N s` | 429/503 from Gemini | Normal now and then; it retries, then tries the fallback model |
 | `N job(s) could not be scored (LLM error/quota) — left as 'discovered'` | Gemini failed for those jobs, usually the daily quota | Nothing is lost: they're scored on the next scan. Narrow the window (`--posted-within`) to stay under about 1,000 calls a day |
+| `Gemini model gemini-…: daily quota exhausted; skipped for the next N h` | That model's 500/day free-tier limit is used up | Nothing: the fallback model scores the rest of the run; the skipped model is tried again after the reset (T64) |
 | The log says "Gemini quota exhausted … scoring stopped" | The daily quota is gone: scoring stops once 3 jobs in a row fail on every model (T03); the rest stay `discovered` | Nothing: they are scored on the next scan |
 | `Workday <tenant>/<site>: 600s budget spent, stopping at N jobs` | A slow Workday tenant | Jobs past N are missed for this scan only |
 | `<ATS> fetch failed for <slug>: …` (e.g. `… still downloading after 900s`), then `No open jobs found` for that company | The board errored or trickled past the hard deadline. The adapter returns no jobs for this scan. These warnings go to the console (and `data/scan.log` via `run_daily.sh`) and to `data/autopilot.log` | Retried automatically on the next scan |

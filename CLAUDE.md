@@ -90,7 +90,7 @@ A Gemini failure never stores `score=0`; the row stays `discovered`.
 | `resume/YOUR_RESUME.md` | resume text | template committed |
 
 - **LLM:** `llm_provider` defaults to `gemini`; model from `gemini_model` / `GEMINI_MODEL`,
-  fallback chain `gemini-3.5-flash-lite` → `gemini-3.1-flash-lite` only (free tier: 15 RPM,
+  fallback chain `gemini-3.5-flash-lite` → `gemini-3.1-flash-lite` only; a model whose daily quota is gone is skipped until its reset (T64) (free tier: 15 RPM,
   250k TPM, 500 RPD each; `gemini-3.8-flash` has 20 RPD and is never used as a fallback). `anthropic` and `claude_cli` are kept (deprecated) but only stubbed tests exercise them: no real call has been made with either (T63).
   TinyFish and OpenRouter were removed (T42).
 - **Telegram:** optional. Empty/placeholder `TELEGRAM_TOKEN` (alias `TELEGRAM_BOT_TOKEN`)

@@ -9,7 +9,9 @@ from job_hunt.db import get_jobs_by_status, init_db
 from job_hunt.llm_utils import GeminiQuotaExhausted
 from job_hunt.models import JobPosting
 
-QUOTA_ERR = "429 RESOURCE_EXHAUSTED. You exceeded your current quota (GenerateRequestsPerDayPerProjectPerModel)"
+# A per-minute limit: retried once per model, and counted by the breaker. A per-DAY limit is remembered and
+# skipped instead (T64, tests/test_daily_quota.py).
+QUOTA_ERR = "429 RESOURCE_EXHAUSTED. You exceeded your current quota (GenerateRequestsPerMinutePerProjectPerModel)"
 OK_JSON = '{"score": 66, "reason": "fine"}'
 
 

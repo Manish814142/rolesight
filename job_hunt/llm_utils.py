@@ -139,14 +139,33 @@ def _is_quota_error(message: str) -> bool:
     return any(t in message for t in ("429", "RESOURCE_EXHAUSTED", "ResourceExhausted", "quota"))
 
 
+# Models whose DAILY quota is gone, with the time.time() at which it resets. Skipped until then: retrying them
+# cost two requests and a 5 s wait on every job (Google's "retry in 23h20m6s" does not match the per-minute
+# "retry in Ns" pattern below) before the fallback model answered (T64).
+_DAILY_QUOTA_EXHAUSTED: dict[str, float] = {}
+
+
+def _daily_quota_reset_seconds(message: str) -> float | None:
+    """Seconds until a per-day quota resets when `message` is that 429 (its quotaId names a per-day limit)."""
+    if "PerDay" not in message or not _is_quota_error(message):
+        return None
+    m = re.search(r"retryDelay['\"]?\s*:\s*['\"]?(\d+)s", message)
+    return float(m.group(1)) if m else 3600.0
+
+
 def _generate_with_fallback(client: Any, contents: str, cfg: Any, models: list[str]) -> str:
     """Call generate_content across `models`, retrying once on rate-limit/transient errors.
 
-    Raises GeminiQuotaExhausted when every model failed with a quota error.
+    A model whose daily quota is gone is skipped until it resets. Raises GeminiQuotaExhausted when every
+    model failed with a quota error (or is out for the day).
     """
+    now = time.time()
+    live = [m for m in models if _DAILY_QUOTA_EXHAUSTED.get(m, 0.0) <= now]
+    if models and not live:
+        raise GeminiQuotaExhausted(f"daily quota exhausted on every model ({', '.join(models)})")
     last_err: Exception | None = None
-    quota_models = 0
-    for m in models:
+    quota_models = len(models) - len(live)
+    for m in live:
         for attempt in range(2):
             try:
                 resp = client.models.generate_content(model=m, contents=contents, config=cfg)
@@ -157,6 +176,11 @@ def _generate_with_fallback(client: Any, contents: str, cfg: Any, models: list[s
             except Exception as e:
                 last_err = e
                 err_msg = str(e)
+                reset = _daily_quota_reset_seconds(err_msg)
+                if reset is not None:
+                    _DAILY_QUOTA_EXHAUSTED[m] = time.time() + reset
+                    logger.warning(f"Gemini model {m}: daily quota exhausted; skipped for the next {reset / 3600:.1f} h")
+                    break
                 if attempt == 0 and ("503" in err_msg or "429" in err_msg or "ResourceExhausted" in err_msg or "temporary" in err_msg or "quota" in err_msg):
                     retry_wait = 5.0
                     m_delay = re.search(r"retry in (\d+(?:\.\d+)?)s", err_msg)

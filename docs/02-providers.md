@@ -21,7 +21,9 @@ applications (`autopilot draft`, on demand). The two choose their provider diffe
 - **Retries:** on a 429 / 503 / quota error, each model gets one retry after 5–15 s
   (using the server's "retry in N s" hint when there is one), then the next model is
   tried. If every model fails, the job stays `discovered` and is retried next scan. A
-  failure is never stored as a score of 0.
+  failure is never stored as a score of 0. A 429 whose quota is **per day** is not
+  retried: that model is skipped until the reset time Google gives, so a dead primary
+  costs one request per run instead of two requests and a 5 s wait per job (T64).
 - **Pacing:** a 4.2 s sleep after every scoring call, to stay under 15 requests per
   minute. Measured: about 6.3 s per job including the call (226 jobs in about 24 min,
   2026-10-04).

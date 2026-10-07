@@ -66,6 +66,15 @@ def no_real_gemini(monkeypatch):
 
 
 @pytest.fixture(autouse=True)
+def fresh_daily_quota_state():
+    """llm_utils remembers models whose daily quota is gone (T64); one test's stub 429s must not leak into the next."""
+    from job_hunt import llm_utils
+    llm_utils._DAILY_QUOTA_EXHAUSTED.clear()
+    yield
+    llm_utils._DAILY_QUOTA_EXHAUSTED.clear()
+
+
+@pytest.fixture(autouse=True)
 def no_enrich_network(monkeypatch):
     """run_scan fetches full descriptions for survivors (adapters.enrich_job = HTTP).
 
