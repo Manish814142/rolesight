@@ -286,7 +286,9 @@ def test_runaway_description_is_bounded(monkeypatch):
                         lambda api_key: (client, types.SimpleNamespace(GenerateContentConfig=MagicMock())))
     llm_utils.score_job_with_gemini({"title": "t", "content": "x" * 200_000}, "resume", {"gemini_api_key": "k"})
     prompt = client.models.generate_content.call_args.kwargs["contents"]
-    assert llm_utils.MAX_DESCRIPTION_CHARS <= prompt.count("x") <= llm_utils.MAX_DESCRIPTION_CHARS + 10
+    import re
+    # The description is the one long run of x's; counting every "x" broke when the rubric gained "example" (T73).
+    assert max(len(run) for run in re.findall("x+", prompt)) == llm_utils.MAX_DESCRIPTION_CHARS
 
 
 def test_batch_scoring_maps_ids_and_uses_json_schema(monkeypatch):

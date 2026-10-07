@@ -27,8 +27,8 @@ def test_scoring_rubric_constant_present_and_has_anchors():
     # Must specify seniority cap (<= 50)
     assert "50" in rubric and ("seniority" in rubric.lower() or "years" in rubric.lower())
 
-    # Must specify stack mismatch cap (<= 60)
-    assert "60" in rubric and ("stack" in rubric.lower() or "mismatch" in rubric.lower())
+    # Must specify a stack mismatch cap (<= 50 since T73, so a capped job fails MIN_SCORE 60 too)
+    assert "stack mismatch cap (score <= 50)" in rubric.lower()
 
     # Must specify 85-100 criteria
     assert "85" in rubric or "100" in rubric
@@ -38,10 +38,11 @@ def test_stack_cap_has_explicit_exceptions():
     """T48 review: rule 4 capped jobs that accept a language on the resume (measured on 59 labelled
     jobs: Hotstar 'Java, Golang, or Python' and Toast 'Kotlin, Java, or another OO language' fell to
     58). The cap must say when it does NOT apply."""
-    rule4 = llm_utils.SCORING_RUBRIC.split("4.")[1].split("5.")[0].lower()
-    assert "every" in rule4 or "all" in rule4                     # fires only if ALL accepted languages are outside the stack
+    rule4 = llm_utils.SCORING_RUBRIC.split("4. ")[1].split("5. ")[0].lower()
+    assert "requires" in rule4 and "does not accept one of the candidate's languages" in rule4
     assert "python" in rule4 and "or another" in rule4            # accepting Python / "or another language" is not a mismatch
     assert "prefer" in rule4                                       # a preferred (not mandated) stack is not a mismatch
+    assert "java, golang, or python\" is not a mismatch" in rule4
 
 
 def test_platform_cap_judges_the_work_not_the_employer_name():
@@ -379,3 +380,33 @@ def test_variance_script_can_pin_a_model_and_pick_jobs(tmp_path, monkeypatch):
     assert sorted(json.loads(out.read_text())) == ["ab5", "g27"]
     assert len(seen) == 4 and all(models == ["gemini-x"] and temp == 0 for _, models, temp in seen)
     assert llm_utils._gemini_models({})[0] != "gemini-x"
+
+
+# --- T73: rubric v6, Manish's apply rule (skip a posting that requires what he lacks) --------------------------
+
+def _rule(n):
+    return llm_utils.SCORING_RUBRIC.split(f"{n}. ")[1].split(f"{n + 1}. ")[0].lower()
+
+
+def test_stack_cap_sits_below_every_min_score_in_use():
+    """Rule 4 capped at 60 = MIN_SCORE 60, so a capped job still passed (Nike g16: 60 under the old rubric)."""
+    import re
+    cap = int(re.search(r"score <= (\d+)", _rule(4)).group(1))
+    assert cap < 60
+
+
+def test_example_lists_and_frontend_typescript_are_handled():
+    """Measured 2026-10-07: 'languages such as Kotlin, Java or C#' was read as a requirement (Expedia g1, an
+    `apply` job, fell to 50 under v5), and Sureify's 'Golang required + React/TS' passed at 75 because TypeScript
+    appeared somewhere in the posting."""
+    rule4 = _rule(4)
+    assert "such as" in rule4 and "examples are not requirements" in rule4
+    assert "languages such as kotlin, java or c#\" is not a mismatch" in rule4
+    assert "frontend part does not count" in rule4 and "golang required, react/typescript frontend\" is" in rule4
+
+
+def test_required_domain_or_tool_cap():
+    """Manish 2026-10-07: he skips postings that require a domain or tool he lacks (golden-set g27: video games)."""
+    rule8 = llm_utils.SCORING_RUBRIC.split("8. ")[1].lower()
+    assert "score <= 50" in rule8 and "required" in rule8 and "video-games industry" in rule8
+    assert "preferred or nice-to-have" in rule8 and "never trigger" in rule8

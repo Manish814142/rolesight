@@ -126,7 +126,7 @@ As of 2026-10-04. The live list of work is the task board, [docs/tasks.md](docs/
   value wins (T05).
 - **Amazon jobs are scored on a stub.** Their description is cut to 202 characters although
   the API has the full text (T57).
-- **Scores vary a little between runs.** On the 20 hardest labelled jobs, 5 runs each at the default temperature: 2 had a spread over 20 points and 2-3 crossed `min_score`; temperature 0 was worse (T60). Older prompt versions flipped far more.
+- **Scores vary a little between runs.** On the 20 hardest labelled jobs, 5 runs each at the default temperature: 2 had a spread over 20 points and 2-3 crossed `min_score`. Temperature 0 does not fix it: re-measured on `gemini-3.5-flash-lite` only, it behaved like 0.1 (T60). With the T73 rubric, two runs of all 82 labelled jobs changed no pass/fail decision at 60 or 70.
 - **Coarse scores.** Many jobs tie at 90 (21 of 203 in the first scan). The rubric (T48)
   lowers false positives at `min_score` 70 (7 → 4 of 75 labelled jobs) but does not rank better;
   breaking ties needs sub-scores (T41). The labels behind that measurement are Claude's, not

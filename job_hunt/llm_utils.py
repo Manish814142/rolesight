@@ -257,7 +257,8 @@ def _description(job: dict) -> str:
     return str(job.get("content", job.get("snippet", "")))[:MAX_DESCRIPTION_CHARS]
 
 
-# Scoring rubric anchors for LLM evaluation (T48 / T24). Rule 4's exceptions and the removal of the
+# Scoring rubric anchors for LLM evaluation (T48 / T24; rule 4 and rule 8 from T73, Manish's apply rule:
+# skip a posting that requires what he lacks). Rule 4's exceptions and the removal of the
 # "spread the scores" text come from the labelled comparison of 2026-10-04 (CHANGELOG, T48).
 SCORING_RUBRIC = """SCORING RUBRIC & HARD ANCHORS (strictly enforce):
 1. Location & Work Authorization Cap (score <= 30):
@@ -267,9 +268,13 @@ SCORING_RUBRIC = """SCORING RUBRIC & HARD ANCHORS (strictly enforce):
    Judge the work, not the employer's name: a software engineer building products or integrations at a company that makes such a platform (for example ServiceNow or Salesforce) is not platform administration.
 3. Seniority Gap Cap (score <= 50):
    The candidate has ~3.3 years of experience. If the role strictly requires 6+ years of professional experience (Lead, Staff, Principal, Architect), cap score at <= 50. (Roles requiring 2-4 years are optimal; 4-5 years is acceptable up to 75-80 if stack matches).
-4. Primary Stack Mismatch Cap (score <= 60):
-   Apply this cap only if EVERY language or framework the posting accepts is outside the candidate's stack, i.e. it mandates C#/.NET Core, Java/Spring Boot, Go, C++, Ruby or similar and nothing else.
-   Do NOT apply it when the posting lists Python, JavaScript, TypeScript or Node.js among its acceptable languages (the candidate's resume has Python), when it says "or another"/"any" object-oriented or programming language, or when it only prefers (does not require) a stack. For example "Java, Golang, or Python" is not a mismatch.
+4. Primary Stack Mismatch Cap (score <= 50):
+   Apply this cap only when the posting REQUIRES (must-have, mandatory, "strong X required", minimum/basic qualifications) a specific backend language or framework outside the candidate's stack (C#/.NET Core, Java/Spring Boot, Go, C++, Ruby, PHP, Scala or similar) and does not accept one of the candidate's languages for that backend/service work.
+   Do NOT apply it when:
+   - the posting accepts Python, JavaScript, TypeScript or Node.js for the backend/service work (the candidate's resume has Python);
+   - the languages are only examples ("such as", "e.g.", "like", "for example"), or the posting says "or another"/"any"/"a modern" programming language: examples are not requirements;
+   - a stack is only preferred or nice to have.
+   TypeScript or React used only for a frontend part does not count as accepting the candidate's stack. For example "Java, Golang, or Python" is not a mismatch, "languages such as Kotlin, Java or C#" is not a mismatch, and "Golang required, React/TypeScript frontend" is.
 5. High Score Criteria (85-100):
    Award 85-100 ONLY when ALL three criteria hold:
    - Primary backend stack matches candidate's core stack (Node.js, TypeScript, Python, backend microservices, event-driven queues, databases/caching).
@@ -278,7 +283,9 @@ SCORING_RUBRIC = """SCORING RUBRIC & HARD ANCHORS (strictly enforce):
 6. Moderate Match (65-84):
    Solid backend fit with minor stack or seniority stretch.
 7. Too-Junior Cap (score <= 50):
-   If the posting is aimed at freshers, new graduates or entry-level hires (it says fresher, new grad, graduate programme or campus hiring, or asks for 0-1 years), cap at <= 50. Judge by the experience the posting asks for, not by the title: an 'Associate' or 'Engineer I' role that asks for 2+ years (for example 3+) is NOT too junior."""
+   If the posting is aimed at freshers, new graduates or entry-level hires (it says fresher, new grad, graduate programme or campus hiring, or asks for 0-1 years), cap at <= 50. Judge by the experience the posting asks for, not by the title: an 'Associate' or 'Engineer I' role that asks for 2+ years (for example 3+) is NOT too junior.
+8. Missing Required Domain or Tool Cap (score <= 50):
+   If a REQUIRED qualification (basic/minimum qualification, must-have, mandatory) is a specific industry background, platform or tool that the candidate's resume does not show and that the role depends on (for example years in the video-games industry, embedded/firmware, SAP, mainframe, a hardware or EDA toolchain), cap at <= 50: the candidate does not apply to postings whose requirements he cannot meet. Examples ("such as", "e.g."), preferred or nice-to-have items, and generic requirements (years of software development, system design, distributed systems, cloud, SQL, CI/CD, testing) never trigger this."""
 
 
 def score_job_with_gemini(job: dict, resume: str, config: dict, raise_on_error: bool = False) -> dict:
