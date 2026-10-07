@@ -9,6 +9,9 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed (2026-10-07, T65)
+- Workday: a list item whose location is the placeholder "Location Negotiable" now gets the same detail call as "N Locations" when its title can pass the pre-filter, so its real cities decide the location test (it was always rejected as not India). Found while verifying T49: 498 of Accenture's 2,000 India-search results carry it; 8 of 12 sampled were in India by the detail endpoint; 7 of the 498 have a candidate title. Live Accenture fetch through the adapter after the change: 7 detail calls, 5 resolved to US offices (still rejected), **2 resolved to Bengaluru/Hyderabad and now pass** (pre-filter passes 471 → 473); 245 s (219 s before; network noise). `tests/test_adapters_extra.py` has a test for it. Also: ARCHITECTURE.md still said the Workday cap was 500 (T49 raised it to 2,000).
+
 ### Fixed (2026-10-07, T64)
 - A Gemini model whose **daily** quota is gone is skipped until its reset instead of being retried on every job. Measured 2026-10-07 with `gemini-3.5-flash-lite` at its 500/day limit: each job still sent it two requests and slept 5 s (Google's "retry in 23h20m6s" does not match the per-minute "retry in N s" pattern) before `gemini-3.1-flash-lite` answered, about 6.5 s per job, ~43 min on a 400-job run (inferred). Now a 429 whose quota id names a per-day limit marks the model until the `retryDelay` Google sends; when every model is out, scoring raises `GeminiQuotaExhausted` without a request, so the T03 breaker stops at once. Per-minute 429s are retried as before. Live, same day, two golden-set jobs with the default config: 1 request to 3.5 (logged "skipped for the next 22.8 h"), 2 to 3.1, the second job in 1.8 s; `autopilot draft` logged the skip once too. `tests/test_daily_quota.py` (5 tests, including one through `run_scan`); T03's tests now use a per-minute 429.
 

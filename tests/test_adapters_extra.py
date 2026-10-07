@@ -210,6 +210,33 @@ def test_workday_skips_the_detail_call_for_titles_the_prefilter_rejects(mock_pos
     assert len(jobs) == 3                                                         # still returned; the pre-filter decides
 
 
+@patch("requests.get")
+@patch("requests.post")
+def test_workday_location_negotiable_gets_the_real_location_from_the_detail_call(mock_post, mock_get):
+    """T65: Accenture shows "Location Negotiable" (blank locationsText, bullet field) on 498 of its 2,000
+    India-search results; 8 of 12 sampled were in India by the detail endpoint, so a candidate title was
+    dropped as 'not India'. Treat it like "N Locations": one detail call, only when the title can pass."""
+    from job_hunt.adapters.workday import fetch_workday
+    from job_hunt.prefilter import should_evaluate_job
+
+    mock_post.return_value = _resp({"jobPostings": [
+        {"title": "Full Stack Engineer", "locationsText": "", "externalPath": "/job/X/J_0",
+         "bulletFields": ["R0", "Location Negotiable"]},
+        {"title": "Inside Sales Director", "locationsText": "", "externalPath": "/job/X/J_1",
+         "bulletFields": ["R1", "Location Negotiable"]},
+    ]})
+    mock_get.return_value = _resp({"jobPostingInfo": {"location": "Bengaluru", "country": {"descriptor": "India"},
+                                                      "additionalLocations": ["Hyderabad"],
+                                                      "jobDescription": "<p>Node.js</p>"}})
+    jobs = {j.title: j for j in fetch_workday("accenture", "wd103", "AccentureCareers")}
+
+    assert mock_get.call_count == 1                                               # the candidate title only
+    assert jobs["Full Stack Engineer"].location == "Bengaluru; Hyderabad"
+    assert jobs["Full Stack Engineer"].description_text == "Node.js"
+    assert should_evaluate_job(jobs["Full Stack Engineer"])[0]
+    assert jobs["Inside Sales Director"].location == "Location Negotiable"
+
+
 def test_title_check_agrees_with_the_prefilter():
     """The adapter's early check must never keep a job the pre-filter would reject on title, or drop one it accepts."""
     from job_hunt.models import JobPosting

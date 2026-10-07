@@ -21,7 +21,7 @@ flowchart TD
     COMP["companies.json<br/>223 boards: ats + slug / tenant / host"] --> FETCH
     subgraph Fetch ["1. Fetch: adapters/, 8 companies in parallel"]
         FETCH["fetch_company_jobs()"] --> LISTAPI["Greenhouse · Lever · Ashby · Workable<br/>Recruitee · Personio · Amazon<br/>(list API includes descriptions; Amazon's is cut to a stub, T57)"]
-        FETCH --> WD["Workday CXS: searchText=India<br/>20/page, ≤500, 600 s budget<br/>detail call only for 'N Locations' jobs whose title can pass"]
+        FETCH --> WD["Workday CXS: searchText=India<br/>20/page, ≤2,000, 600 s budget<br/>detail call only for 'N Locations' / 'Location Negotiable' jobs whose title can pass"]
         FETCH --> SROH["SmartRecruiters ≤2,000 · Oracle HCM ≤2,000<br/>(no / short descriptions)"]
     end
     LISTAPI --> JP["JobPosting (models.py)"]

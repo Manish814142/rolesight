@@ -121,7 +121,7 @@ Harvest into a scratch file (`--out /tmp/x.json`) and diff. Boards removed on ev
 NoBroker/Upstox/Turtlemint/Whatfix SmartRecruiters stubs, Walmart Workday (HTTP 422).
 
 ### Workday adapter
-`searchText="India"`, 20/page up to 2,000 jobs (Accenture has 2,000, in arbitrary order), 600 s budget per tenant; a blank `locationsText` falls back to the second bullet field (Accenture); "N Locations" items whose title can pass the pre-filter get one
+`searchText="India"`, 20/page up to 2,000 jobs (Accenture has 2,000, in arbitrary order), 600 s budget per tenant; a blank `locationsText` falls back to the second bullet field (Accenture); "N Locations" and "Location Negotiable" (Accenture; T65) items whose title can pass the pre-filter get one
 detail call (`GET …/wday/cxs/{tenant}/{site}{externalPath}`) for real locations + description during
 the fetch (a title-rejected job is rejected whatever its locations, so it keeps "N Locations" and is not counted in the funnel's `India`; T23); single-location survivors get their description in the enrich step. Paging stops at the
 tenant's `total` or when a page adds nothing new (some tenants repeat postings past it; T47).

@@ -172,7 +172,8 @@ The pre-filter and scoring rules are spelled out in [07](07-config-and-scoring.m
   Postings listed as "N Locations" get one detail call each during the fetch, to read
   their real locations, unless their title already fails the title pre-filter (T23): that job is
   rejected whatever its locations, so it keeps "N Locations" and the scan log's `India` count
-  leaves it out.
+  leaves it out. Accenture's "Location Negotiable" placeholder (498 of its 2,000 results)
+  is treated the same way (T65).
 - **Repeated postings.** Some tenants (Sabre, Warner Bros Discovery, Danaher) keep
   returning earlier postings once the offset passes their total. Paging stops at the
   tenant's `total` and when a page adds nothing new (T47, checked on all 78 tenants:

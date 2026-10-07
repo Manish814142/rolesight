@@ -24,7 +24,9 @@ SEARCH_TEXT = "India"
 BOARD_BUDGET_SECONDS = 600.0
 
 # List items with several locations show "5 Locations" instead of cities.
-_MULTI_LOCATION_RE = re.compile(r"^\d+\s+Locations?$", re.IGNORECASE)
+# List-API placeholders instead of a city; the detail call has the real location(s). "Location Negotiable":
+# Accenture, 498 of its 2,000 India-search results, 8 of 12 sampled were in India (2026-10-07, T65).
+_MULTI_LOCATION_RE = re.compile(r"^(\d+\s+Locations?|Location\s+Negotiable)$", re.IGNORECASE)
 
 
 def workday_global_id(tenant: str, external_path: str, bullet_id: str = "", title: str = "") -> str:
