@@ -210,17 +210,8 @@ at 400 jobs; T02 and T05 are still Manish's decisions.
 | T07 | Schedule `run_daily.sh` with a systemd user timer | todo | — | S | T02, T03, T04, T05 |
 | T08 | Remove or repoint `setup_cron.sh` | todo | — | XS | T07 |
 | T09 | First full production run; record the funnel | todo | — | S | T02–T07 |
-| T64 | Skip a Gemini model whose daily quota is gone | review · claude · 2dede5d | claude | S | — |
 
-T03 and T04 were verified 2026-10-07 (Done log).
-
-**T64 · Skip a Gemini model whose daily quota is gone** (found verifying T48/T03, 2026-10-07). With
-`gemini-3.5-flash-lite` at its 500/day limit, every job still sent it two requests and slept 5 s (Google's
-"retry in 23h20m6s" does not match the per-minute pattern) before the fallback answered: ~6.5 s per job,
-~43 min on a 400-job run (inferred). A per-day 429 now marks the model until Google's `retryDelay`; all
-models out → `GeminiQuotaExhausted` with no request, so T03's breaker stops at once.
-*Done when:* with one model out for the day, a run asks it once (not twice per job), and per-minute 429s are
-still retried.
+T03 and T04 were verified 2026-10-07, T64 on 2026-10-08 (Done log).
 
 **T01 · Private backup remote.** `origin` points at upstream
 (`tarunlnmiit/autopilot-jobhunt`). The 8 commits since `3b59877` exist only on this
@@ -275,24 +266,7 @@ once. Record in CHANGELOG: jobs fetched, India, pre-filter passes, too old, scor
 
 ## P1 — Small correctness fixes
 
-| ID | Task | Status | Owner | Size | Needs |
-|---|---|---|---|---|---|
-| T66 | Declare PyYAML (discover failed on a fresh install) | review · claude · 83a573d | claude | XS | — |
-| T67 | `discover --help` / a mistyped flag ran a full discovery | review · claude · 4ac4c68 | claude | XS | — |
-
-T11, T12, T14, T15, T16, T17 and T18 were verified 2026-10-07 (Done log).
-
-**T66 · PyYAML is not a declared dependency** (found verifying T51). `discovery`, `harvester` and
-`company_builder` import `yaml`; neither `pyproject.toml` nor `requirements.txt` listed it, so on a fresh
-`pip install -r requirements.txt` `autopilot discover` died with `ModuleNotFoundError` (measured).
-*Done when:* a fresh virtualenv from `requirements.txt` runs `discover`; a test fails if a third-party import
-in `job_hunt/` is missing from either file.
-
-**T67 · `discover` ignored unknown arguments** (found verifying T66). `discover --help` or a typo
-(`--add-flie`) ran a full discovery of every seed (~1,100 names, 40 workers) and wrote two files in the
-current directory.
-*Done when:* `--help` prints usage; an unknown or value-less argument exits non-zero; every documented flag
-still works.
+T11, T12, T14, T15, T16, T17 and T18 were verified 2026-10-07, T66 and T67 on 2026-10-08 (Done log); nothing open.
 
 ---
 
@@ -307,8 +281,9 @@ T23 was verified 2026-10-07 (Done log); nothing open.
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
 | T26 | Phenom adapter (probe first) | decision | — | M | — |
-| T65 | Workday "Location Negotiable" items were never resolved | review · claude · 0fcb546 | claude | XS | — |
 | T28 | Monthly `discover --recheck` that only reports | todo | — | S | T07 |
+
+T65 was verified 2026-10-08 (Done log).
 
 **T25–T27 · New ATS platforms.** (A previous Claude session recorded that Eightfold's PCSX endpoint returns HTTP 403 and Darwinbox needs a tenant session, tried 2026-10-04/05; that note is from memory, not in the repo, so re-check before relying on it.) The census (31cb7c0) of 458 careers pages found
 Eightfold and Phenom on 7% each and Darwinbox on 6%, while 52% were unidentified (per
@@ -319,12 +294,6 @@ Rejected with the evidence. Step 2: write the adapter, with tests on recorded fi
 platform, and a scan fetches its jobs.
 
 **T25–T27 result (claude, 2026-10-06).** *T25 Eightfold:* done, verified 2026-10-07. *T26 Phenom:* the endpoint is public (`POST {host}/widgets`, `selected_fields.country=["India"]`, `size` up to 100 honoured, full description in the job page's JSON-LD), **but Phenom mostly fronts Workday**: on Cisco, DuPont, Fiserv, HPE, Philips and WBD every sampled job's `applyUrl` is a Workday tenant. I added the three missing Workday tenants instead (Cisco, DuPont, Fiserv) through `discover`, no new adapter. The only Phenom-native census board with India jobs is BCG (91 India jobs, **2** pass the pre-filter). **Decision for Manish:** is a native Phenom adapter (~150 lines, a JSON-LD description scrape) worth 2 BCG jobs, or park it until another Phenom-native company turns up? *T27 Darwinbox:* rejected, see the Rejected table.
-
-**T65 · Workday "Location Negotiable"** (found verifying T49). 498 of Accenture's 2,000 India-search
-results show this placeholder instead of a city; 8 of 12 sampled were in India by the detail endpoint, but the
-pre-filter rejected all of them as not India. They now get the detail call that "N Locations" items get
-(only when the title can pass).
-*Done when:* a live Accenture fetch resolves them; measured: 7 detail calls, 2 India jobs recovered (471 → 473).
 
 **T28 · Scheduled recheck.** `discover --recheck --merge companies.json` (b700235)
 catches ATS migrations and dead boards, but only runs when started by hand. Run it
@@ -417,10 +386,6 @@ The implementer adds a row when a task reaches `review`; the verifier removes it
 | T73 | 3bc1c13 | claude | Rubric experiments on `gemini-3.5-flash-lite` (scratch runners around `score_golden_set.score_arms`, model pinned), 82 jobs: committed rubric ×2 → FP 3/3 at 60, 2/2 at 70, `apply` 14/14; v5 ×1 → FP 0 but `apply` 12/14 (g1 Expedia "languages such as Kotlin/Java/C#" read as required, reason recorded) → rejected; v6 ×2 → FP 0/0 at 60 and 70, `apply` 14/14, 0 pass/fail flips between its two runs, AUC 0.955/0.950 vs 0.972/0.973 (CI includes 0); held-out 16: same as before at 70. The committed `SCORING_RUBRIC` was asserted byte-equal to the measured v6. Tests: 3 new rubric tests + 2 updated pins failed before, pass after; `test_runaway_description_is_bounded` rewritten (it counted every "x" in the prompt; v6's wording added some). 604 passed, no-network 604 passed, ruff/mypy clean. Not run: a live scan with v6 (the golden set is the measurement). |
 | T72 | 560a6e8 | claude | 4 new title tests failed before, pass after; 3 negative controls (Frontend, Principal, Manager) still rejected. Real filter on the 34,416-job fetch of 2026-10-06: survivors 1,060 → 1,115, all 55 added Amazon SDE titles, 0 removed, no labelled `apply`/`maybe` job rejected. Scored live (3.1, old rubric; ≥80 is where 3.1 and 3.5 agreed in T70): 33 of 56 ≥ 80. |
 | T70 | 9445456, 3bc1c13 (numbers) | claude | Tooling: 22 harness tests (5 new failed before). Live, pinned models, current prompt, 82 jobs: `score_golden_set.py --arms current --model gemini-3.1-flash-lite` ×2 (164/164 answered) and `--model gemini-3.5-flash-lite` ×2 after 3.5's quota reset (164/164); `--from-scores` on the four files → the numbers in the task. 3.5's two runs: false positives 3/3 at 60, 2/2 at 70. |
-| T67 | 4ac4c68 | claude | `pytest tests/test_discovery.py -k never_starts` → 3 failed before ("a full discovery was started", once the test had a seeds file), pass after. Real CLI: `python -m job_hunt discover --help` → usage, exit 0; `discover --add-flie x.txt` → "unknown or incomplete argument '--add-flie'", exit 1. Every flag used in the docs (grep of CLAUDE.md, README, docs/, code) is in the accepted set. Gates green. |
-| T66 | 83a573d | claude | Fresh venv (`python3 -m venv`, `pip install -r requirements.txt`): importing every module → `discovery`, `harvester`, `company_builder` fail `No module named 'yaml'`. New `test_every_third_party_import_is_a_declared_dependency` failed ("pyproject.toml lacks pyyaml"), passes after. After: fresh Python 3.11 venv from `requirements.txt` → `python -m job_hunt discover --add "Stripe" --report r.csv --out v.json --no-recheck` (scratch cwd with a copy of the seeds file) → exit 0, Stripe verified (731 jobs, 44 India). Not run: `docker build` (no Docker; it installs from pyproject). |
-| T65 | 0fcb546 | claude | New adapter test failed before (0 detail calls), passes after. Live `fetch_workday("accenture", "wd103", "AccentureCareers")` with `_fetch_detail` counted: 2,000 jobs, 7 detail calls (the candidate titles among 498 "Location Negotiable"), 5 resolved to US offices (still rejected), 2 to Bengaluru/Hyderabad (now pass): pre-filter passes 471 → 473; 245 s. Gates green. |
-| T64 | 2dede5d + 2fcfcc0 | claude | `pytest tests/test_daily_quota.py` → 5 failed before, pass after (incl. one through `run_scan`: 10 jobs, the exhausted primary asked once, 10 scored). T03's tests switched to a per-minute 429 and still pass (14 with T64's). Live, primary really out for the day: 2 golden-set jobs with the default config → 1 request to 3.5 ("daily quota exhausted; skipped for the next 22.8 h"), 2 to 3.1; second job 1.8 s. `autopilot draft 1` logged the skip once. Gates green; suite also passes under `unshare -rn`. Not measured: a full 400-job run. **Follow-up 2fcfcc0:** the skip ends at the next midnight Pacific at the latest (Google's docs; its retryDelay said ~23 h at 00:40 UTC, yet 3.5 answered at 08:05 UTC — measured); 2 new tests (one failed before). |
 
 ---
 
@@ -472,6 +437,10 @@ and CHANGELOG (inferred), and their numbers from CHANGELOG unless marked measure
 | T23 | No Workday detail call for title-rejected jobs | c112f6a | Saved per-tenant runs re-derived: detail calls 1,039 → 48 (991 → 0 on title-rejected jobs), tenants over 60 s 12 → 4, survivors 1,003 → 1,008 (only Danaher differs: HTTP 502 in the before run). Tests pass | verified · claude · 2026-10-07 |
 | T43 | `harvest` refuses to overwrite; boards removed on evidence stay out | a7c2252 | Real `python -m job_hunt harvest` and `harvest --out companies.json` in a scratch directory holding `companies.json` → refusal, exit 2, SHA-256 unchanged. `EXCLUDED_BOARDS` = the 8 boards of CLAUDE.md's removal list, each slug present in `india.yml`, compared in lower case. 26 tests pass | verified · claude · 2026-10-07 |
 | T25 | Eightfold adapter; UKG, Lam Research, Qualcomm, Morgan Stanley | 3d78991 | 69 tests pass (eightfold + discovery). Live scan: UKG 88, Lam Research 109, Morgan Stanley 115, Qualcomm 595 jobs; every posted date a valid ISO date (2025-04-07 … 2026-10-07), so `postedTs` is seconds as assumed | verified · claude · 2026-10-07 |
+| T64 | Skip a Gemini model whose daily quota is gone (+ midnight-Pacific cap) | 2dede5d + 2fcfcc0 | `pytest tests/test_daily_quota.py tests/test_quota_breaker.py` → 16 passed. Mutants (scratch worktree): never remembering the model → 6 failed; no midnight-Pacific cap → 1 failed; a per-minute 429 treated as per-day → 6 failed. Through the real google-genai SDK (2.28.0) pointed at a local HTTP server that replays the real per-day 429 body from `./scan.log` (2026-10-06): 3 jobs → 1 request to 3.5, 3 to 3.1, skip until 01:00 UTC (retryDelay, earlier than midnight Pacific); a per-minute 429 → 6 requests to 3.5 (retried), nothing remembered. `data/autopilot.log` shows "retry in 23h21m" at 06:08 IST (00:38 UTC) 2026-10-07, as the CHANGELOG says. Not run: a model really out of its daily quota | verified · claude-b · 2026-10-08 |
+| T65 | Workday "Location Negotiable" gets the detail call | 0fcb546 | Test passes. Live `fetch_workday("accenture", "wd103", "AccentureCareers")` on 2026-10-08 with `item_location` / `_fetch_detail` recorded: 2,000 jobs (2,000 unique), 502 "Location Negotiable", 7 detail calls, all on them; 5 → US offices (still rejected), 2 "Custom Software Engineer" → Hyderabad / Bengaluru (now pass); pre-filter passes 463 without the change (the same jobs with the placeholder) → 465 with it; 277 s | verified · claude-b · 2026-10-08 |
+| T66 | PyYAML declared | 83a573d | Fresh Python 3.11 venv from `requirements.txt` (PyYAML 6.0.3, google-genai 2.29.0), run in a worktree of HEAD: `python -m job_hunt discover --add "Stripe" --report r.csv --out v.json --no-recheck` → exit 0, Stripe verified (728 jobs, 44 India). Deleting the pyyaml line from `requirements.txt` or `pyproject.toml` fails `test_every_third_party_import_is_a_declared_dependency` ("… lacks pyyaml") | verified · claude-b · 2026-10-08 |
+| T67 | `discover --help` prints usage; unknown flags exit 1 | 4ac4c68 | Real CLI in an empty directory: `autopilot discover --help` → usage, exit 0; `--add-flie x.txt`, `--add` and `--report` without a value → "unknown or incomplete argument", exit 1; the directory stayed empty. Every flag used with `discover` in docs and code (merge, add-file, report, recheck, census, add, out, help, emit-seeds, seeds, no-recheck) is in the accepted set; `--add/--report/--out/--no-recheck` ran to exit 0 in the T66 check | verified · claude-b · 2026-10-08 |
 | — | Commit the working tree; tree clean | cd5df8e … 04521db | 355 tests pass, ruff and mypy clean (measured 2026-10-04) | pre-board |
 | — | Location filter: Delhi / NCR / Kolkata and case-sensitive `, in` | cd5df8e | "Indianapolis, IN" still rejected (unit test) | pre-board |
 | — | Full resume in the scoring prompts | cd5df8e | previously first 2,500 of ~4,000 chars | pre-board |
