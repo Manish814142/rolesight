@@ -1,15 +1,13 @@
-import json
 import re
 from datetime import datetime
 from pathlib import Path
 
-from job_hunt.db import get_job_by_url
+from job_hunt.db import get_job_by_url, last_scan_jobs
 from job_hunt.llm_utils import MAX_DESCRIPTION_CHARS, chat_with_llm
 from job_hunt.log import get_logger
 
 logger = get_logger()
 
-LAST_SCAN_FILE = Path("state/last_scan.json")
 OUTPUT_DIR = Path("output")
 
 
@@ -18,19 +16,21 @@ def _slug(text: str) -> str:
 
 
 def _resolve_job(job_ref: str) -> tuple[str, str]:
+    """(url, company slug) for `#N` / `N` (job N of the last completed scan in data/jobs.db, best score first, so
+    CSV row N of that scan; T31) or a URL (used as given)."""
     if job_ref.startswith("http"):
         return job_ref, "company"
 
-    if not LAST_SCAN_FILE.exists():
+    jobs = last_scan_jobs()
+    if jobs is None:
         raise FileNotFoundError("No scan results found. Run: autopilot scan")
 
-    jobs = json.loads(LAST_SCAN_FILE.read_text())
     idx = int(re.sub(r"\D", "", job_ref)) - 1
     if idx < 0 or idx >= len(jobs):
         raise ValueError(f"Job #{idx + 1} not in last scan (found {len(jobs)} jobs)")
 
     job = jobs[idx]
-    logger.debug(f"Resolved job #{idx + 1}: '{job.get('extracted_title') or job.get('title')}' @ {job.get('company')} — {job.get('url')}")
+    logger.debug(f"Resolved job #{idx + 1}: '{job.get('title')}' @ {job.get('company')} — {job.get('url')}")
     return job["url"], _slug(job.get("company", "company"))
 
 

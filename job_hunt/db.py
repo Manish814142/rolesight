@@ -141,6 +141,11 @@ def init_db(db_path: str = DEFAULT_DB_PATH) -> sqlite3.Connection:
         );
         """
     )
+    # One row per scan run (T31): `draft N` / `mark N` mean job N of the last *completed* scan, best score first.
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS scans (id INTEGER PRIMARY KEY AUTOINCREMENT, started_at TEXT NOT NULL, "
+        "finished_at TEXT DEFAULT NULL);"
+    )
     _migrate_db(conn)
     _ensure_detail_columns(conn)
     conn.execute("CREATE INDEX IF NOT EXISTS idx_jobs_canonical ON jobs(canonical_hash);")
@@ -322,6 +327,42 @@ def get_job_by_url(url: str, db_path: str = DEFAULT_DB_PATH) -> Optional[Dict[st
         conn.row_factory = sqlite3.Row
         row = conn.execute("SELECT * FROM jobs WHERE url_hash = ? LIMIT 1;", (url_hash(url),)).fetchone()
         return dict(row) if row else None
+
+
+def start_scan(db_path: str = DEFAULT_DB_PATH) -> int:
+    """Record that a scan run started; returns its id (T31)."""
+    init_db(db_path)
+    with sqlite3.connect(db_path) as conn:
+        cur = conn.execute("INSERT INTO scans (started_at) VALUES (?);", (datetime.now(timezone.utc).isoformat(),))
+        conn.commit()
+        return int(cur.lastrowid or 0)
+
+
+def finish_scan(scan_id: int, db_path: str = DEFAULT_DB_PATH) -> None:
+    """Record that scan `scan_id` finished: from now on it is the "last scan" of `draft N`."""
+    init_db(db_path)
+    with sqlite3.connect(db_path) as conn:
+        conn.execute("UPDATE scans SET finished_at = ? WHERE id = ?;", (datetime.now(timezone.utc).isoformat(), scan_id))
+        conn.commit()
+
+
+def last_scan_jobs(db_path: str = DEFAULT_DB_PATH) -> Optional[List[Dict[str, Any]]]:
+    """The jobs scored during the last completed scan, best score first and, among equal scores, in scoring order:
+    the order of that scan's CSV and digest, so job N here is CSV row N (T10, T31). None when no scan has completed
+    (no database, or one from before T31); a missing database is not created."""
+    if not os.path.exists(db_path):
+        return None
+    init_db(db_path)
+    with sqlite3.connect(db_path) as conn:
+        conn.row_factory = sqlite3.Row
+        scan = conn.execute("SELECT started_at, finished_at FROM scans WHERE finished_at IS NOT NULL "
+                            "ORDER BY id DESC LIMIT 1;").fetchone()
+        if scan is None:
+            return None
+        rows = conn.execute(
+            "SELECT * FROM jobs WHERE score IS NOT NULL AND scored_at >= ? AND scored_at <= ? "
+            "ORDER BY score DESC, scored_at ASC, id ASC;", (scan["started_at"], scan["finished_at"])).fetchall()
+        return [dict(r) for r in rows]
 
 
 def set_application_status(row_id: int, status: Optional[str], day: Optional[str],

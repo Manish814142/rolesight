@@ -3,8 +3,8 @@ import csv
 from pathlib import Path
 
 from job_hunt import drafter, scanner
-from job_hunt.db import init_db
-from job_hunt.models import JobPosting
+from job_hunt.db import init_db, update_job_status
+from job_hunt.models import JobPosting, job_key
 
 SCORES = {"Backend Engineer A": 20, "Backend Engineer B": 75, "Backend Engineer C": 50}
 
@@ -19,8 +19,11 @@ def test_draft_numbers_follow_score_order(tmp_path, monkeypatch):
                        description_text="Node.js")
             for t in SCORES]  # scan order: A (20), B (75), C (50)
     monkeypatch.setattr(scanner, "fetch_company_jobs", lambda c: jobs)
-    monkeypatch.setattr(scanner, "score_and_process_job",
-                        lambda job, **kw: {"score": SCORES[job.title], "reason": "r", "status": "scored"})
+    def fake_score(job, **kw):   # stores the score like the real scorer: `draft N` reads the database (T31)
+        update_job_status(job_key(job), "scored", SCORES[job.title], "r")
+        return {"score": SCORES[job.title], "reason": "r", "status": "scored"}
+
+    monkeypatch.setattr(scanner, "score_and_process_job", fake_score)
     cfg = {"candidate": {"resume_path": "resume.md", "min_score": 40, "top_n": 5},
            "gemini_api_key": "k", "telegram": {}}
 

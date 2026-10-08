@@ -1,5 +1,4 @@
 """Drafter: the job description comes from the database (or --jd-file); the LLM is mocked; never submits."""
-import json
 
 import pytest
 
@@ -74,28 +73,36 @@ def test_jd_file_replaces_the_database(draft_env, tmp_path, monkeypatch):
     assert all("Pasted job description about Kafka" in p for p in prompts)
 
 
+def _completed_scan(rows):
+    """data/jobs.db after one completed scan that scored `rows` (url, company, title, score), in that order (T31)."""
+    from job_hunt.db import finish_scan, init_db, save_job, start_scan, update_job_status
+    from job_hunt.models import JobPosting, job_key
+    init_db("data/jobs.db")
+    sid = start_scan()
+    for url, company, title, score in rows:
+        j = JobPosting(global_id=url, ats="greenhouse", company=company, title=title, location="Bengaluru",
+                       is_remote=False, url=url)
+        save_job(j)
+        update_job_status(job_key(j), "scored", score, "r")
+    finish_scan(sid)
+
+
 def test_resolve_job_by_index(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
-    (tmp_path / "state").mkdir()
-    (tmp_path / "state" / "last_scan.json").write_text(json.dumps(
-        [{"url": "https://acme.co/jobs/1", "company": "Acme Co", "title": "MLE"}]))
-    monkeypatch.setattr(drafter, "LAST_SCAN_FILE", drafter.Path("state/last_scan.json"))
+    _completed_scan([("https://acme.co/jobs/1", "Acme Co", "MLE", 80)])
     url, slug = drafter._resolve_job("#1")
     assert url == "https://acme.co/jobs/1" and slug == "acme_co"
 
 
 def test_resolve_job_out_of_range(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
-    (tmp_path / "state").mkdir()
-    (tmp_path / "state" / "last_scan.json").write_text(json.dumps([]))
-    monkeypatch.setattr(drafter, "LAST_SCAN_FILE", drafter.Path("state/last_scan.json"))
+    _completed_scan([])
     with pytest.raises(ValueError):
         drafter._resolve_job("#3")
 
 
 def test_resolve_job_no_scan(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
-    monkeypatch.setattr(drafter, "LAST_SCAN_FILE", drafter.Path("state/missing.json"))
     with pytest.raises(FileNotFoundError):
         drafter._resolve_job("#1")
 

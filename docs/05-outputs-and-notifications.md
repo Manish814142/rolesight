@@ -7,7 +7,7 @@ paths are gitignored.
 
 `output/jobs_YYYY-MM-DD.csv`. One file per scan; if the name is taken, the scan writes
 `_1`, `_2`, … and never overwrites. Rows are **sorted best score first**. Row N of the CSV
-is job N of `state/last_scan.json`, which `draft N` reads.
+is job N of the last completed scan, which `draft N` and `mark N` look up in `data/jobs.db` (table `scans`, T31).
 
 | Column | Meaning |
 |---|---|
@@ -73,6 +73,8 @@ key), `canonical_hash` (MD5 of title + company + location; fallback key and an i
 the description the scorer saw. Rows from before T29 have these empty. `score_model` (T71) is the
 Gemini model that produced `score`; it is empty for rows scored before T71 and for the deprecated providers.
 `application_status` / `application_date` (T38) are set by `autopilot mark`, independent of `status`.
+Table `scans` (T31) has one row per scan run (`started_at`, `finished_at`); `draft N` / `mark N` mean job N among
+the jobs scored during the last finished scan, best score first (equal scores in scoring order), as in its CSV.
 
 | status | meaning | next scan |
 |---|---|---|
@@ -100,7 +102,7 @@ once per database.
 
 | File | Contents | Used by |
 |---|---|---|
-| `last_scan.json` | Jobs scored in the latest scan, best first | `draft N`, `export` (no `--days`), MCP `scan_jobs` summary |
+| `last_scan.json` | Jobs scored in the latest scan, best first | `export` (no `--days`), MCP `scan_jobs` summary (`draft N` reads the DB since T31) |
 | `job_history.json` | Every job ever scored (deduplicated by URL), with `scan_date` | `export --days N` |
 | `seen_jobs.json` | URLs seen (a leftover from the old scanner) | nothing reads it; retiring it is T34 |
 

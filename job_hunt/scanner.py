@@ -8,7 +8,15 @@ from pathlib import Path
 from typing import Optional
 
 from job_hunt.adapters import enrich_job, fetch_company_jobs
-from job_hunt.db import get_job, init_db, save_job, update_job_details, update_job_status
+from job_hunt.db import (
+    finish_scan,
+    get_job,
+    init_db,
+    save_job,
+    start_scan,
+    update_job_details,
+    update_job_status,
+)
 from job_hunt.llm_utils import chat_with_llm
 from job_hunt.log import get_logger
 from job_hunt.models import job_key
@@ -287,6 +295,7 @@ def run_scan(config: dict, companies: list[dict]) -> None:
     top_n = config.get("candidate", {}).get("top_n", 5)
 
     init_db()
+    scan_id = start_scan()   # `draft N` reads the jobs scored between this and finish_scan below (T31)
     gemini_key = config.get("gemini_api_key") or os.getenv("GEMINI_API_KEY")
     tg_token = config.get("telegram", {}).get("token")
     tg_chat_id = config.get("telegram", {}).get("chat_id")
@@ -501,8 +510,8 @@ def run_scan(config: dict, companies: list[dict]) -> None:
     save_state(state)
     logger.debug("State saved")
 
-    # Best first. The digest, state/last_scan.json (read by `draft N`) and the CSV all
-    # use this order, so digest #N = `draft N` = CSV row N.
+    # Best first. The digest, state/last_scan.json and the CSV all use this order, and `draft N` reads the same
+    # order from the DB (db.last_scan_jobs: score, then scoring order), so digest #N = `draft N` = CSV row N.
     all_scored_jobs.sort(key=lambda x: x.get("score") or 0, reverse=True)
     top_jobs = [j for j in all_scored_jobs if (j.get("score") or 0) >= min_score][:top_n]
 
@@ -512,6 +521,7 @@ def run_scan(config: dict, companies: list[dict]) -> None:
 
     LAST_SCAN_FILE.parent.mkdir(exist_ok=True)
     LAST_SCAN_FILE.write_text(json.dumps(all_scored_jobs, indent=2))
+    finish_scan(scan_id)
     logger.debug(f"Last scan saved: {len(all_scored_jobs)} total jobs → {LAST_SCAN_FILE}")
 
     history: list[dict] = []

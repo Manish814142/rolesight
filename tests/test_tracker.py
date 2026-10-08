@@ -11,7 +11,7 @@ import pytest
 
 from job_hunt import main as cli
 from job_hunt import tracker
-from job_hunt.db import init_db, save_job, update_job_status
+from job_hunt.db import finish_scan, init_db, save_job, start_scan, update_job_status
 from job_hunt.models import JobPosting, job_key
 
 DAY = date(2026, 10, 8)
@@ -29,9 +29,11 @@ def scanned(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     init_db("data/jobs.db")
     jobs = [_job(i) for i in range(3)]
+    sid = start_scan()                      # `mark N` resolves N like `draft N`: from the last completed scan (T31)
     for j, score in zip(jobs, (90, 80, 70)):
         save_job(j)
         update_job_status(job_key(j), "scored", score, "fine")
+    finish_scan(sid)
     (tmp_path / "state").mkdir()
     (tmp_path / "state" / "last_scan.json").write_text(json.dumps(
         [{"company": j.company, "title": j.title, "url": j.url, "score": s, "reason": "fine", "scan_date": "2026-10-08"}

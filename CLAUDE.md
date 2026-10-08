@@ -69,7 +69,7 @@ with a warning (custom careers pages are not scanned).
 ### Seen-job memory
 `data/jobs.db` (SQLite, table `jobs`) is what makes daily runs show only new jobs: key =
 `(ats, global_id)`, so two openings with the same title are two rows. `state/last_scan.json` holds only the latest
-run (used by `draft N`), `state/job_history.json` the cumulative scored jobs (`export --days`),
+run (used by `export`; `draft N` / `mark N` read table `scans` + `jobs` since T31), `state/job_history.json` the cumulative scored jobs (`export --days`),
 `state/seen_jobs.json` is a leftover of the old scanner (T34 retires it).
 
 ### DB status lifecycle (`data/jobs.db`, table `jobs`)

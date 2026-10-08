@@ -9,6 +9,10 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Changed (2026-10-08, T31 — `draft N` reads SQLite)
+- `draft N` / `#N` (and `mark N`, which uses the same resolver) find job N in `data/jobs.db` instead of `state/last_scan.json`: a new table `scans` gets a row when a scan starts and its finish time when the scan writes its results, and job N is the N-th of the jobs scored during the last finished scan, by score, then scoring order — the order of that scan's CSV and digest, so CSV row N is still `draft N`. A scan that stops half-way does not replace the last finished one. `draft URL` is unchanged. **Until the first scan after this change** there is no finished scan in the database, so `draft N` answers "No scan results found. Run: autopilot scan" (`draft URL` works). With the deprecated non-Gemini providers, `last_scan.json` held only jobs ≥ `min_score`, so N could differ there.
+- Checked through the real CLI in a scratch directory: a scan (fallback narrowed to 3.1 by a wrapper, cap 2) wrote `output/jobs_2026-10-08_2.csv`; with `state/last_scan.json` deleted, `autopilot mark 1 none` resolved row 1 (Mastercard R-290601) and `autopilot draft 2` drafted row 2 (Amazon 10571613, "Source URL" in `application_info.txt`), ending "Review, edit, then submit manually".
+
 ### Added (2026-10-08, T38 — application tracker)
 - `autopilot mark N | URL applied|interview|rejected|offer` records where an application stands, with today's local date, in `data/jobs.db` (new `application_status` / `application_date` columns, added to an existing database by `init_db`; the scanner's own `status` is untouched). `N` / `#N` is job N of the last scan, resolved by the same code as `draft N`; a URL is looked up directly. A later mark replaces the earlier one; `none` clears it. Unknown status, a job not in the database or N past the last scan → message and exit 1, nothing written. No API keys needed, and nothing is sent anywhere.
 - `autopilot export` gains an **Application** column (e.g. `applied 2026-10-08`), read from the database read-only and written only when some exported job has been marked; without a database, export works as before and does not create one.

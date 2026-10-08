@@ -41,7 +41,7 @@ every job's pre-filter decision, score and reason is there.
 | Symptom | Cause | Fix |
 |---|---|---|
 | `draft`: "This job is not in the database" or "no stored description" | The job was never scanned, or was scanned before descriptions were stored (T29) | Re-run a scan, or pass the description with `--jd-file FILE` |
-| `draft`: `Job #N not in last scan` | N is larger than the number of jobs in `state/last_scan.json` | Use a number from the latest CSV, or pass the URL |
+| `draft`: `Job #N not in last scan` | N is larger than the number of jobs the last finished scan scored (in `data/jobs.db`) | Use a number from the latest CSV, or pass the URL |
 | `Telegram failed: HTTP 404` | Invalid bot token (seen 2026-10-03) | New token from @BotFather; run `autopilot doctor` |
 | `Telegram failed: HTTP 400 … chat not found` | Wrong `TELEGRAM_CHAT_ID`, or you never messaged the bot | Message the bot, then read `chat.id` from `getUpdates` ([05](05-outputs-and-notifications.md#telegram-optional)) |
 | Hundreds of Telegram messages | One alert per job ≥ `min_score`, plus the digest | Raise `min_score` |
