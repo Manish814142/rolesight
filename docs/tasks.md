@@ -390,7 +390,7 @@ files can be deleted afterwards; `init` still creates an empty `state/` director
 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
-| T39 | One rolling `output/open_matches.csv` | todo | — | S | T32, T38 |
+| T39 | One rolling `output/open_matches.csv` | doing · claude-b · 2026-10-08 | claude-b | S | T32, T38 |
 
 T37 and T40 were verified 2026-10-07 (Done log).
 
