@@ -113,10 +113,11 @@ One Gemini call per job. The prompt contains:
   authorisation outside India; cap 40 for roles in your `not_suitable` list or platform
   administration of Salesforce, Coupa, SAP or ServiceNow (judged by the work, not the employer's
   name); cap 50 for roles that need 6+ years; cap 50 for roles aimed at freshers or asking 0-1
-  years (by what the posting asks, not by its title: T58); cap 50 when the posting *requires*
-  a backend language outside your stack and accepts none of yours for that work (a posting that
-  accepts Python, says "another language", or only lists examples "such as Java or C#" is not a
-  mismatch; TypeScript used only for a frontend part does not count); cap 50 when it *requires*
+  years (by what the posting asks, not by its title: T58); cap 50 when the posting's *requirements
+  or qualifications* demand a backend language outside your stack and accept none of yours (a posting
+  that accepts Python or "another language" is not a mismatch; languages named only in the
+  responsibilities, or as examples "such as Java or C#", are a stretch scored 65–84, not a cap;
+  TypeScript used only for a frontend part does not count); cap 50 when it *requires*
   an industry, platform or tool you lack (e.g. video-games industry, embedded, SAP). These two follow
   Manish's rule "skip a posting that requires what I don't have" (T73: false positives 2 → 0 at
   `min_score` 70 on 82 labelled jobs, `apply` 14/14, two runs each); 85+ only when stack, seniority

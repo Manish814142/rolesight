@@ -39,8 +39,8 @@ def test_stack_cap_has_explicit_exceptions():
     jobs: Hotstar 'Java, Golang, or Python' and Toast 'Kotlin, Java, or another OO language' fell to
     58). The cap must say when it does NOT apply."""
     rule4 = llm_utils.SCORING_RUBRIC.split("4. ")[1].split("5. ")[0].lower()
-    assert "requires" in rule4 and "does not accept one of the candidate's languages" in rule4
-    assert "python" in rule4 and "or another" in rule4            # accepting Python / "or another language" is not a mismatch
+    assert "requirements or qualifications" in rule4 and "accept none of the candidate's languages" in rule4
+    assert "python" in rule4 and "any, another" in rule4          # accepting Python / "another language" is not a mismatch
     assert "prefer" in rule4                                       # a preferred (not mandated) stack is not a mismatch
     assert "java, golang, or python\" is not a mismatch" in rule4
 
@@ -400,8 +400,8 @@ def test_example_lists_and_frontend_typescript_are_handled():
     `apply` job, fell to 50 under v5), and Sureify's 'Golang required + React/TS' passed at 75 because TypeScript
     appeared somewhere in the posting."""
     rule4 = _rule(4)
-    assert "such as" in rule4 and "examples are not requirements" in rule4
-    assert "languages such as kotlin, java or c#\" is not a mismatch" in rule4
+    assert "such as" in rule4 and "only as examples" in rule4 and "are not requirements" in rule4
+    assert "languages such as kotlin, java or c#\" with qualifications asking for any language are a stretch" in rule4
     assert "frontend part does not count" in rule4 and "golang required, react/typescript frontend\" is" in rule4
 
 
@@ -410,3 +410,12 @@ def test_required_domain_or_tool_cap():
     rule8 = llm_utils.SCORING_RUBRIC.split("8. ")[1].lower()
     assert "score <= 50" in rule8 and "required" in rule8 and "video-games industry" in rule8
     assert "preferred or nice-to-have" in rule8 and "never trigger" in rule8
+
+
+def test_languages_named_only_in_the_responsibilities_are_a_stretch_not_a_cap():
+    """T73 review (claude-b, 2026-10-08): under v6, golden-set `apply` job g1 (Expedia: qualifications ask for any
+    language; Kotlin/Java/C# appear only in "you will build ... using languages such as") scored 50 in 10 of 11 runs.
+    v7 counts only the requirements: g1 75-85 in 5 of 5 runs, false positives still 0 (two full runs)."""
+    rule4 = _rule(4)
+    assert "only in the responsibilities" in rule4 and "are not requirements" in rule4
+    assert "stack stretch (rule 6, moderate match), not a cap" in rule4

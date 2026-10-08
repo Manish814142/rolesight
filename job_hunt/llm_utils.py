@@ -275,12 +275,12 @@ SCORING_RUBRIC = """SCORING RUBRIC & HARD ANCHORS (strictly enforce):
 3. Seniority Gap Cap (score <= 50):
    The candidate has ~3.3 years of experience. If the role strictly requires 6+ years of professional experience (Lead, Staff, Principal, Architect), cap score at <= 50. (Roles requiring 2-4 years are optimal; 4-5 years is acceptable up to 75-80 if stack matches).
 4. Primary Stack Mismatch Cap (score <= 50):
-   Apply this cap only when the posting REQUIRES (must-have, mandatory, "strong X required", minimum/basic qualifications) a specific backend language or framework outside the candidate's stack (C#/.NET Core, Java/Spring Boot, Go, C++, Ruby, PHP, Scala or similar) and does not accept one of the candidate's languages for that backend/service work.
+   Apply this cap only when the posting's REQUIREMENTS or QUALIFICATIONS (must-have, mandatory, minimum/basic qualifications, "strong X required") demand a specific backend language or framework outside the candidate's stack (C#/.NET Core, Java/Spring Boot, Go, C++, Ruby, PHP, Scala or similar) and accept none of the candidate's languages for that backend/service work.
    Do NOT apply it when:
-   - the posting accepts Python, JavaScript, TypeScript or Node.js for the backend/service work (the candidate's resume has Python);
-   - the languages are only examples ("such as", "e.g.", "like", "for example"), or the posting says "or another"/"any"/"a modern" programming language: examples are not requirements;
+   - the requirements accept Python, JavaScript, TypeScript or Node.js for the backend/service work (the candidate's resume has Python);
+   - the requirements ask for experience in any, another or "a modern" programming language. Languages named only in the responsibilities ("you will build services using languages such as Java, Kotlin or C#"), or only as examples ("such as", "e.g.", "like"), are not requirements: treat them as a stack stretch (rule 6, moderate match), not a cap;
    - a stack is only preferred or nice to have.
-   TypeScript or React used only for a frontend part does not count as accepting the candidate's stack. For example "Java, Golang, or Python" is not a mismatch, "languages such as Kotlin, Java or C#" is not a mismatch, and "Golang required, React/TypeScript frontend" is.
+   TypeScript or React used only for a frontend part does not count as accepting the candidate's stack. For example: "Java, Golang, or Python" is not a mismatch; responsibilities "using languages such as Kotlin, Java or C#" with qualifications asking for any language are a stretch, not a mismatch; "Golang required, React/TypeScript frontend" is a mismatch.
 5. High Score Criteria (85-100):
    Award 85-100 ONLY when ALL three criteria hold:
    - Primary backend stack matches candidate's core stack (Node.js, TypeScript, Python, backend microservices, event-driven queues, databases/caching).
