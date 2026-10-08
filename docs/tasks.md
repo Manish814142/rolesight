@@ -134,7 +134,7 @@ After this list: **T40, T50, T42** (Manish will not use TinyFish; all three veri
 | T70 | Compare gemini-3.1-flash-lite with 3.5-flash-lite on the golden set | review · claude · 9445456 | claude | S | — |
 | T73 | Rubric v6: skip postings that require a stack or domain Manish lacks | changes · claude-b | claude | S | — |
 | T74 | Pre-filter: let "AI Engineer" / "Forward Deployed Engineer" titles through? | decision | — | XS | — |
-| T71 | Record which Gemini model scored each job | todo | — | S | — |
+| T71 | Record which Gemini model scored each job | doing · claude-b · 2026-10-08 | claude-b | S | — |
 
 T48, T57, T58, T60, T61 and T49 were verified 2026-10-07, T72 on 2026-10-08 (Done log).
 
