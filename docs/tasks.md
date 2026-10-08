@@ -132,12 +132,11 @@ After this list: **T40, T50, T42** (Manish will not use TinyFish; all three veri
 |---|---|---|---|---|---|
 | T59 | Confirm the golden-set labels | manish | — | S | T48 |
 | T70 | Compare gemini-3.1-flash-lite with 3.5-flash-lite on the golden set | review · claude · 9445456 | claude | S | — |
-| T72 | Pre-filter: Amazon's "Software Dev Engineer" titles | review · claude · 560a6e8 | claude | XS | — |
-| T73 | Rubric v6: skip postings that require a stack or domain Manish lacks | review · claude · 3bc1c13 | claude | S | — |
+| T73 | Rubric v6: skip postings that require a stack or domain Manish lacks | changes · claude-b | claude | S | — |
 | T74 | Pre-filter: let "AI Engineer" / "Forward Deployed Engineer" titles through? | decision | — | XS | — |
 | T71 | Record which Gemini model scored each job | todo | — | S | — |
 
-T48, T57, T58, T60, T61 and T49 were verified 2026-10-07 (Done log).
+T48, T57, T58, T60, T61 and T49 were verified 2026-10-07, T72 on 2026-10-08 (Done log).
 
 **T59 · Confirm the golden-set labels (Manish).** The 82 labels are Claude's, with one line of
 reasoning each in `label_reason`. Sort `scripts/golden_set.csv` by `label`, fix any you
@@ -177,6 +176,27 @@ column, the scorer's result, the CSV when more than one model scored, and the fu
 `scored 6 (gemini-3.5-flash-lite 4, gemini-3.1-flash-lite 2)`). No prompt or score change.
 *Done when:* a test with a stub client whose first model fails shows the fallback model stored on that row and
 in the CSV; a live scan's funnel line names the model(s).
+
+**T73 · Rubric v6** (3bc1c13, Manish's apply rule of 2026-10-07). Rule 4 caps at 50 (was 60 = MIN_SCORE 60) a
+posting that *requires* a backend language outside his stack and accepts none of his; "such as" lists are examples,
+not requirements. New rule 8 caps at 50 a *required* industry, platform or tool he lacks. Implementer's evidence: the
+CHANGELOG entry "Changed (2026-10-07, T73 — scoring rubric v6)".
+**Review notes (2026-10-08, claude-b):** the recall claim does not reproduce. Claimed: "`apply` found 14/14 in every run,
+0 pass/fail changes between two runs". A third full run (`score_golden_set.py --arms current --model
+gemini-3.5-flash-lite`, committed rubric, 82 jobs, 82/82 answered) found **13/14**: **g1 Expedia SDE II scored 50**.
+g1 re-scored 10 more times on 3.5 with v6: 50 in 9 of 10 (once 72); the reason each time is "the role strictly requires
+backend services to be developed in languages such as Kotlin, Java, or C#/.NET". The same job with the v4 rubric
+(worktree at 560a6e8, 5 runs, same model, same day): 75, 85, 85, 75, 85. So the loss comes from v6's wording, not
+from the model. g1's *Qualifications* name no language: Kotlin/Java/C# appear only under "In this role, you will …
+using languages such as Kotlin, Java, or C#/.NET". By Manish's rule (skip only what a posting *requires*) g1 stays
+`apply`, and v6 drops it below 60 in 10 of 11 runs today (measured). What did reproduce: false positives **0** at 60
+and at 70 (21 passes, precision 100%), AUC 0.956 (claimed 0.955 / 0.950), held-out 2/2 `apply` with 0 false positives
+at 70. Needed: rule-4 wording that keeps g1 (for example, only the qualifications or requirements count, and a
+responsibilities "such as" list never does), measured with g1 run ≥ 5 times plus the full set on 3.5, and the
+CHANGELOG line corrected. **Question for Manish:** g1 lists Kotlin/Java/C# only as "languages such as" in what the job
+does; its qualifications ask for any language. I kept it `apply`. If you would skip it, relabel g1 `no` and v6 is right
+as it is. Scratch evidence (may not survive this session): `…/scratchpad/b/v6_35_b1.json`, `g1_v6_35.json`,
+`g1_v4_35.json`.
 
 **T74 · Decision for Manish: "AI Engineer" / "Forward Deployed Engineer" titles.** They match no include word,
 so the pre-filter drops them before Gemini. Measured 2026-10-07: 68 such India titles ("Gen AI Engineer",
@@ -383,8 +403,6 @@ The implementer adds a row when a task reaches `review`; the verifier removes it
 
 | ID | Commit(s) | Implementer | Evidence (command → result) |
 |---|---|---|---|
-| T73 | 3bc1c13 | claude | Rubric experiments on `gemini-3.5-flash-lite` (scratch runners around `score_golden_set.score_arms`, model pinned), 82 jobs: committed rubric ×2 → FP 3/3 at 60, 2/2 at 70, `apply` 14/14; v5 ×1 → FP 0 but `apply` 12/14 (g1 Expedia "languages such as Kotlin/Java/C#" read as required, reason recorded) → rejected; v6 ×2 → FP 0/0 at 60 and 70, `apply` 14/14, 0 pass/fail flips between its two runs, AUC 0.955/0.950 vs 0.972/0.973 (CI includes 0); held-out 16: same as before at 70. The committed `SCORING_RUBRIC` was asserted byte-equal to the measured v6. Tests: 3 new rubric tests + 2 updated pins failed before, pass after; `test_runaway_description_is_bounded` rewritten (it counted every "x" in the prompt; v6's wording added some). 604 passed, no-network 604 passed, ruff/mypy clean. Not run: a live scan with v6 (the golden set is the measurement). |
-| T72 | 560a6e8 | claude | 4 new title tests failed before, pass after; 3 negative controls (Frontend, Principal, Manager) still rejected. Real filter on the 34,416-job fetch of 2026-10-06: survivors 1,060 → 1,115, all 55 added Amazon SDE titles, 0 removed, no labelled `apply`/`maybe` job rejected. Scored live (3.1, old rubric; ≥80 is where 3.1 and 3.5 agreed in T70): 33 of 56 ≥ 80. |
 | T70 | 9445456, 3bc1c13 (numbers) | claude | Tooling: 22 harness tests (5 new failed before). Live, pinned models, current prompt, 82 jobs: `score_golden_set.py --arms current --model gemini-3.1-flash-lite` ×2 (164/164 answered) and `--model gemini-3.5-flash-lite` ×2 after 3.5's quota reset (164/164); `--from-scores` on the four files → the numbers in the task. 3.5's two runs: false positives 3/3 at 60, 2/2 at 70. |
 
 ---
@@ -441,6 +459,7 @@ and CHANGELOG (inferred), and their numbers from CHANGELOG unless marked measure
 | T65 | Workday "Location Negotiable" gets the detail call | 0fcb546 | Test passes. Live `fetch_workday("accenture", "wd103", "AccentureCareers")` on 2026-10-08 with `item_location` / `_fetch_detail` recorded: 2,000 jobs (2,000 unique), 502 "Location Negotiable", 7 detail calls, all on them; 5 → US offices (still rejected), 2 "Custom Software Engineer" → Hyderabad / Bengaluru (now pass); pre-filter passes 463 without the change (the same jobs with the placeholder) → 465 with it; 277 s | verified · claude-b · 2026-10-08 |
 | T66 | PyYAML declared | 83a573d | Fresh Python 3.11 venv from `requirements.txt` (PyYAML 6.0.3, google-genai 2.29.0), run in a worktree of HEAD: `python -m job_hunt discover --add "Stripe" --report r.csv --out v.json --no-recheck` → exit 0, Stripe verified (728 jobs, 44 India). Deleting the pyyaml line from `requirements.txt` or `pyproject.toml` fails `test_every_third_party_import_is_a_declared_dependency` ("… lacks pyyaml") | verified · claude-b · 2026-10-08 |
 | T67 | `discover --help` prints usage; unknown flags exit 1 | 4ac4c68 | Real CLI in an empty directory: `autopilot discover --help` → usage, exit 0; `--add-flie x.txt`, `--add` and `--report` without a value → "unknown or incomplete argument", exit 1; the directory stayed empty. Every flag used with `discover` in docs and code (merge, add-file, report, recheck, census, add, out, help, emit-seeds, seeds, no-recheck) is in the accepted set; `--add/--report/--out/--no-recheck` ran to exit 0 in the T66 check | verified · claude-b · 2026-10-08 |
+| T72 | Pre-filter accepts Amazon's "Software Dev Engineer" titles | 560a6e8 | Fresh fetch of all 223 boards on 2026-10-08 through the scanner's own `_prefetch_jobs` (39,873 jobs, 0 errors, 335 s), then `should_evaluate_job` from a worktree at 2fcfcc0 (before) and from HEAD, each in its own process: survivors 1,692 → 1,745, **+53, every one an Amazon "Software Dev Engineer …" title** (I/II/III, Sr.), 0 removed. Labelled `apply`/`maybe` jobs rejected by HEAD's filter: none. Reverting the regex fails 4 tests. Not re-run: the evidence's live scoring of the added jobs (33 of 56 ≥ 80 on 3.1) | verified · claude-b · 2026-10-08 |
 | — | Commit the working tree; tree clean | cd5df8e … 04521db | 355 tests pass, ruff and mypy clean (measured 2026-10-04) | pre-board |
 | — | Location filter: Delhi / NCR / Kolkata and case-sensitive `, in` | cd5df8e | "Indianapolis, IN" still rejected (unit test) | pre-board |
 | — | Full resume in the scoring prompts | cd5df8e | previously first 2,500 of ~4,000 chars | pre-board |
