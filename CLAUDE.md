@@ -30,7 +30,7 @@ python scripts/measure_prefilter.py --jobs saved.json   # pre-filter survivors +
 python scripts/measure_workday_tenants.py   # per-tenant Workday fetch time, detail calls, survivors (~4-9 min, real network)
 python scripts/score_golden_set.py         # score the labelled jobs with the rubric off/on (~150 Gemini calls); --from-scores re-analyses
 autopilot doctor            # SQLite / Gemini / Telegram / ATS egress checks
-autopilot export [--min N] [--days N]   # CSV from state/ (no API keys needed)
+autopilot export [--min N] [--days N]   # CSV from data/jobs.db: last finished scan, or N days (no API keys needed; T32)
 autopilot draft 1 | URL [--jd-file F]   # resume + cover letter draft from the stored description
 autopilot mark 1 | URL applied          # application status (applied|interview|rejected|offer|none) in data/jobs.db; export shows it (T38)
 ```
@@ -69,7 +69,7 @@ with a warning (custom careers pages are not scanned).
 ### Seen-job memory
 `data/jobs.db` (SQLite, table `jobs`) is what makes daily runs show only new jobs: key =
 `(ats, global_id)`, so two openings with the same title are two rows. `state/last_scan.json` holds only the latest
-run (used by `export`; `draft N` / `mark N` read table `scans` + `jobs` since T31), `state/job_history.json` the cumulative scored jobs (`export --days`),
+run (MCP scan summary; `draft N` / `mark N` / `export` read table `scans` + `jobs` since T31/T32), `state/job_history.json` the cumulative scored jobs (no reader since T32),
 `state/seen_jobs.json` is a leftover of the old scanner (T34 retires it).
 
 ### DB status lifecycle (`data/jobs.db`, table `jobs`)

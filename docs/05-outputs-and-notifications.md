@@ -47,8 +47,12 @@ autopilot export --min 70           # last scan, score ≥ 70
 autopilot export --days 7 --min 70  # every job scored in the last 7 days → output/jobs_DATE_last7d.csv
 ```
 
-It reads `state/last_scan.json` / `state/job_history.json`, not the DB (T32), except for the **Application**
-column, which it looks up in `data/jobs.db` (read-only) and writes only when some exported job has been marked.
+It reads `data/jobs.db` (T32): without `--days`, the jobs scored during the last finished scan (the same list and
+order as that scan's CSV); with `--days N`, every job scored on or after the UTC date N days ago, best score first
+(rows of every scan in the window, not grouped by scan). **Worth Applying** compares the score with the `min_score` a
+scan run in the same directory would use (`config.json`, overridden by `.env`'s `MIN_SCORE`); without `config.json`
+it is left blank. The **Application** column (written only when some exported job has been marked) and **Model** come
+from the same rows. Without a database, export says so and creates none.
 
 ## Tracking applications: `autopilot mark`
 
@@ -102,8 +106,8 @@ once per database.
 
 | File | Contents | Used by |
 |---|---|---|
-| `last_scan.json` | Jobs scored in the latest scan, best first | `export` (no `--days`), MCP `scan_jobs` summary (`draft N` reads the DB since T31) |
-| `job_history.json` | Every job ever scored (deduplicated by URL), with `scan_date` | `export --days N` |
+| `last_scan.json` | Jobs scored in the latest scan, best first | MCP `scan_jobs` summary (`draft N` and `export` read the DB since T31/T32) |
+| `job_history.json` | Every job ever scored (deduplicated by URL), with `scan_date` | nothing since T32 (`export --days N` reads the DB) |
 | `seen_jobs.json` | URLs seen (a leftover from the old scanner) | nothing reads it; retiring it is T34 |
 
 These overlap with the DB; consolidating them into SQLite is planned (T31–T34).

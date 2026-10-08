@@ -375,29 +375,18 @@ def set_application_status(row_id: int, status: Optional[str], day: Optional[str
         conn.commit()
 
 
-def get_application_statuses(urls: List[str], db_path: str = DEFAULT_DB_PATH) -> Dict[str, Dict[str, str]]:
-    """{url: {"status", "date"}} for the given URLs that have an application status (T38).
-
-    Read-only: a missing database, or one that predates the columns, gives {} and is neither created nor migrated
-    (`export` must work with no database at all).
-    """
+def scored_jobs_since(cutoff_date: str, db_path: str = DEFAULT_DB_PATH) -> Optional[List[Dict[str, Any]]]:
+    """Every job scored on or after `cutoff_date` (UTC, YYYY-MM-DD), best first (`export --days N`, T32). None when
+    there is no database; a missing database is not created."""
     if not os.path.exists(db_path):
-        return {}
-    conn = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
-    try:
-        have = {row[1] for row in conn.execute("PRAGMA table_info(jobs)")}
-        if not set(APPLICATION_COLUMNS) <= have:
-            return {}
-        out: Dict[str, Dict[str, str]] = {}
-        for url in urls:
-            row = conn.execute(
-                "SELECT application_status, application_date FROM jobs WHERE url_hash = ? "
-                "AND application_status IS NOT NULL LIMIT 1;", (url_hash(url),)).fetchone()
-            if row:
-                out[url] = {"status": row[0], "date": row[1] or ""}
-        return out
-    finally:
-        conn.close()
+        return None
+    init_db(db_path)
+    with sqlite3.connect(db_path) as conn:
+        conn.row_factory = sqlite3.Row
+        rows = conn.execute(
+            "SELECT * FROM jobs WHERE status IN ('scored', 'notified') AND score IS NOT NULL "
+            "AND substr(scored_at, 1, 10) >= ? ORDER BY score DESC, scored_at, id;", (cutoff_date,)).fetchall()
+        return [dict(r) for r in rows]
 
 
 def get_jobs_by_status(

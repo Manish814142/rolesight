@@ -124,11 +124,11 @@ def test_export_without_any_mark_keeps_its_columns(scanned, monkeypatch):
     assert "Application" not in next(csv.reader(out.open(encoding="utf-8")))
 
 
-def test_export_without_a_database_still_works(scanned, monkeypatch):
+def test_export_without_a_database_creates_none(scanned, monkeypatch):
     os.remove("data/jobs.db")
-    _cli(monkeypatch, "export")
-    assert list(Path("output").glob("*.csv"))
-    assert not os.path.exists("data/jobs.db")       # export never creates the database
+    with pytest.raises(SystemExit):                  # export reads the database since T32: nothing to export
+        _cli(monkeypatch, "export")
+    assert not os.path.exists("data/jobs.db")       # and it never creates one
 
 
 @pytest.mark.parametrize("args", [["mark"], ["mark", "1"], ["mark", "1", "hired"]])

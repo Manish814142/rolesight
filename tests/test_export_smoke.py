@@ -1,10 +1,8 @@
 """Smoke tests for `autopilot export` — must work with no API keys.
 
-Regression guard: export reads local scan state only. It must NOT call
-load_config() or require TINYFISH_API_KEY (the documented Step 6 smoke test).
+Regression guard: export reads local scan state only (data/jobs.db since T32). It must not need config.json or
+API keys (it reads config.json only, if present, for the "Worth Applying" threshold), nor TINYFISH_API_KEY.
 """
-import json
-
 import pytest
 
 from job_hunt import main
@@ -32,14 +30,16 @@ def test_export_without_keys_reports_no_scan(workdir, monkeypatch, capsys):
 
 
 def test_export_reads_last_scan(workdir, monkeypatch, capsys):
-    """With a last_scan.json present, export writes a CSV — still no keys needed."""
-    state = workdir / "state"
-    state.mkdir()
-    (state / "last_scan.json").write_text(
-        json.dumps(
-            [{"company": "Acme", "title": "ML Engineer", "url": "https://x/jobs/1", "score": 90}]
-        )
-    )
+    """With a finished scan in data/jobs.db (T32), export writes a CSV — still no keys and no config needed."""
+    from job_hunt.db import finish_scan, init_db, save_job, start_scan, update_job_status
+    from job_hunt.models import JobPosting, job_key
+    init_db("data/jobs.db")
+    sid = start_scan()
+    j = JobPosting(global_id="1", ats="greenhouse", company="Acme", title="ML Engineer", location="Pune",
+                   is_remote=False, url="https://x/jobs/1")
+    save_job(j)
+    update_job_status(job_key(j), "scored", 90, "r")
+    finish_scan(sid)
     monkeypatch.setattr("sys.argv", ["autopilot", "export"])
 
     main.main()

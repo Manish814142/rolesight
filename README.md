@@ -213,8 +213,8 @@ personal fork, and the rules are tuned to one profile.
 |---|---|
 | `output/jobs_YYYY-MM-DD.csv` | One file per scan (`_1`, `_2`, … if one already exists). Columns: Company, Role, Location, Posted, Application URL, LinkedIn people, Score (%), Reason, Worth Applying, Scan Date (plus Stack, Stack fit, Role fit, … only when a scorer provides them, and Model when a model other than the primary scored some job). Best score first. |
 | `data/jobs.db` | SQLite seen-job memory: `skipped` → `discovered` → `scored` / `notified` |
-| `state/last_scan.json` | The latest scan's scored jobs, best first (`export` without `--days`; `draft N` reads the DB since T31) |
-| `state/job_history.json` | Every scored job so far (`export --days N` reads it) |
+| `state/last_scan.json` | The latest scan's scored jobs, best first (`draft N` and `export` read the DB since T31/T32) |
+| `state/job_history.json` | Every scored job so far (no reader since T32: `export --days N` reads the DB) |
 | `data/autopilot.log` | Full DEBUG log of every run; rotates at 5 MB, 3 older files kept |
 | `data/scan.log` | Timestamped console output of `run_daily.sh` runs |
 

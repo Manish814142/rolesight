@@ -149,9 +149,6 @@ def init_project() -> None:
     print("  3. Run: autopilot scan")
 
 
-LAST_SCAN_FILE = Path("state/last_scan.json")
-JOB_HISTORY_FILE = Path("state/job_history.json")
-
 from job_hunt.exporter import export_jobs_to_csv, job_to_export_row  # noqa: E402
 
 _job_to_row = job_to_export_row
@@ -176,32 +173,50 @@ def _parse_export_args(argv: list[str]) -> tuple[int, int]:
     return min_score, days
 
 
+def _export_min_score() -> int | None:
+    """The min_score a scan run here would use (config.json + .env, via load_config), for the "Worth Applying" column.
+    None without config.json: export needs no config or API keys, and the column is then left blank."""
+    if not Path("config.json").exists():
+        return None
+    return int(load_config().get("candidate", {}).get("min_score", 55))
+
+
+def _export_row(r: dict, threshold: int | None) -> dict:
+    """A `jobs` row as the exporter's job dict (T32: export reads data/jobs.db)."""
+    app = r.get("application_status")
+    return {
+        "company": r.get("company") or "", "title": r.get("title") or "", "location": r.get("location") or "",
+        "url": r.get("url") or "", "score": r.get("score"), "reason": r.get("score_reason") or "",
+        "posted_at": r.get("posted_at") or "", "scan_date": (r.get("scored_at") or "")[:10],
+        "worth_applying": None if threshold is None else int(r["score"]) >= threshold,
+        "model": r.get("score_model"),
+        "application": f"{app} {r.get('application_date') or ''}".strip() if app else "",  # `autopilot mark` (T38)
+    }
+
+
 def export_jobs(min_score: int = 0, days: int = 0) -> None:
+    """Write a CSV of scored jobs from data/jobs.db: the last finished scan, or with `days` every job scored in the
+    last N days (UTC dates), best first (T32)."""
+    from job_hunt.db import last_scan_jobs, scored_jobs_since
     if days > 0:
-        if not JOB_HISTORY_FILE.exists():
-            sys.exit(
-                "No history yet. Run 'autopilot scan' at least once after this update."
-            )
-        all_jobs: list[dict] = json.loads(JOB_HISTORY_FILE.read_text())
         cutoff = (datetime.now(timezone.utc) - timedelta(days=days)).strftime("%Y-%m-%d")
-        jobs = [j for j in all_jobs if j.get("scan_date", "9999") >= cutoff]
+        rows = scored_jobs_since(cutoff)
+        if rows is None:
+            sys.exit("No history yet. Run 'autopilot scan' at least once after this update.")
         source_label = f"last {days} days"
     else:
-        if not LAST_SCAN_FILE.exists():
+        rows = last_scan_jobs()
+        if rows is None:
             sys.exit("No scan found. Run: autopilot scan")
-        jobs = json.loads(LAST_SCAN_FILE.read_text())
         source_label = "last scan"
 
-    filtered = [j for j in jobs if j.get("score", 0) >= min_score]
+    threshold = _export_min_score()
+    jobs = [_export_row(r, threshold) for r in rows]
+    filtered = [j for j in jobs if (j.get("score") or 0) >= min_score]
 
     if not filtered:
         print(f"No jobs with score >= {min_score} in {source_label}")
         return
-
-    # Where each application stands (T38, `autopilot mark`)
-    from job_hunt.tracker import application_labels
-    labels = application_labels([j.get("url", "") for j in filtered])
-    filtered = [{**j, "application": labels.get(j.get("url", ""), "")} for j in filtered]
 
     date_str = datetime.now().strftime("%Y-%m-%d")
     day_suffix = f"_last{days}d" if days else ""

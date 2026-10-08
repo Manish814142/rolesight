@@ -14,7 +14,6 @@ from typing import Any, Dict, List, Optional
 
 from job_hunt.db import (
     DEFAULT_DB_PATH,
-    get_application_statuses,
     get_job_by_url,
     set_application_status,
 )
@@ -46,11 +45,6 @@ def mark_job(ref: str, status: str, db_path: str = DEFAULT_DB_PATH, today: Optio
     new_status, new_day = (None, None) if status == CLEAR else (status, day)
     set_application_status(row["id"], new_status, new_day, db_path)
     return {**row, "application_status": new_status, "application_date": new_day}
-
-
-def application_labels(urls: List[str], db_path: str = DEFAULT_DB_PATH) -> Dict[str, str]:
-    """{url: "applied 2026-10-08"} for the URLs that have an application status (read-only; for `export`)."""
-    return {u: f"{a['status']} {a['date']}".strip() for u, a in get_application_statuses(urls, db_path).items()}
 
 
 def main(argv: List[str]) -> None:

@@ -102,18 +102,23 @@ def test_parse_export_args_bad_days():
 
 def test_export_jobs_no_scan(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
-    monkeypatch.setattr(main, "LAST_SCAN_FILE", main.Path("state/last_scan.json"))
     with pytest.raises(SystemExit):
         main.export_jobs()
 
 
 def test_export_jobs_from_last_scan(tmp_path, monkeypatch, capsys):
+    """export reads the last finished scan from data/jobs.db (T32)."""
+    from job_hunt.db import finish_scan, init_db, save_job, start_scan, update_job_status
+    from job_hunt.models import JobPosting, job_key
     monkeypatch.chdir(tmp_path)
-    (tmp_path / "state").mkdir()
-    (tmp_path / "state" / "last_scan.json").write_text(json.dumps(
-        [{"company": "Acme", "title": "MLE", "url": "u", "score": 90},
-         {"company": "Beta", "title": "SWE", "url": "v", "score": 30}]))
-    monkeypatch.setattr(main, "LAST_SCAN_FILE", main.Path("state/last_scan.json"))
+    init_db("data/jobs.db")
+    sid = start_scan()
+    for company, url, score in (("Acme", "u", 90), ("Beta", "v", 30)):
+        j = JobPosting(global_id=url, ats="greenhouse", company=company, title="SWE", location="Pune", is_remote=False,
+                       url=url)
+        save_job(j)
+        update_job_status(job_key(j), "scored", score, "r")
+    finish_scan(sid)
     main.export_jobs(min_score=50)
     out = capsys.readouterr().out
     assert "Exported 1 jobs" in out
@@ -121,7 +126,6 @@ def test_export_jobs_from_last_scan(tmp_path, monkeypatch, capsys):
 
 def test_export_jobs_days_no_history(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
-    monkeypatch.setattr(main, "JOB_HISTORY_FILE", main.Path("state/job_history.json"))
     with pytest.raises(SystemExit):
         main.export_jobs(days=7)
 
@@ -213,11 +217,14 @@ def test_load_config_accepts_telegram_bot_token_alias(tmp_path, monkeypatch, cle
 
 
 def test_export_jobs_days_with_history(tmp_path, monkeypatch, capsys):
+    """export --days reads every job scored in the window from data/jobs.db (T32)."""
+    from job_hunt.db import init_db, save_job, update_job_status
+    from job_hunt.models import JobPosting, job_key
     monkeypatch.chdir(tmp_path)
-    (tmp_path / "state").mkdir()
-    (tmp_path / "state" / "job_history.json").write_text(json.dumps(
-        [{"company": "Acme", "title": "MLE", "url": "u", "score": 90, "scan_date": "9999-01-01"}]))
-    monkeypatch.setattr(main, "JOB_HISTORY_FILE", main.Path("state/job_history.json"))
+    init_db("data/jobs.db")
+    j = JobPosting(global_id="u", ats="greenhouse", company="Acme", title="MLE", location="Pune", is_remote=False, url="u")
+    save_job(j)
+    update_job_status(job_key(j), "scored", 90, "r")
     main.export_jobs(days=7)
     assert "Exported 1 jobs" in capsys.readouterr().out
 
