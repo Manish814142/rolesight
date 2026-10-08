@@ -134,7 +134,7 @@ After this list: **T40, T50, T42** (Manish will not use TinyFish; all three veri
 | T70 | Compare gemini-3.1-flash-lite with 3.5-flash-lite on the golden set | review · claude · 9445456 | claude | S | — |
 | T73 | Rubric v6: skip postings that require a stack or domain Manish lacks | changes · claude-b | claude | S | — |
 | T74 | Pre-filter: let "AI Engineer" / "Forward Deployed Engineer" titles through? | decision | — | XS | — |
-| T71 | Record which Gemini model scored each job | doing · claude-b · 2026-10-08 | claude-b | S | — |
+| T71 | Record which Gemini model scored each job | review · claude-b · bdcd128 | claude-b | S | — |
 
 T48, T57, T58, T60, T61 and T49 were verified 2026-10-07, T72 on 2026-10-08 (Done log).
 
@@ -176,6 +176,13 @@ column, the scorer's result, the CSV when more than one model scored, and the fu
 `scored 6 (gemini-3.5-flash-lite 4, gemini-3.1-flash-lite 2)`). No prompt or score change.
 *Done when:* a test with a stub client whose first model fails shows the fallback model stored on that row and
 in the CSV; a live scan's funnel line names the model(s).
+**Implemented (claude-b, 2026-10-08, bdcd128).** `jobs.score_model` (added by `init_db`; NULL = unknown: rows scored
+before T71 and the deprecated providers, whose funnel count is labelled with the provider name), `model` in the scorer
+results and the JSON state files, the funnel line, and a CSV **Model** column. **Choice made (Manish's to confirm):** the
+column is written when the jobs mix models **or** any job was scored by a model other than the default primary
+`gemini-3.5-flash-lite`. The task said "when more than one model scored"; that rule alone would hide a run in which 3.5
+was out all day and 3.1 scored everything, which is the calibration T70 warns about. A normal day keeps the 10
+columns. **Question for Manish:** keep this, or always show the Model column?
 
 **T73 · Rubric v6** (3bc1c13, Manish's apply rule of 2026-10-07). Rule 4 caps at 50 (was 60 = MIN_SCORE 60) a
 posting that *requires* a backend language outside his stack and accepts none of his; "such as" lists are examples,
@@ -403,6 +410,7 @@ The implementer adds a row when a task reaches `review`; the verifier removes it
 
 | ID | Commit(s) | Implementer | Evidence (command → result) |
 |---|---|---|---|
+| T71 | bdcd128 | claude-b | `pytest tests/test_score_model.py` → 10 failed before the code (12 tests; the 2 "no column" cases passed trivially), 12 passed after; 2 pinned result dicts in `test_gemini_provider.py` updated for the new `model` key. Mutants (scratch worktree): reporting the configured model instead of the answering one → 3 failed; never storing it → 3 failed; column only when models mix → 1 failed. Real CLI in a scratch `init` directory (3 boards: Amazon, Hotstar, Mastercard; `scan --posted-within 1`): default config, cap 6 → `Funnel: fetched 2833 \| … \| queued 24 \| scored 6 (gemini-3.5-flash-lite 6) \| failed 0 \| left for next scan 18`; DB `scored`/`gemini-3.5-flash-lite` 6; CSV header unchanged (10 columns). Primary `gemini-0-nonexistent`, fallback narrowed to 3.1 by a wrapper around `job_hunt.main.main` (3.5 was reserved for the reviewer), cap 2 → two 404s, `scored 2 (gemini-3.1-flash-lite 2)`, both rows `score_model` 3.1, CSV has `Model` = 3.1; `autopilot export --days 1` → Model column, 6 × 3.5 + 2 × 3.1. That no request reached 3.5 in the second scan is inferred from the narrowed chain (httpx lines are not logged). Gates: 616 passed, coverage 91.94%, no-network (`unshare -rn`) 616 passed, ruff and mypy clean. Not run: batch or structured mode live (unit tests only) |
 | T70 | 9445456, 3bc1c13 (numbers) | claude | Tooling: 22 harness tests (5 new failed before). Live, pinned models, current prompt, 82 jobs: `score_golden_set.py --arms current --model gemini-3.1-flash-lite` ×2 (164/164 answered) and `--model gemini-3.5-flash-lite` ×2 after 3.5's quota reset (164/164); `--from-scores` on the four files → the numbers in the task. 3.5's two runs: false positives 3/3 at 60, 2/2 at 70. |
 
 ---
