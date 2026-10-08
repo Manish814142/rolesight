@@ -78,6 +78,20 @@ def job_to_export_row(j: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
+def job_from_db_row(r: Dict[str, Any], threshold: Optional[int]) -> Dict[str, Any]:
+    """A `jobs` row of data/jobs.db as an export job dict (T32, T39). "Worth Applying" compares with `threshold`
+    (None: unknown, left blank)."""
+    app = r.get("application_status")
+    return {
+        "company": r.get("company") or "", "title": r.get("title") or "", "location": r.get("location") or "",
+        "url": r.get("url") or "", "score": r.get("score"), "reason": r.get("score_reason") or "",
+        "posted_at": r.get("posted_at") or "", "scan_date": (r.get("scored_at") or "")[:10],
+        "worth_applying": None if threshold is None else int(r["score"]) >= threshold,
+        "model": r.get("score_model"),
+        "application": f"{app} {r.get('application_date') or ''}".strip() if app else "",  # `autopilot mark` (T38)
+    }
+
+
 def get_incremental_csv_path(
     base_name: str,
     out_dir: Union[Path, str] = "output",

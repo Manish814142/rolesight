@@ -60,7 +60,8 @@ Tests must make **no network calls** — stub `send_telegram`, adapters, and Gem
    Each stored score names the model that answered (`jobs.score_model`, funnel line, CSV `Model` column when
    a model other than the primary scored; T71).
 7. Per-job Telegram alert (if configured) → results sorted best-first → incremental CSV
-   `output/jobs_YYYY-MM-DD[_N].csv` (never overwrites); the scan's row in table `scans` is finished,
+   `output/jobs_YYYY-MM-DD[_N].csv` (never overwrites) and the rolling `output/open_matches.csv` (rewritten every
+   run: ≥ min_score, not marked applied, inside the posted window; T39); the scan's row in table `scans` is finished,
    digest of the top `top_n`.
 
 A company with no `ats` is detected from its `careers_url` when that names a known ATS; otherwise it is skipped

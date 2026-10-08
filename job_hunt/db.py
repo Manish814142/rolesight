@@ -365,6 +365,18 @@ def last_scan_jobs(db_path: str = DEFAULT_DB_PATH) -> Optional[List[Dict[str, An
         return [dict(r) for r in rows]
 
 
+def open_match_rows(min_score: int, db_path: str = DEFAULT_DB_PATH) -> List[Dict[str, Any]]:
+    """Scored jobs at or above `min_score` that Manish has not applied to (no application status at all), best first
+    (T39, output/open_matches.csv). The posted-date window is applied by the caller."""
+    init_db(db_path)
+    with sqlite3.connect(db_path) as conn:
+        conn.row_factory = sqlite3.Row
+        rows = conn.execute(
+            "SELECT * FROM jobs WHERE status IN ('scored', 'notified') AND score >= ? AND application_status IS NULL "
+            "ORDER BY score DESC, scored_at, id;", (min_score,)).fetchall()
+        return [dict(r) for r in rows]
+
+
 def set_application_status(row_id: int, status: Optional[str], day: Optional[str],
                            db_path: str = DEFAULT_DB_PATH) -> None:
     """Record (or with None, clear) the application status and its date on one row (T38)."""

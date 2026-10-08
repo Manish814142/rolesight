@@ -95,6 +95,15 @@ def posted_age_days(posted_at: str, today: Optional[date] = None) -> Optional[in
     return max(0, (today - posted).days)
 
 
+def current_age_days(posted_at: str, seen_on: date, today: Optional[date] = None) -> Optional[int]:
+    """Age today of a posting whose `posted_at` was read on `seen_on` (T39). Workday's "Posted 5 Days Ago" was
+    relative to the day it was fetched, so the days since then are added; for a real date this is just its age."""
+    at_fetch = posted_age_days(posted_at, seen_on)
+    if at_fetch is None:
+        return None
+    return at_fetch + max(0, ((today or date.today()) - seen_on).days)
+
+
 def is_too_old(posted_at: str, max_age_days: Optional[int], today: Optional[date] = None) -> bool:
     """True only when the posted date is KNOWN and older than max_age_days.
 

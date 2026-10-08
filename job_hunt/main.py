@@ -149,7 +149,7 @@ def init_project() -> None:
     print("  3. Run: autopilot scan")
 
 
-from job_hunt.exporter import export_jobs_to_csv, job_to_export_row  # noqa: E402
+from job_hunt.exporter import export_jobs_to_csv, job_from_db_row, job_to_export_row  # noqa: E402
 
 _job_to_row = job_to_export_row
 
@@ -181,19 +181,6 @@ def _export_min_score() -> int | None:
     return int(load_config().get("candidate", {}).get("min_score", 55))
 
 
-def _export_row(r: dict, threshold: int | None) -> dict:
-    """A `jobs` row as the exporter's job dict (T32: export reads data/jobs.db)."""
-    app = r.get("application_status")
-    return {
-        "company": r.get("company") or "", "title": r.get("title") or "", "location": r.get("location") or "",
-        "url": r.get("url") or "", "score": r.get("score"), "reason": r.get("score_reason") or "",
-        "posted_at": r.get("posted_at") or "", "scan_date": (r.get("scored_at") or "")[:10],
-        "worth_applying": None if threshold is None else int(r["score"]) >= threshold,
-        "model": r.get("score_model"),
-        "application": f"{app} {r.get('application_date') or ''}".strip() if app else "",  # `autopilot mark` (T38)
-    }
-
-
 def export_jobs(min_score: int = 0, days: int = 0) -> None:
     """Write a CSV of scored jobs from data/jobs.db: the last finished scan, or with `days` every job scored in the
     last N days (UTC dates), best first (T32)."""
@@ -211,7 +198,7 @@ def export_jobs(min_score: int = 0, days: int = 0) -> None:
         source_label = "last scan"
 
     threshold = _export_min_score()
-    jobs = [_export_row(r, threshold) for r in rows]
+    jobs = [job_from_db_row(r, threshold) for r in rows]
     filtered = [j for j in jobs if (j.get("score") or 0) >= min_score]
 
     if not filtered:

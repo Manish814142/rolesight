@@ -37,6 +37,15 @@ CSVs and in `data/jobs.db` (`autopilot export --days N`).
 scan (2026-10-04) had 74 rows ≥ 60, 67 ≥ 70 and 38 ≥ 80, and 21 jobs tied at exactly 90
 (before the rubric; ties remain, T41). Treat the number as a ranking hint, not a verdict.
 
+## `output/open_matches.csv` (T39)
+
+Rewritten at the end of every scan, whether or not the scan scored anything: every job in `data/jobs.db` scored ≥
+`min_score` that you have not marked with `autopilot mark` (any of applied, interview, rejected, offer) and that is
+inside that run's posted-date window (`--posted-within N` / `candidate.max_posted_age_days`; undated jobs are kept,
+and with no window every such job is listed). Best score first, same columns as the per-scan CSV. Workday's
+"Posted 5 Days Ago" is aged from the day it was fetched. The per-scan `jobs_*.csv` files are still written. Closed
+jobs are not excluded yet (T33).
+
 ## `autopilot export`
 
 Writes a fresh CSV from saved results. It needs no API keys.

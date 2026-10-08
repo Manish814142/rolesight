@@ -3,7 +3,7 @@ import os
 import time
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Optional
 
@@ -12,6 +12,7 @@ from job_hunt.db import (
     finish_scan,
     get_job,
     init_db,
+    open_match_rows,
     save_job,
     start_scan,
     update_job_details,
@@ -21,7 +22,13 @@ from job_hunt.llm_utils import chat_with_llm
 from job_hunt.log import get_logger
 from job_hunt.models import job_key
 from job_hunt.notifier import is_telegram_configured, send_telegram
-from job_hunt.prefilter import is_too_old, location_is_india, posted_age_days, should_evaluate_job
+from job_hunt.prefilter import (
+    current_age_days,
+    is_too_old,
+    location_is_india,
+    posted_age_days,
+    should_evaluate_job,
+)
 from job_hunt.scorer import score_and_process_batch, score_and_process_job
 
 logger = get_logger()
@@ -53,7 +60,7 @@ Scoring: 80-100 near-perfect; 60-79 good fit; 40-59 partial; <40 poor.
 Set worth_applying=true only if score >= {min_score}.
 Include ALL jobs. Output ONLY the JSON array."""
 
-from job_hunt.exporter import export_jobs_to_csv  # noqa: E402
+from job_hunt.exporter import export_jobs_to_csv, job_from_db_row  # noqa: E402
 
 
 def _build_candidate_profile(config: dict) -> str:
@@ -252,6 +259,30 @@ def _export_to_csv(jobs: list[dict], label: str) -> Path:
     out_path = export_jobs_to_csv(jobs, out_dir="output")
     logger.info(f"Results exported to CSV ({label}): {out_path}")
     return out_path
+
+
+OPEN_MATCHES_FILE = Path("output/open_matches.csv")
+
+
+def _write_open_matches(min_score: int, max_age: Optional[int]) -> int:
+    """Rewrite output/open_matches.csv (T39): every job scored >= min_score that Manish has not applied to and that is
+    inside this run's posted-date window (undated jobs kept, as in the scan). Returns the number of rows."""
+    today = date.today()
+    jobs = []
+    for r in open_match_rows(min_score):
+        seen = (r.get("scored_at") or r.get("discovered_at") or "")[:10]
+        try:
+            seen_on = date.fromisoformat(seen)
+        except ValueError:
+            seen_on = today
+        age = current_age_days(r.get("posted_at") or "", seen_on, today)
+        if max_age is not None and age is not None and age > max_age:
+            continue
+        jobs.append(job_from_db_row(r, min_score))
+    tmp = OPEN_MATCHES_FILE.with_suffix(".csv.tmp")
+    export_jobs_to_csv(jobs, out_path=tmp)
+    os.replace(tmp, OPEN_MATCHES_FILE)          # never a half-written file if it is open in a spreadsheet
+    return len(jobs)
 
 
 def _by_model(scored_by: Counter) -> str:
@@ -533,6 +564,10 @@ def run_scan(config: dict, companies: list[dict]) -> None:
     # Always persist results to CSV when there are scored jobs — this is the
     # durable record regardless of whether Telegram is configured.
     csv_path = _export_to_csv(all_scored_jobs, "scan results") if all_scored_jobs else None
+    open_count = _write_open_matches(min_score, max_age)
+    logger.info(f"Open matches (score >= {min_score}, not applied"
+                + (f", posted within {max_age} day(s)" if max_age is not None else "")
+                + f"): {open_count} → {OPEN_MATCHES_FILE}")
 
     if errors and telegram_configured:
         error_msg = f"<b>Job Hunt Errors — {date_str}</b>\n" + "\n".join(errors)
