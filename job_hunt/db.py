@@ -98,12 +98,15 @@ def _migrate_db(conn: sqlite3.Connection) -> None:
 
 # What a posting looked like when it was scored (T29): the decision can be audited and re-scored later.
 DETAIL_COLUMNS = ("location", "posted_at", "description")
+# The Gemini model that produced `score` (T71): models score differently (T70), and a scan falls back to another
+# model when the primary fails. NULL = unknown (rows scored before T71, or by the deprecated providers).
+SCORE_MODEL_COLUMN = "score_model"
 
 
 def _ensure_detail_columns(conn: sqlite3.Connection) -> None:
-    """Add the detail columns to a database that predates them (idempotent; no row is touched)."""
+    """Add the detail and score-model columns to a database that predates them (idempotent; no row is touched)."""
     have = {row[1] for row in conn.execute("PRAGMA table_info(jobs)")}
-    for col in DETAIL_COLUMNS:
+    for col in (*DETAIL_COLUMNS, SCORE_MODEL_COLUMN):
         if col not in have:
             conn.execute(f"ALTER TABLE jobs ADD COLUMN {col} TEXT")
 
@@ -245,8 +248,12 @@ def update_job_status(
     score_reason: Optional[str] = None,
     db_path: str = DEFAULT_DB_PATH,
     c_hash: Optional[str] = None,
+    model: Optional[str] = None,
 ) -> None:
-    """Update status, score, score_reason and scored_at for a job by global_id or canonical_hash."""
+    """Update status, score, score_reason, scored_at and score_model for a job by global_id or canonical_hash.
+
+    `model` is stored with a score (None = unknown); a status-only update leaves score and model alone.
+    """
     init_db(db_path)
     lookup_key = key or c_hash or ""
     now_iso = datetime.now(timezone.utc).isoformat() if score is not None else None
@@ -257,19 +264,19 @@ def update_job_status(
             cursor.execute(
                 """
                 UPDATE jobs
-                SET status = ?, score = ?, score_reason = ?, scored_at = ?
+                SET status = ?, score = ?, score_reason = ?, scored_at = ?, score_model = ?
                 WHERE global_id = ?;
                 """,
-                (status, score, score_reason, now_iso, lookup_key),
+                (status, score, score_reason, now_iso, model, lookup_key),
             )
             if cursor.rowcount == 0:
                 cursor.execute(
                     """
                     UPDATE jobs
-                    SET status = ?, score = ?, score_reason = ?, scored_at = ?
+                    SET status = ?, score = ?, score_reason = ?, scored_at = ?, score_model = ?
                     WHERE canonical_hash = ?;
                     """,
-                    (status, score, score_reason, now_iso, lookup_key),
+                    (status, score, score_reason, now_iso, model, lookup_key),
                 )
         else:
             cursor.execute(

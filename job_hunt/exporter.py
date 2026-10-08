@@ -7,6 +7,8 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 from urllib.parse import quote
 
+from job_hunt.llm_utils import GEMINI_DEFAULT_MODEL
+
 EXPORT_FIELDS: List[str] = [
     "Company",
     "Role",
@@ -48,6 +50,14 @@ OPTIONAL_COLUMNS = {
 }
 
 
+def _model_column_needed(jobs: List[Dict[str, Any]]) -> bool:
+    """The "Model" column (T71) is written when the jobs mix models or any was scored by a model other than the
+    default primary (T70: another calibration). A normal scan, all on the primary, keeps today's columns; unknown
+    models (rows written before T71, deprecated providers) never add the column."""
+    models = {j.get("model") for j in jobs if j.get("model")}
+    return len(models) > 1 or bool(models - {GEMINI_DEFAULT_MODEL})
+
+
 def job_to_export_row(j: Dict[str, Any]) -> Dict[str, Any]:
     """Convert an internal job dictionary to a canonical export CSV row."""
     worth = j.get("worth_applying")
@@ -63,6 +73,7 @@ def job_to_export_row(j: Dict[str, Any]) -> Dict[str, Any]:
         "Worth Applying": "Yes" if worth else ("No" if worth is False else ""),
         "Scan Date": j.get("scan_date", ""),
         **{col: ("" if j.get(key) is None else j.get(key)) for col, key in OPTIONAL_COLUMNS.items()},
+        "Model": j.get("model") or "",
     }
 
 
@@ -102,6 +113,8 @@ def export_jobs_to_csv(
         out_path.parent.mkdir(parents=True, exist_ok=True)
 
     extra = [col for col, key in OPTIONAL_COLUMNS.items() if any(j.get(key) not in (None, "") for j in jobs)]
+    if _model_column_needed(jobs):
+        extra.append("Model")
     with out_path.open("w", newline="", encoding="utf-8") as fh:
         writer = csv.DictWriter(fh, fieldnames=EXPORT_FIELDS + extra, extrasaction="ignore")
         writer.writeheader()

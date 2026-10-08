@@ -25,6 +25,10 @@ is job N of `state/last_scan.json`, which `draft N` reads.
 A column appears only when some job in the file has a value for it: **Stack** (from the deprecated non-Gemini
 scorer) and, with `scoring_mode: structured`, **Stack fit**, **Role fit**, **Seniority fit**, **Location fit**,
 **Min years** and **Capped by**. A default Gemini scan writes none of them (T36).
+**Model** (T71) appears when some job in the file was scored by a model other than the default primary
+`gemini-3.5-flash-lite`, i.e. the fallback answered (primary failed or out of quota) or `gemini_model` is set to another
+model. The models score differently (T70: `gemini-3.1-flash-lite` gives weak fits ~7 points more), so compare scores
+only within one model.
 
 A CSV contains only jobs scored in that scan. Jobs scored on earlier days are in earlier
 CSVs and in `state/job_history.json`.
@@ -52,7 +56,8 @@ key), `canonical_hash` (MD5 of title + company + location; fallback key and an i
 `url_hash`, `title`, `company`, `ats`,
 `url`, `score`, `score_reason`, `status`, `discovered_at`, `scored_at`, and (T29) `location`,
 `posted_at` and `description`. Skipped postings keep location and date only; queued ones keep
-the description the scorer saw. Rows from before T29 have these empty.
+the description the scorer saw. Rows from before T29 have these empty. `score_model` (T71) is the
+Gemini model that produced `score`; it is empty for rows scored before T71 and for the deprecated providers.
 
 | status | meaning | next scan |
 |---|---|---|

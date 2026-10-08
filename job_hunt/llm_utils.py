@@ -167,10 +167,16 @@ def _daily_quota_reset_seconds(message: str) -> float | None:
 
 
 def _generate_with_fallback(client: Any, contents: str, cfg: Any, models: list[str]) -> str:
+    """The response text of _generate_with_model (callers that do not record the model)."""
+    return _generate_with_model(client, contents, cfg, models)[0]
+
+
+def _generate_with_model(client: Any, contents: str, cfg: Any, models: list[str]) -> tuple[str, str]:
     """Call generate_content across `models`, retrying once on rate-limit/transient errors.
 
-    A model whose daily quota is gone is skipped until it resets. Raises GeminiQuotaExhausted when every
-    model failed with a quota error (or is out for the day).
+    Returns (text, the model that answered): models score differently (T70), so each stored score names its
+    model (T71). A model whose daily quota is gone is skipped until it resets. Raises GeminiQuotaExhausted when
+    every model failed with a quota error (or is out for the day).
     """
     now = time.time()
     live = [m for m in models if _DAILY_QUOTA_EXHAUSTED.get(m, 0.0) <= now]
@@ -183,7 +189,7 @@ def _generate_with_fallback(client: Any, contents: str, cfg: Any, models: list[s
             try:
                 resp = client.models.generate_content(model=m, contents=contents, config=cfg)
                 if resp and resp.text:
-                    return resp.text
+                    return resp.text, m
                 last_err = RuntimeError(f"Empty response from {m}")
                 break
             except Exception as e:
@@ -292,7 +298,7 @@ def score_job_with_gemini(job: dict, resume: str, config: dict, raise_on_error: 
     """Score an individual job against a resume using Gemini.
 
     Returns:
-        dict: {"score": <0-100>, "reason": "<one sentence explanation>"}
+        dict: {"score": <0-100>, "reason": "<one sentence explanation>", "model": <the Gemini model that answered>}
         On error, returns fallback: {"score": 0, "reason": "Scoring failed"},
         or re-raises when raise_on_error=True so callers can tell a failure
         apart from a genuine score of 0.
@@ -321,7 +327,7 @@ def score_job_with_gemini(job: dict, resume: str, config: dict, raise_on_error: 
             temperature=float(config.get("gemini_temperature", 0.1)),
             response_mime_type="application/json",
         )
-        raw_text = _generate_with_fallback(client, prompt, cfg, _gemini_models(config))
+        raw_text, model = _generate_with_model(client, prompt, cfg, _gemini_models(config))
         start, end = raw_text.find("{"), raw_text.rfind("}") + 1
         if start == -1 or end <= start:
             raise ValueError(f"No JSON object in response: {raw_text[:100]}")
@@ -331,6 +337,7 @@ def score_job_with_gemini(job: dict, resume: str, config: dict, raise_on_error: 
         return {
             "score": int(data["score"]),
             "reason": str(data["reason"]),
+            "model": model,
         }
     except Exception as e:
         logger.error(f"Gemini scoring error: {e}")
@@ -405,7 +412,7 @@ def score_job_structured_with_gemini(job: dict, resume: str, config: dict) -> di
     """Score one job by extracting facts and sub-scores (see combine_subscores).
 
     Returns {"score", "reason", "capped_by", "stack_fit", "role_fit", "seniority_fit", "location_fit",
-    "min_years" (None if not stated), ...}. Raises on any failure so the caller can retry the job later.
+    "min_years" (None if not stated), ..., "model"}. Raises on any failure so the caller can retry the job later.
     """
     api_key = config.get("gemini_api_key") or os.getenv("GEMINI_API_KEY")
     client, types = _get_genai_client_and_types(api_key)
@@ -421,7 +428,7 @@ def score_job_structured_with_gemini(job: dict, resume: str, config: dict) -> di
     )
     cfg = types.GenerateContentConfig(temperature=0.1, response_mime_type="application/json",
                                       response_json_schema=STRUCTURED_SCHEMA)
-    raw = _generate_with_fallback(client, prompt, cfg, _gemini_models(config))
+    raw, model = _generate_with_model(client, prompt, cfg, _gemini_models(config))
     data = json.loads(raw)
     if not isinstance(data, dict):
         raise ValueError(f"Expected a JSON object, got: {raw[:100]}")
@@ -437,7 +444,7 @@ def score_job_structured_with_gemini(job: dict, resume: str, config: dict) -> di
         aimed_at_freshers=bool(data["aimed_at_freshers"]),
         reason=str(data["reason"]),
     )
-    return {**facts, **combine_subscores(facts)}
+    return {**facts, **combine_subscores(facts), "model": model}
 
 
 BATCH_SCORE_SCHEMA: dict[str, Any] = {
@@ -457,7 +464,7 @@ BATCH_SCORE_SCHEMA: dict[str, Any] = {
 def score_jobs_batch_with_gemini(jobs: list[dict], resume: str, config: dict) -> dict[str, dict]:
     """Score several jobs in ONE Gemini call with a structured JSON schema.
 
-    Each job dict needs a unique "id". Returns {id: {"score", "reason"}} for every id
+    Each job dict needs a unique "id". Returns {id: {"score", "reason", "model"}} for every id
     the model answered; ids it skipped are simply absent (callers retry them later).
     Raises if the call fails or the output is not a JSON array.
     """
@@ -487,7 +494,7 @@ def score_jobs_batch_with_gemini(jobs: list[dict], resume: str, config: dict) ->
         response_mime_type="application/json",
         response_json_schema=BATCH_SCORE_SCHEMA,
     )
-    raw_text = _generate_with_fallback(client, prompt, cfg, _gemini_models(config))
+    raw_text, model = _generate_with_model(client, prompt, cfg, _gemini_models(config))
     data = json.loads(raw_text)
     if not isinstance(data, list):
         raise ValueError(f"Expected a JSON array, got: {raw_text[:100]}")
@@ -502,6 +509,7 @@ def score_jobs_batch_with_gemini(jobs: list[dict], resume: str, config: dict) ->
             out[jid] = {
                 "score": max(0, min(100, int(item["score"]))),
                 "reason": str(item.get("reason", "")),
+                "model": model,
             }
     return out
 

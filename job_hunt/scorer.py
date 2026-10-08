@@ -102,12 +102,14 @@ def score_and_process_job(
     details = {k: scoring_result.get(k) for k in SUBSCORE_FIELDS} if structured else {}
     if details.get("capped_by"):
         reason = f"{reason} [capped at {score}: {details['capped_by']}]"
-    status = _record_score(job, score, reason, telegram_token, telegram_chat_id, db_path, min_notify_score)
+    model = scoring_result.get("model")
+    status = _record_score(job, score, reason, telegram_token, telegram_chat_id, db_path, min_notify_score, model)
     return {
         "score": score,
         "reason": reason,
         "status": status,
         "details": details,
+        "model": model,
     }
 
 
@@ -119,8 +121,9 @@ def _record_score(
     telegram_chat_id: Optional[str],
     db_path: str,
     min_notify_score: int,
+    model: Optional[str] = None,
 ) -> str:
-    """Alert if the score clears the threshold, persist score/status, return the status."""
+    """Alert if the score clears the threshold, persist score/status/model, return the status."""
     status = "scored"
     if score >= min_notify_score:
         if send_telegram_notification(telegram_token, telegram_chat_id, job=job, score=score, reason=reason):
@@ -131,6 +134,7 @@ def _record_score(
         score=score,
         score_reason=reason,
         db_path=db_path,
+        model=model,
     )
     return status
 
@@ -179,6 +183,7 @@ def score_and_process_batch(
             results.append({"score": None, "reason": f"Scoring failed: {failure}", "status": "discovered",
                             "quota_exhausted": quota_exhausted})
             continue
-        status = _record_score(job, r["score"], r["reason"], telegram_token, telegram_chat_id, db_path, min_notify_score)
-        results.append({"score": r["score"], "reason": r["reason"], "status": status})
+        status = _record_score(job, r["score"], r["reason"], telegram_token, telegram_chat_id, db_path, min_notify_score,
+                               r.get("model"))
+        results.append({"score": r["score"], "reason": r["reason"], "status": status, "model": r.get("model")})
     return results

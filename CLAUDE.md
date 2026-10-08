@@ -56,6 +56,8 @@ Tests must make **no network calls** — stub `send_telegram`, adapters, and Gem
    (`scorer.score_and_process_job`, full resume, 4.2 s pacing = 15 RPM). Opt-in
    `"gemini_scoring_mode": "batch"` scores `gemini_batch_size` (10) jobs per call — ~17×
    faster but measured to inflate weak fits by ~15 points (see CHANGELOG 2026-10-04).
+   Each stored score names the model that answered (`jobs.score_model`, funnel line, CSV `Model` column when
+   a model other than the primary scored; T71).
 7. Per-job Telegram alert (if configured) → results sorted best-first → `state/last_scan.json`,
    `state/job_history.json`, incremental CSV `output/jobs_YYYY-MM-DD[_N].csv` (never overwrites),
    digest of the top `top_n`.

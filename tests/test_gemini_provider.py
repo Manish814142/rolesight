@@ -141,6 +141,7 @@ def test_score_job_gemini_success(monkeypatch):
     assert res == {
         "score": 92,
         "reason": "Direct experience with LLM orchestration and Python.",
+        "model": "gemini-2.5-flash",          # the model that answered (T71)
     }
 
 
@@ -307,8 +308,9 @@ def test_batch_scoring_maps_ids_and_uses_json_schema(monkeypatch):
     ]
     out = llm_utils.score_jobs_batch_with_gemini(jobs, LONG_RESUME, {"gemini_api_key": "k"})
 
-    assert out == {"j1": {"score": 88, "reason": "strong Node.js fit"},
-                   "j2": {"score": 40, "reason": "partial"}}  # j3 missing, zzz ignored
+    m = llm_utils.GEMINI_DEFAULT_MODEL     # the model that answered (T71)
+    assert out == {"j1": {"score": 88, "reason": "strong Node.js fit", "model": m},
+                   "j2": {"score": 40, "reason": "partial", "model": m}}  # j3 missing, zzz ignored
     assert client.models.generate_content.call_count == 1
     prompt = client.models.generate_content.call_args.kwargs["contents"]
     assert "UNIQUE_TAIL_MARKER" in prompt and prompt.count("UNIQUE_TAIL_MARKER") == 1

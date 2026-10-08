@@ -1,6 +1,7 @@
 import json
 import os
 import time
+from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from pathlib import Path
@@ -259,6 +260,11 @@ def _export_to_csv(jobs: list[dict], label: str) -> Path:
     return out_path
 
 
+def _by_model(scored_by: Counter) -> str:
+    """' (gemini-3.5-flash-lite 4, gemini-3.1-flash-lite 2)' for the funnel line; '' when nothing was scored."""
+    return " (" + ", ".join(f"{m} {n}" for m, n in scored_by.most_common()) + ")" if scored_by else ""
+
+
 def run_scan(config: dict, companies: list[dict]) -> None:
     scan_start = time.time()
     total = len(companies)
@@ -294,6 +300,7 @@ def run_scan(config: dict, companies: list[dict]) -> None:
     companies_scanned = 0
     scoring_failures = 0
     fetched_total = india_total = already_scored = prefilter_rejected = scored_ok = 0
+    scored_by: Counter = Counter()   # model -> jobs it scored this run (T71; the fallback may answer some)
     # Pre-filter survivors from every company; scored together after fetching so
     # Gemini batches fill up (most companies contribute only 0-3 jobs).
     pending_direct: list = []
@@ -446,6 +453,7 @@ def run_scan(config: dict, companies: list[dict]) -> None:
                     scoring_failures += 1
                     continue
                 scored_ok += 1
+                scored_by[res.get("model") or "unknown model"] += 1
                 logger.debug(f"    [{res['score']:3d}] {job.title} @ {job.company} — {res['reason'][:80]}")
                 all_scored_jobs.append({
                     "company": job.company,
@@ -459,6 +467,7 @@ def run_scan(config: dict, companies: list[dict]) -> None:
                     "stack": "",
                     "worth_applying": res["score"] >= min_score,
                     "posted_at": job.posted_at,
+                    "model": res.get("model"),
                     **(res.get("details") or {}),
                 })
         else:
@@ -480,6 +489,7 @@ def run_scan(config: dict, companies: list[dict]) -> None:
                     for item in scored:
                         update_job_status(item["job_key"], "scored", item["score"], item["reason"])
                         scored_ok += 1
+                        scored_by[provider] += 1
                         if item["worth_applying"]:
                             all_scored_jobs.append(item)
             except Exception as score_err:
@@ -529,7 +539,7 @@ def run_scan(config: dict, companies: list[dict]) -> None:
     logger.info(
         f"Funnel: fetched {fetched_total} | India {india_total} | already scored {already_scored} | "
         f"pre-filter rejected {prefilter_rejected} | too old {too_old} | queued {queued_total} | "
-        f"scored {scored_ok} | failed {scoring_failures} | left for next scan {queued_total - scored_ok}"
+        f"scored {scored_ok}{_by_model(scored_by)} | failed {scoring_failures} | left for next scan {queued_total - scored_ok}"
     )
     logger.info(
         f"=== Scan complete — {companies_scanned}/{total} companies, "
