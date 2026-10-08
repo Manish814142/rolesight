@@ -1,5 +1,4 @@
 """Tool layer + MCP server — scanner/drafter/export stubbed; assert cwd is restored."""
-import json
 from pathlib import Path
 
 import pytest
@@ -7,26 +6,13 @@ import pytest
 from job_hunt import tools
 
 
-def test_tool_scan_reports_counts(tmp_path, monkeypatch):
-    monkeypatch.setattr(tools, "load_config", lambda: {"ok": True})
-    monkeypatch.setattr(tools, "load_companies", lambda: [])
-
-    def fake_run(cfg, companies):
-        Path("state").mkdir(exist_ok=True)
-        Path("state/last_scan.json").write_text(json.dumps(
-            [{"score": 9}, {"score": 0}, {}]))
-
-    monkeypatch.setattr(tools, "run_scan", fake_run)
-    out = tools.tool_scan(config_path=str(tmp_path / "config.json"))
-    assert "3 jobs found, 1 scored" in out
-
-
 def test_tool_scan_no_results(tmp_path, monkeypatch):
+    """No finished scan in data/jobs.db (counts from the DB: tests/test_retire_json_state.py, T34)."""
     monkeypatch.setattr(tools, "load_config", lambda: {})
     monkeypatch.setattr(tools, "load_companies", lambda: [])
     monkeypatch.setattr(tools, "run_scan", lambda c, co: None)
     out = tools.tool_scan(config_path=str(tmp_path / "config.json"))
-    assert "No results file" in out
+    assert "No finished scan" in out
 
 
 def test_tool_scan_restores_cwd(tmp_path, monkeypatch):

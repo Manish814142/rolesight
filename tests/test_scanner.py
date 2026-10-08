@@ -39,15 +39,6 @@ def test_format_telegram_message():
     assert "ML Eng" in msg and "Apply" in msg and "1 matches" in msg
 
 
-# --- state ---------------------------------------------------------------------
-
-def test_state_roundtrip(tmp_path, monkeypatch):
-    monkeypatch.chdir(tmp_path)
-    assert scanner.load_state() == {"seen_urls": []}
-    scanner.save_state({"seen_urls": ["a", "b"]})
-    assert scanner.load_state()["seen_urls"] == ["a", "b"]
-
-
 # --- score_jobs ----------------------------------------------------------------
 
 def test_score_jobs_empty():
@@ -116,9 +107,10 @@ def test_run_scan_no_telegram_writes_csv(scan_setup, monkeypatch):
     cfg, companies = scan_setup
     scanner.run_scan(cfg, companies)
     assert not sent  # no telegram configured
-    assert json.loads(scanner.LAST_SCAN_FILE.read_text())[0]["score"] == 90
+    import csv
     from pathlib import Path
-    assert list(Path("output").glob("jobs_*.csv"))
+    (out,) = Path("output").glob("jobs_*.csv")
+    assert next(csv.DictReader(out.open(encoding="utf-8")))["Score (%)"] == "90"
 
 
 def test_run_scan_with_telegram(scan_setup, monkeypatch):

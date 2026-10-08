@@ -39,7 +39,9 @@ def scan(tmp_path, monkeypatch):
 
 def test_draft_numbers_come_from_the_database_not_last_scan_json(scan, tmp_path):
     scan({"A": 20, "B": 75, "C": 50})
-    # last_scan.json is not read any more: delete it, or fill it with other jobs, and N still means the same job
+    # last_scan.json is not read any more (nor written since T34): plant one with other jobs, then delete it,
+    # and N still means the same job
+    (tmp_path / "state").mkdir(exist_ok=True)
     (tmp_path / "state" / "last_scan.json").write_text(json.dumps([{"url": "https://wrong/1", "company": "W"}] * 3))
     assert [drafter._resolve_job(n)[0] for n in ("1", "#2", "3")] == ["https://x/B", "https://x/C", "https://x/A"]
     (tmp_path / "state" / "last_scan.json").unlink()

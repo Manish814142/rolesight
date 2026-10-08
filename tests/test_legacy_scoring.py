@@ -100,9 +100,12 @@ def test_item_without_a_score_is_not_stored_as_zero(legacy_scan):
     assert get_job("greenhouse:acme:1")["status"] == "discovered"
 
 
-def test_only_worth_applying_jobs_reach_the_csv_and_last_scan(legacy_scan):
+def test_only_worth_applying_jobs_reach_the_csv(legacy_scan):
     """Unchanged behaviour: the legacy path reports the passing jobs only."""
+    import csv
+    from pathlib import Path
     run, _, set_reply = legacy_scan
     set_reply(_both_scored())
     run()
-    assert [j["url"] for j in json.loads(scanner.LAST_SCAN_FILE.read_text())] == ["https://x.co/jobs/1"]
+    (out,) = Path("output").glob("jobs_*.csv")
+    assert [r["Application URL"] for r in csv.DictReader(out.open(encoding="utf-8"))] == ["https://x.co/jobs/1"]

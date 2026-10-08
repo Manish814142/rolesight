@@ -44,7 +44,7 @@ it isn't configured.
 
 ## 4. A real, small scan
 
-This costs a few Gemini calls and writes to the real `data/jobs.db`, `state/` and
+This costs a few Gemini calls and writes to the real `data/jobs.db` and
 `output/`:
 
 ```bash

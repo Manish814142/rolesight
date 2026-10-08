@@ -7,6 +7,7 @@ all import from here — one place to update, all adapters benefit.
 """
 from pathlib import Path
 
+from job_hunt.db import last_scan_jobs
 from job_hunt.drafter import draft_application
 from job_hunt.main import export_jobs, load_companies, load_config
 from job_hunt.scanner import run_scan
@@ -17,7 +18,6 @@ def tool_scan(config_path: str = "config.json", companies_path: str = "companies
     Discover new jobs, score them, send Telegram notification.
     Returns a summary string.
     """
-    import json
     import os
     old_cwd = Path.cwd()
     project_root = Path(config_path).parent.resolve()
@@ -26,12 +26,11 @@ def tool_scan(config_path: str = "config.json", companies_path: str = "companies
         config = load_config()
         companies = load_companies()
         run_scan(config, companies)
-        last_scan = Path("state/last_scan.json")
-        if last_scan.exists():
-            jobs = json.loads(last_scan.read_text())
-            scored = [j for j in jobs if j.get("score")]
-            return f"Scan complete. {len(jobs)} jobs found, {len(scored)} scored."
-        return "Scan complete. No results file written."
+        jobs = last_scan_jobs()           # data/jobs.db, the scan's only record since T34
+        if jobs is None:
+            return "Scan complete. No finished scan recorded in data/jobs.db."
+        scored = [j for j in jobs if j.get("score")]
+        return f"Scan complete. {len(jobs)} jobs found, {len(scored)} scored."
     finally:
         os.chdir(old_cwd)
 

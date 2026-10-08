@@ -1,4 +1,3 @@
-import json
 from unittest.mock import patch
 
 import pytest
@@ -30,6 +29,15 @@ def direct_scan_env(tmp_path, monkeypatch):
         "telegram": {"token": "test-token", "chat_id": "test-chat"},
     }
     return cfg, str(db_file)
+
+
+def _scan_csv():
+    """The scan's own output (T34: there is no state/last_scan.json any more): the newest CSV's rows, or [] if none."""
+    import csv
+    from pathlib import Path
+    files = sorted(Path("output").glob("jobs_*.csv"), key=lambda f: f.stat().st_mtime_ns)
+    return list(csv.DictReader(files[-1].open(encoding="utf-8"))) if files else []
+
 
 @patch("job_hunt.scanner.fetch_company_jobs")
 @patch("job_hunt.scanner.score_and_process_batch")
@@ -113,7 +121,7 @@ def test_failed_scoring_is_retried_next_scan(mock_score, mock_fetch, direct_scan
 
     scanner.run_scan(cfg, companies)
     assert mock_score.call_count == 1
-    assert json.loads(scanner.LAST_SCAN_FILE.read_text()) == []  # failed job not reported as scored
+    assert _scan_csv() == []  # failed job not reported as scored (no CSV at all)
 
     scanner.run_scan(cfg, companies)
     assert mock_score.call_count == 2
@@ -177,7 +185,7 @@ def test_scanner_batches_passing_jobs_across_companies(mock_score, mock_fetch, d
     scanner.run_scan(cfg, companies)
 
     assert [len(c.kwargs["jobs"]) for c in mock_score.call_args_list] == [5, 5, 2]
-    assert len(json.loads(scanner.LAST_SCAN_FILE.read_text())) == 12
+    assert len(_scan_csv()) == 12
 
 
 @patch("job_hunt.scanner.fetch_company_jobs")
@@ -197,8 +205,7 @@ def test_default_mode_scores_one_job_per_call(mock_single, mock_batch, mock_fetc
     mock_batch.assert_not_called()
     assert mock_single.call_count == 2
     assert mock_single.call_args.kwargs["config"] is cfg
-    saved = json.loads(scanner.LAST_SCAN_FILE.read_text())
-    assert [j["score"] for j in saved] == [80]          # failed job not reported
+    assert [r["Score (%)"] for r in _scan_csv()] == ["80"]          # failed job not reported
 
 
 @patch("job_hunt.scanner.score_and_process_job")
@@ -244,5 +251,4 @@ def test_posted_within_filter_keeps_fresh_and_undated_jobs(mock_single, mock_fet
     assert sorted(c.kwargs["job"].title for c in mock_single.call_args_list) == ["Backend Engineer B", "Backend Engineer C"]
     rec = get_job(canonical_hash(old.title, old.company, old.location), db_path=db_path)
     assert rec["status"] == "skipped"            # re-evaluated if the window is widened later
-    saved = json.loads(scanner.LAST_SCAN_FILE.read_text())
-    assert {j["posted_at"] for j in saved} == {fresh.posted_at, ""}
+    assert {r["Posted"] for r in _scan_csv()} == {fresh.posted_at, ""}

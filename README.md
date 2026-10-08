@@ -85,7 +85,7 @@ flowchart TD
     P -- pass --> E["Fetch full description<br/>Workday · SmartRecruiters · Oracle HCM"]
     E --> G["Gemini score 0–100 + reason<br/>full resume, one job per call"]
     G -- "call failed" --> R["status: discovered<br/>retried next scan"]
-    G -- ok --> O["status: scored<br/>CSV best-first · state/last_scan.json"]
+    G -- ok --> O["status: scored<br/>CSV best-first"]
     O -- "score ≥ min_score and Telegram set up" --> T["Telegram alert<br/>status: notified"]
 ```
 
@@ -213,8 +213,7 @@ personal fork, and the rules are tuned to one profile.
 |---|---|
 | `output/jobs_YYYY-MM-DD.csv` | One file per scan (`_1`, `_2`, … if one already exists). Columns: Company, Role, Location, Posted, Application URL, LinkedIn people, Score (%), Reason, Worth Applying, Scan Date (plus Stack, Stack fit, Role fit, … only when a scorer provides them, and Model when a model other than the primary scored some job). Best score first. |
 | `data/jobs.db` | SQLite seen-job memory: `skipped` → `discovered` → `scored` / `notified` |
-| `state/last_scan.json` | The latest scan's scored jobs, best first (`draft N` and `export` read the DB since T31/T32) |
-| `state/job_history.json` | Every scored job so far (no reader since T32: `export --days N` reads the DB) |
+| `state/*.json` | Retired (T34): no longer written or read; `scripts/import_json_history.py` imports what only they hold |
 | `data/autopilot.log` | Full DEBUG log of every run; rotates at 5 MB, 3 older files kept |
 | `data/scan.log` | Timestamped console output of `run_daily.sh` runs |
 

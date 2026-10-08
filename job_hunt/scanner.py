@@ -26,9 +26,6 @@ from job_hunt.scorer import score_and_process_batch, score_and_process_job
 
 logger = get_logger()
 
-STATE_FILE = Path("state/seen_jobs.json")
-LAST_SCAN_FILE = Path("state/last_scan.json")
-JOB_HISTORY_FILE = Path("state/job_history.json")
 
 SCORE_PROMPT = """You are evaluating job postings for a candidate. Output ONLY a JSON array, no other text.
 
@@ -74,17 +71,6 @@ def _build_candidate_profile(config: dict) -> str:
     if not_suitable:
         lines.append(f"- NOT suitable: {not_suitable}")
     return "\n".join(lines)
-
-
-def load_state() -> dict:
-    if STATE_FILE.exists():
-        return json.loads(STATE_FILE.read_text())
-    return {"seen_urls": []}
-
-
-def save_state(state: dict) -> None:
-    STATE_FILE.parent.mkdir(exist_ok=True)
-    STATE_FILE.write_text(json.dumps(state, indent=2))
 
 
 # Opt-in batch scoring (config "gemini_scoring_mode": "batch"): jobs per Gemini call.
@@ -300,9 +286,6 @@ def run_scan(config: dict, companies: list[dict]) -> None:
     tg_token = config.get("telegram", {}).get("token")
     tg_chat_id = config.get("telegram", {}).get("chat_id")
 
-    state = load_state()
-    seen_urls: set = set(state.get("seen_urls", []))
-    logger.info(f"State loaded — {len(seen_urls)} previously seen URLs")
 
     all_scored_jobs: list[dict] = []
     errors: list[str] = []
@@ -338,7 +321,6 @@ def run_scan(config: dict, companies: list[dict]) -> None:
                     queued = 0
                     fetched_total += len(direct_jobs)
                     for job in direct_jobs:
-                        seen_urls.add(job.url)
                         india_total += location_is_india(job.location)
                         j_key = job_key(job)
                         # Only scored/notified rows are final. 'skipped' rows are re-run
@@ -505,13 +487,8 @@ def run_scan(config: dict, companies: list[dict]) -> None:
                 logger.error(f"Scoring failed with provider '{provider}': {score_err} — jobs left as 'discovered'")
                 errors.append(f"⚠️ Scoring failed: {score_err}")
 
-    state["seen_urls"] = list(seen_urls)
-    state["last_scan"] = datetime.now(timezone.utc).isoformat()
-    save_state(state)
-    logger.debug("State saved")
-
-    # Best first. The digest, state/last_scan.json and the CSV all use this order, and `draft N` reads the same
-    # order from the DB (db.last_scan_jobs: score, then scoring order), so digest #N = `draft N` = CSV row N.
+    # Best first. The digest and the CSV use this order, and `draft N` / `export` read the same order from the DB
+    # (db.last_scan_jobs: score, then scoring order), so digest #N = `draft N` = CSV row N.
     all_scored_jobs.sort(key=lambda x: x.get("score") or 0, reverse=True)
     top_jobs = [j for j in all_scored_jobs if (j.get("score") or 0) >= min_score][:top_n]
 
@@ -519,22 +496,9 @@ def run_scan(config: dict, companies: list[dict]) -> None:
     for item in all_scored_jobs:
         item["scan_date"] = scan_date
 
-    LAST_SCAN_FILE.parent.mkdir(exist_ok=True)
-    LAST_SCAN_FILE.write_text(json.dumps(all_scored_jobs, indent=2))
+    # The scan's results now live only in data/jobs.db (T34 retired the JSON state files): from here on this is
+    # the "last scan" of `draft N` and `export`.
     finish_scan(scan_id)
-    logger.debug(f"Last scan saved: {len(all_scored_jobs)} total jobs → {LAST_SCAN_FILE}")
-
-    history: list[dict] = []
-    if JOB_HISTORY_FILE.exists():
-        try:
-            history = json.loads(JOB_HISTORY_FILE.read_text())
-        except Exception:
-            history = []
-    existing_urls = {j["url"] for j in history}
-    new_entries = [j for j in all_scored_jobs if j["url"] not in existing_urls]
-    history.extend(new_entries)
-    JOB_HISTORY_FILE.write_text(json.dumps(history, indent=2))
-    logger.debug(f"Job history updated: +{len(new_entries)} new entries ({len(history)} total)")
 
     if too_old:
         logger.info(f"{too_old} job(s) skipped as posted more than {max_age} day(s) ago")

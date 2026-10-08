@@ -1,6 +1,5 @@
 """T38: `autopilot mark <#N|URL> applied|interview|rejected|offer` records where an application stands (no network)."""
 import csv
-import json
 import os
 import sqlite3
 import sys
@@ -25,7 +24,7 @@ def _job(i):
 
 @pytest.fixture
 def scanned(tmp_path, monkeypatch):
-    """A working directory after one scan: 3 scored jobs in data/jobs.db and state/last_scan.json, best first."""
+    """A working directory after one finished scan that scored 3 jobs (data/jobs.db), best first."""
     monkeypatch.chdir(tmp_path)
     init_db("data/jobs.db")
     jobs = [_job(i) for i in range(3)]
@@ -34,11 +33,6 @@ def scanned(tmp_path, monkeypatch):
         save_job(j)
         update_job_status(job_key(j), "scored", score, "fine")
     finish_scan(sid)
-    (tmp_path / "state").mkdir()
-    (tmp_path / "state" / "last_scan.json").write_text(json.dumps(
-        [{"company": j.company, "title": j.title, "url": j.url, "score": s, "reason": "fine", "scan_date": "2026-10-08"}
-         for j, s in zip(jobs, (90, 80, 70))]))
-    (tmp_path / "state" / "job_history.json").write_text((tmp_path / "state" / "last_scan.json").read_text())
     return jobs
 
 

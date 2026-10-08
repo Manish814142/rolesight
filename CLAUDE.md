@@ -59,8 +59,8 @@ Tests must make **no network calls** — stub `send_telegram`, adapters, and Gem
    faster but measured to inflate weak fits by ~15 points (see CHANGELOG 2026-10-04).
    Each stored score names the model that answered (`jobs.score_model`, funnel line, CSV `Model` column when
    a model other than the primary scored; T71).
-7. Per-job Telegram alert (if configured) → results sorted best-first → `state/last_scan.json`,
-   `state/job_history.json`, incremental CSV `output/jobs_YYYY-MM-DD[_N].csv` (never overwrites),
+7. Per-job Telegram alert (if configured) → results sorted best-first → incremental CSV
+   `output/jobs_YYYY-MM-DD[_N].csv` (never overwrites); the scan's row in table `scans` is finished,
    digest of the top `top_n`.
 
 A company with no `ats` is detected from its `careers_url` when that names a known ATS; otherwise it is skipped
@@ -68,9 +68,9 @@ with a warning (custom careers pages are not scanned).
 
 ### Seen-job memory
 `data/jobs.db` (SQLite, table `jobs`) is what makes daily runs show only new jobs: key =
-`(ats, global_id)`, so two openings with the same title are two rows. `state/last_scan.json` holds only the latest
-run (MCP scan summary; `draft N` / `mark N` / `export` read table `scans` + `jobs` since T31/T32), `state/job_history.json` the cumulative scored jobs (no reader since T32),
-`state/seen_jobs.json` is a leftover of the old scanner (T34 retires it).
+`(ats, global_id)`, so two openings with the same title are two rows. Table `scans` (T31) records each run;
+`draft N` / `mark N` / `export` read `scans` + `jobs`. The `state/*.json` files are retired (T34): nothing writes or
+reads them; `scripts/import_json_history.py` imports scores only they hold (dry run unless `--apply`).
 
 ### DB status lifecycle (`data/jobs.db`, table `jobs`)
 
@@ -151,4 +151,4 @@ job_hunt/
 
 ## Gitignored state
 
-`data/` (jobs.db, autopilot.log, scan.log), `state/*.json`, `output/`, `scan.log` (root: the pre-T16 log), `*.pdf`, `.env`, `config.json`.
+`data/` (jobs.db, autopilot.log, scan.log), `state/*.json` (retired, T34), `output/`, `scan.log` (root: the pre-T16 log), `*.pdf`, `.env`, `config.json`.

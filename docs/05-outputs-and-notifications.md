@@ -31,7 +31,7 @@ model. The models score differently (T70: `gemini-3.1-flash-lite` gives weak fit
 only within one model.
 
 A CSV contains only jobs scored in that scan. Jobs scored on earlier days are in earlier
-CSVs and in `state/job_history.json`.
+CSVs and in `data/jobs.db` (`autopilot export --days N`).
 
 **Reading it:** sort or filter on Score, read the Reason, then open the URL. The first real
 scan (2026-10-04) had 74 rows ≥ 60, 67 ≥ 70 and 38 ≥ 80, and 21 jobs tied at exactly 90
@@ -102,15 +102,19 @@ scan had 22 such groups (34 extra rows) that the old title-based key had merged.
 `PRAGMA user_version` records that Workday ids were re-derived from job URLs; this runs
 once per database.
 
-## State files: `state/`
+## State files: `state/` (retired, T34)
 
-| File | Contents | Used by |
-|---|---|---|
-| `last_scan.json` | Jobs scored in the latest scan, best first | MCP `scan_jobs` summary (`draft N` and `export` read the DB since T31/T32) |
-| `job_history.json` | Every job ever scored (deduplicated by URL), with `scan_date` | nothing since T32 (`export --days N` reads the DB) |
-| `seen_jobs.json` | URLs seen (a leftover from the old scanner) | nothing reads it; retiring it is T34 |
+Scans no longer write `state/last_scan.json`, `state/job_history.json` or `state/seen_jobs.json`, and nothing
+reads them: `draft N`, `mark N`, `export` and the MCP scan summary use `data/jobs.db`. Files left by older
+versions can hold scores the database lacks (on 2026-10-08 the production files had 45 such jobs, scored
+2026-10-04 with the prompt of that day, before the database was cleared). To keep them, run once:
 
-These overlap with the DB; consolidating them into SQLite is planned (T31–T34).
+```bash
+python scripts/import_json_history.py            # dry run: what would be imported
+python scripts/import_json_history.py --apply    # import (only URLs the database does not know)
+```
+
+Then the files can be deleted.
 
 ## Logs
 

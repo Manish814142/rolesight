@@ -39,7 +39,7 @@ flowchart TD
     SCORE -- error --> DISC["stays discovered<br/>(retried next scan)"]
     SCORE -- ok --> SCORED["status = scored (+score, reason)"]
     SCORED -- "score ≥ min_score & Telegram HTTP 200" --> NOTIFIED["status = notified"]
-    SCORED --> OUT["sorted best-first →<br/>state/last_scan.json · state/job_history.json<br/>output/jobs_YYYY-MM-DD[_N].csv · Telegram digest"]
+    SCORED --> OUT["sorted best-first →<br/>output/jobs_YYYY-MM-DD[_N].csv · Telegram digest<br/>(scores live in data/jobs.db)"]
 ```
 
 A company whose `careers_url` names a known ATS is detected automatically; one with no
@@ -90,8 +90,8 @@ without a `global_id` fall back to `canonical_hash(title, company, location)`.
 
 ### Ordering
 
-`run_scan` sorts the scored jobs best first before writing `state/last_scan.json` and the
-CSV. Digest #N = `draft N` = CSV row N (T10).
+`run_scan` sorts the scored jobs best first before writing the CSV; `draft N` reads the same order from
+`data/jobs.db` (T31). Digest #N = `draft N` = CSV row N (T10).
 
 ### Configuration precedence
 
@@ -115,7 +115,7 @@ model and the legacy no-key path.
 | `data/scan.log` | `run_daily.sh` output | ignored |
 | `data/autopilot.log` | Full DEBUG log of every command (`autopilot` and `job_hunt.*` loggers); rotates at 5 MB, keeps 3 older files; `JOBNOTIFY_LOG` overrides the path | ignored |
 | `scan.log` | Where this log lived before T16 (root dir, unrotated); no longer written | ignored |
-| `state/last_scan.json`, `state/job_history.json`, `state/seen_jobs.json` | Latest scan (best first), cumulative history, legacy URL set. They overlap with the DB (T31–T34) | ignored |
+| `state/*.json` | Retired (T34): no longer written or read; `scripts/import_json_history.py` imports scores only they hold | ignored |
 | `output/` | CSVs and drafts | ignored |
 | `job_hunt/data/` | Templates that `autopilot init` copies, including a copy of the curated `companies.json` (a test checks they match; T50) | committed |
 
@@ -187,8 +187,8 @@ Measured on the date given. Each one has a task.
   mostly hardware companies) are not scanned.
 - **Onsite outside India:** "India anywhere in the location" passes multi-location jobs; the
   prompt caps roles that need onsite work abroad at 30 (rubric rule 1, T24).
-- **Three stores** (`jobs.db`, `last_scan.json`, `job_history.json`) overlap; `export`
-  ignores the DB (T31–T34).
+- **One store** since T31–T34: `data/jobs.db`. Scores held only by the retired `state/*.json` files need
+  `scripts/import_json_history.py` once.
 - **Unreachable employers:** custom portals and platforms without a public API (Darwinbox,
   Zoho Recruit…; Phenom mostly fronts Workday, T26). The census found 52% of 458 careers pages
   JS-only or unidentified.
