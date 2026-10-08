@@ -365,7 +365,7 @@ returns nothing.
 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
-| T38 | Application tracker: `autopilot mark <id> applied` | doing · claude-b · 2026-10-08 | claude-b | M | T29 |
+| T38 | Application tracker: `autopilot mark <id> applied` | review · claude-b · 5762c6a | claude-b | M | T29 |
 | T39 | One rolling `output/open_matches.csv` | todo | — | S | T32, T38 |
 
 T37 and T40 were verified 2026-10-07 (Done log).
@@ -373,6 +373,13 @@ T37 and T40 were verified 2026-10-07 (Done log).
 **T38 · Application tracker.** `autopilot mark <id> applied|interview|rejected|offer`,
 stored with the date.
 *Done when:* the status is stored in the DB and shown by `export`.
+**Implemented (claude-b, 2026-10-08, 5762c6a).** `autopilot mark N | URL applied|interview|rejected|offer` (`none`
+clears) → `jobs.application_status` + `application_date` (local date), separate from the scanner's `status`;
+`export` shows an **Application** column when some exported job is marked. **Choices made (Manish's to confirm):**
+(1) `<id>` is `N`/`#N` = job N of the *last* scan, resolved by `draft`'s own code (so T31 changes both together), or
+a job URL; a row of an older CSV needs its URL. (2) Only the latest status is kept: marking `interview` replaces
+`applied` and its date. **Questions for Manish:** is `N` of the last scan + URL enough, or do you want a stable id
+column in the CSV? Do you want the history (e.g. keep the applied date once it becomes `interview`)?
 
 **T39 · Open-matches file.** Each run rewrites `output/open_matches.csv`: every job
 scored ≥ MIN_SCORE that isn't applied, isn't closed and is still inside the
@@ -410,6 +417,7 @@ The implementer adds a row when a task reaches `review`; the verifier removes it
 
 | ID | Commit(s) | Implementer | Evidence (command → result) |
 |---|---|---|---|
+| T38 | 5762c6a | claude-b | `pytest tests/test_tracker.py` → collection error before (no `job_hunt.tracker`), 13 passed after. Mutants (scratch worktree): never writing the status → 3 failed; export ignoring marks → 1 failed; export creating/migrating the DB → 1 failed. Real CLI under `unshare -rn` in the scratch scan directory (8 scored jobs): `autopilot mark 1 applied` → "Marked 'Senior Software Engineer' @ Mastercard as applied on 2026-10-08", exit 0; `mark <amazon url> interview` → exit 0; `mark 1 hired`, `mark`, `mark https://nowhere.example/1 applied` → exit 1. DB read back: the two rows have `application_status`/`application_date` = interview/2026-10-08 and applied/2026-10-08, `status` still `scored` (90, 60). `autopilot export --days 1` → columns end `Scan Date, Application, Model`; Application `interview 2026-10-08` and `applied 2026-10-08`, 6 rows empty. `init_db` on a copy of the production `data/jobs.db`: 30,367 rows, statuses and score sum 5,692 unchanged, 6 columns added (T29's 3 + score_model + 2), integrity ok, 0.19 s; the real file's SHA-256 unchanged. Gates: 629 passed, coverage 91.98%, no-network 629 passed, ruff and mypy clean |
 | T71 | bdcd128 | claude-b | `pytest tests/test_score_model.py` → 10 failed before the code (12 tests; the 2 "no column" cases passed trivially), 12 passed after; 2 pinned result dicts in `test_gemini_provider.py` updated for the new `model` key. Mutants (scratch worktree): reporting the configured model instead of the answering one → 3 failed; never storing it → 3 failed; column only when models mix → 1 failed. Real CLI in a scratch `init` directory (3 boards: Amazon, Hotstar, Mastercard; `scan --posted-within 1`): default config, cap 6 → `Funnel: fetched 2833 \| … \| queued 24 \| scored 6 (gemini-3.5-flash-lite 6) \| failed 0 \| left for next scan 18`; DB `scored`/`gemini-3.5-flash-lite` 6; CSV header unchanged (10 columns). Primary `gemini-0-nonexistent`, fallback narrowed to 3.1 by a wrapper around `job_hunt.main.main` (3.5 was reserved for the reviewer), cap 2 → two 404s, `scored 2 (gemini-3.1-flash-lite 2)`, both rows `score_model` 3.1, CSV has `Model` = 3.1; `autopilot export --days 1` → Model column, 6 × 3.5 + 2 × 3.1. That no request reached 3.5 in the second scan is inferred from the narrowed chain (httpx lines are not logged). Gates: 616 passed, coverage 91.94%, no-network (`unshare -rn`) 616 passed, ruff and mypy clean. Not run: batch or structured mode live (unit tests only) |
 | T70 | 9445456, 3bc1c13 (numbers) | claude | Tooling: 22 harness tests (5 new failed before). Live, pinned models, current prompt, 82 jobs: `score_golden_set.py --arms current --model gemini-3.1-flash-lite` ×2 (164/164 answered) and `--model gemini-3.5-flash-lite` ×2 after 3.5's quota reset (164/164); `--from-scores` on the four files → the numbers in the task. 3.5's two runs: false positives 3/3 at 60, 2/2 at 70. |
 
