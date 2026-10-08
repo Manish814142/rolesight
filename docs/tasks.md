@@ -343,7 +343,7 @@ review. Never write the real file unattended.
 | T31 | `draft` reads SQLite | review · claude-b · 4e337d7 | claude-b | S | T29 |
 | T32 | `export` reads SQLite | review · claude-b · ffea468 | claude-b | S | T29 |
 | T33 | first_seen / last_seen and closed-job detection | todo | — | M | T29 |
-| T34 | Retire `last_scan.json`, `job_history.json`, `seen_jobs.json` | doing · claude-b · 2026-10-08 | claude-b | S | T31, T32 |
+| T34 | Retire `last_scan.json`, `job_history.json`, `seen_jobs.json` | review · claude-b · fb25e31 | claude-b | S | T31, T32 |
 
 T29, T35 and T36 were verified 2026-10-07 (Done log).
 
@@ -376,6 +376,14 @@ board stops returning it for N scans in a row.
 and readers. Add a one-time import into SQLite if any history would otherwise be lost.
 *Done when:* `grep -rn "last_scan.json\|job_history.json\|seen_jobs.json" job_hunt`
 returns nothing.
+**Implemented (claude-b, 2026-10-08, fb25e31).** The scanner's three writers/readers and the MCP summary's reader are
+gone (`tools.tool_scan` counts from the DB). The one-time import is `scripts/import_json_history.py` (outside
+`job_hunt/`, so the done-when grep stays empty), a dry run unless `--apply`; it imports only URLs the DB does not
+know. **Not run on the production data** (it writes `data/jobs.db`). Measured on copies: 45 jobs would be imported,
+20 of them ≥ 70, scored on 2026-10-04 with that day's (pre-rubric) prompt; `export --min 70 --days 7` 33 → 53.
+**Question for Manish:** import them (`python scripts/import_json_history.py --apply`), or leave them out because
+their scores predate the rubric (the DB was cleared on purpose on 2026-10-04)? Either way the old `state/*.json`
+files can be deleted afterwards; `init` still creates an empty `state/` directory (left alone).
 
 ---
 
@@ -434,6 +442,7 @@ The implementer adds a row when a task reaches `review`; the verifier removes it
 
 | ID | Commit(s) | Implementer | Evidence (command → result) |
 |---|---|---|---|
+| T34 | fb25e31 | claude-b | `pytest tests/test_retire_json_state.py` → 6 failed before the code (grep test listed scanner/tools lines; a scan wrote `state/`; no script), 6 passed after. Mutants (scratch worktree): imported rows without their own key → 1 failed; importing onto known unscored rows → 2 failed. Tests that read `last_scan.json` (`test_direct_scanner` ×4, `test_scanner`, `test_legacy_scoring`, `test_tools_and_mcp`) now read the scan's CSV or the DB; `test_state_roundtrip` removed with `load_state`/`save_state`. **Done-when:** `grep -rn "last_scan.json\|job_history.json\|seen_jobs.json" job_hunt` → no output, exit 1. Real CLI, scratch dir with `state/` deleted: scan (3.1 wrapper, cap 1) → `scored 1 (gemini-3.1-flash-lite 1)`, no `state/` afterwards; `autopilot export` → "Exported 1 jobs (last scan)" from the DB. Import on copies of the production DB + `state/*.json`: dry run → "203 scored job(s) … 158 already in data/jobs.db, would import 45", DB hash unchanged; `--apply` → imported 45; again → imported 0; integrity ok; export `--min 70 --days 7` 33 → 53. A first version skipped 13 of the 45 (same title/company/location as another opening, unique key of id-less rows) — fixed before the commit. Real `data/jobs.db` SHA-256 unchanged. Gates: 646 passed, coverage 92.04%, no-network 646 passed, ruff and mypy clean |
 | T73 | 3bc1c13 + fix b6f4775 | claude | v7 scored on `gemini-3.5-flash-lite` (model pinned, golden-set jobs through the harness payload, from a clean worktree at cfadad7 so the shared tree's uncommitted edits could not leak in): g1 ×5 → 75, 85, 85, 85, 85 (reasons: Kotlin/Java/C# "as examples" / "in responsibilities"). Full 82 jobs: v7 ×2 and pre-T73 (560a6e8's rubric) ×1, same day → `score_golden_set.py --from-scores` → `apply` 14/14 all; FP at 60 5 → 0/0, at 70 2 → 0/0; `apply+maybe` at 70 89% → 85%/81%; AUC 0.959 → 0.971/0.973; held-out 16 identical. The committed `SCORING_RUBRIC` is byte-identical to the measured v7 (4,023 chars, compared via `ast`). Tests: 3 phrase pins updated to v7's wording + 1 new test for the responsibilities clause (26 pass). Gates on a clean checkout of b6f4775: 642 passed, coverage 92.06%, ruff/mypy clean, `unshare -rn` 642 passed. Score files: `…bdfa26d5…/scratchpad/r/full_v7_a.json`, `full_v7_b.json`, `full_v4_a.json`, `g1_v7.json` |
 | T32 | ffea468 | claude-b | `pytest tests/test_export_from_db.py` → 4 failed before (export listed the planted bogus JSON job), 5 passed after; old JSON-based export tests (`test_main_cli`, `test_export_smoke`, T38's no-DB test) now build the DB. Mutants: no date window → 1 failed; fixed threshold 55 → 1 failed; scan order instead of best-first → 1 failed. **Done-when, real CLI under `unshare -rn`:** `autopilot export --min 70 --days 7` → CSV URLs identical (same order) to `SELECT url FROM jobs WHERE status IN ('scored','notified') AND score >= 70 AND substr(scored_at,1,10) >= date('now','-7 days') ORDER BY score DESC, scored_at, id`: scratch scan DB 3 = 3; copy of production `data/jobs.db` (+ a `config.json` holding only `min_score`) 33 = 33. Production `job_history.json` would give 45 (see the task). Gates: 641 passed, coverage 92.06%, no-network 641 passed, ruff and mypy clean |
 | T31 | 4e337d7 | claude-b | `pytest tests/test_draft_from_db.py tests/test_drafter.py tests/test_draft_numbering.py` → before the code: 4 failed + the tracker fixture could not import `start_scan`; after: 19 passed. Mutants (scratch worktree): ties in another order → 1 failed; `finish_scan` never called → 6 failed; ignoring the scan's time window → 3 failed. Tests that built `last_scan.json` by hand (3 in `test_drafter.py`, T10's numbering test, T38's fixture) now build the DB; T10's fake scorer now stores its score like the real one. Real CLI in the scratch scan directory: scan through the 3.1-only wrapper (cap 2) → `output/jobs_2026-10-08_2.csv`, `scans` row 1 started 16:14:41Z finished 16:16:38Z; `state/last_scan.json` deleted; `autopilot mark 1 none` → row 1 (Mastercard R-290601); `autopilot draft 2` (3 calls, 3.1) → `application_info.txt` "Source URL: …/10571613/sde-ii-amazon-india-ads" = CSV row 2, ends "Review, edit, then submit manually". Gates: 636 passed, coverage 92.04%, no-network 636 passed, ruff and mypy clean |
