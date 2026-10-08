@@ -365,7 +365,7 @@ returns nothing.
 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
-| T38 | Application tracker: `autopilot mark <id> applied` | todo | — | M | T29 |
+| T38 | Application tracker: `autopilot mark <id> applied` | doing · claude-b · 2026-10-08 | claude-b | M | T29 |
 | T39 | One rolling `output/open_matches.csv` | todo | — | S | T32, T38 |
 
 T37 and T40 were verified 2026-10-07 (Done log).
