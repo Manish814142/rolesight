@@ -14,6 +14,8 @@ Usage:
   autopilot export --min 60   — export only jobs with score >= 60
   autopilot export --days 7   — export jobs from last 7 days (requires scan history)
   autopilot export --days 7 --min 60  — combine filters
+  autopilot mark #1 applied   — record an application: applied | interview | rejected | offer (none clears it)
+  autopilot mark https://... interview  — the same for a job URL
   autopilot mcp               — run the MCP server over stdio (for Claude Code)
 """
 import json
@@ -196,6 +198,11 @@ def export_jobs(min_score: int = 0, days: int = 0) -> None:
         print(f"No jobs with score >= {min_score} in {source_label}")
         return
 
+    # Where each application stands (T38, `autopilot mark`)
+    from job_hunt.tracker import application_labels
+    labels = application_labels([j.get("url", "") for j in filtered])
+    filtered = [{**j, "application": labels.get(j.get("url", ""), "")} for j in filtered]
+
     date_str = datetime.now().strftime("%Y-%m-%d")
     day_suffix = f"_last{days}d" if days else ""
     base_name = f"jobs_{date_str}{day_suffix}"
@@ -248,6 +255,12 @@ def main() -> None:
         discover_main(sys.argv[2:])
         return
 
+    # mark records an application status in data/jobs.db (T38) — no API keys needed
+    if cmd == "mark":
+        from job_hunt.tracker import main as mark_main
+        mark_main(sys.argv[2:])
+        return
+
     # export reads local scan state only — no API keys needed, so skip load_config()
     if cmd == "export":
         min_score, days = _parse_export_args(sys.argv)
@@ -294,7 +307,7 @@ def main() -> None:
     else:
         sys.exit(
             f"Unknown command: {cmd}\n"
-            "Use: init | doctor | validate | harvest | discover | scan | draft | export | mcp"
+            "Use: init | doctor | validate | harvest | discover | scan | draft | export | mark | mcp"
         )
 
 

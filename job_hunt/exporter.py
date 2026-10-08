@@ -38,7 +38,7 @@ def _posted_display(posted_at: str) -> str:
 
 
 # Written only when some job has a value, so no column is always empty (T36): Stack comes from the deprecated
-# non-Gemini scorer, the rest from structured scoring (scoring_mode: structured, T41).
+# non-Gemini scorer, the fit/years/cap columns from structured scoring (scoring_mode: structured, T41).
 OPTIONAL_COLUMNS = {
     "Stack": "stack",
     "Stack fit": "stack_fit",
@@ -47,6 +47,7 @@ OPTIONAL_COLUMNS = {
     "Location fit": "location_fit",
     "Min years": "min_years",
     "Capped by": "capped_by",
+    "Application": "application",      # `autopilot mark` (T38), filled by `autopilot export`
 }
 
 

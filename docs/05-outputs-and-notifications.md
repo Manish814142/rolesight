@@ -47,7 +47,21 @@ autopilot export --min 70           # last scan, score ≥ 70
 autopilot export --days 7 --min 70  # every job scored in the last 7 days → output/jobs_DATE_last7d.csv
 ```
 
-It reads `state/last_scan.json` / `state/job_history.json`, not the DB (T32).
+It reads `state/last_scan.json` / `state/job_history.json`, not the DB (T32), except for the **Application**
+column, which it looks up in `data/jobs.db` (read-only) and writes only when some exported job has been marked.
+
+## Tracking applications: `autopilot mark`
+
+```bash
+autopilot mark 1 applied                 # job #1 of the last scan (= CSV row 1, the same job `draft 1` drafts)
+autopilot mark https://… interview       # any job in data/jobs.db, by its URL
+autopilot mark 1 none                    # clear a mistaken mark
+```
+
+Statuses: `applied`, `interview`, `rejected`, `offer`. Each mark stores the status and today's local date in
+`application_status` / `application_date`; a later mark replaces the earlier one (only the latest is kept). It needs
+no API keys and never contacts the employer: it only records what you did. `export` then shows e.g.
+`applied 2026-10-08` in its Application column (T38).
 
 ## The seen-job database: `data/jobs.db`
 
@@ -58,6 +72,7 @@ key), `canonical_hash` (MD5 of title + company + location; fallback key and an i
 `posted_at` and `description`. Skipped postings keep location and date only; queued ones keep
 the description the scorer saw. Rows from before T29 have these empty. `score_model` (T71) is the
 Gemini model that produced `score`; it is empty for rows scored before T71 and for the deprecated providers.
+`application_status` / `application_date` (T38) are set by `autopilot mark`, independent of `status`.
 
 | status | meaning | next scan |
 |---|---|---|

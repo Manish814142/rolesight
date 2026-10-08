@@ -32,6 +32,7 @@ python scripts/score_golden_set.py         # score the labelled jobs with the ru
 autopilot doctor            # SQLite / Gemini / Telegram / ATS egress checks
 autopilot export [--min N] [--days N]   # CSV from state/ (no API keys needed)
 autopilot draft 1 | URL [--jd-file F]   # resume + cover letter draft from the stored description
+autopilot mark 1 | URL applied          # application status (applied|interview|rejected|offer|none) in data/jobs.db; export shows it (T38)
 ```
 
 Tests / gates: `pytest` (coverage gate 85%), `ruff check job_hunt`, `mypy`.

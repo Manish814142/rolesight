@@ -183,6 +183,7 @@ All commands run from the repo root (they read `config.json`, `companies.json` a
 | `autopilot discover --census FILE` | Identifies which ATS each careers page uses | none |
 | `autopilot doctor` | Checks the SQLite write, a 1-token Gemini call, Telegram `getMe` and ATS reachability | Gemini (Telegram optional) |
 | `autopilot draft N \| URL` | Drafts a tailored resume and cover letter for job N of the last scan | stored description + LLM (`--jd-file` for a pasted one) |
+| `autopilot mark N \| URL applied\|interview\|rejected\|offer` | Records where your application stands, with today's date (`none` clears it); `export` shows it | none |
 | `autopilot mcp` | Starts the MCP server for Claude Code ([docs/06](docs/06-mcp-and-skill.md)) | as per tool |
 | `autopilot harvest` / `validate` | Older list builders. Don't point them at the curated list ([docs/04](docs/04-companies-and-scanning.md)) | none |
 

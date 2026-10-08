@@ -101,12 +101,16 @@ DETAIL_COLUMNS = ("location", "posted_at", "description")
 # The Gemini model that produced `score` (T71): models score differently (T70), and a scan falls back to another
 # model when the primary fails. NULL = unknown (rows scored before T71, or by the deprecated providers).
 SCORE_MODEL_COLUMN = "score_model"
+# Where Manish's application stands (T38, `autopilot mark`): applied / interview / rejected / offer and the local date
+# it was marked. Separate from `status`, which is the scanner's own lifecycle (skipped/discovered/scored/notified).
+APPLICATION_COLUMNS = ("application_status", "application_date")
 
 
 def _ensure_detail_columns(conn: sqlite3.Connection) -> None:
-    """Add the detail and score-model columns to a database that predates them (idempotent; no row is touched)."""
+    """Add the detail, score-model and application columns to a database that predates them (idempotent; no row
+    is touched)."""
     have = {row[1] for row in conn.execute("PRAGMA table_info(jobs)")}
-    for col in (*DETAIL_COLUMNS, SCORE_MODEL_COLUMN):
+    for col in (*DETAIL_COLUMNS, SCORE_MODEL_COLUMN, *APPLICATION_COLUMNS):
         if col not in have:
             conn.execute(f"ALTER TABLE jobs ADD COLUMN {col} TEXT")
 
@@ -318,6 +322,41 @@ def get_job_by_url(url: str, db_path: str = DEFAULT_DB_PATH) -> Optional[Dict[st
         conn.row_factory = sqlite3.Row
         row = conn.execute("SELECT * FROM jobs WHERE url_hash = ? LIMIT 1;", (url_hash(url),)).fetchone()
         return dict(row) if row else None
+
+
+def set_application_status(row_id: int, status: Optional[str], day: Optional[str],
+                           db_path: str = DEFAULT_DB_PATH) -> None:
+    """Record (or with None, clear) the application status and its date on one row (T38)."""
+    init_db(db_path)
+    with sqlite3.connect(db_path) as conn:
+        conn.execute("UPDATE jobs SET application_status = ?, application_date = ? WHERE id = ?;",
+                     (status, day, row_id))
+        conn.commit()
+
+
+def get_application_statuses(urls: List[str], db_path: str = DEFAULT_DB_PATH) -> Dict[str, Dict[str, str]]:
+    """{url: {"status", "date"}} for the given URLs that have an application status (T38).
+
+    Read-only: a missing database, or one that predates the columns, gives {} and is neither created nor migrated
+    (`export` must work with no database at all).
+    """
+    if not os.path.exists(db_path):
+        return {}
+    conn = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+    try:
+        have = {row[1] for row in conn.execute("PRAGMA table_info(jobs)")}
+        if not set(APPLICATION_COLUMNS) <= have:
+            return {}
+        out: Dict[str, Dict[str, str]] = {}
+        for url in urls:
+            row = conn.execute(
+                "SELECT application_status, application_date FROM jobs WHERE url_hash = ? "
+                "AND application_status IS NOT NULL LIMIT 1;", (url_hash(url),)).fetchone()
+            if row:
+                out[url] = {"status": row[0], "date": row[1] or ""}
+        return out
+    finally:
+        conn.close()
 
 
 def get_jobs_by_status(
