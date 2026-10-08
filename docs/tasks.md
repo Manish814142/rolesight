@@ -336,7 +336,7 @@ review. Never write the real file unattended.
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
 | T31 | `draft` reads SQLite | review · claude-b · 4e337d7 | claude-b | S | T29 |
-| T32 | `export` reads SQLite | todo | — | S | T29 |
+| T32 | `export` reads SQLite | doing · claude-b · 2026-10-08 | claude-b | S | T29 |
 | T33 | first_seen / last_seen and closed-job detection | todo | — | M | T29 |
 | T34 | Retire `last_scan.json`, `job_history.json`, `seen_jobs.json` | todo | — | S | T31, T32 |
 
