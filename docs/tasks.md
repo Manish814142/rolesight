@@ -409,6 +409,11 @@ until the next normal run (T02 will set the default); (3) closed jobs are not ex
 
 T41, T42, T43, T50, T51, T52, T55 and T63 were verified 2026-10-07 (Done log).
 
+**T45 · Local dashboard or TUI** (not started; claude-b, 2026-10-10). Size L and only a title, so its form is
+Manish's choice. **Questions for Manish:** a local web page (opened in the browser, reads `data/jobs.db`) or a terminal
+UI? What must it do beyond `output/open_matches.csv` (T39) and `autopilot mark` (T38): filter/sort, mark applied from
+the list, open the posting, show the reason and keyword gaps (T44)?
+
 **T44 · Keyword gap analysis in `draft`.** (The board had only the title; this definition is claude-b's, 2026-10-10,
 for Manish to confirm.) When `draft` writes its files, also list the technologies the posting names that the resume
 does not, so Manish sees at a glance what he would be asked for that he lacks (his apply rule: skip postings that
