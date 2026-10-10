@@ -3,6 +3,7 @@ from datetime import datetime
 from pathlib import Path
 
 from job_hunt.db import get_job_by_url, last_scan_jobs
+from job_hunt.keywords import gap_report, keyword_gaps
 from job_hunt.llm_utils import MAX_DESCRIPTION_CHARS, chat_with_llm
 from job_hunt.log import get_logger
 
@@ -72,6 +73,12 @@ def draft_application(config: dict, job_ref: str, jd_file: str | None = None) ->
     out_dir = OUTPUT_DIR / f"{company_slug}-{date_str}"
     out_dir.mkdir(parents=True, exist_ok=True)
     logger.debug(f"Output directory: {out_dir.resolve()}")
+
+    # What the posting names that the resume does not (T44): no LLM call, so it is written even if a call fails.
+    gaps = keyword_gaps(jd, resume)
+    (out_dir / "keyword_gaps.txt").write_text(gap_report(gaps, job_url), encoding="utf-8")
+    logger.info(f"In the posting, not in your resume: {', '.join(gaps['missing']) or 'nothing from the vocabulary'}"
+                f"  (in both: {len(gaps['matched'])}; {out_dir / 'keyword_gaps.txt'})")
 
     logger.info("Tailoring resume...")
     resume_md = chat_with_llm(

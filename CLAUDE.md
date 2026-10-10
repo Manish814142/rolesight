@@ -31,7 +31,7 @@ python scripts/measure_workday_tenants.py   # per-tenant Workday fetch time, det
 python scripts/score_golden_set.py         # score the labelled jobs with the rubric off/on (~150 Gemini calls); --from-scores re-analyses
 autopilot doctor            # SQLite / Gemini / Telegram / ATS egress checks
 autopilot export [--min N] [--days N]   # CSV from data/jobs.db: last finished scan, or N days (no API keys needed; T32)
-autopilot draft 1 | URL [--jd-file F]   # resume + cover letter draft from the stored description
+autopilot draft 1 | URL [--jd-file F]   # resume + cover letter draft from the stored description, + keyword_gaps.txt (T44)
 autopilot mark 1 | URL applied          # application status (applied|interview|rejected|offer|none) in data/jobs.db; export shows it (T38)
 ```
 

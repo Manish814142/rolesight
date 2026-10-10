@@ -154,7 +154,13 @@ autopilot draft https://…  # any posting URL
 ```
 
 It writes `output/<company>-<date>/`: `resume_<company>.md` (a tailored resume),
-`cover_letter_<company>.md` and `application_info.txt`. **It never submits anything.**
+`cover_letter_<company>.md`, `application_info.txt` and `keyword_gaps.txt` (T44: the technologies the posting names
+that your resume does not, and those in both; printed too). **It never submits anything.**
+
+`keyword_gaps.txt` uses a fixed vocabulary of 72 tech terms (`job_hunt/keywords.py`), no LLM call. It cannot tell a
+requirement from an example ("languages such as Kotlin, Java or C#") or a plus, so read the posting for each missing
+term. Ambiguous words match only with their usual capitalisation (Go, Spring, React, REST, SAP, RAG, ML), and
+"Express" only as Express.js or next to Node; a term the vocabulary lacks is not reported.
 
 Current limits:
 - **The description comes from the database** (stored for queued jobs since T29). For a job
