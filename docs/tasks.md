@@ -430,10 +430,17 @@ until the next normal run (T02 will set the default); (3) closed jobs are not ex
 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
-| T44 | Keyword gap analysis in `draft` | todo | — | M | T40 |
+| T44 | Keyword gap analysis in `draft` | doing · claude-b · 2026-10-10 | claude-b | M | T40 |
 | T45 | Local dashboard or TUI | todo | — | L | T29 |
 
 T41, T42, T43, T50, T51, T52, T55 and T63 were verified 2026-10-07 (Done log).
+
+**T44 · Keyword gap analysis in `draft`.** (The board had only the title; this definition is claude-b's, 2026-10-10,
+for Manish to confirm.) When `draft` writes its files, also list the technologies the posting names that the resume
+does not, so Manish sees at a glance what he would be asked for that he lacks (his apply rule: skip postings that
+*require* what he does not have). Deterministic, no extra LLM call: a fixed vocabulary of tech terms with aliases.
+*Done when:* unit tests cover the matching (aliases, C#/C++/.NET, Java vs JavaScript, word boundaries); `draft`
+writes `keyword_gaps.txt` next to the cover letter and prints the missing terms; a real `autopilot draft N` does it.
 
 ---
 
