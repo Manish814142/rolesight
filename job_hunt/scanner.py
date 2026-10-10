@@ -33,6 +33,7 @@ from job_hunt.prefilter import (
     should_evaluate_job,
 )
 from job_hunt.scorer import score_and_process_batch, score_and_process_job
+from job_hunt.settings import min_score_of
 
 logger = get_logger()
 
@@ -141,7 +142,7 @@ def score_jobs(jobs: list[dict], resume: str, config: dict) -> list[dict]:
         return []
 
     if config.get("llm_provider") == "gemini":
-        min_score = config.get("candidate", {}).get("min_score", 55)
+        min_score = min_score_of(config)
         results = []
         for idx, job in enumerate(jobs):
             res = score_job(job, resume, config)
@@ -192,7 +193,7 @@ def score_batch(jobs: list[dict], resume: str, config: dict) -> Optional[list[di
         for i, j in enumerate(jobs)
     )
 
-    min_score = config.get("candidate", {}).get("min_score", 55)
+    min_score = min_score_of(config)
     candidate_profile = _build_candidate_profile(config)
 
     prompt = SCORE_PROMPT.format(
@@ -301,7 +302,7 @@ def run_scan(config: dict, companies: list[dict]) -> None:
     total = len(companies)
     logger.info(f"=== Scan started — {total} companies to check ===")
     logger.info(f"Candidate: {config.get('candidate', {}).get('name', 'unknown')}")
-    logger.info(f"Min score: {config.get('candidate', {}).get('min_score', 55)} | Top N: {config.get('candidate', {}).get('top_n', 5)}")
+    logger.info(f"Min score: {min_score_of(config)} | Top N: {config.get('candidate', {}).get('top_n', 5)}")
     provider = config.get("llm_provider") or "gemini"
     model_by_provider = {
         "gemini": config.get("gemini_model") or "gemini-3.5-flash-lite",
@@ -314,7 +315,7 @@ def run_scan(config: dict, companies: list[dict]) -> None:
     resume = resume_path.read_text()
     logger.debug(f"Resume loaded: {resume_path} ({len(resume)} chars)")
 
-    min_score = config.get("candidate", {}).get("min_score", 55)
+    min_score = min_score_of(config)
     top_n = config.get("candidate", {}).get("top_n", 5)
 
     init_db()

@@ -29,9 +29,9 @@ You can also put them in `config.json` (`gemini_api_key`, `telegram.token`,
 3. A value that is still a template placeholder (`YOUR_…`, `…_here`, `…_HERE`) is
    ignored. A placeholder Telegram value counts as "not configured".
 
-Rule 2 has a visible side effect: if `.env` sets `MIN_SCORE`, it beats the
-`MIN_SCORE=70` that `run_daily.sh` exports (T05). Check the `Min score:` line at the top
-of a scan's log to see which value was used.
+Rule 2 means a `MIN_SCORE=` line in `.env` beats `candidate.min_score` in `config.json`. Since T05 the
+`.env` template has no such line and `run_daily.sh` exports none, so `config.json` is the one place (default 70).
+Check the `Min score:` line at the top of a scan's log to see the value in force.
 
 ## Verify
 

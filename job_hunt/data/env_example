@@ -22,5 +22,5 @@ TELEGRAM_CHAT_ID="your_telegram_chat_id_here"
 # Candidate Configuration (overrides config.json)
 CANDIDATE_NAME="Your Name"
 RESUME_PATH="resume/YOUR_RESUME.md"
-MIN_SCORE=60
+# MIN_SCORE=70   # normally set candidate.min_score in config.json instead (T05); this overrides it for every run
 TOP_N=5

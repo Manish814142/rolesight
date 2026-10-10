@@ -122,8 +122,6 @@ As of 2026-10-04. The live list of work is the task board, [docs/tasks.md](docs/
 **Known gaps** (each is a task on the board)
 - **Not scheduled yet.** There is no cron job or timer; scans run by hand (T07). The old
   `setup_cron.sh` installs an outdated command, so don't use it (T08).
-- **Score threshold confusion.** `run_daily.sh` announces `MIN_SCORE=70`, but `.env`'s
-  value wins (T05).
 - **Amazon jobs are scored on a stub.** Their description is cut to 202 characters although
   the API has the full text (T57).
 - **Scores vary a little between runs.** On the 20 hardest labelled jobs, 5 runs each at the default temperature: 2 had a spread over 20 points and 2-3 crossed `min_score`. Temperature 0 does not fix it: re-measured on `gemini-3.5-flash-lite` only, it behaved like 0.1 (T60). With the T73 rubric, two runs of all 82 labelled jobs changed no pass/fail decision at 60 or 70.

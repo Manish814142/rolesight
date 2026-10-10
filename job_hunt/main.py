@@ -26,6 +26,8 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+from job_hunt.settings import min_score_of
+
 _PLACEHOLDERS = {
     "YOUR_ANTHROPIC_API_KEY", "your_anthropic_api_key_here",
     "YOUR_GEMINI_API_KEY", "your_gemini_api_key_here",
@@ -178,7 +180,7 @@ def _export_min_score() -> int | None:
     None without config.json: export needs no config or API keys, and the column is then left blank."""
     if not Path("config.json").exists():
         return None
-    return int(load_config().get("candidate", {}).get("min_score", 55))
+    return min_score_of(load_config())
 
 
 def export_jobs(min_score: int = 0, days: int = 0) -> None:

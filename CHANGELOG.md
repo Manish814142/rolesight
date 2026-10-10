@@ -9,6 +9,10 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Changed (2026-10-10, T05 — one MIN_SCORE, 70)
+- Manish chose `min_score` 70 (measured on the 82 labelled jobs: precision 92% at 70 against 86% at 60; the CSV still lists every score). It now lives in one place: `config.json`'s `candidate.min_score`. The code default is 70 for every reader (`job_hunt/settings.py`; scanner and export used 55 before), the example configs say 70, the `.env` template has no active `MIN_SCORE` line, and `run_daily.sh` no longer exports a value that `.env` overrode (its banner printed 70 while the scan used 60). Manish's own `config.json` is set to 70 and his `.env` line is commented out.
+- Checked through the real runner: `./run_daily.sh --limit 1` in a scratch directory (`.env` with the comment, no `MIN_SCORE` in the shell) logs `Min score: 70 | Top N: 5` first; that scan then stopped at loading a resume the scratch directory did not have, which the check did not need. Not run: a Telegram alert at 70.
+
 ### Added (2026-10-10, T44 — keyword gaps in `draft`)
 - `autopilot draft` also writes `keyword_gaps.txt` in the draft folder and prints its first line: the technologies the posting names that the resume does not ("In the posting, not in your resume (7): Spring / Spring Boot, SQS, AWS Lambda, …") and those in both. No LLM call: `job_hunt/keywords.py` holds a fixed vocabulary of 72 terms with their spellings (C#/.NET/C++ by symbol, Java not inside JavaScript, ambiguous English words such as Go, Spring, React, REST matched case-sensitively; "Express" only as Express.js or next to Node). It is written before the LLM calls, so it exists even if they fail. It does not tell requirements from examples or pluses (that is the scorer's job, T73).
 - Checked: on the 82 golden-set postings every sampled hit of the ambiguous terms is the technology (one miss seen: lowercase "springboot"). Real `autopilot draft` in a scratch directory (3.1 wrapper): a language-agnostic Amazon posting → nothing missing, 0 in both (its text names no vocabulary term; the resume has 26); Mastercard "Senior Software Engineer" → 7 missing, 13 in both.

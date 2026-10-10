@@ -21,7 +21,7 @@ autopilot scan --posted-within 7   # only jobs posted in the last 7 days (undate
 autopilot discover --recheck --merge companies.json --report /tmp/r.csv   # monthly list health check
 autopilot discover --census scripts/careers_urls.txt --report /tmp/c.csv --emit-seeds /tmp/s.txt
                             # which ATS do careers pages use? --emit-seeds -> verify with discover --add-file
-./run_daily.sh              # runner: timestamps into data/scan.log; exports MIN_SCORE=70 but .env's MIN_SCORE wins (T05)
+./run_daily.sh              # runner: timestamps into data/scan.log; min_score comes from config.json (default 70, T05)
 autopilot harvest --out /tmp/x.json   # rebuilds a list from india.yml + LinkedIn cache; refuses to overwrite an existing file without --force (T43); prefer discover
 autopilot validate          # prunes companies.json in place (accepts empty boards) — prefer discover
 autopilot discover --seeds scripts/company_seeds.txt --report /tmp/r.csv --out /tmp/v.json [--merge companies.json]

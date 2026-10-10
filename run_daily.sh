@@ -3,7 +3,7 @@
 # Autopilot Job Hunt - Daily Automated Scan Runner
 # ==============================================================================
 # Executes scheduled scans across native ATS adapters, appends timestamped logs
-# to data/scan.log, and dispatches Telegram notifications for high matches (>= 70).
+# to data/scan.log, and dispatches Telegram notifications for matches (>= min_score in config.json, default 70).
 # ==============================================================================
 set -euo pipefail
 
@@ -24,14 +24,14 @@ else
     exit 1
 fi
 
-# Ensure threshold for Telegram alerts is set to >= 70
-export MIN_SCORE="${MIN_SCORE:-70}"
+# The threshold is config.json's candidate.min_score (default 70, T05); the scan logs the value it uses
+# ("Min score: N"). Nothing is exported here: a second value used to be announced and then overridden by .env.
 
 LOG_FILE="data/scan.log"
 START_TIMESTAMP="$(date -u '+%Y-%m-%d %H:%M:%SZ')"
 
 echo "======================================================================" >> "$LOG_FILE"
-echo "[$START_TIMESTAMP] Starting Autopilot Daily Job Scan (min_score=${MIN_SCORE})" | tee -a "$LOG_FILE"
+echo "[$START_TIMESTAMP] Starting Autopilot Daily Job Scan" | tee -a "$LOG_FILE"
 echo "======================================================================" >> "$LOG_FILE"
 
 # Optional pre-flight diagnostics

@@ -69,7 +69,7 @@ TinyFish careers-page path was removed (T42).
 | [`drafter.py`](job_hunt/drafter.py) | `autopilot draft N\|URL [--jd-file F]`: reads the job description stored in the database (T29/T40) → tailored resume, cover letter, application info in `output/<company>-<date>/`. |
 | [`main.py`](job_hunt/main.py) | CLI (`init doctor validate harvest discover scan draft export mcp`) and `load_config()`; `config.py` re-exports it. |
 | [`tools.py`](job_hunt/tools.py) / [`mcp_server.py`](job_hunt/mcp_server.py) | Protocol-agnostic tool layer and FastMCP stdio server (`scan_jobs`, `draft_application`, `export_jobs`). |
-| [`run_daily.sh`](run_daily.sh) | Runner: timestamps every output line into `data/scan.log`, exports `MIN_SCORE=70` (which `.env` overrides, T05). Not scheduled yet (T07). |
+| [`run_daily.sh`](run_daily.sh) | Runner: timestamps every output line into `data/scan.log`, sets no `min_score` of its own (it comes from `config.json`, default 70, T05). Not scheduled yet (T07). |
 
 ---
 
