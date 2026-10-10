@@ -22,12 +22,13 @@ STAMP="$(date +%Y-%m-%d)"
 OUT="data/recheck"
 COPY="$OUT/companies.$STAMP.json"
 REPORT="$OUT/report.$STAMP.csv"
+VERIFIED="$OUT/verified.$STAMP.json"     # discover writes this next to the report instead of into the repository root
 DIFF="$OUT/diff.$STAMP.txt"
 mkdir -p "$OUT"
 cp companies.json "$COPY"
 
 echo "Rechecking $(basename "$REPO")/companies.json on a copy: $COPY"
-"$PY" -m job_hunt discover --recheck --merge "$COPY" --report "$REPORT"
+"$PY" -m job_hunt discover --recheck --merge "$COPY" --report "$REPORT" --out "$VERIFIED"
 
 diff -u companies.json "$COPY" > "$DIFF" || true     # diff exits 1 when the files differ
 changed="$(grep -c '^[-+] ' "$DIFF" || true)"

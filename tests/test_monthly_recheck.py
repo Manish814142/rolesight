@@ -18,10 +18,11 @@ SCRIPT = ROOT / "scripts" / "monthly_recheck.sh"
 STUB = textwrap.dedent("""\
     #!/usr/bin/env bash
     [ "$1" = "-m" ] && [ "$2" = "job_hunt" ] && [ "$3" = "discover" ] && [ "$4" = "--recheck" ] || { echo "unexpected: $*" >&2; exit 9; }
-    copy=""; report=""
+    copy=""; report=""; out="verified_companies.json"       # discover's own default for --out
     while [ $# -gt 0 ]; do
-        case "$1" in --merge) copy="$2"; shift 2 ;; --report) report="$2"; shift 2 ;; *) shift ;; esac
+        case "$1" in --merge) copy="$2"; shift 2 ;; --report) report="$2"; shift 2 ;; --out) out="$2"; shift 2 ;; *) shift ;; esac
     done
+    echo "[]" > "$out"
     grep -v '"name": "Gone Inc"' "$copy" > "$copy.tmp" && mv "$copy.tmp" "$copy"
     echo "seed,verdict" > "$report"; echo "Gone Inc,dropped" >> "$report"
 """)
@@ -64,6 +65,9 @@ def test_the_run_leaves_a_diff_and_a_report_and_never_touches_the_real_list(tmp_
     assert "Gone Inc,dropped" in report.read_text()
     assert "Gone Inc" not in copy.read_text() and "Stays" in copy.read_text()
     assert "1 line" in r.stdout and str(diff.relative_to(repo)) in r.stdout    # tells the reader where to look
+    # real `discover` writes verified_companies.json (its --out default) into the working directory: the first real
+    # run of this script left one in the repository root
+    assert not (repo / "verified_companies.json").exists() and len(list(out.glob("verified.*.json"))) == 1
 
 
 def test_an_unchanged_list_says_so(tmp_path):
