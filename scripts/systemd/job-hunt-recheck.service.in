@@ -1,0 +1,14 @@
+[Unit]
+Description=JobNotify monthly companies.json health check (report only)
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=@REPO@
+ExecStart=/usr/bin/env bash @REPO@/scripts/monthly_recheck.sh
+# Re-verifies every board: minutes, no Gemini calls. It works on a copy and never writes companies.json.
+TimeoutStartSec=2h
+Nice=10
+StandardOutput=journal
+StandardError=journal

@@ -120,8 +120,8 @@ As of 2026-10-04. The live list of work is the task board, [docs/tasks.md](docs/
   title are all scored (T30); Workday paging no longer repeats postings (T47).
 
 **Known gaps** (each is a task on the board)
-- **Not scheduled yet.** There is no cron job or timer; scans run by hand (T07). The old
-  `setup_cron.sh` installs an outdated command, so don't use it (T08).
+- **Not scheduled yet.** There is no timer installed; scans run by hand. The unit files are
+  ready: `scripts/systemd/install.sh` installs a daily systemd user timer when you choose (T07).
 - **Amazon jobs are scored on a stub.** Their description is cut to 202 characters although
   the API has the full text (T57).
 - **Scores vary a little between runs.** On the 20 hardest labelled jobs, 5 runs each at the default temperature: 2 had a spread over 20 points and 2-3 crossed `min_score`. Temperature 0 does not fix it: re-measured on `gemini-3.5-flash-lite` only, it behaved like 0.1 (T60). With the T73 rubric, two runs of all 82 labelled jobs changed no pass/fail decision at 60 or 70.
@@ -173,7 +173,7 @@ All commands run from the repo root (they read `config.json`, `companies.json` a
 |---|---|---|
 | `autopilot scan` | Full scan: fetch → filter → score → CSV | Gemini |
 | `autopilot scan --limit 5` | Only the first 5 companies in `companies.json` | Gemini |
-| `autopilot scan --posted-within 7` | Score only jobs posted in the last 7 days; undated jobs are kept | Gemini |
+| `autopilot scan --posted-within 3` | One run with a 3-day window (`all` = none). The default window is `max_posted_age_days`, 7; undated jobs are kept | Gemini |
 | `./run_daily.sh [args]` | Runs `scan` with each output line timestamped into `data/scan.log` | Gemini |
 | `autopilot export [--min N] [--days N]` | Writes a CSV from the last scan, or from N days of history, keeping jobs with score ≥ N | none |
 | `autopilot discover --add-file paste.txt --merge companies.json` | Verifies pasted company names and adds the ones that pass ([docs/04](docs/04-companies-and-scanning.md)) | none |

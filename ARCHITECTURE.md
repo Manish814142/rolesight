@@ -31,7 +31,7 @@ flowchart TD
     DEDUP -- yes --> SKIPF["skip (final)"]
     DEDUP -- "new / skipped / discovered" --> PF{"prefilter.should_evaluate_job<br/>title + location"}
     PF -- reject --> SKIPPED["status = skipped"]
-    PF -- pass --> AGE{"prefilter.is_too_old<br/>(--posted-within N)"}
+    PF -- pass --> AGE{"prefilter.is_too_old<br/>(max_posted_age_days, default 7)"}
     AGE -- "known date > N days" --> SKIPPED
     AGE -- "within N / undated" --> QUEUE["status = discovered<br/>queued (all companies)"]
     QUEUE --> ENRICH["adapters.enrich_job (parallel)<br/>ENRICHERS: workday, smartrecruiters, oracle_hcm, eightfold<br/>failure → keep list-API text"]
@@ -192,7 +192,7 @@ Measured on the date given. Each one has a task.
 - **Unreachable employers:** custom portals and platforms without a public API (Darwinbox,
   Zoho Recruit…; Phenom mostly fronts Workday, T26). The census found 52% of 458 careers pages
   JS-only or unidentified.
-- **Operations:** not scheduled (T07); `setup_cron.sh` is outdated (T08); no off-machine backup (T01).
+- **Operations:** not scheduled: the timer is `scripts/systemd/install.sh`, run by Manish (T07); no off-machine backup (T01).
 
 ---
 

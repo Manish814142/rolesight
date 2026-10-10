@@ -144,14 +144,24 @@ What the columns and files mean: [05](05-outputs-and-notifications.md).
 
 ## 7. Run it daily
 
-Scheduling isn't set up yet (task T07 on the [board](tasks.md)). Until it is, run it by hand:
+Run it by hand with the runner, which timestamps every output line into `data/scan.log`:
 
 ```bash
-./run_daily.sh --posted-within 7    # same scan, each output line timestamped into data/scan.log
+./run_daily.sh                      # the posted-date window comes from config.json (default 7 days)
+./run_daily.sh --posted-within 3    # one run with another window; `all` switches it off
 ```
 
-Don't use `setup_cron.sh`. It installs an outdated command that bypasses `run_daily.sh`
-(T08).
+To run it every day, install the systemd **user** timer (nothing is installed until you run this):
+
+```bash
+scripts/systemd/install.sh              # daily at 09:00 local time, catches up a missed run (Persistent=true)
+scripts/systemd/install.sh --at 07:30   # another time
+systemctl --user list-timers job-hunt-scan.timer
+systemctl --user start job-hunt-scan.service   # one scan right now
+scripts/systemd/install.sh --uninstall
+```
+
+The old `setup_cron.sh` is gone: it installed a cron line that bypassed `run_daily.sh` (T08).
 
 ## Next
 

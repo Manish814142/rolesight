@@ -1,0 +1,14 @@
+[Unit]
+Description=JobNotify daily job scan (run_daily.sh)
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=@REPO@
+ExecStart=/usr/bin/env bash @REPO@/run_daily.sh
+# A full scan takes 30-40 minutes (fetch ~10 min, then about 5 s per job scored); never let one run forever.
+TimeoutStartSec=3h
+Nice=10
+StandardOutput=journal
+StandardError=journal
