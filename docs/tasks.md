@@ -6,10 +6,22 @@ Antigravity, or any other agent.
 - **Told to "work from docs/tasks.md"?** Follow the [Working loop](#working-loop).
 - **Told to "verify the tasks"?** Follow [Verifying](#verifying).
 
-**Last re-evaluated:** 2026-10-07 (afternoon, after 3.5's quota reset) against commit `3bc1c13`: all 30 tasks in the review queue verified by a fresh
-Claude session at Manish's request (instead of Antigravity); T64–T67, T70, T72, T73 added and implemented; T60 re-checked on 3.5 and verified (604 tests pass,
-coverage 91.9%, ruff and mypy clean — measured). File:line references drift; search for the named function if
-a line has moved.
+**Last re-evaluated:** 2026-10-10 (evening) against commit `0c3ba2b`: Manish answered the open decisions (below) and the agent implemented every
+task that needed nothing more from him; they are in the [Review queue](#review-queue). Measured at that commit: 797 tests pass (also
+under `unshare -rn`, no network), coverage 92.68%, ruff and mypy clean. File:line references drift; search for the named function if a line has moved.
+
+### Manish's answers (2026-10-10) and what became of them
+
+| Task | His answer | Result |
+|---|---|---|
+| T02 | Asked what the question was ("how many days back"); added: a job older than the window should not be scraped at all | **7 days** is now the default (Claude's choice, one number: `candidate.max_posted_age_days` in `config.json`, `null` = off, `--posted-within N|all`). The adapters no longer spend a request on older jobs where the list order allows it. **Tell me if you want 3.** |
+| T05 | 70 | Done: `min_score` 70, in `config.json` only. |
+| T62 | Allow "python" for now; decide again on the results | Done (`java`, `golang` stay excluded: he named only python). |
+| T74 | Allow AI Engineer / Forward Deployed Engineer only when the posting accepts his MEAN / backend stack with GenAI used in workflows; not when it needs LangGraph, LangChain, vector DBs or other advanced AI | Done in the pre-filter and rubric rule 8, measured; **see T74's caveats (some borderline AI roles are now capped)**. |
+| T26 | Build the Phenom adapter | Done (BCG added). |
+| T45 | A web page, not a terminal; configure everything A–Z; Gemini suggests / checks the configuration; "clarify if I understood wrong" | Architectural, so a **design proposal with questions** is written (`docs/superpowers/specs/2026-10-10-web-ui-design.md`); no code until he approves it. |
+| T34 | "You decide, in my best interest" | Decided: **do not import** the 45 old scores (they come from the pre-rubric prompt of 2026-10-04; any job still open is re-scored by the next scan). `scripts/import_json_history.py` stays for whoever disagrees. `state/*.json` are left on disk. |
+| T31, T33, T38, T39, T44, T71, g1 | Not answered | The defaults the implementer chose stay in force; they are still **waiting for his confirmation**. |
 
 ---
 
@@ -131,7 +143,8 @@ After this list: **T40, T50, T42** (Manish will not use TinyFish; all three veri
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
 | T59 | Confirm the golden-set labels | manish | — | S | T48 |
-| T74 | Pre-filter: let "AI Engineer" / "Forward Deployed Engineer" titles through? | decision | — | XS | — |
+| T62 | Allow "python" in job titles | review · claude · 4b2ef97 | claude | XS | — |
+| T74 | AI Engineer / Forward Deployed Engineer titles reach Gemini; rubric rejects heavy AI | review · claude · 0c3ba2b | claude | M | — |
 
 T48, T57, T58, T60, T61 and T49 were verified 2026-10-07, T72 and T70 on 2026-10-08 (Done log).
 
@@ -145,8 +158,17 @@ minutes).
 3+ years in the video-games industry), so g27 is now `no` with `label_source` `manish`. His rule for the other
 rows: `apply` only when the required stack and experience match his and the day-to-day work does too. With g27
 relabelled, the current prompt (3.5, saved T58 scores) finds 14/14 `apply` jobs at MIN_SCORE 60 and 70.
+**j7 (from T74, 2026-10-10):** Thermo Fisher "Software Engineer I, AI Solutions & Platforms" is labelled `apply` (2026-10-04), but its duties are RAG and agentic
+workflows with pgvector / Qdrant vector search, which is the "heavy AI" he said to reject on 2026-10-10. The new rubric clause scores it 45. Relabel it `no` if you
+agree; I did not change a label to fit a result. The new file `scripts/golden_set_ai.csv` (75 AI / FDE postings) needs the same confirmation.
 **g1 (from T73's review, 2026-10-08):** Expedia names Kotlin/Java/C# only in the responsibilities ("using languages such as");
 its qualifications ask for any language. Kept `apply` (rubric v7 scores it 75–85). If you would skip it, relabel g1 `no`.
+
+**T62 · Allow "python" in job titles.** *Decision (Manish, 2026-10-10):* yes for now; decide again on the results. `java` and `golang` stay excluded.
+**Implemented (claude, 2026-10-10, 4b2ef97).** One word removed from the title exclusion pattern; tests for 7 titles that now pass and 9 that must still be
+rejected (Staff, Lead, Architect, Intern, Data Scientist, Java, Golang, Test, Frontend). Measured on the saved 2026-10-08 fetch (39,873 jobs): survivors
+1,745 → 1,792 (+47, 0 removed; 11 posted within 7 days, 39 within 30). *Done when:* the 47 titles pass, nothing else changes — met on the saved fetch.
+Not measured: what Gemini scores them under the current rubric (the 2026-10-07 numbers were 3.1 and the old rubric: 9 of 32 ≥ 80).
 
 **T70 · Which Gemini model scores better?** (Manish's question, 2026-10-07: is 3.1-flash-lite's output the
 same as 3.5-flash-lite's, so he can spend quota wisely?) `score_golden_set.py --model M` scores with one model
@@ -195,6 +217,20 @@ profile lists GenAI automation; `seeking` says Backend / Full Stack. Cost: ~68 m
 `(gen\s*ai|applied\s+ai|ai|llm)\s+engineer|forward[\s-]deployed\s+engineer` to `TITLE_INCLUDE_PATTERN` with tests
 (seniority/lead/staff exclusions still apply).
 *Done when:* Manish says yes or no; if yes, the 68 titles pass and no labelled `apply`/`maybe` job is rejected.
+**Decision (Manish, 2026-10-10):** yes, *but only* when the posting accepts his MEAN / backend stack with GenAI used in workflows; not when it
+requires heavy AI (LangGraph, LangChain, vector DBs, "advanced things").
+**Implemented (claude, 2026-10-10, 0c3ba2b).** (1) Pre-filter: AI / Gen AI / Generative AI / Agentic AI / Applied AI / LLM Engineer and Forward
+Deployed Engineer titles pass (survivors 1,792 → 1,900 on the saved 2026-10-08 fetch, 0 removed; 80 of the 108 are in India). (2) Rubric rule 8
+gains an AI/ML clause. (3) New `scripts/golden_set_ai.csv`: 75 India AI/FDE postings fetched 2026-10-10 with full descriptions, labelled by Claude
+against his rule (66 `no`, 1 `apply`, 8 `maybe`; none confirmed by him). Measured on `gemini-3.5-flash-lite` (pinned): the old rubric passes 23 at
+70, 19 of them `no` (precision 17%); the shipped wording passes 2 of the first 43 where the old one passed 16 (false positives 15 → 2). **Costs and
+caveats:** on the original 82 labelled jobs one run of the second wording found 12 of 14 `apply` (v7: 14 of 14, twice); j7 (Thermo Fisher "AI
+Solutions & Platforms": RAG, agentic workflows, pgvector/Qdrant) 90 → 45 and g8 (MongoDB SE 3) 90 → 45/90, which is the clause working on j7
+(its `apply` label predates his rule — **please relabel `no` if you agree, T59**) and a misfire on g8. Borderline AI-light FDE roles (Razorpay
+90/45/45, DevRev 45–50) are capped most of the time. **Not done: the final wording's full 75-job run (3.5's 500-call daily quota ran out at job 43,
+19:28 IST) — re-run `python scripts/score_golden_set.py --csv scripts/golden_set_ai.csv --arms current --model gemini-3.5-flash-lite` after the reset
+(about 05:30 IST) and `--from-scores` it against the saved scores before marking this verified.** Questions for Manish: are the 9 labels I called
+allowed right (T59 for the new file)? Do you want "AI/ML Engineer" and "Machine Learning Engineer" titles too (not added)?
 
 ---
 
@@ -209,11 +245,11 @@ at 400 jobs; T02 and T05 are still Manish's decisions.
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
 | T01 | Back up the repo to a private remote | manish | — | XS | — |
-| T02 | Turn on the posted-date window by default | decision | — | XS | — |
-| T05 | Keep one MIN_SCORE, in one place | decision | — | XS | — |
+| T02 | Turn on the posted-date window by default | review · claude · 5001dcd | claude | XS | — |
+| T05 | Keep one MIN_SCORE, in one place | review · claude · bda04eb | claude | XS | — |
 | T06 | Check that Telegram works | manish | — | XS | — |
-| T07 | Schedule `run_daily.sh` with a systemd user timer | todo | — | S | T02, T03, T04, T05 |
-| T08 | Remove or repoint `setup_cron.sh` | todo | — | XS | T07 |
+| T07 | Schedule `run_daily.sh` with a systemd user timer | manish | — | S | T02, T03, T04, T05 |
+| T08 | Remove or repoint `setup_cron.sh` | review · claude · 50d9135 | claude | XS | T07 |
 | T09 | First full production run; record the funnel | todo | — | S | T02–T07 |
 
 T03 and T04 were verified 2026-10-07, T64 on 2026-10-08 (Done log).
@@ -232,6 +268,15 @@ Measured by the expansion work: 226 passes posted ≤7 days ago, 99 ≤3 days.
 `max_posted_age_days`, `fetch_workers` and `gemini_scoring_mode` in
 `config.example.json`; none of them are there today.
 *Done when:* `./run_daily.sh --limit 5` logs "skipped as posted more than N day(s) ago".
+**Decision (Manish, 2026-10-10):** he asked what the question was and added that a job older than the window should not be scraped at all (no API call for it).
+**Implemented (claude, 2026-10-10, 5001dcd).** Default **7** (my choice: he named no number; 3 was his example; 7 survives a skipped day), in
+`job_hunt/settings.py`; `null` in `config.json` = no window; `autopilot scan --posted-within N|all` overrides it; the example configs document it with
+`fetch_workers` and `gemini_scoring_mode`. The window reaches the adapters: no Workday detail call for an older job; Oracle HCM, Eightfold and SmartRecruiters
+stop paging at the first all-older page (their lists are newest first: 0 order violations over whole boards, measured); Amazon is not cut (980 order
+violations). Real boards, requests with no window → 7 days: Qualcomm 58 → 10, EXL 21 → 5, Bosch 20 → 7, NielsenIQ 5 → 3, Citi 62 → 48; in-window survivors
+equal except Qualcomm's first run (3 vs 2; a re-run gave 3 vs 3, so probably a posting that changed between the runs — inferred). The scan's own log line is
+`Posted-date filter: last 7 day(s) …` (the "skipped as posted more than N days ago" wording of this done-when does not exist; the funnel's `too old` is the
+count). Side effect: 4 older tests that assumed no window now say `max_posted_age_days: null`.
 
 **T05 · One MIN_SCORE.** `.env` has `MIN_SCORE=60`, and `load_dotenv(override=True)`
 (`main.py` L52) makes it beat the `70` that `run_daily.sh` exports (measured).
@@ -240,6 +285,10 @@ Measured by the expansion work: 226 passes posted ≤7 days ago, 99 ≤3 days.
 banner value.
 *Done when:* the scan's own `Min score:` log line (`scanner.py` L383) shows the chosen
 value, whichever way the run is started.
+**Decision (Manish, 2026-10-10): 70.** **Implemented (claude, 2026-10-10, bda04eb).** `candidate.min_score` in `config.json` is the one place (set to 70 in his file;
+his `.env` line is commented out); the code default for every reader is 70 (`job_hunt/settings.py`; scanner and export used 55); example configs say 70; the `.env`
+template has no active line; `run_daily.sh` exports nothing. Real `./run_daily.sh --limit 1` in a scratch directory logs `Min score: 70 | Top N: 5` first.
+Not run: a Telegram alert at 70.
 
 **T06 · Telegram.** The last sends logged in `data/scan.log` failed with HTTP 404
 (2026-10-03 13:55Z, measured). `.env` was edited afterwards, so the current state is
@@ -254,12 +303,18 @@ laptop was off (inferred from systemd docs, not tested). The service runs
 `scripts/systemd/` with install steps.
 *Done when:* `systemctl --user list-timers` lists the timer, and
 `systemctl --user start <service>` appends a complete run to `data/scan.log`.
+**Prepared, not installed (claude, 2026-10-10, 50d9135).** `scripts/systemd/install.sh` writes the two unit files (daily 09:00, `--at HH:MM`, `Persistent=true`)
+into `~/.config/systemd/user` and enables the timer; `--uninstall` removes them. `systemd-analyze --user verify` accepts the rendered files (real parser; test).
+**Needs Manish's go-ahead (installing a timer is his call):** `scripts/systemd/install.sh`. Also his choice: the time of day, and that the first scheduled
+scan uses `gemini-3.5-flash-lite`'s quota (about 300 calls with the 7-day window, measured on the saved fetch: 302 survivors).
 
 **T08 · `setup_cron.sh`.** It installs `python -m job_hunt.main scan >> ./scan.log`,
 which bypasses `run_daily.sh` (measured). It is still referenced in `SETUP.md` L523,
 `docs/04-companies-and-scanning.md` L50 and `docs/08-troubleshooting.md` L13. Delete
 it and point the docs at T07's timer, or make it install `run_daily.sh`.
 *Done when:* `grep -rn setup_cron .` returns only the references you intended.
+**Implemented (claude, 2026-10-10, 50d9135).** `setup_cron.sh` deleted; `docs/01-install.md`, README and ARCHITECTURE point at `scripts/systemd/install.sh`.
+`grep -rn setup_cron .` now finds only history (CHANGELOG, this board) and one sentence in `docs/01-install.md` saying it is gone.
 
 **T09 · First production run.** After T02–T05 (T06 optional), run `./run_daily.sh`
 once. Record in CHANGELOG: jobs fetched, India, pre-filter passes, too old, scored,
@@ -285,8 +340,8 @@ T23 was verified 2026-10-07 (Done log); nothing open.
 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
-| T26 | Phenom adapter (probe first) | decision | — | M | — |
-| T28 | Monthly `discover --recheck` that only reports | todo | — | S | T07 |
+| T26 | Phenom adapter (probe first) | review · claude · a18c25a | claude | M | — |
+| T28 | Monthly `discover --recheck` that only reports | review · claude · 50d9135 + aac9a99 | claude | S | T07 |
 
 T65 was verified 2026-10-08 (Done log).
 
@@ -300,12 +355,22 @@ platform, and a scan fetches its jobs.
 
 **T25–T27 result (claude, 2026-10-06).** *T25 Eightfold:* done, verified 2026-10-07. *T26 Phenom:* the endpoint is public (`POST {host}/widgets`, `selected_fields.country=["India"]`, `size` up to 100 honoured, full description in the job page's JSON-LD), **but Phenom mostly fronts Workday**: on Cisco, DuPont, Fiserv, HPE, Philips and WBD every sampled job's `applyUrl` is a Workday tenant. I added the three missing Workday tenants instead (Cisco, DuPont, Fiserv) through `discover`, no new adapter. The only Phenom-native census board with India jobs is BCG (91 India jobs, **2** pass the pre-filter). **Decision for Manish:** is a native Phenom adapter (~150 lines, a JSON-LD description scrape) worth 2 BCG jobs, or park it until another Phenom-native company turns up? *T27 Darwinbox:* rejected, see the Rejected table.
 
+**T26 · Phenom adapter.** *Decision (Manish, 2026-10-10): build it.* **Implemented (claude, 2026-10-10, a18c25a).** `job_hunt/adapters/phenom.py`
+(`POST {host}/widgets`, India scope, 100 per page, description from the job page's JSON-LD), wired into dispatch, `ENRICHERS` and `discover` (seed
+`BCG | phenom | careers.bcg.com | global/en`). Added through the real `autopilot discover --add-file … --merge`: BCG, 101 jobs, 96 India, 3 pass the
+pre-filter, descriptions 8.4–8.6 k characters; `companies.json` is 224 boards. Not run: Gemini on those 3 jobs; a scan with BCG in the full list.
+Phenom's list is not newest first, so the posted-date window never cuts it.
+
 **T28 · Scheduled recheck.** `discover --recheck --merge companies.json` (b700235)
 catches ATS migrations and dead boards, but only runs when started by hand. Run it
 monthly against a scratch copy of `companies.json` and save the diff for Manish to
 review. Never write the real file unattended.
 *Done when:* the timer is listed, and a run produces a diff file while
 `companies.json` is unchanged.
+**Implemented (claude, 2026-10-10, 50d9135 + aac9a99).** `scripts/monthly_recheck.sh` works on a copy in `data/recheck/` and leaves `diff.<date>.txt`,
+`report.<date>.csv`, `verified.<date>.json`; `scripts/systemd/install.sh --with-recheck` adds the monthly timer (1st, 10:00). Real run on all 224 boards
+(about 2 minutes): `224 -> 224 companies (0 changed)`, empty diff, `companies.json` and its packaged copy byte-identical (SHA-256 before and after).
+The first real run left `verified_companies.json` in the repo root; fixed in aac9a99. **Timer not installed (Manish's go-ahead, see T07).**
 
 ---
 
@@ -359,9 +424,9 @@ gone (`tools.tool_scan` counts from the DB). The one-time import is `scripts/imp
 `job_hunt/`, so the done-when grep stays empty), a dry run unless `--apply`; it imports only URLs the DB does not
 know. **Not run on the production data** (it writes `data/jobs.db`). Measured on copies: 45 jobs would be imported,
 20 of them ≥ 70, scored on 2026-10-04 with that day's (pre-rubric) prompt; `export --min 70 --days 7` 33 → 53.
-**Question for Manish:** import them (`python scripts/import_json_history.py --apply`), or leave them out because
-their scores predate the rubric (the DB was cleared on purpose on 2026-10-04)? Either way the old `state/*.json`
-files can be deleted afterwards; `init` still creates an empty `state/` directory (left alone).
+**Decision (Manish, 2026-10-10: "you decide, in my best interest"; claude):** **do not import.** The scores come from the pre-rubric prompt of 2026-10-04
+(the DB was cleared on purpose that day), 20 of the 45 are ≥ 70 and would become final, and any job still open is re-scored by the next scan. Anyone who disagrees
+can run `python scripts/import_json_history.py --apply`. The old `state/*.json` files stay on disk (his data; safe to delete).
 
 ---
 
@@ -399,14 +464,15 @@ until the next normal run (T02 will set the default); (3) closed jobs are not ex
 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
-| T45 | Local dashboard or TUI | decision | — | L | T29 |
+| T45 | Web page to set up and use JobNotify (design proposal) | decision | — | L | T29 |
 
 T41, T42, T43, T50, T51, T52, T55 and T63 were verified 2026-10-07 (Done log).
 
-**T45 · Local dashboard or TUI** (not started; claude-b, 2026-10-10). Size L and only a title, so its form is
-Manish's choice. **Questions for Manish:** a local web page (opened in the browser, reads `data/jobs.db`) or a terminal
-UI? What must it do beyond `output/open_matches.csv` (T39) and `autopilot mark` (T38): filter/sort, mark applied from
-the list, open the posting, show the reason and keyword gaps (T44)?
+**T45 · A web page to set up and use JobNotify** (Manish, 2026-10-10: a web page, not a terminal; configure everything A–Z — resume, title include / exclude,
+locations; Gemini should suggest and warn when the configuration is unclear or wrong). This is an architectural change (a new server, a config-driven pre-filter,
+a Gemini assistant), so the process asks for a written design before code: **`docs/superpowers/specs/2026-10-10-web-ui-design.md`** (claude, 2026-10-10, 61abf8e),
+five pieces S1–S5 in order, my recommended approach, risks, and **five questions for Manish** (who it is for; the set and order of pieces; which page first; when
+Gemini helps; may the page edit `config.json`). Nothing is built. Status `decision` until he answers.
 
 **T44 · Keyword gap analysis in `draft`.** (The board had only the title; this definition is claude-b's, 2026-10-10,
 for Manish to confirm.) When `draft` writes its files, also list the technologies the posting names that the resume
@@ -423,12 +489,12 @@ Which terms would you add?
 
 ## Inbox
 
-New findings go here with the next free ID (next: **T77**), an evidence tag and the
+New findings go here with the next free ID (next: **T78**), an evidence tag and the
 file:line. Manish or the triaging agent moves each one into a priority table.
 
 | ID | Finding | Evidence | Added by |
 |---|---|---|---|
-| T62 | **Decision for Manish (T17's result):** the language words in the title exclusion block, among India jobs that name a target role and have no other blocker: **python 33** (24 posted in the last 30 days, corrected 2026-10-07 from 21; 21 look like backend/SDE/full-stack, e.g. JPMorgan "Software Engineer III - Python LLM Engineer", Plane "Software Engineer, Backend (Python)"), **java 93** (85, corrected from 75), golang 5, react/angular 6, frontend 8. Seniority words (staff, lead, principal, manager, architect) block about 600 more, as intended. Allow "python" in titles? It would add about 33 scoring calls to a full scan (+3%), and your resume lists Python. Java and golang: say which. Each is a one-word change plus a test. **Scored 2026-10-07** (today's fetch, full descriptions, 3.1, old rubric): of the 32 python-only-blocked India jobs, **9 score ≥ 80** (JPMorgan "Python Backend Developer with AWS and SQL" 95, Plane "Software Engineer, Backend (Python)" 90, Anaplan "Backend Python Engineer" 90, JPMorgan "SE III - Python LLM Engineer" 90…), 17 ≥ 70 (3.1 overstates 70–79) | measured on 34,416 jobs fetched 2026-10-06: `python scripts/measure_prefilter.py --jobs <saved fetch>`; the 30-day column was undercounted (jobs posted that day counted as old) until 55aa663 | claude |
+| T77 | **The pre-filter lets remote-flagged jobs in named non-India places through.** `should_evaluate_job` passes a job when the ATS says "remote" and the location does not match the small exclude list (US, UK, Canada, Germany, Europe, London…): OpenAI's Ashby board flags Paris, Tokyo, Singapore, Seoul, Madrid, Sydney and Washington DC offices as remote, so 25 OpenAI jobs and 65 of 1,900 survivors (3.4%) on the saved 2026-10-08 fetch name no Indian place. The rubric caps them (rule 1), so the cost is the scoring calls (about 5 s each), not wrong results. Possible fix: reject a remote-flagged job whose location names a city and country with no India term | measured on the saved fetch (`should_evaluate_job`, `location_is_india`); cost per call inferred | claude |
 | T75 | **Every per-job lookup scans the whole `jobs` table.** `get_job` / `has_job` / `update_job_status` / `update_job_details` use `WHERE global_id = ?`, which cannot use the partial unique index `idx_jobs_ats_global_id` (its condition `global_id IS NOT NULL AND global_id != ''` is not implied): EXPLAIN QUERY PLAN → `SCAN jobs`. 2.7 ms per `get_job` on a copy of the production DB (30,367 rows); a scan calls it once per fetched job (~40k), so ~110 s per scan (inferred), growing with the table. Fix as in T33's `record_sightings`: add `ats = ?` and the index condition (`SEARCH … USING INDEX`), or a plain index on `global_id` | measured (EXPLAIN, timing); cost per scan inferred | claude-b |
 | T76 | **Workday maintenance silently empties a scan's Workday boards.** 2026-10-10 12:19 IST: 77 of 79 Workday tenants answered the jobs POST with HTTP 303 → `community.workday.com/maintenance-page` (Accenture's wd103 answered 200). The adapter follows the redirect, fails to parse the HTML ("Expecting value: line 1 column 1") and logs one warning per tenant; that scan gets no Workday jobs (they are fetched next time, and T33 counts no misses for them). Possible: detect the redirect and log one clear line, or retry later in the run | measured (curl, full fetch) | claude-b |
 | T69 | Low-priority notes from the 2026-10-07 review, no action proposed: (a) structured scoring (T41) hard-codes temperature 0.1 and ignores `gemini_temperature` (T60) — `llm_utils.score_job_structured_with_gemini`; (b) the deprecated non-Gemini scorer still cuts the resume at 2,500 and each JD at 1,500 characters — `scanner.score_batch`; (c) the T61 word `embedded` would also reject "Backend Engineer – Embedded Finance" (0 such titles in 34,416); (d) one full scan writes ~5.3 MB of DEBUG log, so T16's 5 MB × 3 rotation keeps about the last 3 scans; (f) structured scoring (T41, opt-in) still caps a stack mismatch at 60 in code (`combine_subscores`), while the T73 rubric uses 50; (g) generic "Senior Engineer" / "Engineer II/III" titles (~250 India jobs on 2026-10-06; Micron, Microchip, Thermo Fisher, Target India, NI, Anaplan, CrowdStrike, MongoDB) match no include word — mostly hardware, but Target/Anaplan/MongoDB use them for software; not measured further; (e) the production `data/jobs.db` still has the pre-T29 schema and `user_version` 0: its next scan runs T29's columns and T30's one-time Workday repair (checked on a copy: 30,367 rows kept, 0.19 s) | measured (a, b by reading the code; c, d, e by running it) | claude |
@@ -441,6 +507,12 @@ The implementer adds a row when a task reaches `review`; the verifier removes it
 
 | ID | Commit(s) | Implementer | Evidence (command → result) |
 |---|---|---|---|
+| T05 | bda04eb | claude | `pytest tests/test_min_score_one_place.py` → 7 passed (6 failed before the change). `env -u MIN_SCORE ./run_daily.sh --limit 1` in a scratch directory (secret-free copy of `config.json` and `.env`, `.env`'s line commented) → first scan line `Min score: 70 \| Top N: 5`; that scan then stopped at loading a resume the scratch directory lacked. Not run: a Telegram alert at 70 |
+| T62 | 4b2ef97 | claude | `pytest tests/test_prefilter.py` → 16 new cases (7 python titles pass, 9 must-still-reject cases). `python .../t62_measure.py` (HEAD~ vs working-tree `should_evaluate_job` on the saved 39,873-job fetch of 2026-10-08) → survivors 1,745 → 1,792, added 47, removed 0; 39 of the 47 posted ≤ 30 days, 11 ≤ 7. Not run: Gemini on the 47 |
+| T26 | a18c25a | claude | `pytest tests/test_phenom.py tests/test_discovery.py` → 16 + discovery cases pass (stub run red first). Real `autopilot discover --add-file bcg.txt --merge companies.json --no-recheck` → BCG verified (101 jobs, 96 India, 3 pass, newest 1 day); real `fetch_company_jobs` + `should_evaluate_job` + `enrich_job` → 101 unique ids, 3 survivors, descriptions 8,461–8,623 chars. `companies.json` 224, packaged copy identical. Not run: Gemini on the 3 jobs |
+| T02 | 5001dcd | claude | `pytest tests/test_posted_window.py` → 19 passed (red first). Real boards through `fetch_company_jobs` with no window vs 7 days (`t02_calls.py`): requests Qualcomm 58 → 10, EXL 21 → 5, Bosch 20 → 7, NielsenIQ 5 → 3, Citi 62 → 48, Genpact 83 → 83, JPMorgan 4 → 4; in-window survivors equal in every row except Qualcomm's first run (3 vs 2; re-run 3 vs 3, every in-window job inside the first 40 of 577). Order check over whole boards: Oracle HCM 4, SmartRecruiters 13, Eightfold 4 boards → 0 violations; Amazon → 980 (so it is not cut). Changed 4 older tests that assumed no window. Not run: a full scan with the default window |
+| T07, T08, T28 | 50d9135, aac9a99 | claude | `pytest tests/test_systemd_units.py tests/test_monthly_recheck.py` → 17 passed, including `systemd-analyze --user verify` on the rendered scan and recheck units (exit 0, empty stderr). **Nothing installed.** Real `scripts/monthly_recheck.sh` on all 224 boards → `224 -> 224 companies (0 changed)`, empty diff, SHA-256 of `companies.json` and the packaged copy equal before and after; found and fixed a stray `verified_companies.json`. `grep -rn setup_cron .` → history only. Not run: `install.sh` against the real systemd; a missed-run catch-up (`Persistent=true`, inferred from systemd docs) |
+| T74 | 0c3ba2b | claude | `pytest tests/test_prefilter.py tests/test_scoring_rubric.py` pass (28 new cases red first). Saved-fetch survivors 1,792 → 1,900 (+108, 0 removed). `score_golden_set.py --csv scripts/golden_set_ai.csv --arms current --model gemini-3.5-flash-lite` (3 wordings, one run each; `--from-scores` compares): old rubric 23 pass at 70 / 19 false positives; shipped wording 2 pass of the first 43 (old: 16). Original 82 jobs, second wording: `apply` 12/14. **Owed: the full 75-job run of the shipped wording after 3.5's quota resets (it ended at job 43) — verify on 3.5.** Labels are mine; see the task for the j7 conflict |
 
 ---
 
