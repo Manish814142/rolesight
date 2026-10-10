@@ -9,6 +9,11 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Changed (2026-10-10, T62 — "python" is allowed in job titles)
+- Manish: allow "python" for now and decide again on the results. `python` is removed from the title exclusion words (`java` and `golang` stay; he named only python). The seniority, intern, test, frontend and platform exclusions and the include-word requirement still apply: "Staff Python Engineer", "Python Data Scientist" (no include word) and "Java Python Developer" are still rejected (tests).
+- Measured on the saved fetch of 2026-10-08 (39,873 jobs, 223 boards) through the real `should_evaluate_job`, before and after: survivors 1,745 → 1,792 (+47, 0 removed); 39 of the 47 were posted within 30 days and 11 within 7. Citi 16, Cisco 7, JPMorgan 4, Motorola Solutions 3, others 1–2. Inferred: about 47 more scoring calls on a first full scan, and a handful a day with a posted-date window. Not measured: what Gemini scores them (an earlier run with the old rubric gave 9 of 32 python-only titles 80+, on 3.1).
+- `scripts/measure_prefilter.py` no longer watches "python" (it can no longer block).
+
 ### Changed (2026-10-10, T05 — one MIN_SCORE, 70)
 - Manish chose `min_score` 70 (measured on the 82 labelled jobs: precision 92% at 70 against 86% at 60; the CSV still lists every score). It now lives in one place: `config.json`'s `candidate.min_score`. The code default is 70 for every reader (`job_hunt/settings.py`; scanner and export used 55 before), the example configs say 70, the `.env` template has no active `MIN_SCORE` line, and `run_daily.sh` no longer exports a value that `.env` overrode (its banner printed 70 while the scan used 60). Manish's own `config.json` is set to 70 and his `.env` line is commented out.
 - Checked through the real runner: `./run_daily.sh --limit 1` in a scratch directory (`.env` with the comment, no `MIN_SCORE` in the shell) logs `Min score: 70 | Top N: 5` first; that scan then stopped at loading a resume the scratch directory did not have, which the check did not need. Not run: a Telegram alert at 70.

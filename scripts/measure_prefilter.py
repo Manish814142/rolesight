@@ -28,7 +28,7 @@ from job_hunt.prefilter import (  # noqa: E402
     should_evaluate_job,
 )
 
-WATCH = ("python", "java", "golang", "react", "reactjs", "angular", "angularjs", "vue", "frontend", "front-end")
+WATCH = ("java", "golang", "react", "reactjs", "angular", "angularjs", "vue", "frontend", "front-end")
 
 
 def _blockers(title: str) -> set:

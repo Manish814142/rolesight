@@ -114,6 +114,7 @@ def _job(title, location="Bengaluru, India", is_remote=False):
     "SDE-2",
     "SDE2 - Payments",
     "API Platform Engineer",
+    "Python Backend Developer",               # T62 (Manish, 2026-10-10): python is allowed in titles
 ])
 def test_prefilter_word_boundaries_accept(title):
     passed, reason = should_evaluate_job(_job(title))
@@ -133,7 +134,6 @@ def test_prefilter_word_boundaries_accept(title):
     "Software Engineering Internship - Backend",
     "Front-end Developer",
     "ReactJS Developer",
-    "Python Backend Developer",
     "Tech Lead - Backend",
 ])
 def test_prefilter_word_boundaries_reject(title):
@@ -408,15 +408,15 @@ def test_measure_prefilter_counts_jobs_blocked_only_by_a_language_word():
     import measure_prefilter as mp
 
     rows = [
-        {"company": "A", "ats": "x", "title": "Software Engineer, Backend (Python)", "location": "Bengaluru, India", "posted_at": "2026-10-05"},
+        {"company": "A", "ats": "x", "title": "Software Engineer, Backend (Golang)", "location": "Bengaluru, India", "posted_at": "2026-10-05"},
         {"company": "A", "ats": "x", "title": "Senior Java Developer", "location": "Pune, India", "posted_at": ""},
         {"company": "A", "ats": "x", "title": "Staff Java Developer", "location": "Pune, India", "posted_at": ""},       # two blockers
-        {"company": "A", "ats": "x", "title": "Python Developer", "location": "London, UK", "posted_at": ""},            # not India
+        {"company": "A", "ats": "x", "title": "Golang Developer", "location": "London, UK", "posted_at": ""},            # not India
         {"company": "A", "ats": "x", "title": "Software Engineer, Backend (Node.js)", "location": "Bengaluru, India", "posted_at": ""},
     ]
     costs = mp.exclusion_costs(rows)
-    assert costs["python"] == {"only": 1, "recent": 0 if mp.posted_age_days("2026-10-05") > 30 else 1}
-    assert costs["java"]["only"] == 1 and "golang" not in costs
+    assert costs["golang"] == {"only": 1, "recent": 0 if mp.posted_age_days("2026-10-05") > 30 else 1}
+    assert costs["java"]["only"] == 1 and "python" not in costs
     assert [r["title"] for r in mp.survivors(rows)] == ["Software Engineer, Backend (Node.js)"]
 
 
@@ -429,7 +429,38 @@ def test_measure_prefilter_counts_a_job_posted_today_as_recent():
     sys.path.insert(0, str(Path("scripts").resolve()))
     import measure_prefilter as mp
 
-    rows = [{"company": "A", "ats": "x", "title": "Software Engineer, Backend (Python)",
+    rows = [{"company": "A", "ats": "x", "title": "Software Engineer, Backend (Golang)",
              "location": "Bengaluru, India", "posted_at": date.today().isoformat()},
-            {"company": "A", "ats": "x", "title": "Python Developer", "location": "Pune, India", "posted_at": ""}]
-    assert mp.exclusion_costs(rows)["python"] == {"only": 2, "recent": 1}   # undated is not recent
+            {"company": "A", "ats": "x", "title": "Golang Developer", "location": "Pune, India", "posted_at": ""}]
+    assert mp.exclusion_costs(rows)["golang"] == {"only": 2, "recent": 1}   # undated is not recent
+
+
+# -- T62: "python" is allowed in titles (Manish, 2026-10-10: allow for now, decide again on the results). Java and
+# golang stay excluded: he only named python. -----------------------------------------------------------------
+
+@pytest.mark.parametrize("title", [
+    "Python Developer",
+    "Senior Python Developer",
+    "Software Engineer, Backend (Python)",
+    "Software Engineer III - Python LLM Engineer",
+    "Backend Python Engineer",
+    "Python Backend Developer with AWS and SQL",
+    "Software Engineer - Python/Django",
+])
+def test_python_titles_pass_the_prefilter(title):
+    assert should_evaluate_job(_india(title))[0], title
+
+
+@pytest.mark.parametrize("title", [
+    "Staff Python Engineer",              # seniority words still reject
+    "Python Lead Developer",
+    "Python Architect",
+    "Python Developer Intern",
+    "Python Data Scientist",              # no include word: the title names no backend role
+    "Java Python Developer",              # java is still excluded
+    "Golang / Python Backend Developer",  # so is golang
+    "Python Test Engineer",
+    "Python Django Frontend Developer",
+])
+def test_python_does_not_open_the_door_to_other_exclusions(title):
+    assert not should_evaluate_job(_india(title))[0], title

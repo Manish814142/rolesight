@@ -24,6 +24,8 @@ TITLE_INCLUDE_PATTERN = re.compile(
 # so Gemini judges them against the resume (2026-10-04: 227 India jobs were blocked by
 # that word alone). Staff/Principal/Lead/Manager stay excluded, except "Member of Technical
 # Staff" (MTS), a standard mid-level engineer title.
+# "python" is not excluded (T62, Manish 2026-10-10): his resume lists it, 33 India titles named it and 9 of 32
+# scored 80+ when read in full. "java" and "golang" stay excluded.
 # CRM / ERP / BI / RPA platform roles (T12) are configuration and integration work on someone
 # else's product, not backend engineering: 82 of 1,191 survivors were scored for nothing. Matched on
 # the title only, never the company, so "Software Engineer" at Salesforce or ServiceNow still passes.
@@ -36,7 +38,7 @@ _PLATFORM_ROLE_WORDS = (
 TITLE_EXCLUDE_PATTERN = re.compile(
     r"\b(lead|principal|(?<!technical\s)staff|manager|director|architect|front[\s-]?end"
     r"|react(\.?js)?|angular(js)?|vue(\.?js)?|ios|android|flutter|qa|test(er|ers|ing)?"
-    r"|intern(s|ship)?|devops|sre|java|golang|python)\b"
+    r"|intern(s|ship)?|devops|sre|java|golang)\b"
     r"|\.net\b|\bc#(?!\w)"
     rf"|\b({_PLATFORM_ROLE_WORDS})\b"
     r"|\boracle\s+(ebs|fusion|hcm|erp|cpq|apps|cloud)\b|\bpower\s*(bi|platform|apps|automate)\b"

@@ -61,7 +61,8 @@ They are applied in this order:
    - Seniority: `lead`, `principal`, `staff` (but not "Member of Technical *Staff*"),
      `manager`, `director`, `architect`.
    - Other stacks: `frontend`, `react`, `angular`, `vue`, `ios`, `android`, `flutter`,
-     `java`, `golang`, `python`, `.net`, `c#`.
+     `java`, `golang`, `.net`, `c#`. (`python` was on this list until T62: Manish allowed it on 2026-10-10,
+     so "Python Developer" and "Backend Engineer (Python)" now reach Gemini.)
    - Other roles: `qa`, `test`/`tester`/`testing`, `intern`/`internship`, `devops`, `sre`.
 
    "Senior" / "Sr." are **not** excluded. At Indian companies they often mean 3–6 years,
