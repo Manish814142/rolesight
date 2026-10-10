@@ -229,7 +229,7 @@ Solutions & Platforms": RAG, agentic workflows, pgvector/Qdrant) 90 → 45 and g
 (its `apply` label predates his rule — **please relabel `no` if you agree, T59**) and a misfire on g8. Borderline AI-light FDE roles (Razorpay
 90/45/45, DevRev 45–50) are capped most of the time. **Not done: the final wording's full 75-job run (3.5's 500-call daily quota ran out at job 43,
 19:28 IST) — re-run `python scripts/score_golden_set.py --csv scripts/golden_set_ai.csv --arms current --model gemini-3.5-flash-lite` after the reset
-(about 05:30 IST) and `--from-scores` it against the saved scores before marking this verified.** Questions for Manish: are the 9 labels I called
+(the API said "retry in 10 h" at 19:28 IST; the reset was observed at 12:30 IST on 2026-10-07, so after 12:30 IST on 2026-10-11 is safe) and `--from-scores` it against the saved scores before marking this verified.** Questions for Manish: are the 9 labels I called
 allowed right (T59 for the new file)? Do you want "AI/ML Engineer" and "Machine Learning Engineer" titles too (not added)?
 
 ---
