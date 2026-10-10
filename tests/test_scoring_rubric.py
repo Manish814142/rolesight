@@ -419,3 +419,45 @@ def test_languages_named_only_in_the_responsibilities_are_a_stretch_not_a_cap():
     rule4 = _rule(4)
     assert "only in the responsibilities" in rule4 and "are not requirements" in rule4
     assert "stack stretch (rule 6, moderate match), not a cap" in rule4
+
+
+def test_ai_specialisation_is_a_missing_required_domain():
+    """T74 (Manish, 2026-10-10): AI/FDE titles reach Gemini, but he applies only when the posting accepts his
+    Node/Python backend stack plus GenAI use in workflows; heavy AI (LangChain/LangGraph, vector DBs, fine-tuning ...) is a
+    domain he lacks. Measured on 75 AI/FDE postings (scripts/golden_set_ai.csv): the v7 text passed 18 of 65 `no` jobs at 70."""
+    rule8 = llm_utils.SCORING_RUBRIC.split("8. ")[1].lower()
+    for term in ("langchain", "langgraph", "vector database", "fine-tuning", "pytorch", "mlops", "rag"):
+        assert term in rule8, term
+    assert "inside backend services" in rule8                       # what he has done: not a mismatch
+    assert "only preferred" in rule8 and "prompt engineering or workflow automation" in rule8
+    assert "does not hide the requirement" in rule8                 # "frameworks such as LangGraph" is still a requirement
+
+
+def test_ai_clause_caps_hands_on_requirements_not_familiarity():
+    """T74, first measurement (3.5, three runs each): a clause that capped any mention of RAG / agent frameworks in the
+    requirements took DevRev's Forward Deployed Engineer ('familiarity with LLMs, prompt engineering, RAG and function
+    calling') from 75, 75, 75 to 45, 45, 45. Familiarity is not the skill he lacks; building these systems is."""
+    rule8 = llm_utils.SCORING_RUBRIC.split("8. ")[1].lower()
+    assert "hands-on experience building or operating" in rule8
+    assert "familiarity or a basic understanding" in rule8
+
+
+def test_ai_clause_ignores_bonus_and_preferred_sections():
+    """T74, golden-set regression (3.5, v8b): MongoDB 'Software Engineer 3' (apply, 90 under v7) fell to 45 because its
+    'Bonus Round' (vector databases, agent orchestration such as LangGraph) was read as required. Sections called
+    bonus / preferred / nice to have / a plus never trigger the cap, whatever they name."""
+    rule8 = llm_utils.SCORING_RUBRIC.split("8. ")[1].lower()
+    assert "bonus" in rule8 and "good to have" in rule8 and "even when they name" in rule8
+
+
+def test_ai_golden_set_is_well_formed():
+    """scripts/golden_set_ai.csv (T74): 75 AI / Forward Deployed Engineer postings, India, fetched 2026-10-10, labelled by
+    Claude against Manish's stated rule (allow only if the posting accepts his Node/Python backend stack plus GenAI use in
+    workflows; not if it requires LangChain/LangGraph, vector databases, fine-tuning or other heavy AI). Not confirmed by him."""
+    rows = _golden().load_golden_set("scripts/golden_set_ai.csv")
+    assert len(rows) == 75
+    assert len({r["id"] for r in rows}) == 75 and all(r["id"].startswith("ai") for r in rows)
+    assert {r["label"] for r in rows} <= {"apply", "maybe", "no"}
+    assert sum(r["label"] != "no" for r in rows) == 9          # the allowed ones: 1 apply, 8 maybe (ai54 was relabelled no on re-reading)
+    assert all(len(r["description"]) > 1000 and r["label_reason"] for r in rows)
+    assert {r["label_source"] for r in rows} == {"claude-2026-10-10"}      # none confirmed by Manish yet

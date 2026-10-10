@@ -73,6 +73,8 @@ They are applied in this order:
    - `member of technical staff`, `mts`.
    - `developer`, `full-stack`, `api`, `distributed systems`.
    - `platform` / `product` / `infrastructure` / `systems engineer`.
+   - `AI engineer` (also `Gen AI`, `Generative AI`, `Agentic AI`, `Applied AI`, `LLM engineer`) and `Forward Deployed
+     Engineer` (T74, Manish 2026-10-10). These reach Gemini, whose rubric then rejects the ones that need heavy AI (see below).
 
    Not yet included: Adobe's "Computer Scientist" titles (T11). Also, "developer" lets
    CRM roles such as "Salesforce Developer" through (T12).
@@ -125,7 +127,10 @@ One Gemini call per job. The prompt contains:
   that accepts Python or "another language" is not a mismatch; languages named only in the
   responsibilities, or as examples "such as Java or C#", are a stretch scored 65–84, not a cap;
   TypeScript used only for a frontend part does not count); cap 50 when it *requires*
-  an industry, platform or tool you lack (e.g. video-games industry, embedded, SAP). These two follow
+  an industry, platform or tool you lack (e.g. video-games industry, embedded, SAP), and (T74) when it *requires* hands-on
+  AI/ML engineering you have not done: agents built with LangChain/LangGraph-type frameworks, RAG over a vector database,
+  fine-tuning or evaluating models, PyTorch/TensorFlow, MLOps, NLP specialisation or years of ML experience. Items under
+  "bonus"/"preferred", mere familiarity with LLMs or RAG, and using LLM APIs inside backend work do not trigger it. These two follow
   Manish's rule "skip a posting that requires what I don't have" (T73: false positives 2 → 0 at
   `min_score` 70 on 82 labelled jobs, `apply` 14/14, two runs each); 85+ only when stack, seniority
   and location all fit. The text is tuned to one candidate (about 3.3 years; Node.js, TypeScript,

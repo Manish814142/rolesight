@@ -14,7 +14,9 @@ TITLE_INCLUDE_PATTERN = re.compile(
     r"\b(back[\s-]?end|node(\.?js)?|sde\d*|software\s*engineer|software\s+dev(elopment)?\s+engineer"
     r"|member\s+of\s+technical\s+staff|mts|computer\s+scientist|developer|full[\s-]*stack"
     r"|api|distributed(\s*systems)?|platform\s*engineer|product\s*engineer"
-    r"|infrastructure\s*engineer|systems\s*engineer)\b",
+    r"|infrastructure\s*engineer|systems\s*engineer"
+    # AI / Forward Deployed Engineer titles (T74, Manish 2026-10-10): the scoring rubric rejects the ones that need heavy AI.
+    r"|(gen(erative)?[\s-]*ai|agentic[\s-]+ai|applied[\s-]+ai|ai|llm)[\s-]+engineer|forward[\s-]*deployed[\s-]+engineer)\b",
     re.IGNORECASE,
 )
 

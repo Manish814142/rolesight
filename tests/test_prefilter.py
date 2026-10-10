@@ -464,3 +464,46 @@ def test_python_titles_pass_the_prefilter(title):
 ])
 def test_python_does_not_open_the_door_to_other_exclusions(title):
     assert not should_evaluate_job(_india(title))[0], title
+
+
+# -- T74: "AI Engineer" and "Forward Deployed Engineer" titles reach Gemini (Manish, 2026-10-10). The rubric (rule 8)
+# decides which of them need heavy AI he lacks. ---------------------------------------------------------------------
+
+@pytest.mark.parametrize("title", [
+    "AI Engineer",
+    "Senior AI Engineer",
+    "Sr. AI Engineer 4B",
+    "Gen AI Engineer",
+    "GenAI Engineer - Database",
+    "Generative AI Engineer",
+    "Applied AI Engineer",
+    "Agentic AI Engineer",
+    "LLM Engineer",
+    "Forward Deployed Engineer",
+    "Forward-Deployed Engineer, Industry Solutions",
+    "Forward Deployed Engineer (AP)",
+    "Forward-Deployed AI Engineer",
+    "Senior Associate - Forward Deployed AI Engineer",
+])
+def test_ai_and_forward_deployed_engineer_titles_pass(title):
+    assert should_evaluate_job(_india(title))[0], title
+
+
+@pytest.mark.parametrize("title", [
+    "Staff AI Engineer",
+    "Principal AI Engineer",
+    "Lead AI Engineer",
+    "AI Engineering Manager",
+    "AI Engineer Intern",
+    "AI Architect",
+    "Forward Deployed Engineering Manager",
+    "Machine Learning Engineer",            # not asked for: only AI / LLM / Forward Deployed Engineer titles
+    "AI/ML Engineer",
+    "Data Scientist",
+    "AI Research Scientist",
+    "Mail Engineer",                        # 'ai' inside a word
+    "Forward Engineer",
+    "Salesforce AI Engineer",               # the platform-role words still reject
+])
+def test_ai_title_rule_keeps_the_other_exclusions_and_stays_narrow(title):
+    assert not should_evaluate_job(_india(title))[0], title
