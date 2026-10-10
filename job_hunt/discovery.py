@@ -26,6 +26,7 @@ Seeds file, one company per line ('#' comments allowed):
     Jupiter Money | https://jobs.lever.co/jupiter
     BlackBerry | workday | bb | wd3 | BlackBerry
     Qualcomm | eightfold | qualcomm.eightfold.ai | qualcomm.com     (host of the careers site | employer domain)
+    BCG | phenom | careers.bcg.com | global/en                      (host of the careers site | locale path of its URLs)
 """
 from __future__ import annotations
 
@@ -190,7 +191,8 @@ def parse_seeds(text: str) -> List[Dict[str, Any]]:
         name = parts[0]
         is_workday = len(parts) >= 5 and parts[1].lower() == "workday"
         is_eightfold = len(parts) >= 4 and parts[1].lower() == "eightfold"
-        key = (name.lower(), "workday" if is_workday else "eightfold" if is_eightfold else "")
+        is_phenom = len(parts) >= 4 and parts[1].lower() == "phenom"
+        key = (name.lower(), "workday" if is_workday else "eightfold" if is_eightfold else "phenom" if is_phenom else "")
         if not name or key in seen:
             continue
         seen.add(key)
@@ -199,6 +201,8 @@ def parse_seeds(text: str) -> List[Dict[str, Any]]:
             seed["workday"] = {"tenant": parts[2], "dc": parts[3], "site": parts[4]}
         elif is_eightfold:
             seed["eightfold"] = {"host": parts[2], "domain": parts[3]}
+        elif is_phenom:
+            seed["phenom"] = {"host": parts[2], "locale": parts[3]}
         elif len(parts) >= 2 and parts[1]:
             detected = detect_ats(parts[1])
             if detected and detected[0] == "workday":
@@ -277,7 +281,7 @@ def merge_companies(existing: List[Dict[str, Any]], new: List[Dict[str, Any]]) -
 
 
 def _board_ident(c: Dict[str, Any]) -> str:
-    """Stable board identifier across ATS kinds (slug, Workday tenant:dc:site, Oracle host:site, Eightfold host:domain)."""
+    """Stable board identifier across ATS kinds (slug, Workday tenant:dc:site, Oracle host:site, Eightfold host:domain, Phenom host:locale)."""
     if c.get("slug"):
         return str(c["slug"])
     if c.get("ats") == "oracle_hcm":
@@ -286,6 +290,8 @@ def _board_ident(c: Dict[str, Any]) -> str:
         return f"{c.get('tenant')}:{c.get('dc')}:{c.get('site')}"
     if c.get("ats") == "eightfold":
         return f"{c.get('host')}:{c.get('domain')}"
+    if c.get("ats") == "phenom":
+        return f"{c.get('host')}:{c.get('locale')}"
     return str(c.get("ats", ""))
 
 
@@ -407,7 +413,7 @@ def _probe_one(args: Tuple[Dict[str, Any], str, str, bool]) -> Optional[Tuple[Di
 
 def discover(seeds: List[Dict[str, Any]], workers: int = 40) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
     """Return (verified companies.json entries, report rows for every seed)."""
-    board_seeds = [s for s in seeds if not {"workday", "oracle_hcm", "eightfold"} & s.keys()]
+    board_seeds = [s for s in seeds if not {"workday", "oracle_hcm", "eightfold", "phenom"} & s.keys()]
     tasks = [(s, ats, slug, fu) for s in board_seeds for ats, slug, fu in _probe_pairs(s)]
     print(f"Phase 1/3 — probing {len(tasks)} (ATS, slug) pairs for {len(board_seeds)} companies...")
     with ThreadPoolExecutor(max_workers=workers) as ex:
@@ -421,14 +427,16 @@ def discover(seeds: List[Dict[str, Any]], workers: int = 40) -> Tuple[List[Dict[
     wd_seeds = [s for s in seeds if "workday" in s]
     oracle_seeds = [s for s in seeds if "oracle_hcm" in s]
     eightfold_seeds = [s for s in seeds if "eightfold" in s]
-    print(f"Phase 3/3 — checking {len(wd_seeds)} Workday tenants, {len(oracle_seeds)} Oracle HCM sites "
-          f"and {len(eightfold_seeds)} Eightfold sites...")
+    phenom_seeds = [s for s in seeds if "phenom" in s]
+    print(f"Phase 3/3 — checking {len(wd_seeds)} Workday tenants, {len(oracle_seeds)} Oracle HCM sites, "
+          f"{len(eightfold_seeds)} Eightfold sites and {len(phenom_seeds)} Phenom sites...")
     with ThreadPoolExecutor(max_workers=8) as ex:
         wd_rows = list(ex.map(lambda s: evaluate_workday(s["name"], **s["workday"]), wd_seeds))
         wd_rows += list(ex.map(lambda s: evaluate_entry(s["name"], {"ats": "oracle_hcm", **s["oracle_hcm"]}),
                                oracle_seeds))
         wd_rows += list(ex.map(lambda s: evaluate_entry(s["name"], {"ats": "eightfold", **s["eightfold"]}),
                                eightfold_seeds))
+        wd_rows += list(ex.map(lambda s: evaluate_entry(s["name"], {"ats": "phenom", **s["phenom"]}), phenom_seeds))
 
     company_cache, slug_cache = load_linkedin_cache(DEFAULT_LINKEDIN)
     verified: List[Dict[str, Any]] = []
@@ -465,7 +473,7 @@ def reverify_existing(entries: List[Dict[str, Any]], workers: int = 12) -> Tuple
     def check(c: Dict[str, Any]) -> Dict[str, Any]:
         if c.get("ats") == "workday":
             return evaluate_workday(c["name"], c["tenant"], c["dc"], c["site"])
-        if c.get("ats") in ("oracle_hcm", "amazon", "eightfold"):
+        if c.get("ats") in ("oracle_hcm", "amazon", "eightfold", "phenom"):
             return evaluate_entry(c["name"], {k: v for k, v in c.items() if k not in ("name", "headcount")})
         return evaluate_board(c["name"], c["ats"], c["slug"], from_url=True)
 

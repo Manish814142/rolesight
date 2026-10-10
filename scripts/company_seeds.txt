@@ -1486,3 +1486,6 @@ Morgan Stanley | eightfold | morganstanley.eightfold.ai | morganstanley.com
 Cisco | workday | cisco | wd5 | Cisco_Careers
 DuPont | workday | dupont | wd5 | Jobs
 Fiserv | workday | fiserv | wd5 | EXT
+
+# ── added via discover --add (2026-10-10) ──
+BCG | phenom | careers.bcg.com | global/en

@@ -14,6 +14,8 @@ from job_hunt.adapters.lever import fetch_lever
 from job_hunt.adapters.oracle_hcm import fetch_description as oracle_hcm_description
 from job_hunt.adapters.oracle_hcm import fetch_oracle_hcm
 from job_hunt.adapters.personio import fetch_personio
+from job_hunt.adapters.phenom import fetch_description as phenom_description
+from job_hunt.adapters.phenom import fetch_phenom
 from job_hunt.adapters.recruitee import fetch_recruitee
 from job_hunt.adapters.smartrecruiters import fetch_description as smartrecruiters_description
 from job_hunt.adapters.smartrecruiters import fetch_smartrecruiters
@@ -122,6 +124,9 @@ def fetch_company_jobs(company_info: Dict[str, Any]) -> List[JobPosting]:
     if ats == "eightfold":
         host, domain = company_info.get("host"), company_info.get("domain")
         return fetch_eightfold(host, domain, company=company_name) if host and domain else []
+    if ats == "phenom":
+        host, locale = company_info.get("host"), company_info.get("locale")
+        return fetch_phenom(host, locale, company=company_name) if host and locale else []
     if ats == "oracle_hcm":
         host, site = company_info.get("host"), company_info.get("site")
         if not (host and site) and slug and ":" in str(slug):
@@ -181,6 +186,7 @@ def fetch_company_jobs(company_info: Dict[str, Any]) -> List[JobPosting]:
 ENRICHERS: Dict[str, Callable[[JobPosting], str]] = {
     "eightfold": eightfold_description,
     "oracle_hcm": oracle_hcm_description,
+    "phenom": phenom_description,
     "smartrecruiters": smartrecruiters_description,
     "workday": workday_description,
 }
@@ -217,6 +223,7 @@ __all__ = [
     "fetch_personio",
     "fetch_workable",
     "fetch_amazon",
+    "fetch_phenom",
     "fetch_oracle_hcm",
     "fetch_eightfold",
 ]

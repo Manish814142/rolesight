@@ -545,6 +545,45 @@ def test_reverify_existing_uses_the_real_adapter_for_eightfold(monkeypatch):
     assert seen[0]["host"] == "apply.ukg.com" and seen[0]["domain"] == "ukg.com"
 
 
+# --- T26: Phenom boards (host + locale path) ------------------------------------------------
+
+def test_parse_seeds_reads_phenom_lines():
+    seeds = parse_seeds("BCG | phenom | careers.bcg.com | global/en\n")
+    assert seeds == [{"name": "BCG", "phenom": {"host": "careers.bcg.com", "locale": "global/en"}}]
+
+
+def test_discover_verifies_phenom_seeds_with_the_real_adapter_and_does_not_slug_probe(monkeypatch):
+    from datetime import date
+    asked = []
+
+    def fake_fetch(c):
+        asked.append(c.get("ats"))
+        return [_jp("Senior Backend Engineer", "Bengaluru, India", posted=date.today().isoformat())] if c.get("ats") == "phenom" else []
+
+    monkeypatch.setattr(disc, "load_linkedin_cache", lambda path: ({}, {}))
+    monkeypatch.setattr(disc, "fetch_company_jobs", fake_fetch)
+    verified, rows = disc.discover(parse_seeds("BCG | phenom | careers.bcg.com | global/en\n"), workers=2)
+    assert verified == [{"name": "BCG", "ats": "phenom", "host": "careers.bcg.com", "locale": "global/en", "headcount": "Unknown"}]
+    assert set(asked) == {"phenom"}
+    assert rows[0]["board"] == "careers.bcg.com:global/en"
+
+
+def test_merge_treats_phenom_boards_by_host_and_locale():
+    existing = [{"name": "BCG", "ats": "phenom", "host": "careers.bcg.com", "locale": "global/en"}]
+    new = [{"name": "Boston Consulting Group", "ats": "phenom", "host": "careers.bcg.com", "locale": "global/en"},
+           {"name": "Other", "ats": "phenom", "host": "careers.other.com", "locale": "us/en"}]
+    assert [c["name"] for c in merge_companies(existing, new)] == ["BCG", "Other"]
+
+
+def test_reverify_existing_uses_the_real_adapter_for_phenom(monkeypatch):
+    from datetime import date
+    seen = []
+    monkeypatch.setattr(disc, "fetch_company_jobs", lambda c: seen.append(c) or [_jp(posted=date.today().isoformat())])
+    kept, _ = disc.reverify_existing([{"name": "BCG", "ats": "phenom", "host": "careers.bcg.com", "locale": "global/en"}])
+    assert [c["name"] for c in kept] == ["BCG"]
+    assert seen[0]["host"] == "careers.bcg.com" and seen[0]["locale"] == "global/en"
+
+
 @pytest.mark.parametrize("argv", [["--help"], ["-h"], ["--add-flie", "paste.txt", "--merge", "companies.json"]])
 def test_main_never_starts_a_full_discovery_on_help_or_an_unknown_flag(argv, tmp_path, monkeypatch, capsys):
     """T67: unknown arguments were ignored, so `discover --help` or a mistyped flag ran discover() on every
