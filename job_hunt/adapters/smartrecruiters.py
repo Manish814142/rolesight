@@ -4,7 +4,7 @@ from __future__ import annotations
 import logging
 from typing import List
 
-from job_hunt.adapters.base import DEFAULT_HEADERS, http_get, strip_html
+from job_hunt.adapters.base import DEFAULT_HEADERS, http_get, mark_incomplete, strip_html
 from job_hunt.models import JobPosting
 
 logger = logging.getLogger(__name__)
@@ -28,12 +28,15 @@ def _fetch_all_postings(url: str, slug: str) -> List[dict]:
             data = resp.json()
         except Exception as e:
             logger.warning("SmartRecruiters fetch failed for %s at offset %d: %s", slug, offset, e)
+            mark_incomplete(f"page failed at offset {offset}")
             break
         page = data.get("content", [])
         items.extend(page)
         offset += PAGE_SIZE
         if len(page) < PAGE_SIZE or offset >= int(data.get("totalFound") or 0):
             break
+    else:  # stopped at MAX_JOBS with more postings left
+        mark_incomplete(f"cap {MAX_JOBS}")
     return items
 
 

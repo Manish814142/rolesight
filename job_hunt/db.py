@@ -106,13 +106,27 @@ SCORE_MODEL_COLUMN = "score_model"
 APPLICATION_COLUMNS = ("application_status", "application_date")
 
 
+# Is the posting still up? (T33) first_seen / last_seen: the first and the latest scan that fetched it;
+# missed_scans: scans in a row in which its board answered with jobs but not this one; closed_at: set once
+# missed_scans reaches `closed_after_missed_scans`, cleared if the job comes back. A flag, not a `status`, so the
+# scanner's own lifecycle (skipped/discovered/scored/notified) is untouched.
+SIGHTING_COLUMNS = {"first_seen": "TEXT", "last_seen": "TEXT", "missed_scans": "INTEGER NOT NULL DEFAULT 0",
+                    "closed_at": "TEXT"}
+DEFAULT_CLOSED_AFTER_MISSED_SCANS = 3
+
+
 def _ensure_detail_columns(conn: sqlite3.Connection) -> None:
-    """Add the detail, score-model and application columns to a database that predates them (idempotent; no row
-    is touched)."""
+    """Add the detail, score-model, application and sighting columns to a database that predates them (idempotent).
+    first_seen is backfilled from discovered_at, the time the row was first saved."""
     have = {row[1] for row in conn.execute("PRAGMA table_info(jobs)")}
     for col in (*DETAIL_COLUMNS, SCORE_MODEL_COLUMN, *APPLICATION_COLUMNS):
         if col not in have:
             conn.execute(f"ALTER TABLE jobs ADD COLUMN {col} TEXT")
+    for col, decl in SIGHTING_COLUMNS.items():
+        if col not in have:
+            conn.execute(f"ALTER TABLE jobs ADD COLUMN {col} {decl}")
+            if col == "first_seen":
+                conn.execute("UPDATE jobs SET first_seen = discovered_at WHERE first_seen IS NULL;")
 
 
 def init_db(db_path: str = DEFAULT_DB_PATH) -> sqlite3.Connection:
@@ -195,6 +209,7 @@ def save_job(
     init_db(db_path)
     c_hash = canonical_hash(job.title, job.company, job.location)
     u_hash = url_hash(job.url)
+    now = datetime.now(timezone.utc).isoformat()
 
     with sqlite3.connect(db_path) as conn:
         cursor = conn.cursor()
@@ -204,8 +219,8 @@ def save_job(
                 INSERT INTO jobs (
                     canonical_hash, url_hash, global_id, title,
                     company, ats, url, status, discovered_at,
-                    location, posted_at, description
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+                    location, posted_at, description, first_seen, last_seen
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
                 """,
                 (
                     c_hash,
@@ -216,11 +231,13 @@ def save_job(
                     job.ats,
                     job.url,
                     status,
-                    datetime.now(timezone.utc).isoformat(),
+                    now,
                     job.location,
                     job.posted_at,
                     # Skipped postings (30,000+) would add ~5 kB each for nothing.
                     "" if status == "skipped" else job.description_text,
+                    now,
+                    now,
                 ),
             )
             conn.commit()
@@ -366,15 +383,46 @@ def last_scan_jobs(db_path: str = DEFAULT_DB_PATH) -> Optional[List[Dict[str, An
 
 
 def open_match_rows(min_score: int, db_path: str = DEFAULT_DB_PATH) -> List[Dict[str, Any]]:
-    """Scored jobs at or above `min_score` that Manish has not applied to (no application status at all), best first
-    (T39, output/open_matches.csv). The posted-date window is applied by the caller."""
+    """Scored jobs at or above `min_score` that Manish has not applied to (no application status at all) and that are
+    not closed (T33), best first (T39, output/open_matches.csv). The posted-date window is applied by the caller."""
     init_db(db_path)
     with sqlite3.connect(db_path) as conn:
         conn.row_factory = sqlite3.Row
         rows = conn.execute(
             "SELECT * FROM jobs WHERE status IN ('scored', 'notified') AND score >= ? AND application_status IS NULL "
-            "ORDER BY score DESC, scored_at, id;", (min_score,)).fetchall()
+            "AND closed_at IS NULL ORDER BY score DESC, scored_at, id;", (min_score,)).fetchall()
         return [dict(r) for r in rows]
+
+
+def record_sightings(boards: Dict[tuple, List[JobPosting]], closed_after: int = DEFAULT_CLOSED_AFTER_MISSED_SCANS,
+                     db_path: str = DEFAULT_DB_PATH, incomplete: Optional[set] = None) -> int:
+    """After a scan (T33): `boards` maps (ats, company) to the jobs that board returned. Pass only boards whose fetch
+    succeeded with at least one job: a failed or empty fetch says nothing about whether a posting is still up.
+    Returned jobs get last_seen = now, missed_scans = 0 and are reopened if closed; the board's other rows get one
+    more missed scan and are closed when they reach `closed_after` -- except on boards in `incomplete` (the fetch
+    stopped early: page failure, time budget or job cap), whose other rows are left as they are.
+    Returns how many jobs were closed now."""
+    init_db(db_path)
+    now = datetime.now(timezone.utc).isoformat()
+    closed = 0
+    with sqlite3.connect(db_path) as conn:
+        for (ats, company), jobs in boards.items():
+            with_id = [(now, j.ats, j.global_id) for j in jobs if j.global_id]
+            without = [(now, canonical_hash(j.title, j.company, j.location)) for j in jobs if not j.global_id]
+            # The extra global_id conditions repeat the partial unique index's WHERE clause, so SQLite can use it:
+            # without them every update scanned the whole table (EXPLAIN QUERY PLAN: SCAN jobs; >5 min on 39k jobs).
+            conn.executemany("UPDATE jobs SET last_seen = ?, missed_scans = 0, closed_at = NULL "
+                             "WHERE ats = ? AND global_id = ? AND global_id IS NOT NULL AND global_id != '';", with_id)
+            conn.executemany("UPDATE jobs SET last_seen = ?, missed_scans = 0, closed_at = NULL "
+                             "WHERE canonical_hash = ? AND (global_id IS NULL OR global_id = '');", without)
+            if (ats, company) in (incomplete or set()):
+                continue
+            conn.execute("UPDATE jobs SET missed_scans = missed_scans + 1 WHERE ats = ? AND company = ? "
+                         "AND closed_at IS NULL AND (last_seen IS NULL OR last_seen < ?);", (ats, company, now))
+            closed += conn.execute("UPDATE jobs SET closed_at = ? WHERE ats = ? AND company = ? AND closed_at IS NULL "
+                                   "AND missed_scans >= ?;", (now, ats, company, closed_after)).rowcount
+        conn.commit()
+    return closed
 
 
 def set_application_status(row_id: int, status: Optional[str], day: Optional[str],

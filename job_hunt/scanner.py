@@ -8,11 +8,14 @@ from pathlib import Path
 from typing import Optional
 
 from job_hunt.adapters import enrich_job, fetch_company_jobs
+from job_hunt.adapters.base import begin_fetch, fetch_incomplete
 from job_hunt.db import (
+    DEFAULT_CLOSED_AFTER_MISSED_SCANS,
     finish_scan,
     get_job,
     init_db,
     open_match_rows,
+    record_sightings,
     save_job,
     start_scan,
     update_job_details,
@@ -102,13 +105,16 @@ DEFAULT_MAX_JOBS_TO_SCORE = 400
 DEFAULT_FETCH_WORKERS = 8
 
 
-def _prefetch_jobs(companies: list[dict], workers: int) -> list[tuple[list, str | None]]:
-    """Fetch every company's ATS jobs concurrently; returns (jobs, error) in input order."""
-    def one(company: dict) -> tuple[list, str | None]:
+def _prefetch_jobs(companies: list[dict], workers: int) -> list[tuple[list, str | None, str | None]]:
+    """Fetch every company's ATS jobs concurrently; returns (jobs, error, incomplete) in input order. `incomplete`
+    says why a paged adapter stopped before the board's end (page failure, time budget, job cap), else None (T33)."""
+    def one(company: dict) -> tuple[list, str | None, str | None]:
+        begin_fetch()
         try:
-            return fetch_company_jobs(company), None
+            jobs = fetch_company_jobs(company)
+            return jobs, None, fetch_incomplete()
         except Exception as e:
-            return [], str(e)
+            return [], str(e), fetch_incomplete()
 
     with ThreadPoolExecutor(max_workers=max(1, workers)) as ex:
         return list(ex.map(one, companies))
@@ -324,6 +330,8 @@ def run_scan(config: dict, companies: list[dict]) -> None:
     scoring_failures = 0
     fetched_total = india_total = already_scored = prefilter_rejected = scored_ok = 0
     scored_by: Counter = Counter()   # model -> jobs it scored this run (T71; the fallback may answer some)
+    sightings: dict = {}              # (ats, company) -> jobs its board returned this run (T33)
+    partial_boards: set = set()       # boards whose fetch stopped early: their other jobs are not "missed"
     # Pre-filter survivors from every company; scored together after fetching so
     # Gemini batches fill up (most companies contribute only 0-3 jobs).
     pending_direct: list = []
@@ -343,12 +351,18 @@ def run_scan(config: dict, companies: list[dict]) -> None:
         logger.info(f"[{idx}/{total}] Scanning {company['name']}...")
         try:
             # 1. Native direct ATS adapter results (fetched above)
-            direct_jobs, fetch_error = prefetched[idx - 1]
+            direct_jobs, fetch_error, incomplete = prefetched[idx - 1]
             if fetch_error:
                 raise RuntimeError(fetch_error)
             if company.get("ats") or direct_jobs:
                 if direct_jobs:
                     logger.info(f"  Fetched {len(direct_jobs)} job(s) directly via ATS adapter")
+                    for job in direct_jobs:   # this board answered: what it no longer returns may be closed (T33)
+                        sightings.setdefault((job.ats, job.company), []).append(job)
+                        if incomplete:        # ...unless it stopped early: then the rest is unknown, not gone
+                            partial_boards.add((job.ats, job.company))
+                    if incomplete:
+                        logger.info(f"  Fetch stopped early ({incomplete}): no job of this board counts as missed")
                     queued = 0
                     fetched_total += len(direct_jobs)
                     for job in direct_jobs:
@@ -403,6 +417,12 @@ def run_scan(config: dict, companies: list[dict]) -> None:
             errors.append(msg)
             logger.error(f"  Company scan failed: {company_err}")
             continue
+
+    closed_after = int(config.get("closed_after_missed_scans", DEFAULT_CLOSED_AFTER_MISSED_SCANS))
+    newly_closed = record_sightings(sightings, closed_after, incomplete=partial_boards)
+    if newly_closed:
+        logger.info(f"{newly_closed} job(s) marked closed: their board answered {closed_after} scan(s) in a row "
+                    "without them")
 
     queued_total = len(pending_direct)
     cap = int(config.get("max_jobs_to_score_per_run", DEFAULT_MAX_JOBS_TO_SCORE))

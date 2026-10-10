@@ -5,7 +5,7 @@ import logging
 from datetime import datetime
 from typing import List
 
-from job_hunt.adapters.base import DEFAULT_HEADERS, http_get, strip_html
+from job_hunt.adapters.base import DEFAULT_HEADERS, http_get, mark_incomplete, strip_html
 from job_hunt.models import JobPosting
 
 logger = logging.getLogger(__name__)
@@ -35,6 +35,7 @@ def fetch_amazon(country: str = "IND") -> List[JobPosting]:
             data = resp.json()
         except Exception as e:
             logger.warning("Amazon fetch failed at offset %d: %s", offset, e)
+            mark_incomplete(f"page failed at offset {offset}")
             break
         page = data.get("jobs", [])
         for item in page:
@@ -58,4 +59,6 @@ def fetch_amazon(country: str = "IND") -> List[JobPosting]:
         offset += PAGE_SIZE
         if len(page) < PAGE_SIZE or offset >= int(data.get("hits") or 0):
             break
+    else:  # stopped at MAX_JOBS with more hits left
+        mark_incomplete(f"cap {MAX_JOBS}")
     return jobs

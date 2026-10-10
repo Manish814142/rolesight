@@ -3,8 +3,9 @@ from __future__ import annotations
 
 import html
 import re
+import threading
 import time
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 import requests
 
@@ -78,3 +79,26 @@ def http_get(url: str, deadline: float = DOWNLOAD_DEADLINE_SECONDS, **kwargs: An
 def http_post(url: str, deadline: float = DOWNLOAD_DEADLINE_SECONDS, **kwargs: Any) -> requests.Response:
     """requests.post with a hard total deadline; the body is fully read on return."""
     return _request("POST", url, deadline, **kwargs)
+
+
+# Did the current fetch stop before the board's end? (T33 review) A paged adapter that keeps earlier pages after a
+# failure, runs out of its time budget or stops at its job cap returns a subset: jobs it did not return may well still
+# be open, so the scanner must not count them as missed. Per thread: the scanner fetches boards in a thread pool, and
+# each adapter fetches one board within one thread.
+_fetch_state = threading.local()
+
+
+def begin_fetch() -> None:
+    """Call before fetching one board."""
+    _fetch_state.incomplete = None
+
+
+def mark_incomplete(reason: str) -> None:
+    """An adapter stopped early ("page failed at offset 20", "budget", "cap 2000"); the first reason is kept."""
+    if getattr(_fetch_state, "incomplete", None) is None:
+        _fetch_state.incomplete = reason
+
+
+def fetch_incomplete() -> Optional[str]:
+    """Why the board fetched since begin_fetch() is incomplete, or None when it ended normally."""
+    return getattr(_fetch_state, "incomplete", None)

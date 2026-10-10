@@ -11,7 +11,7 @@ import logging
 import re
 from typing import List, Optional
 
-from job_hunt.adapters.base import DEFAULT_HEADERS, http_get, strip_html
+from job_hunt.adapters.base import DEFAULT_HEADERS, http_get, mark_incomplete, strip_html
 from job_hunt.models import JobPosting
 
 logger = logging.getLogger(__name__)
@@ -95,6 +95,7 @@ def fetch_oracle_hcm(host: str, site: str, company: str = "") -> List[JobPosting
             item = (resp.json().get("items") or [{}])[0]
         except Exception as e:
             logger.warning("Oracle HCM fetch failed for %s/%s at offset %d: %s", host, site, offset, e)
+            mark_incomplete(f"page failed at offset {offset}")
             break
         page = item.get("requisitionList") or []
         for req in page:
@@ -113,4 +114,6 @@ def fetch_oracle_hcm(host: str, site: str, company: str = "") -> List[JobPosting
         offset += PAGE_SIZE
         if len(page) < PAGE_SIZE or offset >= int(item.get("TotalJobsCount") or 0):
             break
+    else:  # stopped at MAX_JOBS with more requisitions left
+        mark_incomplete(f"cap {MAX_JOBS}")
     return jobs

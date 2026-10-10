@@ -7,7 +7,7 @@ import time
 from typing import Any, List, Optional, Tuple
 from urllib.parse import urlparse
 
-from job_hunt.adapters.base import DEFAULT_HEADERS, http_get, http_post, strip_html
+from job_hunt.adapters.base import DEFAULT_HEADERS, http_get, http_post, mark_incomplete, strip_html
 from job_hunt.models import JobPosting
 from job_hunt.prefilter import title_is_candidate
 
@@ -112,6 +112,7 @@ def fetch_workday(tenant: str, dc: str, site: str, budget: float = BOARD_BUDGET_
             break
         if time.monotonic() - start > budget:
             logger.warning("Workday %s/%s: %.0fs budget spent, stopping at %d jobs", tenant, site, budget, len(jobs))
+            mark_incomplete(f"budget {budget:.0f}s spent at {len(jobs)} jobs")
             break
         payload: dict[str, Any] = {
             "appliedFacets": {},
@@ -135,6 +136,7 @@ def fetch_workday(tenant: str, dc: str, site: str, budget: float = BOARD_BUDGET_
         except Exception as e:
             # Keep whatever earlier pages returned.
             logger.warning("Workday fetch failed for %s/%s at offset %d: %s", tenant, site, offset, e)
+            mark_incomplete(f"page failed at offset {offset}")
             break
 
         if not postings:
@@ -186,4 +188,6 @@ def fetch_workday(tenant: str, dc: str, site: str, budget: float = BOARD_BUDGET_
 
         if len(postings) < PAGE_SIZE:
             break
+    else:  # ran to MAX_JOBS without reaching the end: the tenant has more (Accenture, in arbitrary order)
+        mark_incomplete(f"cap {MAX_JOBS}")
     return jobs

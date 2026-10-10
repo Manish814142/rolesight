@@ -68,7 +68,7 @@ def main(argv=None) -> int:
         companies = json.loads(Path("companies.json").read_text())
         res = _prefetch_jobs(companies, 8)
         rows = [{"company": c["name"], "ats": c["ats"], "title": j.title, "location": j.location, "url": j.url,
-                 "posted_at": j.posted_at, "is_remote": j.is_remote} for c, (jobs, _) in zip(companies, res) for j in jobs]
+                 "posted_at": j.posted_at, "is_remote": j.is_remote} for c, (jobs, _, _) in zip(companies, res) for j in jobs]
         Path(args.save).write_text(json.dumps(rows))
         print(f"saved {len(rows)} jobs to {args.save}")
     elif args.jobs:

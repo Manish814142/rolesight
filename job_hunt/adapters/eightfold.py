@@ -19,7 +19,7 @@ from typing import Any, Dict, List
 
 import requests
 
-from job_hunt.adapters.base import DEFAULT_HEADERS, http_get, strip_html
+from job_hunt.adapters.base import DEFAULT_HEADERS, http_get, mark_incomplete, strip_html
 from job_hunt.models import JobPosting
 
 logger = logging.getLogger(__name__)
@@ -65,6 +65,7 @@ def fetch_eightfold(host: str, domain: str, company: str = "") -> List[JobPostin
     while start < MAX_JOBS:
         if time.monotonic() - began > BOARD_BUDGET_SECONDS:
             logger.warning("Eightfold %s: %.0fs budget spent, stopping at %d jobs", host, BOARD_BUDGET_SECONDS, len(jobs))
+            mark_incomplete(f"budget {BOARD_BUDGET_SECONDS:.0f}s spent at {len(jobs)} jobs")
             break
         params: Dict[str, Any] = {"domain": domain, "query": "", "location": SEARCH_LOCATION,
                                   "start": start, "sort_by": SORT_BY}
@@ -75,6 +76,7 @@ def fetch_eightfold(host: str, domain: str, company: str = "") -> List[JobPostin
         except Exception as e:
             # Keep whatever earlier pages returned.
             logger.warning("Eightfold fetch failed for %s at start=%d: %s", host, start, e)
+            mark_incomplete(f"page failed at start={start}")
             break
         positions = data.get("positions") or []
         new = 0
@@ -101,6 +103,8 @@ def fetch_eightfold(host: str, domain: str, company: str = "") -> List[JobPostin
         if new == 0 or len(positions) < PAGE_SIZE or (isinstance(total, int) and start >= total):
             break
         time.sleep(PAGE_PAUSE)
+    else:  # stopped at MAX_JOBS with more positions left
+        mark_incomplete(f"cap {MAX_JOBS}")
     return jobs
 
 

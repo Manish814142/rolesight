@@ -44,7 +44,7 @@ Rewritten at the end of every scan, whether or not the scan scored anything: eve
 inside that run's posted-date window (`--posted-within N` / `candidate.max_posted_age_days`; undated jobs are kept,
 and with no window every such job is listed). Best score first, same columns as the per-scan CSV. Workday's
 "Posted 5 Days Ago" is aged from the day it was fetched. The per-scan `jobs_*.csv` files are still written. Closed
-jobs are not excluded yet (T33).
+jobs (T33: not returned by their board for `closed_after_missed_scans` scans) are left out.
 
 ## `autopilot export`
 
@@ -86,6 +86,18 @@ key), `canonical_hash` (MD5 of title + company + location; fallback key and an i
 the description the scorer saw. Rows from before T29 have these empty. `score_model` (T71) is the
 Gemini model that produced `score`; it is empty for rows scored before T71 and for the deprecated providers.
 `application_status` / `application_date` (T38) are set by `autopilot mark`, independent of `status`.
+Is a posting still up (T33)? `first_seen` / `last_seen` are the first and the latest scan that fetched it;
+`missed_scans` counts scans in a row in which its board answered with jobs but not this one, and `closed_at` is set
+when that reaches `closed_after_missed_scans` (config, default 3; it is cleared if the job comes back). A board whose
+fetch failed or returned nothing counts for nothing, and so does a board whose fetch **stopped early**: the paged
+adapters (Workday, Eightfold, Amazon, SmartRecruiters, Oracle HCM) flag a page that failed after earlier pages, a
+spent time budget (Workday / Eightfold, 600 s) and a board that reached its job cap (Workday, SmartRecruiters and
+Oracle HCM 2,000, Eightfold 1,000, Amazon 4,000). Such a board's returned jobs still count as seen, but none of its
+other jobs counts as missed, so a board that is always at its cap (Accenture's 2,000 India results) never closes a
+job. The scan logs "Fetch stopped early (…)" for each. Measured 2026-10-10 on all 223 boards: at their cap
+Accenture (Workday), Bosch (SmartRecruiters), EXL and Kotak Mahindra Bank (Oracle HCM), 2,000 each; a capped board
+really does return a different subset (Accenture: 34 of 2,000 URLs gone two days later, 2 of 15 sampled still live). Closed jobs keep their `status` and score, and leave
+`output/open_matches.csv`.
 Table `scans` (T31) has one row per scan run (`started_at`, `finished_at`); `draft N` / `mark N` mean job N among
 the jobs scored during the last finished scan, best score first (equal scores in scoring order), as in its CSV.
 
