@@ -31,7 +31,8 @@ def scan(tmp_path, monkeypatch):
 
     def run(jobs, **cfg):
         monkeypatch.setattr(scanner, "fetch_company_jobs", lambda c: jobs)
-        config = {"candidate": {"resume_path": "resume.md", "min_score": 60}, "gemini_api_key": "k", "telegram": {}, **cfg}
+        config = {"candidate": {"resume_path": "resume.md", "min_score": 60, "max_posted_age_days": None},   # the cap, not the window
+                  "gemini_api_key": "k", "telegram": {}, **cfg}
         scanner.run_scan(config, [{"name": "X", "ats": "greenhouse", "slug": "x"}])
         return scored_titles
     return run

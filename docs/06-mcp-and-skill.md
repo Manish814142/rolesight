@@ -39,8 +39,7 @@ Caveats:
 - **`scan_jobs` is slow.** It runs the whole scan (about 35 min for the first full scan),
   and many MCP clients time out long before that (*assumed*; not tested). For full scans
   use the CLI; through MCP use `export_jobs`, or a scan with a small company list.
-- **`scan_jobs` takes no flags.** Set `candidate.max_posted_age_days` in `config.json` to
-  get the `--posted-within` behaviour.
+- **`scan_jobs` takes no flags.** It uses `candidate.max_posted_age_days` from `config.json` (default 7).
 
 ## The usage skill
 

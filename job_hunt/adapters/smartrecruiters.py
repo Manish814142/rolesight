@@ -4,7 +4,13 @@ from __future__ import annotations
 import logging
 from typing import List
 
-from job_hunt.adapters.base import DEFAULT_HEADERS, http_get, mark_incomplete, strip_html
+from job_hunt.adapters.base import (
+    DEFAULT_HEADERS,
+    http_get,
+    mark_incomplete,
+    stop_at_window,
+    strip_html,
+)
 from job_hunt.models import JobPosting
 
 logger = logging.getLogger(__name__)
@@ -34,6 +40,8 @@ def _fetch_all_postings(url: str, slug: str) -> List[dict]:
         items.extend(page)
         offset += PAGE_SIZE
         if len(page) < PAGE_SIZE or offset >= int(data.get("totalFound") or 0):
+            break
+        if stop_at_window(str(item.get("releasedDate") or "") for item in page):   # newest first (T02)
             break
     else:  # stopped at MAX_JOBS with more postings left
         mark_incomplete(f"cap {MAX_JOBS}")

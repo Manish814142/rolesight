@@ -59,6 +59,9 @@ def fetch_amazon(country: str = "IND") -> List[JobPosting]:
         offset += PAGE_SIZE
         if len(page) < PAGE_SIZE or offset >= int(data.get("hits") or 0):
             break
+        # No stop at the posted-date window (T02): `sort=recent` is only roughly by date. On 2026-10-10 the 2,338 Indian
+        # postings had 980 places where a later job was newer than the one before (by up to 192 days); a stop at the
+        # first all-older page (page 18 of 24 for a 7-day window) would have lost 3 jobs of a 14-day window.
     else:  # stopped at MAX_JOBS with more hits left
         mark_incomplete(f"cap {MAX_JOBS}")
     return jobs

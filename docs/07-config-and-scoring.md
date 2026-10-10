@@ -30,7 +30,7 @@ the default shown applies.
 | `not_suitable` | — | What to score low, in every prompt |
 | `min_score` | `70` (code default and example config; set once, here, T05) | Score that counts as a match: "Worth Applying", Telegram alerts, the digest |
 | `top_n` | `5` | How many matches the digest and the log summary show |
-| `max_posted_age_days` | off | Score only jobs posted in the last N days; same as `--posted-within N` (T02 decides the default) |
+| `max_posted_age_days` | `7` | Score only jobs posted in the last N days (Manish, T02). `null` switches the window off; `--posted-within N` / `all` overrides it for one run. Jobs with no posted date are never filtered |
 | `scoring_mode` | `holistic` | `holistic`: one score from the prompt with the rubric. `structured`: the model reports sub-scores and facts, code applies the caps and computes the score; the CSV gets Stack/Role/Seniority/Location fit, Min years and Capped by columns (T41). Not the default: calibration was worse on the labelled set (see CHANGELOG 2026-10-06) |
 | `max_jobs_to_score_per_run` | 400 | Score at most this many jobs per run, newest first; the rest stay `discovered` for the next scan. `0` = no cap (T04) |
 | `relocation_note` | — | Added to cover-letter drafts |
@@ -88,10 +88,16 @@ They are applied in this order:
    - Otherwise, the ATS's remote flag or the word `remote` → **pass** (remote with no
      geography).
    - Otherwise → **reject**.
-4. **Posted date** (only with `--posted-within N` / `max_posted_age_days`). A job whose
+4. **Posted date** (`max_posted_age_days`, default 7, or `--posted-within N`). A job whose
    posted date is known and older than N days is rejected (saved as `skipped`). Jobs
    with **no date always pass**. Dates are parsed from ISO strings, epoch timestamps and
    Workday's "Posted N Days Ago" text, where "30+ Days" counts as 30.
+
+   The window also saves requests (T02): a Workday job outside it gets no per-job detail call, and the
+   adapters whose lists are newest first (Oracle HCM, Eightfold, SmartRecruiters) stop paging at the first
+   page that holds only older jobs. Amazon is never cut short (its `sort=recent` order is only roughly by
+   date, measured 2026-10-10) and neither is any board whose list order is not by date. A board stopped this
+   way counts as partly fetched, so the closed-job check (T33) closes nothing on it.
 
 The rejection reason for each job is logged at DEBUG level in `data/autopilot.log`.
 

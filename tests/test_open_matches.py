@@ -10,6 +10,7 @@ from job_hunt import scanner, tracker
 from job_hunt.db import init_db, save_job, update_job_status
 from job_hunt.models import JobPosting, job_key
 
+DEFAULT_WINDOW = object()      # the config names no window at all
 TODAY = date.today()
 
 
@@ -54,7 +55,7 @@ def env(tmp_path, monkeypatch):
 
         monkeypatch.setattr(scanner, "score_and_process_job", fake_score)
         cand = {"resume_path": "resume.md", "min_score": 60}
-        if window is not None:
+        if window is not DEFAULT_WINDOW:       # window=None is JSON null: no window (T02: 7 days unless the config says so)
             cand["max_posted_age_days"] = window
         scanner.run_scan({"candidate": cand, "gemini_api_key": "k", "telegram": {}},
                          [{"name": "X", "ats": "greenhouse", "slug": "x"}])
@@ -70,6 +71,11 @@ def test_open_matches_lists_unapplied_jobs_above_min_score_inside_the_window(env
 
 def test_without_a_window_every_unapplied_match_is_listed_best_first(env):
     assert env() == ["D", "E", "B", "F"]
+
+
+def test_the_default_window_of_seven_days_applies_when_the_config_names_none(env):
+    """T02: no `max_posted_age_days` in config.json means 7 days: the 40- and 35-day-old matches drop out."""
+    assert env(window=DEFAULT_WINDOW) == ["B", "F"]
 
 
 def test_it_is_regenerated_every_run_even_when_nothing_new_is_scored(env):

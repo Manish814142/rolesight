@@ -136,8 +136,8 @@ replaces both.
 3. **For each job,** in company order:
    - Already `scored` or `notified` in the DB → skip.
    - Rejected by the **pre-filter** (title, location) → saved as `skipped`.
-   - Posted more than N days ago, when `--posted-within N` is set → saved as `skipped`,
-     so it comes back if you widen the window.
+   - Posted more than N days ago (N = `candidate.max_posted_age_days`, default 7; `--posted-within`
+     overrides it) → saved as `skipped`, so it comes back if you widen the window.
    - Otherwise → saved as `discovered` and queued.
 4. **Enrich:** fetch the full description for queued jobs whose ATS list API doesn't
    carry one (Workday, SmartRecruiters, Oracle HCM). Runs in parallel; a failure keeps
@@ -196,7 +196,7 @@ Later daily scans only score jobs not already `scored`, so they should be much s
 | Flag | Effect |
 |---|---|
 | `--limit N` | Only the first N companies in `companies.json` |
-| `--posted-within N` | Score only jobs posted in the last N days (undated jobs always pass). Same as `candidate.max_posted_age_days` |
+| `--posted-within N` | Score only jobs posted in the last N days for this run (undated jobs always pass); `all` = no window. The default is `candidate.max_posted_age_days`, 7 if unset (T02) |
 | `LOG_LEVEL=DEBUG` (env) | Per-job detail on the console. `data/autopilot.log` always has it |
 
 ## Next

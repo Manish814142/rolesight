@@ -283,10 +283,11 @@ def main() -> None:
                 pass
         if "--posted-within" in sys.argv:
             try:
-                days = int(sys.argv[sys.argv.index("--posted-within") + 1])
+                arg = sys.argv[sys.argv.index("--posted-within") + 1]
+                window = None if arg == "all" else int(arg)
             except (IndexError, ValueError):
-                sys.exit("--posted-within requires an integer number of days, e.g. --posted-within 3")
-            config.setdefault("candidate", {})["max_posted_age_days"] = days
+                sys.exit("--posted-within requires a number of days, e.g. --posted-within 3, or 'all' for no window")
+            config.setdefault("candidate", {})["max_posted_age_days"] = window
         from job_hunt.scanner import run_scan
         comps = load_companies()
         if limit and limit > 0:

@@ -7,7 +7,14 @@ import time
 from typing import Any, List, Optional, Tuple
 from urllib.parse import urlparse
 
-from job_hunt.adapters.base import DEFAULT_HEADERS, http_get, http_post, mark_incomplete, strip_html
+from job_hunt.adapters.base import (
+    DEFAULT_HEADERS,
+    http_get,
+    http_post,
+    mark_incomplete,
+    outside_window,
+    strip_html,
+)
 from job_hunt.models import JobPosting
 from job_hunt.prefilter import title_is_candidate
 
@@ -156,9 +163,11 @@ def fetch_workday(tenant: str, dc: str, site: str, budget: float = BOARD_BUDGET_
             posted_on = item.get("postedOn", "")
             description = ""
 
-            # The detail call is one HTTP request per job; skip it when the title alone rules the job out (T23).
+            # The detail call is one HTTP request per job; skip it when the title alone rules the job out (T23) or the
+            # posting is older than the scan's posted-date window (T02; Workday's list is not sorted by date, so
+            # the paging itself cannot stop early).
             if (external_path and _MULTI_LOCATION_RE.match(location) and title_is_candidate(title)
-                    and time.monotonic() - start <= budget):
+                    and not outside_window(posted_on) and time.monotonic() - start <= budget):
                 detail_locs, description = _fetch_detail(cxs_base, external_path)
                 location = detail_locs or location
 

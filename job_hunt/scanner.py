@@ -33,7 +33,7 @@ from job_hunt.prefilter import (
     should_evaluate_job,
 )
 from job_hunt.scorer import score_and_process_batch, score_and_process_job
-from job_hunt.settings import min_score_of
+from job_hunt.settings import max_posted_age_of, min_score_of
 
 logger = get_logger()
 
@@ -106,11 +106,14 @@ DEFAULT_MAX_JOBS_TO_SCORE = 400
 DEFAULT_FETCH_WORKERS = 8
 
 
-def _prefetch_jobs(companies: list[dict], workers: int) -> list[tuple[list, str | None, str | None]]:
+def _prefetch_jobs(companies: list[dict], workers: int,
+                   max_age_days: Optional[int] = None) -> list[tuple[list, str | None, str | None]]:
     """Fetch every company's ATS jobs concurrently; returns (jobs, error, incomplete) in input order. `incomplete`
-    says why a paged adapter stopped before the board's end (page failure, time budget, job cap), else None (T33)."""
+    says why a paged adapter stopped before the board's end (page failure, time budget, job cap, posted-date
+    window), else None (T33). `max_age_days` is the posted-date window: adapters spend no per-job request on, and stop
+    paging a newest-first list at, jobs older than it (T02)."""
     def one(company: dict) -> tuple[list, str | None, str | None]:
-        begin_fetch()
+        begin_fetch(max_age_days)
         try:
             jobs = fetch_company_jobs(company)
             return jobs, None, fetch_incomplete()
@@ -337,7 +340,7 @@ def run_scan(config: dict, companies: list[dict]) -> None:
     # Gemini batches fill up (most companies contribute only 0-3 jobs).
     pending_direct: list = []
 
-    max_age = config.get("candidate", {}).get("max_posted_age_days")
+    max_age = max_posted_age_of(config)
     if max_age is not None:
         logger.info(f"Posted-date filter: last {max_age} day(s) only (jobs without a posted date are kept)")
     too_old = 0
@@ -345,7 +348,7 @@ def run_scan(config: dict, companies: list[dict]) -> None:
     workers = int(config.get("fetch_workers", DEFAULT_FETCH_WORKERS))
     logger.info(f"Fetching {total} companies with {workers} parallel workers...")
     fetch_start = time.time()
-    prefetched = _prefetch_jobs(companies, workers)
+    prefetched = _prefetch_jobs(companies, workers, max_age)
     logger.info(f"Fetch complete in {(time.time() - fetch_start) / 60:.1f} min")
 
     for idx, company in enumerate(companies, 1):

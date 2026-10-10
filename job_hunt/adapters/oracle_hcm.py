@@ -11,7 +11,13 @@ import logging
 import re
 from typing import List, Optional
 
-from job_hunt.adapters.base import DEFAULT_HEADERS, http_get, mark_incomplete, strip_html
+from job_hunt.adapters.base import (
+    DEFAULT_HEADERS,
+    http_get,
+    mark_incomplete,
+    stop_at_window,
+    strip_html,
+)
 from job_hunt.models import JobPosting
 
 logger = logging.getLogger(__name__)
@@ -113,6 +119,8 @@ def fetch_oracle_hcm(host: str, site: str, company: str = "") -> List[JobPosting
             ))
         offset += PAGE_SIZE
         if len(page) < PAGE_SIZE or offset >= int(item.get("TotalJobsCount") or 0):
+            break
+        if stop_at_window(j.posted_at for j in jobs[-len(page):]):   # sortBy=POSTING_DATES_DESC (T02)
             break
     else:  # stopped at MAX_JOBS with more requisitions left
         mark_incomplete(f"cap {MAX_JOBS}")

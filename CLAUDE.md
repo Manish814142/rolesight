@@ -17,7 +17,7 @@ agents. Follow its Working loop (claim → implement → review queue) or its Ve
 ```bash
 autopilot scan              # full scan of companies.json (alias: python -m job_hunt scan)
 autopilot scan --limit 5    # only the first 5 companies
-autopilot scan --posted-within 7   # only jobs posted in the last 7 days (undated jobs kept)
+autopilot scan --posted-within 3   # window for this run (default: candidate.max_posted_age_days, 7; `all` = none; undated jobs kept)
 autopilot discover --recheck --merge companies.json --report /tmp/r.csv   # monthly list health check
 autopilot discover --census scripts/careers_urls.txt --report /tmp/c.csv --emit-seeds /tmp/s.txt
                             # which ATS do careers pages use? --emit-seeds -> verify with discover --add-file
@@ -49,7 +49,8 @@ Tests must make **no network calls** — stub `send_telegram`, adapters, and Gem
 3. Dedupe by `(ats, global_id)` (the ATS's own job id) in `data/jobs.db`; `canonical_hash` is the
    fallback for rows without an id.
 4. `prefilter.should_evaluate_job` — word-bounded title include/exclude + location regex; then
-   `prefilter.is_too_old` when `--posted-within N` / `candidate.max_posted_age_days` is set.
+   `prefilter.is_too_old` (`candidate.max_posted_age_days`, default 7 — T02; `--posted-within N|all` overrides). The window also
+   reaches the adapters: no Workday detail call for an older job, and newest-first lists (Oracle HCM, Eightfold, SmartRecruiters) stop paging.
 5. Enrich: `adapters.enrich_job` fetches the full description for survivors whose ATS list API
    lacks one (`ENRICHERS`: workday, smartrecruiters, oracle_hcm, eightfold), in parallel; failures keep the
    list text.

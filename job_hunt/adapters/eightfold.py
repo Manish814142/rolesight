@@ -19,7 +19,13 @@ from typing import Any, Dict, List
 
 import requests
 
-from job_hunt.adapters.base import DEFAULT_HEADERS, http_get, mark_incomplete, strip_html
+from job_hunt.adapters.base import (
+    DEFAULT_HEADERS,
+    http_get,
+    mark_incomplete,
+    stop_at_window,
+    strip_html,
+)
 from job_hunt.models import JobPosting
 
 logger = logging.getLogger(__name__)
@@ -101,6 +107,8 @@ def fetch_eightfold(host: str, domain: str, company: str = "") -> List[JobPostin
         start += PAGE_SIZE
         total = data.get("count")
         if new == 0 or len(positions) < PAGE_SIZE or (isinstance(total, int) and start >= total):
+            break
+        if stop_at_window(j.posted_at for j in jobs[-new:]):   # sort_by=timestamp is newest first (T02)
             break
         time.sleep(PAGE_PAUSE)
     else:  # stopped at MAX_JOBS with more positions left

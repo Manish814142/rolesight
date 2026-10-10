@@ -5,9 +5,11 @@ import html
 import re
 import threading
 import time
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Iterable, Optional
 
 import requests
+
+from job_hunt.prefilter import is_too_old
 
 DEFAULT_HEADERS: Dict[str, str] = {
     "User-Agent": (
@@ -88,9 +90,33 @@ def http_post(url: str, deadline: float = DOWNLOAD_DEADLINE_SECONDS, **kwargs: A
 _fetch_state = threading.local()
 
 
-def begin_fetch() -> None:
-    """Call before fetching one board."""
+def begin_fetch(max_age_days: Optional[int] = None) -> None:
+    """Call before fetching one board. `max_age_days` is the scan's posted-date window (T02), or None for no window."""
     _fetch_state.incomplete = None
+    _fetch_state.max_age_days = max_age_days
+
+
+def fetch_window() -> Optional[int]:
+    """The posted-date window (days) of the fetch in progress on this thread, or None."""
+    return getattr(_fetch_state, "max_age_days", None)
+
+
+def outside_window(posted_at: str) -> bool:
+    """True when a window is set and this posted date is known and older than it (undated jobs are never old)."""
+    return is_too_old(posted_at, fetch_window())
+
+
+def stop_at_window(posted_dates: Iterable[str]) -> bool:
+    """For an adapter whose list is newest first (Amazon `sort=recent`, Oracle POSTING_DATES_DESC, Eightfold
+    `sort_by=timestamp`, SmartRecruiters): call after each page with that page's posted dates. True when a window is set
+    and every job of the page is dated and older than it, so every later page is older still; the fetch is then marked
+    incomplete, because the jobs it did not read are old, not gone (T33 must not close them). A page with one job
+    inside the window, or one undated job, never stops the fetch."""
+    dates = list(posted_dates)
+    if fetch_window() is None or not dates or not all(outside_window(d) for d in dates):
+        return False
+    mark_incomplete("posted-date window")
+    return True
 
 
 def mark_incomplete(reason: str) -> None:
