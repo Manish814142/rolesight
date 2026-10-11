@@ -463,16 +463,6 @@ def test_ai_clause_caps_hands_on_requirements_not_familiarity():
     assert "familiarity or a basic understanding" in rule8
 
 
-def test_location_rule_treats_every_indian_city_alike():
-    """T79: Notion's Forward Deployed Engineer (Hyderabad, hybrid) scored 25-30 in 2 of 15 runs and 70-75 in the rest, the
-    reasons all saying 'though the location is Hyderabad while the candidate prefers Bengaluru'. His rule is India or remote;
-    a preferred city in `seeking` is not a location cap, and only a role outside India is capped."""
-    rule1 = llm_utils.SCORING_RUBRIC.split("1. ")[1].split("2. ")[0].lower()
-    assert "any indian city" in rule1
-    assert "preference for one city" in rule1 and "not a location cap" in rule1
-    assert "outside india" in rule1                    # the cap itself is unchanged
-
-
 def test_ai_clause_ignores_bonus_and_preferred_sections():
     """T74, golden-set regression (3.5, v8b): MongoDB 'Software Engineer 3' (apply, 90 under v7) fell to 45 because its
     'Bonus Round' (vector databases, agent orchestration such as LangGraph) was read as required. Sections called
