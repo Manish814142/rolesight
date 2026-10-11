@@ -510,7 +510,7 @@ until the next normal run (T02 will set the default); (3) closed jobs are not ex
 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
-| T80 | User guide: which file and which setting to change, step by step | todo | — | M | — |
+| T80 | User guide: which file and which setting to change, step by step | doing · claude · 2026-10-11 | claude | M | — |
 
 T41, T42, T43, T50, T51, T52, T55 and T63 were verified 2026-10-07 (Done log).
 
