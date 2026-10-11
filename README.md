@@ -279,6 +279,7 @@ The design: [ARCHITECTURE.md](ARCHITECTURE.md).
 
 | Doc | Read it for |
 |---|---|
+| [docs/00 — User guide](docs/00-user-guide.md) | **Start here to change something:** which file and which setting, step by step |
 | [docs/01 — Install & first run](docs/01-install.md) | Setup from zero to the first CSV |
 | [docs/02 — LLM providers](docs/02-providers.md) | Gemini (default), Anthropic, Claude CLI; quotas |
 | [docs/03 — API keys](docs/03-api-keys.md) | Which keys exist, which are needed, where they go |

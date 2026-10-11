@@ -9,6 +9,7 @@ best-first CSV. It **never applies** to anything. The project overview is in the
 
 | # | Guide | Covers |
 |---|---|---|
+| 00 | [User guide](00-user-guide.md) | Which file and which setting to change, step by step: install, resume, profile, word lists, companies, reading the CSV |
 | 01 | [Install & first run](01-install.md) | venv, extras, `.env` / `config.json`, resume, `doctor`, the first scan |
 | 02 | [LLM providers](02-providers.md) | Gemini (default) models, retries, quotas, batch mode; Anthropic; Claude CLI |
 | 03 | [API keys](03-api-keys.md) | Which keys exist, which are required, precedence |
@@ -30,6 +31,7 @@ best-first CSV. It **never applies** to anything. The project overview is in the
 
 ## Reading order
 
+- **Using it, or changing how it behaves:** [00 — User guide](00-user-guide.md).
 - **New to the project:** [README](../README.md) → [01](01-install.md) →
   [04](04-companies-and-scanning.md) → [05](05-outputs-and-notifications.md).
 - **Changing code:** [ARCHITECTURE.md](../ARCHITECTURE.md) → [07](07-config-and-scoring.md)

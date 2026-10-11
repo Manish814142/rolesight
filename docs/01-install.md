@@ -1,6 +1,7 @@
 # 01 — Install & first run
 
-From a fresh checkout to the first CSV of scored jobs. It takes about 15 minutes of setup;
+From a fresh checkout to the first CSV of scored jobs. (To change a setting or a word list afterwards, the
+[user guide](00-user-guide.md) says which file and which line.) It takes about 15 minutes of setup;
 the first scan then takes about 35 minutes (measured on 2026-10-04 with 215 companies).
 
 ## Prerequisites

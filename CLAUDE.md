@@ -26,6 +26,7 @@ autopilot harvest --out /tmp/x.json   # rebuilds a list from india.yml + LinkedI
 autopilot validate          # prunes companies.json in place (accepts empty boards) — prefer discover
 autopilot discover --seeds scripts/company_seeds.txt --report /tmp/r.csv --out /tmp/v.json [--merge companies.json]
                             # verify company names against ATS boards; --merge re-checks existing entries too
+python scripts/check_filter.py "Java Developer" "Pune, India" [--remote]   # KEPT or REJECTED + the reason, for one job (T80)
 python scripts/measure_prefilter.py --jobs saved.json   # pre-filter survivors + what each exclusion word costs (--save fetches all, ~9 min)
 python scripts/measure_workday_tenants.py   # per-tenant Workday fetch time, detail calls, survivors (~4-9 min, real network)
 python scripts/score_golden_set.py         # score the labelled jobs with the rubric off/on (~150 Gemini calls); --from-scores re-analyses

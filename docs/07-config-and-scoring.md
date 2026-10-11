@@ -3,7 +3,9 @@
 ## `config.json` reference
 
 The file is gitignored; start from `config.example.json`. Any key can be left out, and
-the default shown applies.
+the default shown applies. A key is read only in the place the tables below put it: `scoring_mode` and `max_jobs_to_score_per_run`
+belong at the top level, not under `candidate` (an earlier version of this page listed them under `candidate`, where the code never
+looks, so a value put there was ignored; T80). The step-by-step version of this page is the [user guide](00-user-guide.md).
 
 ### Top level
 
@@ -15,6 +17,8 @@ the default shown applies.
 | `gemini_scoring_mode` | `single` | `batch` scores several jobs per call. Faster, but measured to inflate scores ([02](02-providers.md#batch-mode-opt-in-not-recommended)) |
 | `gemini_batch_size` | `10` | Jobs per call in batch mode |
 | `fetch_workers` | `8` | Companies fetched in parallel; also used for description fetching |
+| `scoring_mode` | `holistic` | `holistic`: one score from the prompt with the rubric. `structured`: the model reports sub-scores and facts, code applies the caps and computes the score; the CSV gets Stack/Role/Seniority/Location fit, Min years and Capped by columns (T41). Not the default: calibration was worse on the labelled set (see CHANGELOG 2026-10-06) |
+| `max_jobs_to_score_per_run` | 400 | Score at most this many jobs per run, newest first; the rest stay `discovered` for the next scan. `0` = no cap (T04) |
 | `telegram.token`, `telegram.chat_id` | — | Optional alerts ([05](05-outputs-and-notifications.md#telegram-optional)) |
 | `anthropic_api_key`, `anthropic_model` | — | `llm_provider: anthropic` |
 | `claude_cli_model` | Claude's default | `llm_provider: claude_cli` |
@@ -31,8 +35,6 @@ the default shown applies.
 | `min_score` | `70` (code default and example config; set once, here, T05) | Score that counts as a match: "Worth Applying", Telegram alerts, the digest |
 | `top_n` | `5` | How many matches the digest and the log summary show |
 | `max_posted_age_days` | `7` | Score only jobs posted in the last N days (T02: Manish asked for a window; 7 is Claude's choice until he confirms it). `null` switches the window off; `--posted-within N` / `all` overrides it for one run. Jobs with no posted date are never filtered |
-| `scoring_mode` | `holistic` | `holistic`: one score from the prompt with the rubric. `structured`: the model reports sub-scores and facts, code applies the caps and computes the score; the CSV gets Stack/Role/Seniority/Location fit, Min years and Capped by columns (T41). Not the default: calibration was worse on the labelled set (see CHANGELOG 2026-10-06) |
-| `max_jobs_to_score_per_run` | 400 | Score at most this many jobs per run, newest first; the rest stay `discovered` for the next scan. `0` = no cap (T04) |
 | `relocation_note` | — | Added to cover-letter drafts |
 
 ### `.env` overrides
@@ -40,7 +42,8 @@ the default shown applies.
 `GEMINI_API_KEY`, `GEMINI_MODEL`, `LLM_PROVIDER`, `ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL`,
 `CLAUDE_CLI_MODEL`, `TELEGRAM_TOKEN` (or
 `TELEGRAM_BOT_TOKEN`), `TELEGRAM_CHAT_ID`, and the candidate overrides `CANDIDATE_NAME`,
-`RESUME_PATH`, `MIN_SCORE` and `TOP_N`.
+`RESUME_PATH`, `MIN_SCORE` and `TOP_N`. The `.env` that `autopilot init` writes has these four commented out (T81): an
+active line beats `config.json` for every run, and a template that set them live made a new user's edited `config.json` be ignored.
 
 Values from `.env` override both `config.json` and your shell, unless they are
 placeholders ([03](03-api-keys.md#precedence)). Every scan logs the values it ended up
