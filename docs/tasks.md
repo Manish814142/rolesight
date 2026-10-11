@@ -510,15 +510,14 @@ until the next normal run (T02 will set the default); (3) closed jobs are not ex
 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
-| T45 | Web page to set up and use JobNotify (design proposal) | decision | — | L | T29 |
+| T80 | User guide: which file and which setting to change, step by step | todo | — | M | — |
 
 T41, T42, T43, T50, T51, T52, T55 and T63 were verified 2026-10-07 (Done log).
 
-**T45 · A web page to set up and use JobNotify** (Manish, 2026-10-10: a web page, not a terminal; configure everything A–Z — resume, title include / exclude,
-locations; Gemini should suggest and warn when the configuration is unclear or wrong). This is an architectural change (a new server, a config-driven pre-filter,
-a Gemini assistant), so the process asks for a written design before code: **`docs/superpowers/specs/2026-10-10-web-ui-design.md`** (claude, 2026-10-10, 61abf8e),
-five pieces S1–S5 in order, my recommended approach, risks, and **five questions for Manish** (who it is for; the set and order of pieces; which page first; when
-Gemini helps; may the page edit `config.json`). Nothing is built. Status `decision` until he answers.
+**T80 · User guide.** (Manish, 2026-10-11: no web UI, a guide instead; replaces T45.) One `docs/00-user-guide.md` that tells a new person, in order: install, where the resume
+goes, which `config.json` field changes what (`profile`, `seeking`, `not_suitable`, `min_score`, `max_posted_age_days`, `top_n`), which words to edit in `job_hunt/prefilter.py`
+for titles and locations, how to add companies (`discover`), how to read the CSV, run it daily, what to do when something fails.
+*Done when:* every setting the guide names exists in the code (a test checks), and each step was run once in an empty directory.
 
 **T44 · Keyword gap analysis in `draft`.** (The board had only the title; this definition is claude-b's, 2026-10-10,
 for Manish to confirm.) When `draft` writes its files, also list the technologies the posting names that the resume
@@ -535,7 +534,7 @@ Which terms would you add?
 
 ## Inbox
 
-New findings go here with the next free ID (next: **T80**), an evidence tag and the
+New findings go here with the next free ID (next: **T81**), an evidence tag and the
 file:line. Manish or the triaging agent moves each one into a priority table.
 
 | ID | Finding | Evidence | Added by |
@@ -653,4 +652,5 @@ Don't reopen without new evidence.
 | Thread pool for Workday detail calls | Gemini web | Superseded by parallel company fetch (ba7d4b7). T23 re-measures first. |
 | Darwinbox adapter (T27) | claude, probe 2026-10-06 | No plain-HTTP JSON endpoint found. On valid tenants (magicpin, netmeds) every `/ms/candidateapi/*` path (`companyinfo`, `job?page=1`, `job/count`, `job/filters`, even `getturnstilecaptchasitekey`), GET and POST, with and without Origin/Referer/cookie, answers 500 "Error while getting tenant info"; mpl and demo are walled by Cloudflare 403; an invalid subdomain answers "Invalid subdomain" (so the tenant is recognised and the failure is in tenant resolution for non-browser requests). The app loads a Cloudflare Turnstile challenge. Five different attempts failed; reopen only with a browser-free way to obtain the tenant context, or a decision to use Playwright. |
 | Pre-filter Accenture's generic "Custom Software Engineer" titles by the "Must have skills" line (T68) | claude, 2026-10-07 | Manish, 2026-10-07: a title or skills-line rule would also drop real fits; Gemini reads the whole description and decides, which is the safe side. Cost accepted: some scoring calls on low-fit Accenture roles (6 of 6 scored 30–40 in one scan). |
+| Web UI for configuration (T45) | Manish, 2026-10-11 | Too much work for the benefit; the user guide (T80) covers it. Design kept at `docs/superpowers/specs/2026-10-10-web-ui-design.md`. Reopen only if he asks. |
 | Playwright for custom portals; scraping Naukri/LinkedIn; multiple resume profiles | Gemini web, Antigravity | High cost and ban risk. Reopen only with a concrete plan and measured payoff. |
