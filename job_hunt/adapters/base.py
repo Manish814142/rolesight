@@ -106,6 +106,10 @@ def outside_window(posted_at: str) -> bool:
     return is_too_old(posted_at, fetch_window())
 
 
+# The reason stop_at_window records. The scanner treats this stop differently from a failed page or a cap (T78).
+WINDOW_STOP_REASON = "posted-date window"
+
+
 def stop_at_window(posted_dates: Iterable[str]) -> bool:
     """For an adapter whose list is newest first (Amazon `sort=recent`, Oracle POSTING_DATES_DESC, Eightfold
     `sort_by=timestamp`, SmartRecruiters): call after each page with that page's posted dates. True when a window is set
@@ -115,7 +119,7 @@ def stop_at_window(posted_dates: Iterable[str]) -> bool:
     dates = list(posted_dates)
     if fetch_window() is None or not dates or not all(outside_window(d) for d in dates):
         return False
-    mark_incomplete("posted-date window")
+    mark_incomplete(WINDOW_STOP_REASON)
     return True
 
 

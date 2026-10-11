@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Optional
 
 from job_hunt.adapters import enrich_job, fetch_company_jobs
-from job_hunt.adapters.base import begin_fetch, fetch_incomplete
+from job_hunt.adapters.base import WINDOW_STOP_REASON, begin_fetch, fetch_incomplete
 from job_hunt.db import (
     DEFAULT_CLOSED_AFTER_MISSED_SCANS,
     finish_scan,
@@ -336,6 +336,7 @@ def run_scan(config: dict, companies: list[dict]) -> None:
     scored_by: Counter = Counter()   # model -> jobs it scored this run (T71; the fallback may answer some)
     sightings: dict = {}              # (ats, company) -> jobs its board returned this run (T33)
     partial_boards: set = set()       # boards whose fetch stopped early: their other jobs are not "missed"
+    windowed_boards: dict = {}        # boards cut at the posted-date window -> that window: only jobs inside it can be missed (T78)
     # Pre-filter survivors from every company; scored together after fetching so
     # Gemini batches fill up (most companies contribute only 0-3 jobs).
     pending_direct: list = []
@@ -363,9 +364,13 @@ def run_scan(config: dict, companies: list[dict]) -> None:
                     logger.info(f"  Fetched {len(direct_jobs)} job(s) directly via ATS adapter")
                     for job in direct_jobs:   # this board answered: what it no longer returns may be closed (T33)
                         sightings.setdefault((job.ats, job.company), []).append(job)
-                        if incomplete:        # ...unless it stopped early: then the rest is unknown, not gone
+                        if incomplete == WINDOW_STOP_REASON and max_age is not None:
+                            windowed_boards[(job.ats, job.company)] = max_age   # old jobs unread; those inside the window were read
+                        elif incomplete:      # ...unless it stopped early: then the rest is unknown, not gone
                             partial_boards.add((job.ats, job.company))
-                    if incomplete:
+                    if incomplete == WINDOW_STOP_REASON and max_age is not None:
+                        logger.info(f"  Fetch stopped at the {WINDOW_STOP_REASON}: only jobs inside the window count as missed")
+                    elif incomplete:
                         logger.info(f"  Fetch stopped early ({incomplete}): no job of this board counts as missed")
                     queued = 0
                     fetched_total += len(direct_jobs)
@@ -423,7 +428,7 @@ def run_scan(config: dict, companies: list[dict]) -> None:
             continue
 
     closed_after = int(config.get("closed_after_missed_scans", DEFAULT_CLOSED_AFTER_MISSED_SCANS))
-    newly_closed = record_sightings(sightings, closed_after, incomplete=partial_boards)
+    newly_closed = record_sightings(sightings, closed_after, incomplete=partial_boards, windowed=windowed_boards)
     if newly_closed:
         logger.info(f"{newly_closed} job(s) marked closed: their board answered {closed_after} scan(s) in a row "
                     "without them")

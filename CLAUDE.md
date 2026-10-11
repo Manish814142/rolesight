@@ -87,7 +87,9 @@ reads them; `scripts/import_json_history.py` imports scores only they hold (dry 
 A Gemini failure never stores `score=0`; the row stays `discovered`.
 Separately (T33), `closed_at` is set once a job's board answers `closed_after_missed_scans` (3) scans in a row
 without it (`missed_scans`; `first_seen`/`last_seen`); a failed, empty or early-stopped fetch (page failure, time
-budget, job cap: `adapters.base.mark_incomplete`) is no miss; a returning job reopens.
+budget, job cap: `adapters.base.mark_incomplete`) is no miss; a returning job reopens. The one exception (T78): a fetch that
+stopped at the posted-date window counts a miss for the board's stored jobs that are inside the window (one day of margin),
+since those would have been on the pages read, and for no older or undated job.
 
 ## Config
 

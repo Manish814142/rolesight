@@ -3,10 +3,11 @@ from __future__ import annotations
 
 import os
 import sqlite3
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from job_hunt.models import JobPosting, canonical_hash, url_hash
+from job_hunt.prefilter import current_age_days
 
 DEFAULT_DB_PATH = "data/jobs.db"
 
@@ -394,13 +395,40 @@ def open_match_rows(min_score: int, db_path: str = DEFAULT_DB_PATH) -> List[Dict
         return [dict(r) for r in rows]
 
 
+# A fetch that stopped at the posted-date window (T02) read every page down to the first all-old one, so a stored job
+# that is inside the window and was not returned is really absent. One day of margin: the lists are sorted by date,
+# but a board whose order is only roughly by date could leave a job at the edge on a page that was not read.
+WINDOW_STOP_MARGIN_DAYS = 1
+
+
+def _unseen_inside_window(conn: sqlite3.Connection, ats: str, company: str, now: str, window_days: int) -> List[int]:
+    """Row ids of the board's open jobs not seen in this scan whose posted date puts them inside the window."""
+    today = datetime.now(timezone.utc).date()
+    ids = []
+    rows = conn.execute("SELECT id, posted_at, first_seen FROM jobs WHERE ats = ? AND company = ? AND closed_at IS NULL "
+                        "AND (last_seen IS NULL OR last_seen < ?);", (ats, company, now))
+    for row_id, posted_at, first_seen in rows.fetchall():
+        try:
+            seen_on = date.fromisoformat((first_seen or "")[:10])
+        except ValueError:
+            seen_on = today
+        age = current_age_days(posted_at or "", seen_on, today)
+        if age is not None and age <= window_days - WINDOW_STOP_MARGIN_DAYS:
+            ids.append(row_id)
+    return ids
+
+
 def record_sightings(boards: Dict[tuple, List[JobPosting]], closed_after: int = DEFAULT_CLOSED_AFTER_MISSED_SCANS,
-                     db_path: str = DEFAULT_DB_PATH, incomplete: Optional[set] = None) -> int:
+                     db_path: str = DEFAULT_DB_PATH, incomplete: Optional[set] = None,
+                     windowed: Optional[Dict[tuple, int]] = None) -> int:
     """After a scan (T33): `boards` maps (ats, company) to the jobs that board returned. Pass only boards whose fetch
     succeeded with at least one job: a failed or empty fetch says nothing about whether a posting is still up.
     Returned jobs get last_seen = now, missed_scans = 0 and are reopened if closed; the board's other rows get one
     more missed scan and are closed when they reach `closed_after` -- except on boards in `incomplete` (the fetch
     stopped early: page failure, time budget or job cap), whose other rows are left as they are.
+    `windowed` maps a board whose fetch stopped at the posted-date window to that window in days (T78): its other
+    rows count a miss only when their posted date puts them inside the window (with a day of margin); older and
+    undated rows are left as they are, because the pages that would hold them were not read.
     Returns how many jobs were closed now."""
     init_db(db_path)
     now = datetime.now(timezone.utc).isoformat()
@@ -415,10 +443,15 @@ def record_sightings(boards: Dict[tuple, List[JobPosting]], closed_after: int = 
                              "WHERE ats = ? AND global_id = ? AND global_id IS NOT NULL AND global_id != '';", with_id)
             conn.executemany("UPDATE jobs SET last_seen = ?, missed_scans = 0, closed_at = NULL "
                              "WHERE canonical_hash = ? AND (global_id IS NULL OR global_id = '');", without)
-            if (ats, company) in (incomplete or set()):
+            board = (ats, company)
+            if board in (incomplete or set()):
                 continue
-            conn.execute("UPDATE jobs SET missed_scans = missed_scans + 1 WHERE ats = ? AND company = ? "
-                         "AND closed_at IS NULL AND (last_seen IS NULL OR last_seen < ?);", (ats, company, now))
+            if board in (windowed or {}):
+                missed = _unseen_inside_window(conn, ats, company, now, (windowed or {})[board])
+                conn.executemany("UPDATE jobs SET missed_scans = missed_scans + 1 WHERE id = ?;", [(i,) for i in missed])
+            else:
+                conn.execute("UPDATE jobs SET missed_scans = missed_scans + 1 WHERE ats = ? AND company = ? "
+                             "AND closed_at IS NULL AND (last_seen IS NULL OR last_seen < ?);", (ats, company, now))
             closed += conn.execute("UPDATE jobs SET closed_at = ? WHERE ats = ? AND company = ? AND closed_at IS NULL "
                                    "AND missed_scans >= ?;", (now, ats, company, closed_after)).rowcount
         conn.commit()

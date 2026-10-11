@@ -102,7 +102,10 @@ They are applied in this order:
    adapters whose lists are newest first (Oracle HCM, Eightfold, SmartRecruiters) stop paging at the first
    page that holds only older jobs. Amazon is never cut short (its `sort=recent` order is only roughly by
    date, measured 2026-10-10) and neither is any board whose list order is not by date. A board stopped this
-   way counts as partly fetched, so the closed-job check (T33) closes nothing on it.
+   way counts as partly fetched for the closed-job check (T33), with one exception (T78): a stored job whose posted date is
+   inside the window (minus a day of margin) and that the board did not return is a real miss, because it would have been on
+   the pages read. Older and undated jobs are neither missed nor closed by such a stop. Any other early stop (a failed page, the
+   time budget, a job cap) still counts no miss at all.
 
 The rejection reason for each job is logged at DEBUG level in `data/autopilot.log`.
 

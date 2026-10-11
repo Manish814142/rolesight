@@ -304,7 +304,7 @@ count). Side effect: 4 older tests that assumed no window now say `max_posted_ag
 **Review notes (2026-10-10, claude):** verified (Done log). *Correction:* the done-when's line does exist — `scanner.py` logs
 `N job(s) skipped as posted more than 7 day(s) ago` whenever `too old` > 0 (there since b700235); the reviewer's real `./run_daily.sh --limit 5`
 printed `254 job(s) skipped as posted more than 7 day(s) ago`. Also corrected: the docs called 7 "Manish's" number; it is Claude's choice until he
-confirms it. Known trade-off (documented in docs/07): a board stopped at the window counts as partly fetched, so T33 closes nothing on it — T78.
+confirms it. Known trade-off (documented in docs/07): a board stopped at the window counts as partly fetched, so T33 closes nothing on it — T78 (fixed 2026-10-11: jobs inside the window are counted).
 
 **T05 · One MIN_SCORE.** `.env` has `MIN_SCORE=60`, and `load_dotenv(override=True)`
 (`main.py` L52) makes it beat the `70` that `run_daily.sh` exports (measured).
