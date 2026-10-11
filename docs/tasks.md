@@ -12,14 +12,15 @@ under `unshare -rn`, no network), coverage 92.68%, ruff and mypy clean. File:lin
 
 **Reviewed 2026-10-10/11 (claude, against `2225284`):** T02, T05, T26 and T62 verified 2026-10-10, T08 on 2026-10-11 (Done log). T07 and T28: their
 scripts pass, but the review found the timers' network wait did nothing and fixed it (`scripts/systemd/wait-online.sh`, see T07); installing them
-stays Manish's call. T74 waited for `gemini-3.5-flash-lite`'s quota (out at 19:28 IST on 2026-10-10) and is reviewed on 2026-10-11 (see T74).
+stays Manish's call. T74 waited for `gemini-3.5-flash-lite`'s quota (out at 19:28 IST on 2026-10-10) and was verified on 2026-10-11 on 3.5 (Done log); it raised
+two label questions (j7, g8: T59) and one new task (T79).
 Gates after the review's edits (2026-10-11): 802 passed (also under `unshare -rn`), coverage 92.68%, ruff and mypy clean.
 
 ### Manish's answers (2026-10-10) and what became of them
 
 | Task | His answer | Result |
 |---|---|---|
-| T02 | Asked what the question was ("how many days back"); added: a job older than the window should not be scraped at all | **7 days** is now the default (Claude's choice, one number: `candidate.max_posted_age_days` in `config.json`, `null` = off, `--posted-within N|all`). The adapters no longer spend a request on older jobs where the list order allows it. **Tell me if you want 3.** |
+| T02 | Asked what the question was ("how many days back"); added: a job older than the window should not be scraped at all | **7 days** is now the default (Claude's choice, one number: `candidate.max_posted_age_days` in `config.json`, `null` = off, `--posted-within N\|all`). The adapters no longer spend a request on older jobs where the list order allows it. **Tell me if you want 3.** |
 | T05 | 70 | Done: `min_score` 70, in `config.json` only. |
 | T62 | Allow "python" for now; decide again on the results | Done (`java`, `golang` stay excluded: he named only python). |
 | T74 | Allow AI Engineer / Forward Deployed Engineer only when the posting accepts his MEAN / backend stack with GenAI used in workflows; not when it needs LangGraph, LangChain, vector DBs or other advanced AI | Done in the pre-filter and rubric rule 8, measured; **see T74's caveats (some borderline AI roles are now capped)**. |
@@ -122,8 +123,8 @@ for the day, live checks may use `gemini-3.1-flash-lite`, but a task whose verdi
 
 **Every task in this list is done and verified (Done log, 2026-10-07).** What moved the score since: T73 (rubric v7,
 Manish's apply rule: false positives 2 → 0 at 70 on 82 labelled jobs, `apply` 14/14) and T72 (Amazon "Software Dev
-Engineer" titles reach Gemini) — both verified (T72 2026-10-08, T73 2026-10-10). What still would: the decisions T62 (python titles) and T74 (AI / Forward Deployed
-Engineer titles), each with measured evidence, and Manish's labels (T59).
+Engineer" titles reach Gemini) — both verified (T72 2026-10-08, T73 2026-10-10). Since then T62 (python titles) and T74 (AI / Forward Deployed Engineer titles with a
+heavy-AI cap) were decided, built and verified (2026-10-10/11). What still would move it: Manish's labels (T59, incl. j7 and g8) and T79.
 
 | # | Task | Why it changes the score or the accuracy | Evidence |
 |---|---|---|---|
@@ -148,9 +149,8 @@ After this list: **T40, T50, T42** (Manish will not use TinyFish; all three veri
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
 | T59 | Confirm the golden-set labels | manish | — | S | T48 |
-| T74 | AI Engineer / Forward Deployed Engineer titles reach Gemini; rubric rejects heavy AI | review · claude · 0c3ba2b (**on hold: 3.5 quota reached 2026-10-10; verify on 3.5 after 12:30 IST 2026-10-11**) | claude | M | — |
 
-T48, T57, T58, T60, T61 and T49 were verified 2026-10-07, T72 and T70 on 2026-10-08, T62 on 2026-10-10 (Done log).
+T48, T57, T58, T60, T61 and T49 were verified 2026-10-07, T72 and T70 on 2026-10-08, T62 on 2026-10-10, T74 on 2026-10-11 (Done log).
 
 **T59 · Confirm the golden-set labels (Manish).** The 82 labels are Claude's, with one line of
 reasoning each in `label_reason`. Sort `scripts/golden_set.csv` by `label`, fix any you
@@ -162,6 +162,9 @@ minutes).
 3+ years in the video-games industry), so g27 is now `no` with `label_source` `manish`. His rule for the other
 rows: `apply` only when the required stack and experience match his and the day-to-day work does too. With g27
 relabelled, the current prompt (3.5, saved T58 scores) finds 14/14 `apply` jobs at MIN_SCORE 60 and 70.
+**g8 (from T74's review, 2026-10-11):** MongoDB "Software Engineer 3 - Enterprise Architecture" (Gurugram) is labelled `apply` (2026-10-04), but it is
+an AI-experimentation team and its required list asks for "hands-on experience prototyping with LLMs or agentic systems (evals, fine-tuning, RAG,
+tool use, orchestration frameworks)". Under the T74 clause it passes 3 of 8 runs. Keep `apply` (then the clause is too strict for you) or relabel `no`?
 **j7 (from T74, 2026-10-10):** Thermo Fisher "Software Engineer I, AI Solutions & Platforms" is labelled `apply` (2026-10-04), but its duties are RAG and agentic
 workflows with pgvector / Qdrant vector search, which is the "heavy AI" he said to reject on 2026-10-10. The new rubric clause scores it 45. Relabel it `no` if you
 agree; I did not change a label to fit a result. The new file `scripts/golden_set_ai.csv` (75 AI / FDE postings) needs the same confirmation.
@@ -235,13 +238,14 @@ Solutions & Platforms": RAG, agentic workflows, pgvector/Qdrant) 90 → 45 and g
 19:28 IST) — re-run `python scripts/score_golden_set.py --csv scripts/golden_set_ai.csv --arms current --model gemini-3.5-flash-lite` after the reset
 (the API said "retry in 10 h" at 19:28 IST; the reset was observed at 12:30 IST on 2026-10-07, so after 12:30 IST on 2026-10-11 is safe) and `--from-scores` it against the saved scores before marking this verified.** Questions for Manish: are the 9 labels I called
 allowed right (T59 for the new file)? Do you want "AI/ML Engineer" and "Machine Learning Engineer" titles too (not added)?
-**Review notes (2026-10-10, claude) — ON HOLD: today gemini-3.5-flash-lite's quota is reached; verify on 3.5 after 12:30 IST on 2026-10-11.** Checked
+**Review notes (2026-10-10, claude) — was on hold for 3.5's quota; finished 2026-10-11 (below).** Checked
 without Gemini: the diff is T74 only; the pre-filter change reproduces on the saved fetch in separate worktrees (1,792 → 1,900, +108, 0 removed); the
 43-job partial run reproduces from the saved scores (old rubric 16 pass at 70, 15 of them `no`; shipped wording 2, both `no`). A probe call at 20:17 IST
 still got HTTP 429 (`retryDelay` 33,187 s). **Gaps the 3.5 run must close:** (a) the AI set's only `apply` job and 2 of its 8 `maybe` jobs are among
 the 32 unanswered; (b) the shipped wording was never run on all 82 original jobs, only on the 25 that mention AI, twice
 (`data/golden_runs/gold_ai25_t74_shipped_x2_2026-10-10.txt`): `apply` g8 (MongoDB) **90 / 45** and `maybe` g12 75 / 45, although g8's vector-DB and
-LangGraph items sit under "Bonus Round", which the clause says never counts, so g8 is a misfire in 1 of 2 runs; j7 45 / 45 (label question above).
+LangGraph items sit under "Bonus Round", which the clause says never counts, so g8 is a misfire in 1 of 2 runs [*corrected 2026-10-11:* its required
+list also asks for hands-on LLM / agentic prototyping, so g8 is borderline, not a misfire]; j7 45 / 45 (label question above).
 (c) The clause states facts about Manish ("used GenAI/LLM APIs inside backend services … has not built ML or agent systems"); they match his resume
 today (GenAI automation, token cost; no agents or RAG), but **the rubric must be edited if his resume changes**. **To finish (about 162 calls on 3.5):**
 `python scripts/score_golden_set.py --csv scripts/golden_set_ai.csv --arms current --model gemini-3.5-flash-lite` (75) and
@@ -250,6 +254,10 @@ gitignored `data/golden_runs/` (the scratchpad copies vanish on reboot): `ai_old
 `gold_v7_a_3.5_2026-10-08.json`, `gold_v7_b_3.5_2026-10-08.json`; plus `python scripts/measure_score_variance.py --ids g8 --model gemini-3.5-flash-lite`
 (5 runs). Pass if the AI set keeps few false positives at 70 and the original `apply` jobs other than j7 stay ≥ 70; if g8 keeps failing, the
 "bonus" wording needs another fix.
+**Review result (2026-10-11, claude, on 3.5): verified** (Done log). AI set, all 75 answered: 6 pass at 70 (old 23), 3 `no` (old 19), the `apply`
+found. Original 82: 0 false positives, `apply` 13/14 — the miss is j7, by design. g8 over 8 runs passes 3 (borderline; see T59). The 3 AI-set false
+positives are steady or noisy without the clause (ai33 85/90/85, old 85; ai41 70–75, old 70; ai44 85/85/45, old 40). Not a T74 issue but found
+here: ai65 (`apply`) 30/75/30 from rule 1 on a Hyderabad role — T79.
 
 ---
 
@@ -527,11 +535,12 @@ Which terms would you add?
 
 ## Inbox
 
-New findings go here with the next free ID (next: **T79**), an evidence tag and the
+New findings go here with the next free ID (next: **T80**), an evidence tag and the
 file:line. Manish or the triaging agent moves each one into a priority table.
 
 | ID | Finding | Evidence | Added by |
 |---|---|---|---|
+| T79 | **Rule 1 (the outside-India cap, ≤ 30) is sometimes applied to an Indian city.** Notion's "Forward Deployed Engineer, India" (ai65, labelled `apply`), Hyderabad, 3 office days, `#LI-Onsite`: 3.5 scored it 30, 75, 30 on 2026-10-11 (75 in the full run), reasons "requires on-site presence in Hyderabad … conflicts with the candidate's … Bengaluru preference". Rule 1 already says India-based and India-hybrid roles are eligible; `candidate.seeking` reads "Remote / Hybrid / Bengaluru / India". Rare so far: the other non-Bengaluru `apply`/`maybe` jobs in the labelled set (Hyderabad, Gurugram, Karnataka) score 75–90, and none of the 145 scored jobs of the 2026-10-04 scan has a ≤ 50 score whose reason names another Indian city. **Question for Manish:** do you take on-site or hybrid roles in any Indian city? If yes, possible fix: rule 1 says a role in any Indian city is never capped for location, measured on ai65 ×5 and the 82 labelled jobs (~90 calls on 3.5) | measured (3.5, 3 runs; production DB reasons, read-only) | claude |
 | T78 | **With the posted-date window on, closed-job detection (T33) is off for newest-first boards.** `adapters.base.stop_at_window` marks a fetch that stopped at the window as incomplete, and `db.record_sightings` counts no misses on an incomplete board, so the 21 Oracle HCM / SmartRecruiters / Eightfold boards never close a job while they stop early (Qualcomm did: `incomplete=posted-date window`, measured). Small today: `open_matches.csv` already drops jobs older than the window, so a closed job lingers there at most ~7 days. Possible refinement: on a window stop, count a miss only for that board's rows whose current age is inside the window (they would have been on the pages read) | inferred from the code (`stop_at_window`, `record_sightings`); the stop itself measured | claude |
 | T77 | **The pre-filter lets remote-flagged jobs in named non-India places through.** `should_evaluate_job` passes a job when the ATS says "remote" and the location does not match the small exclude list (US, UK, Canada, Germany, Europe, London…): OpenAI's Ashby board flags Paris, Tokyo, Singapore, Seoul, Madrid, Sydney and Washington DC offices as remote, so 25 OpenAI jobs and 65 of 1,900 survivors (3.4%) on the saved 2026-10-08 fetch name no Indian place. The rubric caps them (rule 1), so the cost is the scoring calls (about 5 s each), not wrong results. Possible fix: reject a remote-flagged job whose location names a city and country with no India term | measured on the saved fetch (`should_evaluate_job`, `location_is_india`); cost per call inferred | claude |
 | T75 | **Every per-job lookup scans the whole `jobs` table.** `get_job` / `has_job` / `update_job_status` / `update_job_details` use `WHERE global_id = ?`, which cannot use the partial unique index `idx_jobs_ats_global_id` (its condition `global_id IS NOT NULL AND global_id != ''` is not implied): EXPLAIN QUERY PLAN → `SCAN jobs`. 2.7 ms per `get_job` on a copy of the production DB (30,367 rows); a scan calls it once per fetched job (~40k), so ~110 s per scan (inferred), growing with the table. Fix as in T33's `record_sightings`: add `ats = ?` and the index condition (`SEARCH … USING INDEX`), or a plain index on `global_id` | measured (EXPLAIN, timing); cost per scan inferred | claude-b |
@@ -546,7 +555,6 @@ The implementer adds a row when a task reaches `review`; the verifier removes it
 
 | ID | Commit(s) | Implementer | Evidence (command → result) |
 |---|---|---|---|
-| T74 | 0c3ba2b | claude | **ON HOLD (reviewer, 2026-10-10): gemini-3.5-flash-lite's daily quota is reached (HTTP 429 at 19:28 and again at 20:17 IST); verify on 3.5 after 12:30 IST on 2026-10-11 — commands and pass rule in T74's review notes.** Implementer's evidence: `pytest tests/test_prefilter.py tests/test_scoring_rubric.py` pass: 14 new include cases (red first), 14 guard cases that must stay rejected (green before and after), 4 rubric-wording tests (red first), 1 data test for `golden_set_ai.csv`. Saved-fetch survivors 1,792 → 1,900 (+108, 0 removed). `score_golden_set.py --csv scripts/golden_set_ai.csv --arms current --model gemini-3.5-flash-lite` (3 wordings, one run each; `--from-scores` compares): old rubric 23 pass at 70 / 19 false positives; shipped wording 2 pass of the first 43 (old: 16). Original 82 jobs, second wording: `apply` 12/14. **Owed: the full 75-job run of the shipped wording after 3.5's quota resets (it ended at job 43) — verify on 3.5.** Labels are mine; see the task for the j7 conflict |
 
 ---
 
@@ -618,6 +626,7 @@ and CHANGELOG (inferred), and their numbers from CHANGELOG unless marked measure
 | T26 | Phenom adapter; BCG added through `discover` | a18c25a | Reviewer, real network: `fetch_company_jobs` on BCG → 101 jobs, 101 unique ids, 96 India, complete; 3 pre-filter survivors, `enrich_job` → job-specific JSON-LD descriptions of 8,461–8,623 chars (three hashes); list order not by date (40 of 100 pairs), so no window stop. `companies.json` and the packaged copy identical (SHA-256) | verified · claude · 2026-10-10 |
 | T02 | Posted-date window on by default (7 days); adapters skip older jobs | 5001dcd | Reviewer: real `./run_daily.sh --limit 5` in a clean worktree (no key) → `Posted-date filter: last 7 day(s)` and the done-when line **`254 job(s) skipped as posted more than 7 day(s) ago`** (the implementer said that wording did not exist), funnel fetched 2,377 / too old 254 / queued 43, exit 0. Eightfold order over whole boards, measured by the reviewer: Lam 108, Morgan Stanley 109, Qualcomm 580, UKG 88 jobs → **0** violations (the implementer's saved output had no Eightfold rows). Qualcomm A/B: no window 3 in-window survivors, 7-day window 3, same ids, 10 requests. Oracle HCM / SmartRecruiters order and the other boards' request counts read from the implementer's saved output, not re-run. Trade-off logged as T78 | verified · claude · 2026-10-10 |
 | T08 | `setup_cron.sh` removed; docs point at the systemd timer | 50d9135 | Reviewer: `grep -rn setup_cron .` (excluding `.venv`, `.git`, `data`, `output`) → CHANGELOG (history), this board, and one sentence in `docs/01-install.md` saying it is gone; `SETUP.md`, docs/04 and docs/08 no longer name it; the file does not exist | verified · claude · 2026-10-11 |
+| T74 | AI Engineer / Forward Deployed Engineer titles; rubric rule 8 caps heavy-AI requirements | 0c3ba2b | Reviewer, 2026-10-11, `gemini-3.5-flash-lite` pinned, rubric unchanged since 0c3ba2b (0 diff lines): `score_golden_set.py --csv scripts/golden_set_ai.csv --arms current --model gemini-3.5-flash-lite` → 75/75 answered, **6 pass at 70 vs the old rubric's 23, `no` among them 3 vs 19 (precision 17% → 50%)**, the one `apply` found; `score_golden_set.py --arms current --model …` on the original 82 → 0 false positives at 60 and 70, `apply` 13/14 (j7 90/90 → 45, the heavy-AI posting the clause targets), AUC 0.976 vs v7 0.971/0.973, 1–2 pass/fail changes vs v7 (v7 vs v7: 0–1); `measure_score_variance.py --ids g8` ×5 → 45, 50, 90, 45, 40 (borderline, its required list asks for hands-on LLM/agentic prototyping; label question in T59). Pre-filter: survivors 1,792 → 1,900, 0 removed (worktrees, 2026-10-10). The 3 AI-set false positives are steady or flip without the clause (ai33, ai41, ai44 ×3). Found on the way: rule 1 caps a Hyderabad role (T79). Score files: `data/golden_runs/*_2026-10-11*` | verified · claude · 2026-10-11 |
 | — | Commit the working tree; tree clean | cd5df8e … 04521db | 355 tests pass, ruff and mypy clean (measured 2026-10-04) | pre-board |
 | — | Location filter: Delhi / NCR / Kolkata and case-sensitive `, in` | cd5df8e | "Indianapolis, IN" still rejected (unit test) | pre-board |
 | — | Full resume in the scoring prompts | cd5df8e | previously first 2,500 of ~4,000 chars | pre-board |
