@@ -268,7 +268,7 @@ def _description(job: dict) -> str:
 # "spread the scores" text come from the labelled comparison of 2026-10-04 (CHANGELOG, T48).
 SCORING_RUBRIC = """SCORING RUBRIC & HARD ANCHORS (strictly enforce):
 1. Location & Work Authorization Cap (score <= 30):
-   If the job requires on-site presence outside India, or requires foreign citizenship / work authorization without visa sponsorship, cap score at <= 30. (India-based roles, India hybrid, or remote roles are eligible for higher scores).
+   If the job requires on-site presence outside India, or requires foreign citizenship / work authorization without visa sponsorship, cap score at <= 30. (India-based roles, India hybrid, or remote roles are eligible for higher scores). A role in any Indian city, on-site, hybrid or remote, meets this rule: a preference for one city in the candidate's profile (such as Bengaluru) is not a location cap and does not lower the score; only a role outside India is capped.
 2. Unsuitable Role Type Cap (score <= 40):
    If the role matches candidate's explicit 'Not suitable' criteria (e.g. pure frontend with zero backend, internship, non-technical management, IT support, or administering/configuring an enterprise platform such as Salesforce, Coupa, SAP or ServiceNow for a customer or internal business team), cap score at <= 40.
    Judge the work, not the employer's name: a software engineer building products or integrations at a company that makes such a platform (for example ServiceNow or Salesforce) is not platform administration.

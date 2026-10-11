@@ -382,6 +382,27 @@ def test_variance_script_can_pin_a_model_and_pick_jobs(tmp_path, monkeypatch):
     assert llm_utils._gemini_models({})[0] != "gemini-x"
 
 
+def test_variance_script_can_read_another_labelled_set(tmp_path, monkeypatch):
+    """T79: Notion's FDE role (ai65) is in the AI set, not in golden_set.csv, so re-scoring it needs --csv."""
+    import json
+    import sys
+
+    sys.path.insert(0, "scripts")
+    import measure_score_variance as msv
+
+    resume = tmp_path / "r.md"
+    resume.write_text("Node.js")
+    monkeypatch.setattr(msv, "load_config", lambda: {"candidate": {"resume_path": str(resume)}})
+    monkeypatch.setattr(msv.time, "sleep", lambda s: None)
+    titles = []
+    monkeypatch.setattr(msv, "score_job_with_gemini",
+                        lambda payload, resume_text, config, raise_on_error=False: titles.append(payload["title"]) or {"score": 70, "reason": "r"})
+    out = tmp_path / "runs.json"
+    assert msv.main(["--csv", "scripts/golden_set_ai.csv", "--ids", "ai65", "--runs", "3", "--save", str(out)]) == 0
+    assert json.loads(out.read_text()) == {"ai65": [70, 70, 70]}
+    assert len(titles) == 3 and all("Forward Deployed" in t for t in titles)
+
+
 # --- T73: rubric v6, Manish's apply rule (skip a posting that requires what he lacks) --------------------------
 
 def _rule(n):
@@ -440,6 +461,16 @@ def test_ai_clause_caps_hands_on_requirements_not_familiarity():
     rule8 = llm_utils.SCORING_RUBRIC.split("8. ")[1].lower()
     assert "hands-on experience building or operating" in rule8
     assert "familiarity or a basic understanding" in rule8
+
+
+def test_location_rule_treats_every_indian_city_alike():
+    """T79: Notion's Forward Deployed Engineer (Hyderabad, hybrid) scored 25-30 in 2 of 15 runs and 70-75 in the rest, the
+    reasons all saying 'though the location is Hyderabad while the candidate prefers Bengaluru'. His rule is India or remote;
+    a preferred city in `seeking` is not a location cap, and only a role outside India is capped."""
+    rule1 = llm_utils.SCORING_RUBRIC.split("1. ")[1].split("2. ")[0].lower()
+    assert "any indian city" in rule1
+    assert "preference for one city" in rule1 and "not a location cap" in rule1
+    assert "outside india" in rule1                    # the cap itself is unchanged
 
 
 def test_ai_clause_ignores_bonus_and_preferred_sections():

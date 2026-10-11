@@ -128,7 +128,8 @@ One Gemini call per job. The prompt contains:
   on Greenhouse, 26 on SmartRecruiters and 6.7 on Workday, against 3.3 points of
   run-to-run noise (CHANGELOG 2026-10-04).
 - **rubric anchors** (`llm_utils.SCORING_RUBRIC`, T48): cap 30 for onsite work or work
-  authorisation outside India; cap 40 for roles in your `not_suitable` list or platform
+  authorisation outside India (a role in any Indian city meets the rule: a preferred city in `seeking`
+  is not a cap, T79); cap 40 for roles in your `not_suitable` list or platform
   administration of Salesforce, Coupa, SAP or ServiceNow (judged by the work, not the employer's
   name); cap 50 for roles that need 6+ years; cap 50 for roles aimed at freshers or asking 0-1
   years (by what the posting asks, not by its title: T58); cap 50 when the posting's *requirements

@@ -20,7 +20,7 @@ from typing import Dict, List, Optional, Sequence
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from score_golden_set import load_golden_set  # noqa: E402
+from score_golden_set import DEFAULT_GOLDEN_SET_PATH, load_golden_set  # noqa: E402
 
 from job_hunt import llm_utils  # noqa: E402
 from job_hunt.llm_utils import score_job_with_gemini  # noqa: E402
@@ -49,6 +49,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     ap.add_argument("--save", help="write the runs to this JSON file")
     ap.add_argument("--ids", help="comma-separated golden-set ids to score instead of --label/--limit")
     ap.add_argument("--model", help="score with this Gemini model only, no fallback (T70)")
+    ap.add_argument("--csv", default=str(DEFAULT_GOLDEN_SET_PATH), help="labelled jobs CSV (default scripts/golden_set.csv; "
+                    "scripts/golden_set_ai.csv for the AI / Forward Deployed set)")
     args = ap.parse_args(argv)
     if args.from_runs:
         runs = json.loads(Path(args.from_runs).read_text())
@@ -59,9 +61,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         resume = Path(config["candidate"]["resume_path"]).read_text(encoding="utf-8")
         if args.ids:
             wanted = [i.strip() for i in args.ids.split(",") if i.strip()]
-            jobs = [j for j in load_golden_set() if j["id"] in wanted]
+            jobs = [j for j in load_golden_set(args.csv) if j["id"] in wanted]
         else:
-            jobs = [j for j in load_golden_set() if j["label"] == args.label][: args.limit]
+            jobs = [j for j in load_golden_set(args.csv) if j["label"] == args.label][: args.limit]
         original_models = llm_utils._gemini_models
         if args.model:  # no fallback: on 2026-10-06 ~9 of T60's 200 calls were silently answered by the other model
             llm_utils._gemini_models = lambda config: [args.model]  # type: ignore[assignment]
