@@ -30,7 +30,7 @@ the default shown applies.
 | `not_suitable` | — | What to score low, in every prompt |
 | `min_score` | `70` (code default and example config; set once, here, T05) | Score that counts as a match: "Worth Applying", Telegram alerts, the digest |
 | `top_n` | `5` | How many matches the digest and the log summary show |
-| `max_posted_age_days` | `7` | Score only jobs posted in the last N days (Manish, T02). `null` switches the window off; `--posted-within N` / `all` overrides it for one run. Jobs with no posted date are never filtered |
+| `max_posted_age_days` | `7` | Score only jobs posted in the last N days (T02: Manish asked for a window; 7 is Claude's choice until he confirms it). `null` switches the window off; `--posted-within N` / `all` overrides it for one run. Jobs with no posted date are never filtered |
 | `scoring_mode` | `holistic` | `holistic`: one score from the prompt with the rubric. `structured`: the model reports sub-scores and facts, code applies the caps and computes the score; the CSV gets Stack/Role/Seniority/Location fit, Min years and Capped by columns (T41). Not the default: calibration was worse on the labelled set (see CHANGELOG 2026-10-06) |
 | `max_jobs_to_score_per_run` | 400 | Score at most this many jobs per run, newest first; the rest stay `discovered` for the next scan. `0` = no cap (T04) |
 | `relocation_note` | — | Added to cover-letter drafts |
@@ -169,7 +169,8 @@ This decides what counts as a match: "Worth Applying = Yes" in the CSV, the Tele
 alerts and the digest. It doesn't change what gets scored or stored. On the first scan,
 60 → 74 matches and 70 → 67 matches.
 
-The default is 70 (chosen 2026-10-10: precision 92% on the 82 labelled jobs, against 86% at 60; recall of the
-`apply` jobs is 14/14 at both). Set it in `config.json` (`candidate.min_score`) and nowhere else: a `MIN_SCORE` line
+The default is 70 (Manish, 2026-10-10). On the 82 labelled jobs rubric v7 (T73, before T74's AI clause) passes no `no` job at
+60 or at 70 and finds all 14 `apply` jobs at both (2 runs); 70 drops at most one `maybe`. The pre-T73 rubric's
+precision was 92% at 70 against 83% at 60. Set it in `config.json` (`candidate.min_score`) and nowhere else: a `MIN_SCORE` line
 in `.env` still overrides it for every run, and `run_daily.sh` sets none (T05). The scan's first log lines show the
 value in force (`Min score: 70`).

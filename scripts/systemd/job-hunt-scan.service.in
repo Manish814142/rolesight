@@ -1,11 +1,12 @@
 [Unit]
 Description=JobNotify daily job scan (run_daily.sh)
-Wants=network-online.target
-After=network-online.target
 
 [Service]
 Type=oneshot
 WorkingDirectory=@REPO@
+# A user unit cannot order itself after network-online.target (a system unit the user manager does not have),
+# so wait here: a run made up at login (Persistent=true) can start before Wi-Fi is connected.
+ExecStartPre=/usr/bin/env bash @REPO@/scripts/systemd/wait-online.sh
 ExecStart=/usr/bin/env bash @REPO@/run_daily.sh
 # A full scan takes 30-40 minutes (fetch ~10 min, then about 5 s per job scored); never let one run forever.
 TimeoutStartSec=3h

@@ -1,11 +1,12 @@
 [Unit]
 Description=JobNotify monthly companies.json health check (report only)
-Wants=network-online.target
-After=network-online.target
 
 [Service]
 Type=oneshot
 WorkingDirectory=@REPO@
+# A user unit cannot order itself after network-online.target (a system unit the user manager does not have),
+# so wait here: a run made up at login (Persistent=true) can start before Wi-Fi is connected.
+ExecStartPre=/usr/bin/env bash @REPO@/scripts/systemd/wait-online.sh
 ExecStart=/usr/bin/env bash @REPO@/scripts/monthly_recheck.sh
 # Re-verifies every board: minutes, no Gemini calls. It works on a copy and never writes companies.json.
 TimeoutStartSec=2h

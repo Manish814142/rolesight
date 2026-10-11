@@ -102,3 +102,42 @@ def test_systemd_accepts_the_recheck_units(tmp_path):
     r = subprocess.run(["systemd-analyze", "--user", "verify", str(_units(tmp_path) / "job-hunt-recheck.service"),
                         str(_units(tmp_path) / "job-hunt-recheck.timer")], capture_output=True, text=True)
     assert r.returncode == 0 and r.stderr.strip() == "", r.stderr
+
+
+# -- Review of T07 (2026-10-10): a user unit cannot wait for network-online.target ---------------------------------
+# The user manager has no such unit (`systemctl --user show network-online.target` -> LoadState=not-found), so
+# Wants=/After= on it were no-ops; a run that Persistent=true makes up at login could start before Wi-Fi is up.
+
+WAIT = ROOT / "scripts" / "systemd" / "wait-online.sh"
+
+
+@pytest.mark.parametrize("flags, unit", [((), "job-hunt-scan"), (("--with-recheck",), "job-hunt-recheck")])
+def test_each_service_waits_for_the_network_before_it_starts(tmp_path, flags, unit):
+    assert _run(tmp_path, "--no-systemctl", *flags).returncode == 0
+    service = (_units(tmp_path) / f"{unit}.service").read_text()
+    assert f"ExecStartPre=/usr/bin/env bash {WAIT}" in service
+    assert "network-online.target" not in service.replace("# A user unit cannot order itself after network-online.target", "")
+
+
+def _wait(tmp_path: Path, probe: str, seconds: str = "0") -> subprocess.CompletedProcess:
+    env = {**os.environ, "WAIT_ONLINE_PROBE": probe, "WAIT_ONLINE_SECONDS": seconds, "WAIT_ONLINE_INTERVAL": "0"}
+    return subprocess.run(["bash", str(WAIT)], capture_output=True, text=True, env=env, cwd=tmp_path)
+
+
+def test_wait_online_returns_at_once_when_the_network_is_up(tmp_path):
+    assert _wait(tmp_path, "true").returncode == 0
+
+
+def test_wait_online_keeps_trying_until_the_network_comes_up(tmp_path):
+    counter = tmp_path / "tries"
+    probe = f'n=$(( $(cat {counter} 2>/dev/null || echo 0) + 1 )); echo $n > {counter}; [ $n -ge 3 ]'
+    assert _wait(tmp_path, probe, seconds="30").returncode == 0
+    assert counter.read_text().strip() == "3"
+
+
+def test_wait_online_gives_up_and_says_so_in_the_scan_log(tmp_path):
+    (tmp_path / "data").mkdir()
+    r = _wait(tmp_path, "false")
+    assert r.returncode == 1                       # the unit fails, so run_daily.sh never starts offline
+    assert "no network" in r.stderr
+    assert "Not started: no network" in (tmp_path / "data" / "scan.log").read_text()

@@ -161,6 +161,10 @@ systemctl --user start job-hunt-scan.service   # one scan right now
 scripts/systemd/install.sh --uninstall
 ```
 
+Each run first waits up to 5 minutes for a network connection (`scripts/systemd/wait-online.sh`; it gives up with a
+line in `data/scan.log`). A user timer cannot wait for the system's `network-online.target`, and a run made up at
+login (`Persistent=true`) could otherwise start before Wi-Fi is connected and fetch nothing.
+
 The old `setup_cron.sh` is gone: it installed a cron line that bypassed `run_daily.sh` (T08).
 
 ## Next
