@@ -27,11 +27,17 @@ def test_a_location_outside_india_is_rejected():
     assert out.startswith("REJECTED") and "non-India" in out
 
 
-def test_the_remote_flag_changes_the_answer_for_a_place_the_filter_does_not_know():
-    _, without_flag = _run("Backend Engineer", "Lisbon")
-    _, with_flag = _run("Backend Engineer", "Lisbon", "--remote")
+def test_the_remote_flag_decides_when_the_location_names_no_place():
+    _, without_flag = _run("Backend Engineer", "")
+    _, with_flag = _run("Backend Engineer", "", "--remote")
     assert without_flag.startswith("REJECTED")
     assert with_flag == "KEPT"
+
+
+def test_the_remote_flag_does_not_carry_a_named_place():
+    """T77: the board flags its Paris or Lisbon office as remote; that is not a job workable from India."""
+    _, out = _run("Backend Engineer", "Lisbon", "--remote")
+    assert out.startswith("REJECTED") and "non-India place" in out
 
 
 def test_it_says_how_to_call_it_when_the_title_is_missing():

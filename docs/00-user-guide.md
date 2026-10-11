@@ -154,7 +154,9 @@ Open `job_hunt/prefilter.py`. The word lists are the text between quotes, separa
 | `LOCATION_INDIA_PATTERN` | Places that count as "in India": a job in one of them passes the location check, even if other countries are listed too | add a city |
 | `LOCATION_EXCLUDE_PATTERN` | Regions that count as "not workable from India", e.g. a remote job tied to the US | add a country or city to reject |
 
-The order: the exclude words are checked first, then the include words, then the location. "Senior" is not
+The order: the exclude words are checked first, then the include words, then the location. A job that the board
+flags as "remote" passes the location check only if its location names no place: "Remote" passes, "Singapore" or
+"Remote - Poland" is rejected (some boards flag their foreign offices as remote). "Senior" is not
 excluded on purpose (in India it often means 3–6 years). `\b` means "word boundary" and `\s*` means "optional
 space"; copy the style of the words next to the one you add.
 

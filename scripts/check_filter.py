@@ -2,7 +2,7 @@
 """Try the pre-filter on one job, e.g. after editing job_hunt/prefilter.py (T80).
 
     python scripts/check_filter.py "Senior Backend Engineer" "Bengaluru, India"
-    python scripts/check_filter.py "Backend Engineer" "Lisbon" --remote
+    python scripts/check_filter.py "Backend Engineer" "" --remote
 
 Prints KEPT (the job would go to Gemini) or REJECTED with the filter's own reason. Local only: no network, no API key.
 """

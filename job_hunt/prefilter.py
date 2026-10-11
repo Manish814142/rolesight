@@ -73,6 +73,40 @@ LOCATION_EXCLUDE_PATTERN = re.compile(
 
 REMOTE_PATTERN = re.compile(r"\bremote\b", re.IGNORECASE)
 
+# A remote-flagged job passes only when its location names no place (T77). OpenAI's Ashby board flags its Paris, Tokyo,
+# Singapore, Seoul, Madrid, Sydney and Washington DC offices as remote, and the exclude list above knew none of them:
+# 63 of 1,878 survivors (3.4%, fetch of 2026-10-11) passed on the flag alone, 61 of them naming a place outside India.
+# Words that are not places ("Remote", "Hybrid", "Work from home", "APAC", and the placeholders Workday gives for a job
+# whose real locations come from a later call: "3 Locations", "Location Negotiable", "Remote Work, More...");
+# what is left after removing them is a place.
+_LOCATION_FILLER_PATTERN = re.compile(
+    r"\b(remote(ly)?|hybrid|flexible|first|work(\s+from\s+home)?|wfh|home[\s-]*based|virtual|distributed|fully|only|based"
+    r"|within|apac|asia(\s+pacific)?|area|or|and|the|of|anywhere|worldwide|global(ly)?"
+    r"|locations?|negotiable|multiple|various|more|tbd)\b",
+    re.IGNORECASE,
+)
+
+# Indian places LOCATION_INDIA_PATTERN lacks (states, union territories, cities): never a "named non-India place".
+# Used only for the rule above, so it changes nothing for jobs the flag did not carry (T84 asks whether the main
+# India check should know them too).
+LOCATION_INDIA_MORE_PATTERN = re.compile(
+    r"\b(karnataka|maharashtra|telangana|tamil\s+nadu|haryana|uttar\s+pradesh|rajasthan|gujarat|kerala|west\s+bengal"
+    r"|andhra\s+pradesh|odisha|orissa|madhya\s+pradesh|bihar|jharkhand|chhattisgarh|assam|goa|uttarakhand|himachal"
+    r"|chandigarh|puducherry|pondicherry|ahmedabad|jaipur|kochi|cochin|coimbatore|indore|trivandrum|thiruvananthapuram"
+    r"|bhubaneswar|lucknow|nagpur|vadodara|surat|mysuru|mysore|mangaluru|mangalore|visakhapatnam|vizag|mohali|kanpur"
+    r"|patna|ranchi|bhopal|vijayawada|faridabad|ghaziabad|navi\s+mumbai|thane|bharat)\b",
+    re.IGNORECASE,
+)
+
+
+def named_place(location: str) -> str:
+    """The words of a location that name a place, or "" when it names none ("Remote", "Hybrid", "") or names an
+    Indian one. Only meant for locations the filter already found no India term in."""
+    text = location or ""
+    if LOCATION_INDIA_MORE_PATTERN.search(text):
+        return ""
+    return " ".join(re.findall(r"[^\W\d_]+", _LOCATION_FILLER_PATTERN.sub(" ", text)))
+
 # Workday gives relative text: "Posted Today", "Posted Yesterday", "Posted 5 Days Ago",
 # "Posted 30+ Days Ago" (a lower bound).
 _WORKDAY_POSTED_RE = re.compile(r"posted\s+(today|yesterday|(\d+)\+?\s+days?\s+ago)", re.IGNORECASE)
@@ -168,6 +202,9 @@ def should_evaluate_job(job: JobPosting) -> Tuple[bool, str]:
         return True, "passed"
 
     if job.is_remote or REMOTE_PATTERN.search(location):
+        place = named_place(location)
+        if place:
+            return False, f"Location '{location[:80]}' is remote but names a non-India place: '{place[:60]}'"
         return True, "passed"
 
     return False, f"Location '{location[:80]}' does not match target locations"

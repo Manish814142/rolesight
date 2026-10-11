@@ -90,8 +90,11 @@ They are applied in this order:
      `LATAM`, `San Francisco`, `New York`, `Austin`, `Seattle`, `London`, `Berlin`, or
      `, CA|NY|TX|WA|IL|MA`) → **reject**.
    - Otherwise, `worldwide` / `anywhere` / `global` → **pass**.
-   - Otherwise, the ATS's remote flag or the word `remote` → **pass** (remote with no
-     geography).
+   - Otherwise, the ATS's remote flag or the word `remote` → **pass only if the location names no place** (T77):
+     "Remote", "Hybrid", "Remote Work, More…" and Workday's "3 Locations" / "Location Negotiable" pass; "Paris",
+     "Singapore", "Remote - Poland" or "Remote, ie" are rejected (the board flags those offices as remote, but they are not
+     workable from India). A place is any word left after removing words like remote, hybrid, APAC and the placeholders; an
+     Indian state or city that the main list lacks (Karnataka, Kochi, Coimbatore, …) is never a "non-India place".
    - Otherwise → **reject**.
 4. **Posted date** (`max_posted_age_days`, default 7, or `--posted-within N`). A job whose
    posted date is known and older than N days is rejected (saved as `skipped`). Jobs
