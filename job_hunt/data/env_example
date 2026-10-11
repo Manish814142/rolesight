@@ -19,8 +19,9 @@ GEMINI_MODEL="gemini-3.5-flash-lite"
 TELEGRAM_TOKEN="your_telegram_bot_token_here"
 TELEGRAM_CHAT_ID="your_telegram_chat_id_here"
 
-# Candidate Configuration (overrides config.json)
-CANDIDATE_NAME="Your Name"
-RESUME_PATH="resume/YOUR_RESUME.md"
-# MIN_SCORE=70   # normally set candidate.min_score in config.json instead (T05); this overrides it for every run
-TOP_N=5
+# Candidate settings: leave these commented out and edit config.json instead.
+# An active line here silently beats config.json for every run (T05, T81).
+# CANDIDATE_NAME="Your Name"
+# RESUME_PATH="resume/YOUR_RESUME.md"
+# MIN_SCORE=70
+# TOP_N=5
