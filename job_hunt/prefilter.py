@@ -82,7 +82,11 @@ REMOTE_PATTERN = re.compile(r"\bremote\b", re.IGNORECASE)
 _LOCATION_FILLER_PATTERN = re.compile(
     r"\b(remote(ly)?|hybrid|flexible|first|work(\s+from\s+home)?|wfh|home[\s-]*based|virtual|distributed|fully|only|based"
     r"|within|apac|asia(\s+pacific)?|area|or|and|the|of|anywhere|worldwide|global(ly)?"
-    r"|locations?|negotiable|multiple|various|more|tbd)\b",
+    r"|locations?|negotiable|multiple|various|more|tbd"
+    # Job-type, timezone and office words some boards put in the location (review of T77, 2026-10-11: 1,180 jobs on
+    # the fetch of 2026-10-11, e.g. "Remote (Full Time - Remote)", "Singapore (Permanent)", "Hyderabad (Office)").
+    r"|full|part|time|fulltime|permanent|temporary|contract(or)?|freelance|employee|employment|ist|utc|gmt|time\s*zone"
+    r"|timezone|friendly|home|office|telecommute|telework|depending|region|any|on|in|at|per|for|with|to|a)\b",
     re.IGNORECASE,
 )
 
@@ -94,7 +98,8 @@ LOCATION_INDIA_MORE_PATTERN = re.compile(
     r"|andhra\s+pradesh|odisha|orissa|madhya\s+pradesh|bihar|jharkhand|chhattisgarh|assam|goa|uttarakhand|himachal"
     r"|chandigarh|puducherry|pondicherry|ahmedabad|jaipur|kochi|cochin|coimbatore|indore|trivandrum|thiruvananthapuram"
     r"|bhubaneswar|lucknow|nagpur|vadodara|surat|mysuru|mysore|mangaluru|mangalore|visakhapatnam|vizag|mohali|kanpur"
-    r"|patna|ranchi|bhopal|vijayawada|faridabad|ghaziabad|navi\s+mumbai|thane|bharat)\b",
+    r"|patna|ranchi|bhopal|vijayawada|faridabad|ghaziabad|navi\s+mumbai|thane|bharat"
+    r"|ind)\b",   # India's ISO code: "IND - Remote", "IN - Remote - IND" (review of T77)
     re.IGNORECASE,
 )
 

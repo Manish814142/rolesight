@@ -69,9 +69,9 @@ All of them stay on your computer; `config.json`, `.env` and your resume are kep
 
 ### A `.env` line beats `config.json`
 
-Three variables in `.env` override the matching setting in `config.json` whenever they are not commented out:
-`CANDIDATE_NAME`, `RESUME_PATH` and `TOP_N` (and `MIN_SCORE`). A `.env` made by `autopilot init` today has them
-commented out (`# RESUME_PATH=…`), so `config.json` decides. A `.env` made **before 2026-10-11** has them live,
+Four variables in `.env` override the matching setting in `config.json` whenever they are not commented out:
+`CANDIDATE_NAME`, `RESUME_PATH`, `MIN_SCORE` and `TOP_N`. A `.env` made by `autopilot init` today has them
+commented out (`# RESUME_PATH=…`), so `config.json` decides. A `.env` made **before 2026-10-11** has three of them live,
 with the template values, and silently beats whatever you wrote in `config.json`: your scan would then score
 against the template resume. If you changed the resume path and the scan seems to ignore it, open `.env` and put
 `#` in front of those four lines. The first lines of every scan show what is in force
@@ -156,7 +156,8 @@ Open `job_hunt/prefilter.py`. The word lists are the text between quotes, separa
 
 The order: the exclude words are checked first, then the include words, then the location. A job that the board
 flags as "remote" passes the location check only if its location names no place: "Remote" passes, "Singapore" or
-"Remote - Poland" is rejected (some boards flag their foreign offices as remote). "Senior" is not
+"Remote - Poland" is rejected (some boards flag their foreign offices as remote). Words that are not places ("Full
+time", "Contract", "IST", "Office") and India's code `IND` keep the job. "Senior" is not
 excluded on purpose (in India it often means 3–6 years). `\b` means "word boundary" and `\s*` means "optional
 space"; copy the style of the words next to the one you add.
 

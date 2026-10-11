@@ -63,3 +63,26 @@ def test_the_remote_word_in_the_text_counts_as_before_when_the_flag_is_off():
 
 def test_a_non_remote_job_in_a_named_place_was_and_stays_rejected():
     assert not should_evaluate_job(_job("Paris", is_remote=False))[0]
+
+
+# -- Review of T77 (2026-10-11): words that are not places, and India's own country code ----------------------------
+# Measured on the fetch of 2026-10-11 with a passing title: "IND - Remote" and "IN - Remote - IND" (India's ISO code)
+# and "Remote (Full Time - Remote)" were rejected as non-India places; boards put employment type, timezone and office
+# words in the location field (1,180 jobs, e.g. "Bangalore (Fulltime)", "Singapore (Permanent)", "Hyderabad (Office)").
+# A wrongly kept job costs one scoring call that rule 1 caps; a wrongly rejected one is never shown, so these pass.
+
+@pytest.mark.parametrize("location", [
+    "IND - Remote", "IN - Remote - IND", "Remote (Full Time - Remote)", "Remote - Full time", "Remote (Contract)",
+    "Remote (Permanent)", "Remote - IST", "Remote (IST timezone)", "Remote, UTC+5:30", "Remote Friendly",
+    "Home Office", "Telecommute", "Remote or Office (Depending on Region)", "Remote (Part-time)",
+])
+def test_words_that_are_not_places_and_indias_code_keep_the_benefit_of_the_doubt(location):
+    assert should_evaluate_job(_job(location))[0], location
+
+
+@pytest.mark.parametrize("location", [
+    "Singapore (Permanent)", "Paris, France (Full-Time)", "Toronto/North America (Remote) (Full Time - Remote)",
+    "Remote, Any, Sweden", "Remote - Paris Office",
+])
+def test_a_foreign_place_next_to_those_words_is_still_rejected(location):
+    assert not should_evaluate_job(_job(location))[0], location
