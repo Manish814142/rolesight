@@ -276,7 +276,7 @@ at 400 jobs; T02 (7 days) and T05 (70) are decided and verified.
 | T01 | Back up the repo to a private remote | manish | — | XS | — |
 | T06 | Check that Telegram works | manish | — | XS | — |
 | T07 | Schedule `run_daily.sh` with a systemd user timer | manish | — | S | T02, T03, T04, T05 |
-| T09 | First full production run; record the funnel | todo | — | S | T02–T07 |
+| T09 | First full production run; record the funnel | doing · claude · 2026-10-12 | claude | S | T02–T05 (T06, T07 are Manish's and not needed for a manual run) |
 
 T03 and T04 were verified 2026-10-07, T64 on 2026-10-08, T02 and T05 on 2026-10-10, T08 on 2026-10-11 (Done log).
 
