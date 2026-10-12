@@ -28,7 +28,7 @@ reject a remote job); **T79's rubric change reverted** (it fixed one posting but
 | T74 | Allow AI Engineer / Forward Deployed Engineer only when the posting accepts his MEAN / backend stack with GenAI used in workflows; not when it needs LangGraph, LangChain, vector DBs or other advanced AI | Done in the pre-filter and rubric rule 8, measured; **see T74's caveats (some borderline AI roles are now capped)**. |
 | T26 | Build the Phenom adapter | Done (BCG added). |
 | T45 | A web page, not a terminal; configure everything A–Z; Gemini suggests / checks the configuration; "clarify if I understood wrong" | Architectural, so a **design proposal with questions** is written (`docs/superpowers/specs/2026-10-10-web-ui-design.md`); no code until he approves it. |
-| T34 | "You decide, in my best interest" | Decided: **do not import** the 45 old scores (they come from the pre-rubric prompt of 2026-10-04; any job still open is re-scored by the next scan). `scripts/import_json_history.py` stays for whoever disagrees. `state/*.json` are left on disk. |
+| T34 | "You decide, in my best interest" | Decided: **do not import** the 45 old scores (they come from the pre-rubric prompt of 2026-10-04; any job still open is re-scored by the next scan — *correction 2026-10-12: true only for jobs the retired JSON files alone knew; the 145 `scored` rows already in the database are final, see T86*). `scripts/import_json_history.py` stays for whoever disagrees. `state/*.json` are left on disk. |
 | T31, T33, T38, T39, T44, T71, g1 | Not answered | The defaults the implementer chose stay in force; they are still **waiting for his confirmation**. |
 
 ---
@@ -276,7 +276,7 @@ at 400 jobs; T02 (7 days) and T05 (70) are decided and verified.
 | T01 | Back up the repo to a private remote | manish | — | XS | — |
 | T06 | Check that Telegram works | manish | — | XS | — |
 | T07 | Schedule `run_daily.sh` with a systemd user timer | manish | — | S | T02, T03, T04, T05 |
-| T09 | First full production run; record the funnel | doing · claude · 2026-10-12 | claude | S | T02–T05 (T06, T07 are Manish's and not needed for a manual run) |
+| T09 | First full production run; record the funnel | review · claude · 4f3d83a | claude | S | T02–T05 (T06, T07 are Manish's and not needed for a manual run) |
 
 T03 and T04 were verified 2026-10-07, T64 on 2026-10-08, T02 and T05 on 2026-10-10, T08 on 2026-10-11 (Done log).
 
@@ -553,11 +553,12 @@ Which terms would you add?
 
 ## Inbox
 
-New findings go here with the next free ID (next: **T86**), an evidence tag and the
+New findings go here with the next free ID (next: **T87**), an evidence tag and the
 file:line. Manish or the triaging agent moves each one into a priority table.
 
 | ID | Finding | Evidence | Added by |
 |---|---|---|---|
+| T86 | **33 of the 93 rows of `open_matches.csv` carry scores from the old prompt.** After the first full run (T09, 2026-10-12) the file lists 60 jobs scored that day and 33 scored on 2026-10-04, before rubric v7/v8 (old: mean 79.0, six at 90; new: mean 81.1, fifteen at 90). A `scored` row is final, so the 105 old-prompt jobs still on their boards were "already scored" and kept their score; the earlier note that open jobs are re-scored by the next scan (T34) holds only for jobs the retired JSON files alone knew. Possible fix: set the 2026-10-04 rows (145, or just the 33 listed) back to `discovered` so the next scan re-scores them (33–105 calls on 3.5; the old scores stay in `data/jobs.db.bak-2026-10-12`), or leave them and accept that the file mixes two prompts. It rewrites stored scores in his database, so Manish's call | measured (SQL on `data/jobs.db`, `output/open_matches.csv`) | claude |
 | T85 | **The example config describes the wrong person.** `config.example.json` and `job_hunt/data/config.example.json` (what `autopilot init` writes) still carry upstream's persona: `profile` "10+ YOE, Senior/Staff ML/AI Engineer … MLOps", `seeking` "Remote-friendly or relocation to EU / NA / APAC", `not_suitable` "… pure SWE with no ML …". This fork's pre-filter rejects Staff titles and non-India places and its rubric is written for a 3-year backend engineer, so a new user who forgets to edit them gets scores that contradict the filter. The guide (T80) says to edit them first. Possible fix: neutral placeholders, or the guide's own examples ("3 YOE backend engineer …") | measured (read both files; `diff` equal) | claude |
 | T84 | **Jobs in Indian cities the pre-filter's city list lacks are rejected for location.** `LOCATION_INDIA_PATTERN` knows 11 cities and the word `india`; a job whose location is only e.g. `Coimbatore`, `Indore`, `Nagpur`, `Bhubaneswar` or `Lucknow` (no `India`, no state code) is rejected "does not match target locations". On the fetch of 2026-10-11 (39,713 jobs) 362 jobs sit in such Indian places, 26 of them with a title that passes (24 Accenture "Custom Software Engineer"/"Application Developer" roles in Coimbatore, Indore, Nagpur and Bhubaneswar; 2 InMobi in Lucknow), 2 of those posted within 7 days. T77 added `LOCATION_INDIA_MORE_PATTERN` (states, UTs, 40-odd cities) for its own purpose; reusing it in `location_is_india` would let these through. Question: does Manish want India jobs outside the 11 cities scored (he wrote "India or remote")? Not changed: it widens what reaches Gemini | measured (`location_is_india`, saved fetch) | claude |
 | T83 | **`autopilot init` still creates an empty `state/` directory.** `main.init_project` ends with `(cwd / "state").mkdir(exist_ok=True)`, but the `state/*.json` files are retired (T34): nothing reads or writes them. Harmless; a new user sees a folder with no purpose. Possible fix: drop the line (and the matching `Dockerfile`/doc mentions if any) | measured (`autopilot init` in a fresh clone created `state/`); the retirement is in CLAUDE.md | claude |
@@ -574,6 +575,7 @@ The implementer adds a row when a task reaches `review`; the verifier removes it
 
 | ID | Commit(s) | Implementer | Evidence (command → result) |
 |---|---|---|---|
+| T09 | 4f3d83a | claude | `./run_daily.sh` (real `data/jobs.db`, `config.json`, 224 boards, `min_score` 70, 7-day window), 19:20–20:08 IST on 2026-10-12, **48.5 min**, `data/scan.log` last line `Scan finished with exit code 0`. Funnel line: `fetched 33652 | India 17104 | already scored 105 | pre-filter rejected 31920 | too old 1310 | queued 317 | scored 317 (gemini-3.5-flash-lite 316, gemini-3.1-flash-lite 1) | failed 0 | left for next scan 0`; fetch 5.0 min, descriptions 70 s, scoring 39.3 min. **Done-when read from the artifacts:** SQL `select count(*) from jobs where substr(scored_at,1,10)='2026-10-12'` → 317 (status `scored` 462 = 145 + 317); `output/jobs_2026-10-12.csv` has 317 rows and a `Model` column; table `scans` holds the run with a finish time. 60 of 317 scored ≥ 70, 29 ≥ 85; `open_matches.csv` 93 rows. T77 live: 55 jobs rejected as `names a non-India place`; T78 live: 14 boards stopped at the window, 0 jobs closed (first run with sighting memory), 3,206 rows at `missed_scans` 1. **Caveats:** (1) one job (Amazon SDE 2, AFT Inventory, 85) was scored by `gemini-3.1-flash-lite` after a `Connection reset by peer` on 3.5, shown in the Model column; (2) `autopilot doctor` had migrated the production DB in place before I took the backup, so `data/jobs.db.bak-2026-10-12` is the migrated file (30,367 rows before and after; the pre-migration file is gone); (3) 33 of the 93 open matches are old-prompt scores, T86. T06 (Telegram) and T07 (timer) are Manish's and were not needed for a manual run. **Check yourself:** `tail -3 data/scan.log`; `sqlite3 data/jobs.db "select score_model,count(*) from jobs where substr(scored_at,1,10)='2026-10-12' group by 1"` → 3.1: 1, 3.5: 316 | |
 
 ---
 
