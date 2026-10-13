@@ -28,6 +28,7 @@ autopilot discover --seeds scripts/company_seeds.txt --report /tmp/r.csv --out /
                             # verify company names against ATS boards; --merge re-checks existing entries too
 python scripts/check_filter.py "Java Developer" "Pune, India" [--remote]   # KEPT or REJECTED + the reason, for one job (T80)
 python scripts/measure_prefilter.py --jobs saved.json   # pre-filter survivors + what each exclusion word costs (--save fetches all, ~9 min)
+python scripts/measure_generic_titles.py --jobs saved.json   # India jobs dropped only for a generic title ("Senior Engineer"), by kind and company (T69 g)
 python scripts/measure_workday_tenants.py   # per-tenant Workday fetch time, detail calls, survivors (~4-9 min, real network)
 python scripts/score_golden_set.py         # score the labelled jobs with the rubric off/on (~150 Gemini calls); --from-scores re-analyses
 autopilot doctor            # SQLite / Gemini / Telegram / ATS egress checks

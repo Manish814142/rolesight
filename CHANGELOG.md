@@ -9,6 +9,12 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Added (2026-10-13, T69 g: how many generic engineer titles does the filter drop?)
+- `scripts/measure_generic_titles.py` (with `tests/test_measure_generic_titles.py`) counts, from a saved `measure_prefilter.py --save` fetch, the India jobs the title rule drops
+  only for lacking an include word, by kind (bare "Senior Engineer" / "Engineer II", qualified, other), with the 7-day window and the companies. Measured on 2026-10-13: 26 bare-title jobs
+  (3 in the window) and 25 "Engineer II, Software"-style (1 in the window), about 4 a week; no filter change (details in the board's T69 row). The classifier test was checked by three
+  deliberate breakages, each of which failed it.
+
 ### Fixed (2026-10-13, T90: SQLite connections are closed)
 - `with sqlite3.connect(path) as conn:` commits or rolls back but does not close, so every database call left a connection to be garbage-collected (and each public
   `db` function opened two, because it first called `init_db`, which returned an open connection nobody used). Python 3.13 reports each one: on 3.13.16, `pytest --cov=job_hunt`
