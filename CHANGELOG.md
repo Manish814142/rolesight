@@ -9,6 +9,14 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed (2026-10-13, T93: old product names a user could trip over)
+- The two "install this" hints named a package that does not exist (`autopilot-jobs[mcp]`, `autopilot-jobs[claude]`; the distribution is `rolesight`
+  and is not on PyPI). They now give the command that works in a clone: `pip install -e '.[mcp]'` and `pip install -e '.[claude]'`.
+- The MCP server reports itself as `rolesight` (it was `autopilot-jobs`, the name a client shows); its docstring, `job_hunt/__init__.py`, `conftest.py` and
+  `doctor`'s banner (`ROLESIGHT DOCTOR DIAGNOSTICS`) follow. The `autopilot` command and the `job_hunt` package keep their names.
+- Checked in a clean virtual environment with no extras: both messages print as written, and `pip install -e '.[mcp]'` makes `job_hunt.mcp_server` import.
+  (The `[claude]` command was not run; the extra exists in `pyproject.toml`.)
+
 ### Fixed (2026-10-13, T92: `doctor`'s Gemini check)
 - `doctor` pinged `gemini-3.5-flash-lite` whatever `gemini_model` / `GEMINI_MODEL` said, so a user on another model had the wrong one checked. It now
   pings the model a scan would try first (`GEMINI_MODEL` from `.env`, else `config.json`'s `gemini_model`, else the default) and every message names it, failures

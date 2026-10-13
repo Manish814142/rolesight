@@ -1,4 +1,4 @@
-"""Shared pytest fixtures for autopilot-jobs.
+"""Shared pytest fixtures for RoleSight.
 
 The suite must make **no** network or real-LLM calls. Every test that exercises
 scanner/drafter stubs the one seam — `job_hunt.llm_utils.chat_with_llm`, imported

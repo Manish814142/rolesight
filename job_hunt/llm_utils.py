@@ -23,7 +23,7 @@ def _chat_with_anthropic(config: dict, messages: list[dict], temperature: float,
     try:
         import anthropic
     except ImportError:
-        raise ImportError("Run: pip install 'autopilot-jobs[claude]'")
+        raise ImportError("The anthropic provider needs the Anthropic SDK. In your clone of the repository run: pip install -e '.[claude]'")
     api_key = config.get("anthropic_api_key") or os.getenv("ANTHROPIC_API_KEY")
     model = config.get("anthropic_model", "claude-haiku-4-5-20251001")
     logger.debug(f"LLM call → Anthropic / {model}")

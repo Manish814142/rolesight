@@ -1,4 +1,4 @@
-"""Lightweight diagnostics and sanity checks for Autopilot."""
+"""Lightweight diagnostics and sanity checks for RoleSight."""
 from __future__ import annotations
 
 import json
@@ -214,7 +214,7 @@ def run_doctor(db_path: str = "data/jobs.db", env_path: str = ".env") -> bool:
     load_dotenv(dotenv_path=Path(env_path), override=True)
 
     print("==================================================")
-    print("            AUTOPILOT DOCTOR DIAGNOSTICS          ")
+    print("            ROLESIGHT DOCTOR DIAGNOSTICS          ")
     print("==================================================")
 
     critical_failures = 0

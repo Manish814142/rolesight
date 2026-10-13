@@ -135,3 +135,47 @@ def test_the_project_links_point_at_the_new_repository():
     assert project["urls"]["Issues"] == REPO_URL + "/issues"
     readme = (ROOT / "README.md").read_text()
     assert f"{REPO_URL}/actions/workflows/ci.yml" in readme, "the CI badge"
+
+
+# -- T93: the old product name in messages and names a user sees -------------------------------------------------------
+
+def test_no_source_file_still_names_the_old_product():
+    offenders = [str(f.relative_to(ROOT)) for f in [*(ROOT / "job_hunt").rglob("*.py"), ROOT / "conftest.py"]
+                 if "autopilot-jobs" in f.read_text()]
+    assert not offenders, offenders
+
+
+def test_the_mcp_server_reports_its_name_and_a_working_install_hint(monkeypatch):
+    import importlib
+    import sys
+    pytest.importorskip("mcp")
+    server = importlib.import_module("job_hunt.mcp_server")
+    assert server.mcp.name == "rolesight"
+    monkeypatch.delitem(sys.modules, "job_hunt.mcp_server")
+    monkeypatch.setitem(sys.modules, "mcp.server.fastmcp", None)          # the module is "not installed"
+    with pytest.raises(ImportError) as err:
+        importlib.import_module("job_hunt.mcp_server")
+    assert "pip install -e '.[mcp]'" in str(err.value)
+    assert "autopilot-jobs" not in str(err.value)
+
+
+def test_the_claude_provider_hint_is_the_command_that_works(monkeypatch):
+    import sys
+
+    from job_hunt import llm_utils
+    monkeypatch.setitem(sys.modules, "anthropic", None)                   # the module is "not installed"
+    with pytest.raises(ImportError) as err:
+        llm_utils._chat_with_anthropic({}, [], 0.1, 10)
+    assert "pip install -e '.[claude]'" in str(err.value)
+    assert "autopilot-jobs" not in str(err.value)
+
+
+def test_the_doctor_banner_says_rolesight(monkeypatch, capsys, tmp_path):
+    from job_hunt import doctor
+    monkeypatch.setattr(doctor, "check_sqlite_write", lambda p="x": (True, "OK"))
+    monkeypatch.setattr(doctor, "check_gemini_quota", lambda *a, **k: (True, "OK"))
+    monkeypatch.setattr(doctor, "check_telegram_credentials", lambda *a, **k: (False, "off"))
+    monkeypatch.setattr(doctor, "check_ats_egress", lambda: {})
+    doctor.run_doctor(db_path=str(tmp_path / "x.db"), env_path=str(tmp_path / "no.env"))
+    out = capsys.readouterr().out
+    assert "ROLESIGHT DOCTOR DIAGNOSTICS" in out and "AUTOPILOT" not in out

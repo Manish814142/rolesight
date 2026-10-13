@@ -1,8 +1,8 @@
 """
-MCP server for autopilot-jobs.
+MCP server for RoleSight.
 
 Register with Claude Code (one command):
-  claude mcp add autopilot-jobs \\
+  claude mcp add rolesight \\
     --env GEMINI_API_KEY=your_key \\
     --env TELEGRAM_TOKEN=your_token \\
     --env TELEGRAM_CHAT_ID=your_chat_id \\
@@ -19,15 +19,15 @@ try:
     from mcp.types import ToolAnnotations
 except ImportError:
     raise ImportError(
-        "MCP SDK not installed. Run: pip install 'autopilot-jobs[mcp]'\n"
-        "Or: pip install mcp"
+        "MCP SDK not installed. In your clone of the repository run: pip install -e '.[mcp]'\n"
+        "Or: pip install 'mcp>=1.9,<2'"
     )
 
 from pydantic import Field
 
 from job_hunt.tools import tool_draft, tool_export, tool_scan
 
-mcp = FastMCP("autopilot-jobs")
+mcp = FastMCP("rolesight")
 
 
 @mcp.tool(
