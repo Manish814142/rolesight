@@ -5,14 +5,13 @@ The first T30 migration rewrote every Workday global_id to 'workday:<display nam
 scored Workday rows were unreachable by the new key and would have been re-scored.
 Each test checks the stored id against the real `fetch_workday` output.
 """
-import sqlite3
 from unittest.mock import MagicMock, patch
 
 import pytest
 
 from job_hunt import scanner
 from job_hunt.adapters.workday import fetch_workday
-from job_hunt.db import get_job, init_db
+from job_hunt.db import connect, get_job, init_db
 from job_hunt.models import job_key
 
 AMAT_URL = "https://amat.wd1.myworkdayjobs.com/External/job/BangaloreIND/Algorithm-Developer_R2628315"
@@ -31,7 +30,7 @@ MIGRATED_SCHEMA = LEGACY_SCHEMA.replace("canonical_hash TEXT UNIQUE", "canonical
 
 
 def _make_db(path, schema, rows):
-    with sqlite3.connect(path) as conn:
+    with connect(path) as conn:
         conn.execute(schema)
         for i, (gid, company, url) in enumerate(rows):
             conn.execute(
@@ -55,7 +54,7 @@ def _adapter_id(url):
 
 
 def _stored_ids(path):
-    with sqlite3.connect(path) as conn:
+    with connect(path) as conn:
         return [r[0] for r in conn.execute("SELECT global_id FROM jobs ORDER BY id")]
 
 
@@ -84,7 +83,7 @@ def test_repair_runs_once_and_is_idempotent(tmp_path):
     _make_db(db, MIGRATED_SCHEMA, [("workday:Applied Materials:R2628315", "Applied Materials", AMAT_URL)])
     init_db(db)
     first = _stored_ids(db)
-    with sqlite3.connect(db) as conn:
+    with connect(db) as conn:
         conn.execute("UPDATE jobs SET global_id = 'hand-edited'")
     init_db(db)  # user_version says the repair already ran: must not touch rows again
     assert first == [_adapter_id(AMAT_URL)]
@@ -101,7 +100,7 @@ def test_repair_leaves_rows_alone_when_the_new_id_is_taken(tmp_path):
 
 def test_legacy_dedupe_keeps_the_scored_row(tmp_path):
     db = str(tmp_path / "legacy.db")
-    with sqlite3.connect(db) as conn:
+    with connect(db) as conn:
         conn.execute(LEGACY_SCHEMA)
         for i, status in enumerate(["skipped", "scored"]):  # same requisition stored twice
             conn.execute("INSERT INTO jobs (canonical_hash, global_id, title, company, ats, url, status, score) "
@@ -109,7 +108,7 @@ def test_legacy_dedupe_keeps_the_scored_row(tmp_path):
                          (f"h{i}", AMAT_URL, status, 80 if status == "scored" else None))
         conn.commit()
     init_db(db)
-    with sqlite3.connect(db) as conn:
+    with connect(db) as conn:
         assert conn.execute("SELECT status FROM jobs").fetchall() == [("scored",)]
 
 
@@ -139,6 +138,6 @@ def test_scan_does_not_rescore_a_workday_job_scored_before_the_migration(scan_en
                                      "tenant": "amat", "dc": "wd1", "site": "External"}])
 
     assert scored == []
-    with sqlite3.connect(tmp_path / "data" / "jobs.db") as conn:
+    with connect(tmp_path / "data" / "jobs.db") as conn:
         assert conn.execute("SELECT count(*) FROM jobs").fetchone() == (1,)  # no duplicate row
     assert job_key  # imported for readers: the key the scan looked up is job_key(job)

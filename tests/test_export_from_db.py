@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 
 from job_hunt import main as cli
-from job_hunt.db import finish_scan, init_db, save_job, start_scan, update_job_status
+from job_hunt.db import connect, finish_scan, init_db, save_job, start_scan, update_job_status
 from job_hunt.models import JobPosting, job_key
 
 # EQUIVALENT_SQL is the done-when's reference: what `export --min 70 --days 7` must list, in this order.
@@ -65,7 +65,8 @@ def _export(monkeypatch, *args):
 
 def test_export_min_70_days_7_matches_the_equivalent_sql_query(history, monkeypatch):
     """The done-when."""
-    expected = [r[0] for r in sqlite3.connect("data/jobs.db").execute(EQUIVALENT_SQL)]
+    with connect("data/jobs.db") as con:
+        expected = [r[0] for r in con.execute(EQUIVALENT_SQL)]
     assert expected == ["https://x.example/0", "https://x.example/1", "https://x.example/7", "https://x.example/2"]
     rows = _export(monkeypatch, "--min", "70", "--days", "7")
     assert [r["Application URL"] for r in rows] == expected

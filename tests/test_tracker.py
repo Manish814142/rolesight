@@ -10,7 +10,7 @@ import pytest
 
 from job_hunt import main as cli
 from job_hunt import tracker
-from job_hunt.db import finish_scan, init_db, save_job, start_scan, update_job_status
+from job_hunt.db import connect, finish_scan, init_db, save_job, start_scan, update_job_status
 from job_hunt.models import JobPosting, job_key
 
 DAY = date(2026, 10, 8)
@@ -37,9 +37,9 @@ def scanned(tmp_path, monkeypatch):
 
 
 def _row(url):
-    con = sqlite3.connect("data/jobs.db")
-    con.row_factory = sqlite3.Row
-    return dict(con.execute("SELECT * FROM jobs WHERE url = ?", (url,)).fetchone())
+    with connect("data/jobs.db") as con:
+        con.row_factory = sqlite3.Row
+        return dict(con.execute("SELECT * FROM jobs WHERE url = ?", (url,)).fetchone())
 
 
 def test_mark_by_number_uses_the_same_job_as_draft(scanned):
@@ -71,11 +71,13 @@ def test_none_clears_a_mistaken_mark(scanned):
     ("#7", "applied", "not in last scan"),
 ])
 def test_bad_input_changes_nothing(scanned, ref, status, message):
-    before = sqlite3.connect("data/jobs.db").execute("SELECT * FROM jobs ORDER BY id").fetchall()
+    with connect("data/jobs.db") as con:
+        before = con.execute("SELECT * FROM jobs ORDER BY id").fetchall()
     with pytest.raises((ValueError, LookupError)) as ei:
         tracker.mark_job(ref, status, today=DAY)
     assert message in str(ei.value)
-    assert sqlite3.connect("data/jobs.db").execute("SELECT * FROM jobs ORDER BY id").fetchall() == before
+    with connect("data/jobs.db") as con:
+        assert con.execute("SELECT * FROM jobs ORDER BY id").fetchall() == before
 
 
 def test_init_db_adds_the_application_columns_to_an_existing_database(tmp_path):
@@ -89,8 +91,9 @@ def test_init_db_adds_the_application_columns_to_an_existing_database(tmp_path):
     con.commit()
     con.close()
     init_db(db)
-    assert sqlite3.connect(db).execute(
-        "SELECT score, application_status, application_date FROM jobs").fetchone() == (80, None, None)
+    with connect(db) as con:
+        assert con.execute(
+            "SELECT score, application_status, application_date FROM jobs").fetchone() == (80, None, None)
 
 
 def _cli(monkeypatch, *args):

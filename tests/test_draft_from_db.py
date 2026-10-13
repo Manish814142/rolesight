@@ -1,11 +1,10 @@
 """T31: `draft N` resolves job N of the last completed scan from data/jobs.db, not state/last_scan.json (no network)."""
 import json
-import sqlite3
 
 import pytest
 
 from job_hunt import db, drafter, scanner
-from job_hunt.db import init_db, update_job_status
+from job_hunt.db import connect, init_db, update_job_status
 from job_hunt.models import JobPosting, job_key
 
 
@@ -75,7 +74,8 @@ def test_a_scan_that_did_not_finish_does_not_replace_the_last_completed_one(scan
     save = _job("Z")
     db.save_job(save, status="discovered")
     update_job_status(job_key(save), "scored", 99, "r")
-    assert sqlite3.connect("data/jobs.db").execute("SELECT finished_at FROM scans WHERE id = ?", (sid,)).fetchone() == (None,)
+    with connect("data/jobs.db") as con:
+        assert con.execute("SELECT finished_at FROM scans WHERE id = ?", (sid,)).fetchone() == (None,)
     assert drafter._resolve_job("1")[0] == "https://x/B"
 
 

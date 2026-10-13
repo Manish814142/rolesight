@@ -21,6 +21,7 @@ import argparse
 import json
 import sqlite3
 import sys
+from contextlib import closing
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -54,7 +55,7 @@ def import_history(workdir: Path, apply: bool) -> dict[str, int]:
     entries = _entries(workdir / "state")
     counts["in_files"] = len(entries)
     # A dry run opens the database read-only: not even the schema is migrated.
-    with sqlite3.connect(str(db_path) if apply else f"file:{db_path}?mode=ro", uri=not apply) as conn:
+    with closing(sqlite3.connect(str(db_path) if apply else f"file:{db_path}?mode=ro", uri=not apply)) as conn:
         for e in entries:
             if conn.execute("SELECT 1 FROM jobs WHERE url_hash = ? LIMIT 1;", (url_hash(e["url"]),)).fetchone():
                 counts["already_in_db"] += 1

@@ -6,7 +6,7 @@ from pathlib import Path
 import pytest
 
 from job_hunt import db, scanner
-from job_hunt.db import init_db, save_job, update_job_status
+from job_hunt.db import connect, init_db, save_job, update_job_status
 from job_hunt.models import JobPosting, job_key
 
 
@@ -16,10 +16,10 @@ def _job(name, company="X", ats="greenhouse"):
 
 
 def _row(job):
-    con = sqlite3.connect("data/jobs.db")
-    con.row_factory = sqlite3.Row
-    r = con.execute("SELECT * FROM jobs WHERE global_id = ?", (job.global_id,)).fetchone()
-    return dict(r) if r else None
+    with connect("data/jobs.db") as con:
+        con.row_factory = sqlite3.Row
+        r = con.execute("SELECT * FROM jobs WHERE global_id = ?", (job.global_id,)).fetchone()
+        return dict(r) if r else None
 
 
 @pytest.fixture
@@ -108,7 +108,8 @@ def test_init_db_adds_the_columns_and_backfills_first_seen(tmp_path):
     con.commit()
     con.close()
     init_db(path)
-    row = sqlite3.connect(path).execute("SELECT first_seen, last_seen, missed_scans, closed_at FROM jobs").fetchone()
+    with connect(path) as con:
+        row = con.execute("SELECT first_seen, last_seen, missed_scans, closed_at FROM jobs").fetchone()
     assert row == ("2026-10-04T06:00:00+00:00", None, 0, None)
 
 

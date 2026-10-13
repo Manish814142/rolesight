@@ -1,9 +1,8 @@
 """T29: the jobs table keeps each posting's location, posted date and description (no network)."""
-import sqlite3
 from datetime import date, timedelta
 
 from job_hunt import scanner
-from job_hunt.db import get_job, init_db, save_job, update_job_details
+from job_hunt.db import connect, get_job, init_db, save_job, update_job_details
 from job_hunt.models import JobPosting, job_key
 
 # The table exactly as the production database has it today (13 columns, no details).
@@ -26,13 +25,13 @@ def _job(i=1, desc="Build Node.js services", posted=POSTED, location="Bengaluru,
 
 
 def _columns(path):
-    with sqlite3.connect(path) as c:
+    with connect(path) as c:
         return [r[1] for r in c.execute("PRAGMA table_info(jobs)")]
 
 
 def test_old_database_gains_the_columns_without_losing_a_row(tmp_path):
     db = str(tmp_path / "old.db")
-    with sqlite3.connect(db) as c:
+    with connect(db) as c:
         c.execute(OLD_SCHEMA)
         for i, (status, score) in enumerate([("scored", 88), ("skipped", None), ("discovered", None)]):
             c.execute("INSERT INTO jobs (canonical_hash, url_hash, global_id, title, company, ats, url, score, score_reason, status) "
@@ -41,7 +40,7 @@ def test_old_database_gains_the_columns_without_losing_a_row(tmp_path):
         c.commit()
     init_db(db)
     assert {"location", "posted_at", "description"} <= set(_columns(db))
-    with sqlite3.connect(db) as c:
+    with connect(db) as c:
         rows = c.execute("SELECT global_id, status, score, score_reason, location FROM jobs ORDER BY id").fetchall()
     assert rows == [("greenhouse:x:0", "scored", 88, "because", None), ("greenhouse:x:1", "skipped", None, "because", None),
                     ("greenhouse:x:2", "discovered", None, "because", None)]
@@ -49,7 +48,7 @@ def test_old_database_gains_the_columns_without_losing_a_row(tmp_path):
 
 def test_migration_is_idempotent(tmp_path):
     db = str(tmp_path / "old.db")
-    with sqlite3.connect(db) as c:
+    with connect(db) as c:
         c.execute(OLD_SCHEMA)
         c.commit()
     init_db(db)

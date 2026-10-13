@@ -14,6 +14,8 @@ reconstructed from git history.
   `db` function opened two, because it first called `init_db`, which returned an open connection nobody used). Python 3.13 reports each one: on 3.13.16, `pytest --cov=job_hunt`
   gave 13,859 `ResourceWarning: unclosed database` (0 on 3.11 and 3.12). `db.connect` is now a context manager that commits, rolls back on error and closes, used at all 16
   sites (`db.py`, `doctor.py`); `init_db` closes its connection and returns nothing (no caller used the value). Behaviour is otherwise unchanged.
+  The tests that opened their own connections (14 places) and `scripts/import_json_history.py` close theirs too. Result on 3.13.16: `pytest --cov=job_hunt` 967 passed, **0 warnings** (was 13,859);
+  none of the remaining `-W error::ResourceWarning` findings is SQLite (29 are `unclosed file` in tests that read CSVs: not touched).
 
 ### Fixed (2026-10-13, T95: the Telegram bot token in error messages)
 - Telegram's API puts the bot token in the URL path (`/bot<token>/sendMessage`), and `requests` names the URL in its connection errors. Measured with the real library and

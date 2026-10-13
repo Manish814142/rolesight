@@ -13,7 +13,7 @@ from unittest.mock import MagicMock
 import pytest
 
 from job_hunt import exporter, llm_utils, scanner, scorer
-from job_hunt.db import init_db, save_job, update_job_status
+from job_hunt.db import connect, init_db, save_job, update_job_status
 from job_hunt.models import JobPosting, job_key
 
 PRIMARY, FALLBACK = llm_utils.GEMINI_FALLBACK_MODELS[:2]
@@ -87,7 +87,8 @@ def test_init_db_adds_the_model_column_to_an_existing_database(tmp_path):
     conn.commit()
     conn.close()
     init_db(db)
-    row = sqlite3.connect(db).execute("SELECT score, score_model FROM jobs WHERE global_id = 'a'").fetchone()
+    with connect(db) as con:
+        row = con.execute("SELECT score, score_model FROM jobs WHERE global_id = 'a'").fetchone()
     assert row == (80, None)                       # old rows: model unknown, score kept
 
 
@@ -95,7 +96,8 @@ def test_update_job_status_stores_the_model(tmp_path):
     db = str(tmp_path / "jobs.db")
     save_job(_job(1), db_path=db)
     update_job_status(job_key(_job(1)), "scored", 72, "fine", db_path=db, model=FALLBACK)
-    row = sqlite3.connect(db).execute("SELECT status, score, score_model FROM jobs").fetchone()
+    with connect(db) as con:
+        row = con.execute("SELECT status, score, score_model FROM jobs").fetchone()
     assert row == ("scored", 72, FALLBACK)
 
 
@@ -115,7 +117,8 @@ def test_a_scan_whose_primary_fails_on_one_job_records_the_fallback_on_that_row_
                       "telegram": {}}, [{"name": "X", "ats": "greenhouse", "slug": "x"}])
 
     assert client.calls == [PRIMARY, FALLBACK, PRIMARY]
-    rows = dict(sqlite3.connect("data/jobs.db").execute("SELECT global_id, score_model FROM jobs").fetchall())
+    with connect("data/jobs.db") as con:
+        rows = dict(con.execute("SELECT global_id, score_model FROM jobs").fetchall())
     assert rows == {"greenhouse:x:0": FALLBACK, "greenhouse:x:1": PRIMARY}
     (csv_path,) = (tmp_path / "output").glob("jobs_*.csv")
     by_role = {r["Role"]: r for r in csv.DictReader(csv_path.open(encoding="utf-8"))}
@@ -151,7 +154,8 @@ def test_batch_scoring_stores_the_model(tmp_path):
     finally:
         s.score_jobs_batch_with_gemini = orig
     assert res["model"] == FALLBACK
-    assert sqlite3.connect(db).execute("SELECT score_model FROM jobs").fetchone() == (FALLBACK,)
+    with connect(db) as con:
+        assert con.execute("SELECT score_model FROM jobs").fetchone() == (FALLBACK,)
 
 
 @pytest.mark.parametrize("models, shown", [

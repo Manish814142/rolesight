@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 
 from job_hunt import scanner, tools
-from job_hunt.db import init_db, save_job, update_job_status
+from job_hunt.db import connect, init_db, save_job, update_job_status
 from job_hunt.models import JobPosting, job_key
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -98,9 +98,9 @@ def _run(d, *args):
 
 
 def _rows(d):
-    con = sqlite3.connect(d / "data" / "jobs.db")
-    return {u: (st, sc, r, at) for u, st, sc, r, at in
-            con.execute("SELECT url, status, score, score_reason, scored_at FROM jobs")}
+    with connect(d / "data" / "jobs.db") as con:
+        return {u: (st, sc, r, at) for u, st, sc, r, at in
+                con.execute("SELECT url, status, score, score_reason, scored_at FROM jobs")}
 
 
 def test_import_is_a_dry_run_by_default(legacy_dir):

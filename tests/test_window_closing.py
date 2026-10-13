@@ -14,7 +14,7 @@ import pytest
 
 from job_hunt import db, scanner
 from job_hunt.adapters import base
-from job_hunt.db import init_db, record_sightings, save_job
+from job_hunt.db import connect, init_db, record_sightings, save_job
 from job_hunt.models import JobPosting
 
 WINDOW = 7
@@ -136,7 +136,8 @@ def test_record_sightings_windowed_boards_directly(tmp_path):
     closed = record_sightings({("eightfold", "Qualcomm"): [kept]}, closed_after=1, db_path=path,
                               windowed={("eightfold", "Qualcomm"): WINDOW})
     assert closed == 1
-    rows = {r[0]: r[1:] for r in sqlite3.connect(path).execute("SELECT global_id, missed_scans, closed_at FROM jobs")}
+    with connect(path) as con:
+        rows = {r[0]: r[1:] for r in con.execute("SELECT global_id, missed_scans, closed_at FROM jobs")}
     assert rows[gone.global_id][0] == 1 and rows[gone.global_id][1]
     assert rows[old.global_id] == (0, None) and rows[undated.global_id] == (0, None) and rows[kept.global_id] == (0, None)
 

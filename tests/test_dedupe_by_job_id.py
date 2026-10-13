@@ -1,10 +1,9 @@
 """Tests for T30: deduplicating by ATS job ID rather than title+company+location hash."""
-import sqlite3
 from unittest.mock import patch
 
 import pytest
 
-from job_hunt.db import get_job, has_job, init_db, save_job, update_job_status
+from job_hunt.db import connect, get_job, has_job, init_db, save_job, update_job_status
 from job_hunt.models import JobPosting, canonical_hash, url_hash
 
 
@@ -49,7 +48,7 @@ def test_two_req_ids_same_title_stored_as_two_rows(temp_db):
     assert has_job("greenhouse:druva:11111", db_path=temp_db) is True
     assert has_job("greenhouse:druva:22222", db_path=temp_db) is True
 
-    with sqlite3.connect(temp_db) as conn:
+    with connect(temp_db) as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT count(*) FROM jobs WHERE title = 'Senior Software Engineer'")
         assert cursor.fetchone()[0] == 2
@@ -68,7 +67,7 @@ def test_legacy_database_migration_allows_new_req_and_keeps_scored(tmp_path):
     2. A new requisition with the same title can now be saved without error."""
     db_file = str(tmp_path / "legacy.db")
     # Create old schema with canonical_hash TEXT UNIQUE
-    with sqlite3.connect(db_file) as conn:
+    with connect(db_file) as conn:
         conn.execute(
             """
             CREATE TABLE jobs (
@@ -120,7 +119,7 @@ def test_legacy_database_migration_allows_new_req_and_keeps_scored(tmp_path):
     assert save_job(j_new, status="discovered", db_path=db_file) is True
 
     # Both exist
-    with sqlite3.connect(db_file) as conn:
+    with connect(db_file) as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT global_id, status FROM jobs WHERE title = 'Staff Engineer' ORDER BY id")
         rows = cursor.fetchall()
