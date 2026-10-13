@@ -9,6 +9,9 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Changed (2026-10-13, T91 — one recruiter's personal address removed from the golden sets)
+- The labelled job postings in `scripts/golden_set.csv` and `scripts/golden_set_ai.csv` are copied verbatim from public boards. Of the 15 distinct e-mail addresses in them, one is an individual recruiter's (LogicMonitor, once in each file); it is now `[address removed]`. The others are role mailboxes (careers, accommodations, a diversity-and-inclusion team) and stay. Scoring is unaffected: the address carries no requirement. The published history still holds the old text.
+
 ### Fixed (2026-10-13, found while measuring T79)
 - `scripts/measure_score_variance.py`: one failed Gemini call (a 503 "model is currently experiencing high demand") raised out of the loop, ended the whole measurement and saved nothing (it happened on a 20-run ai65 measurement). A failed call is now printed and skipped, never stored as a score; the other runs are kept and saved. Test red first.
 
