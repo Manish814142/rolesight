@@ -12,9 +12,9 @@
   "candidate": {
     "name": "Your Name",
     "resume_path": "resume/YOUR_RESUME.md",
-    "profile": "10+ YOE, Senior/Staff ML/AI Engineer. Stack: Python, LLMs, RAG, AWS, MLOps",
-    "seeking": "Remote-friendly or relocation to EU / NA / APAC",
-    "not_suitable": "Junior roles, pure SWE with no ML, non-technical management",
+    "profile": "3 YOE backend engineer. Stack: Node.js, TypeScript, MongoDB, AWS",
+    "seeking": "Remote, or hybrid in Bengaluru. Backend or platform roles",
+    "not_suitable": "Pure frontend, QA, support, management, internships",
     "relocation_note": "",
     "min_score": 70,
     "top_n": 5,

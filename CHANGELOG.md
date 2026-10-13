@@ -9,6 +9,9 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Changed (2026-10-13, T85 — the example config describes the person this fork is built for)
+- `config.example.json` and `job_hunt/data/config.example.json` (what `autopilot init` writes) carried upstream's persona ("10+ YOE, Senior/Staff ML/AI Engineer … MLOps", "relocation to EU / NA / APAC", "pure SWE with no ML"). A user who forgot to edit the three sentences got scores that contradicted this fork's filter (it rejects Staff titles and non-India places) and rubric (written for a 3-year backend engineer). They now hold the user guide's own examples: `3 YOE backend engineer. Stack: Node.js, TypeScript, MongoDB, AWS` / `Remote, or hybrid in Bengaluru. Backend or platform roles` / `Pure frontend, QA, support, management, internships`. `tests/test_example_config_persona.py` (8 cases, 4 red first) ties both files to the guide's lines and bans the old phrases. Measured with the real command: `autopilot init` in an empty directory writes those sentences and `load_config` accepts the file. Not changed: an existing `config.json`.
+
 ### Removed (2026-10-13, T83 — no empty `state/` folder any more)
 - `autopilot init` and `run_daily.sh` created a `state/` directory although nothing has read or written it since T34. Both stopped (`main.init_project`, the `mkdir -p` line of `run_daily.sh`). Measured with the real command in an empty directory: `autopilot init` now leaves `.env companies.json config.json data output resume` (`data` is made by the logger, as before). `tests/test_init_dirs.py` (2 tests, red first) and the updated `test_init_project_scaffolds` pin it; `bash -n run_daily.sh` parses (the script itself was not run: it starts a real scan). An existing `state/` folder is left alone.
 
