@@ -67,3 +67,27 @@ def test_a_redirect_that_stays_on_the_tenant_host_is_not_maintenance(monkeypatch
     resp.history = [SimpleNamespace(status_code=301)]
     monkeypatch.setattr(workday, "http_post", lambda *a, **k: resp)
     assert len(fetch_workday("acme", "wd1", "site")) == 1 and base.fetch_incomplete() is None
+
+
+# -- Review of T76 (2026-10-11): two gaps -----------------------------------------------------------------------------
+
+def test_a_redirect_to_another_host_that_answers_with_jobs_still_counts(monkeypatch):
+    """Before T76 a cross-host redirect that ended in JSON (say a tenant moved to another data centre) was followed and
+    its jobs read. Only a non-JSON answer (the maintenance page) is a dead end."""
+    resp = _jobs_response()
+    resp.url = "https://acme.wd5.myworkdayjobs.com/wday/cxs/acme/site/jobs"
+    resp.history = [SimpleNamespace(status_code=308)]
+    resp.headers = {"Content-Type": "application/json;charset=UTF-8"}
+    monkeypatch.setattr(workday, "http_post", lambda *a, **k: resp)
+    assert len(fetch_workday("acme", "wd1", "site")) == 1 and base.fetch_incomplete() is None
+
+
+def test_every_scan_gets_its_own_warning(monkeypatch, caplog):
+    """The warn-once flag is per scan, not per process: the MCP server runs many scans in one process."""
+    from job_hunt import scanner
+    monkeypatch.setattr(workday, "http_post", lambda *a, **k: _maintenance_response())
+    caplog.set_level(logging.WARNING, logger="job_hunt.adapters.workday")
+    board = [{"name": "Acme", "ats": "workday", "tenant": "acme", "dc": "wd1", "site": "site"}]
+    for _ in range(2):
+        scanner._prefetch_jobs(board, 1)
+    assert sum("maintenance" in r.getMessage().lower() for r in caplog.records if r.levelno == logging.WARNING) == 2

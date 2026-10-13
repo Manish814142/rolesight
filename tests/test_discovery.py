@@ -1,6 +1,8 @@
 """Unit tests for job_hunt/discovery.py (no network)."""
 from __future__ import annotations
 
+from datetime import date, timedelta
+
 import pytest
 
 from job_hunt.discovery import (
@@ -137,7 +139,12 @@ def _resp(status=200, payload=None):
     return r
 
 
-def _jp(title="Backend Engineer", location="Bengaluru, India", desc="", posted="2026-09-30"):
+# Ten days ago, not a literal date: discover rejects a board whose newest posting is over 180 days old, so a fixed
+# "2026-09-30" would have failed these tests from about April 2027 (review of T87).
+RECENT = (date.today() - timedelta(days=10)).isoformat()
+
+
+def _jp(title="Backend Engineer", location="Bengaluru, India", desc="", posted=RECENT):
     return JobPosting("g", "x", "c", title, location, False, "u", description_text=desc, posted_at=posted)
 
 
@@ -464,7 +471,7 @@ def test_census_rows_to_seed_lines_only_for_supported_platforms():
 def test_discover_verifies_oracle_seeds_with_real_adapter(monkeypatch):
     monkeypatch.setattr(disc, "load_linkedin_cache", lambda path: ({}, {}))
     monkeypatch.setattr(disc, "fetch_company_jobs", lambda c: [
-        _jp("Software Engineer III", "Bengaluru, India", posted="2026-09-30")] if c.get("ats") == "oracle_hcm" else [])
+        _jp("Software Engineer III", "Bengaluru, India", posted=RECENT)] if c.get("ats") == "oracle_hcm" else [])
     seeds = parse_seeds("DP World | https://ehpv.fa.em2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1\n")
     verified, rows = disc.discover(seeds, workers=2)
     assert verified == [{"name": "DP World", "ats": "oracle_hcm", "host": "ehpv.fa.em2.oraclecloud.com",
@@ -480,7 +487,7 @@ def test_merge_treats_oracle_boards_by_host_and_site():
 
 
 def test_reverify_existing_uses_real_adapter_for_amazon_and_oracle(monkeypatch):
-    monkeypatch.setattr(disc, "fetch_company_jobs", lambda c: [_jp(posted="2026-10-01")])
+    monkeypatch.setattr(disc, "fetch_company_jobs", lambda c: [_jp(posted=RECENT)])
     kept, rows = disc.reverify_existing([
         {"name": "Amazon", "ats": "amazon"},
         {"name": "DP World", "ats": "oracle_hcm", "host": "h.oraclecloud.com", "site": "CX_1"}])

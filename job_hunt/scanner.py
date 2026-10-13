@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Optional
 
 from job_hunt.adapters import enrich_job, fetch_company_jobs
+from job_hunt.adapters import workday as workday_adapter
 from job_hunt.adapters.base import WINDOW_STOP_REASON, begin_fetch, fetch_incomplete
 from job_hunt.db import (
     DEFAULT_CLOSED_AFTER_MISSED_SCANS,
@@ -112,6 +113,8 @@ def _prefetch_jobs(companies: list[dict], workers: int,
     says why a paged adapter stopped before the board's end (page failure, time budget, job cap, posted-date
     window), else None (T33). `max_age_days` is the posted-date window: adapters spend no per-job request on, and stop
     paging a newest-first list at, jobs older than it (T02)."""
+    workday_adapter.reset_redirect_report()   # one maintenance warning per scan, not per process (T76)
+
     def one(company: dict) -> tuple[list, str | None, str | None]:
         begin_fetch(max_age_days)
         try:

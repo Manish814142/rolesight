@@ -43,10 +43,20 @@ _maintenance_reported = False
 _maintenance_lock = threading.Lock()
 
 
+def reset_redirect_report() -> None:
+    """Called at the start of each scan's fetch, so every scan gets its own warning (the MCP server runs many)."""
+    global _maintenance_reported
+    with _maintenance_lock:
+        _maintenance_reported = False
+
+
 def _redirected_away(resp: Any, base_domain: str) -> str:
-    """The final URL when a redirect took the answer to another host than the tenant's (the maintenance page), else ""."""
+    """The final URL when a redirect took the answer to another host than the tenant's and that answer is not JSON (the
+    maintenance page), else "". A cross-host redirect that ends in JSON (a tenant on another data centre) is read as before."""
     url = getattr(resp, "url", None)
     if not isinstance(url, str) or not getattr(resp, "history", None):
+        return ""
+    if "json" in str((getattr(resp, "headers", None) or {}).get("Content-Type", "")).lower():
         return ""
     host = urlparse(url).netloc
     return url if host and host != base_domain else ""
