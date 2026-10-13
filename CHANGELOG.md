@@ -9,6 +9,9 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed (2026-10-13, found while measuring T79)
+- `scripts/measure_score_variance.py`: one failed Gemini call (a 503 "model is currently experiencing high demand") raised out of the loop, ended the whole measurement and saved nothing (it happened on a 20-run ai65 measurement). A failed call is now printed and skipped, never stored as a score; the other runs are kept and saved. Test red first.
+
 ### Changed (2026-10-13, T88: renamed JobNotify → RoleSight, prepared for a public MIT release)
 - **Name.** The project, the distribution (`pyproject.toml` `name = "rolesight"`), the Claude skill (`skills/rolesight`) and every
   doc now say RoleSight. A `rolesight` command is added next to `autopilot` (re-run `pip install -e .` to get it); the

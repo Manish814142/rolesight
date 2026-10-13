@@ -482,3 +482,30 @@ def test_ai_golden_set_is_well_formed():
     assert sum(r["label"] != "no" for r in rows) == 9          # the allowed ones: 1 apply, 8 maybe (ai54 was relabelled no on re-reading)
     assert all(len(r["description"]) > 1000 and r["label_reason"] for r in rows)
     assert {r["label_source"] for r in rows} == {"claude-2026-10-10"}      # none confirmed by Manish yet
+
+
+def test_variance_script_survives_a_failed_call(tmp_path, monkeypatch):
+    """Review of T79 (2026-10-13): one 503 from an overloaded Gemini aborted a 20-run measurement and saved nothing.
+    A failed call is now skipped (never stored as a score) and the other runs are kept."""
+    import json
+    import sys
+
+    sys.path.insert(0, "scripts")
+    import measure_score_variance as msv
+
+    resume = tmp_path / "r.md"
+    resume.write_text("Node.js")
+    monkeypatch.setattr(msv, "load_config", lambda: {"candidate": {"resume_path": str(resume)}})
+    monkeypatch.setattr(msv.time, "sleep", lambda s: None)
+    calls = []
+
+    def flaky(payload, resume_text, config, raise_on_error=False):
+        calls.append(1)
+        if len(calls) == 2:
+            raise RuntimeError("503 UNAVAILABLE")
+        return {"score": 75, "reason": "r"}
+
+    monkeypatch.setattr(msv, "score_job_with_gemini", flaky)
+    out = tmp_path / "runs.json"
+    assert msv.main(["--csv", "scripts/golden_set_ai.csv", "--ids", "ai65", "--runs", "3", "--save", str(out)]) == 0
+    assert json.loads(out.read_text()) == {"ai65": [75, 75]}

@@ -72,9 +72,12 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             for j in jobs:
                 payload = {"company": j["company"], "title": j["title"], "location": j["location"], "content": j["description"]}
                 scores = []
-                for _ in range(args.runs):
+                for n in range(args.runs):
                     time.sleep(4.2)
-                    scores.append(score_job_with_gemini(payload, resume, config, raise_on_error=True)["score"])
+                    try:
+                        scores.append(score_job_with_gemini(payload, resume, config, raise_on_error=True)["score"])
+                    except Exception as e:  # noqa: BLE001 -- a 503 must not end the measurement; never store it as a score
+                        print(f"{j['id']:5} run {n + 1} failed: {str(e)[:100]}", flush=True)
                 runs[j["id"]] = scores
                 print(f"{j['id']:5} {scores}", flush=True)
         finally:
