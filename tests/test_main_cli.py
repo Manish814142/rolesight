@@ -236,7 +236,7 @@ def test_init_project_scaffolds(tmp_path, monkeypatch, capsys):
     assert (tmp_path / "config.json").exists()
     assert (tmp_path / ".env").exists()
     assert (tmp_path / "resume" / "YOUR_RESUME.md").exists()
-    assert (tmp_path / "state").is_dir() and (tmp_path / "output").is_dir()
+    assert (tmp_path / "output").is_dir() and not (tmp_path / "state").exists()   # state/ is retired (T34, T83)
     # idempotent — second run skips without error
     main.init_project()
     assert "already exists" in capsys.readouterr().out

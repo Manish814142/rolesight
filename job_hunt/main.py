@@ -142,7 +142,6 @@ def init_project() -> None:
     resume_dir.mkdir(exist_ok=True)
     _copy("resume_template.md", resume_dir / "YOUR_RESUME.md", "resume/YOUR_RESUME.md created — replace with your resume")
 
-    (cwd / "state").mkdir(exist_ok=True)
     (cwd / "output").mkdir(exist_ok=True)
 
     print("\nNext:")

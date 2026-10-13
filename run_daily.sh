@@ -12,7 +12,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
 # Ensure runtime directories exist
-mkdir -p data logs state output
+mkdir -p data logs output
 
 # Select Python environment (.venv if available, otherwise python3)
 if [ -f "$SCRIPT_DIR/.venv/bin/python" ]; then
