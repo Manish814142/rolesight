@@ -372,6 +372,7 @@ T11, T12, T14, T15, T16, T17 and T18 were verified 2026-10-07, T66 and T67 on 20
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
 | T79 | Rule 1 (the outside-India cap) is sometimes applied to an Indian city | changes · claude (fix reverted 2026-10-11; see review notes) | — | M | — |
+| T88 | Prepare the repo for a public release as RoleSight (Manish, 2026-10-13: public, personal email only, company list included, MIT, CI green) | doing · claude · 2026-10-13 | claude | M | — |
 
 **T85 · The example config describes the wrong person. `config.example.json` and `job_hunt/data/config.example.json` (what `autopilot init` writes) still carry upstream's persona: `profile` "10+ YOE, Senior/Staff ML/AI Engineer … MLOps", `seeking` "Remote-friendly or relocation to EU / NA / APAC", `not_suitable` "… pure SWE with no ML …". This fork's pre-filter rejects Staff titles and non-India places and its rubric is written for a 3-year backend engineer, so a new user who forgets to edit them gets scores that contradict the filter. The guide (T80) says to edit them first. Possible fix: neutral placeholders, or the guide's own examples ("3 YOE backend engineer …")** *Done when:* both example files carry the guide's own example sentences (a test ties the three to `docs/00-user-guide.md`), nothing mentions the upstream persona, and `autopilot init` still writes a valid config.
 **Review notes (2026-10-13, claude): verified** (Done log). Note for T79: the example `seeking` names one city ("hybrid in Bengaluru"), the wording that let Gemini cap a Hyderabad role.
@@ -568,7 +569,7 @@ Which terms would you add?
 
 ## Inbox
 
-New findings go here with the next free ID (next: **T88**), an evidence tag and the
+New findings go here with the next free ID (next: **T89**), an evidence tag and the
 file:line. Manish or the triaging agent moves each one into a priority table.
 
 | ID | Finding | Evidence | Added by |
