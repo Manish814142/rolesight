@@ -372,7 +372,7 @@ T11, T12, T14, T15, T16, T17 and T18 were verified 2026-10-07, T66 and T67 on 20
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
 | T79 | Rule 1 (the outside-India cap) is sometimes applied to an Indian city | doing · claude · 2026-10-13 (second attempt, measuring) | claude | M | — |
-| T92 | `doctor` checks the configured Gemini model, and never puts the API key in a URL | doing · claude · 2026-10-13 | — | XS | — |
+| T92 | `doctor` checks the configured Gemini model, and never puts the API key in a URL | review · claude · 60a30c0 | — | XS | — |
 | T93 | User-facing leftovers of the old names (two wrong `pip install` hints, the MCP server name) | todo | — | XS | — |
 | T94 | `harvest` defaults to files in Manish's Downloads folder | todo | — | XS | — |
 
@@ -581,11 +581,12 @@ Which terms would you add?
 
 ## Inbox
 
-New findings go here with the next free ID (next: **T95**), an evidence tag and the
+New findings go here with the next free ID (next: **T96**), an evidence tag and the
 file:line. Manish or the triaging agent moves each one into a priority table.
 
 | ID | Finding | Evidence | Added by |
 |---|---|---|---|
+| T95 | **`doctor`'s Telegram check can print the bot token.** `check_telegram_credentials` calls `requests.get(f"https://api.telegram.org/bot{bot_token}/getMe")` (Telegram's API puts the token in the path, so a header is not an option) and returns `f"Telegram network error: {e}"`; a `requests` connection error names the URL, so the token reaches the terminal and, with `RUN_PREFLIGHT_DOCTOR=1`, `data/scan.log`. Same class as T92. Fix: replace the token in the message (the `_mask` helper T92 added); check `notifier.send_telegram` for the same pattern (it logs on failure). Telegram is off today, so no token has been printed | read from the code (`doctor.py`, `notifier.py`); not provoked | claude |
 | T91 | **Done 2026-10-13 (option b, Manish: "do these"): a recruiter's personal e-mail address is no longer in the golden sets.** `scripts/golden_set.csv` and `scripts/golden_set_ai.csv` held 15 distinct addresses copied with the postings; on a closer look only one is a person's (`first.last`-shaped, LogicMonitor, once in each file); the Novartis one first counted as personal is a diversity-and-inclusion team mailbox and stays, like the other role mailboxes. That one address is now `[address removed]` in the current files (2 lines; 82 and 75 rows unchanged). The history already on GitHub keeps it; removing it there needs a rewrite and a force-push (his go-ahead only). Not independently reviewed: small and checked by the implementer (row counts, the diff touches 2 lines) | measured on `origin/main` (regex; local parts classified without printing them) | claude |
 | T90 | **SQLite connections are never closed explicitly; Python 3.13 reports every one.** `job_hunt/db.py` (15 sites) and `doctor.py` use `with sqlite3.connect(path) as conn:`, which commits or rolls back but does **not** close the connection; the object is closed only when it is garbage-collected. Python 3.13 warns for each (`ResourceWarning: unclosed database`). **Measured on a fresh clone:** `pytest --cov=job_hunt` on 3.13.16 → 936 passed, **13,859 warnings**; the same run without `--cov` and the 3.11/3.12 runs → 0. Nothing fails and CPython frees the connection as soon as its last reference goes, so the effect is log noise in CI on 3.13, not a leak that was observed. Fix: `contextlib.closing` or a small `_connect()` context manager in `db.py` that closes after the transaction; red-first test: count `connect` and `close` calls | measured (3.13.16, 3.12, 3.11; `git grep 'sqlite3.connect' job_hunt`) | claude |
 | T86 | **33 of the 93 rows of `open_matches.csv` carry scores from the old prompt.** After the first full run (T09, 2026-10-12) the file lists 60 jobs scored that day and 33 scored on 2026-10-04, before rubric v7/v8 (old: mean 79.0, six at 90; new: mean 81.1, fifteen at 90). A `scored` row is final, so the 105 old-prompt jobs still on their boards were "already scored" and kept their score; the earlier note that open jobs are re-scored by the next scan (T34) holds only for jobs the retired JSON files alone knew. Possible fix: set the 2026-10-04 rows (145, or just the 33 listed) back to `discovered` so the next scan re-scores them (33–105 calls on 3.5; the old scores stay in `data/jobs.db.bak-2026-10-12`), or leave them and accept that the file mixes two prompts. It rewrites stored scores in his database, so Manish's call | measured (SQL on `data/jobs.db`, `output/open_matches.csv`) | claude |
@@ -601,6 +602,7 @@ The implementer adds a row when a task reaches `review`; the verifier removes it
 
 | ID | Commit(s) | Implementer | Evidence (command → result) |
 |---|---|---|---|
+| T92 | 60a30c0 | claude | **Red first:** `pytest tests/test_doctor.py` → 7 failed (model ignored, key in the fallback URL, key unmasked in two error paths, the `?key=` source guard). **Real command:** `python -m job_hunt doctor` in the repo (real `config.json`, `.env`, key, network): `[PASS] Gemini Quota: Quota active (model: gemini-3.5-flash-lite, latency: 64.40s)` on the third try; the first two answered Google's `503 UNAVAILABLE … high demand`, and those lines now read `Gemini API request failed (model: gemini-3.5-flash-lite): 503 …`. `grep -rn '?key=' job_hunt` → empty. **Not run live:** a model other than `gemini-3.5-flash-lite` (`.env` overrides the shell, and a second live call was not worth the quota); that path and the REST fallback are covered by tests with a stubbed client and a stubbed `requests.post` only, so the header name `x-goog-api-key` is from Google's documentation, not from a live call. Gates: 946 passed (also under `unshare -rn`), ruff on `job_hunt/ tests/ conftest.py` and mypy clean. **Related, not in this change:** the Telegram check has the same leak class (`/bot<token>/getMe` in the URL, `str(e)` printed), see the Inbox. **Check yourself:** `pytest tests/test_doctor.py`; `python -m job_hunt doctor | grep Gemini` | |
 
 ---
 
