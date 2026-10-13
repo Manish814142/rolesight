@@ -372,7 +372,17 @@ T11, T12, T14, T15, T16, T17 and T18 were verified 2026-10-07, T66 and T67 on 20
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
 | T79 | Rule 1 (the outside-India cap) is sometimes applied to an Indian city | doing · claude · 2026-10-13 (second attempt, measuring) | claude | M | — |
-| T88 | Prepare the repo for a public release as RoleSight (Manish, 2026-10-13: public, personal email only, company list included, MIT, CI green) | doing · claude · 2026-10-13 | claude | M | — |
+| T88 | Prepare the repo for a public release as RoleSight (Manish, 2026-10-13: public, personal email only, company list included, MIT, CI green) | review · claude · 46b5a3c | claude | M | — |
+| T89 | Rewrite the git history so no commit carries the work e-mail address (do it once, just before the first push) | decision · Manish (his go, with no other agent working) | — | S | T88 |
+
+**T89 · History rewrite for the work e-mail.** 244 of the 314 commits carry Manish's work address as author and committer. The rewrite is one
+command in the working repo, after `git bundle create ../rolesight-before-rewrite.bundle --all`:
+`git filter-repo --mailmap /tmp/mailmap --force`, where the one-line mailmap reads `Manish <personal address> <work address>` (the two addresses are not written here: no published file may carry either)
+(`git-filter-repo` via `uv tool run --from git-filter-repo git-filter-repo`). **Dry run, in a throwaway clone (measured):** 314 commits before and
+after, the HEAD tree identical, 0 occurrences of the work domain in any header, message or file of any revision. **Cost:** every commit hash changes,
+so the hashes written in this board and in CHANGELOG.md must be remapped from `.git/filter-repo/commit-map` (one commit), and any other agent
+working in the tree must stop and re-clone. Then: add the GitHub remote as `origin`, push **`main` only** (the `v0.4.x` tags are upstream's release
+tags and would trigger the `publish` job in `ci.yml`), enable private vulnerability reporting, add `[project.urls]` and a CI badge with his username.
 
 **T85 · The example config describes the wrong person. `config.example.json` and `job_hunt/data/config.example.json` (what `autopilot init` writes) still carry upstream's persona: `profile` "10+ YOE, Senior/Staff ML/AI Engineer … MLOps", `seeking` "Remote-friendly or relocation to EU / NA / APAC", `not_suitable` "… pure SWE with no ML …". This fork's pre-filter rejects Staff titles and non-India places and its rubric is written for a 3-year backend engineer, so a new user who forgets to edit them gets scores that contradict the filter. The guide (T80) says to edit them first. Possible fix: neutral placeholders, or the guide's own examples ("3 YOE backend engineer …")** *Done when:* both example files carry the guide's own example sentences (a test ties the three to `docs/00-user-guide.md`), nothing mentions the upstream persona, and `autopilot init` still writes a valid config.
 **Review notes (2026-10-13, claude): verified** (Done log). Note for T79: the example `seeking` names one city ("hybrid in Bengaluru"), the wording that let Gemini cap a Hyderabad role.
@@ -570,7 +580,7 @@ Which terms would you add?
 
 ## Inbox
 
-New findings go here with the next free ID (next: **T89**), an evidence tag and the
+New findings go here with the next free ID (next: **T90**), an evidence tag and the
 file:line. Manish or the triaging agent moves each one into a priority table.
 
 | ID | Finding | Evidence | Added by |
@@ -588,6 +598,7 @@ The implementer adds a row when a task reaches `review`; the verifier removes it
 
 | ID | Commit(s) | Implementer | Evidence (command → result) |
 |---|---|---|---|
+| T88 | a4d5194, b64ec4c, 46b5a3c | claude | **Red first:** `pytest tests/test_public_release.py tests/test_log_path.py` → 12 failed before any change (7 new tests, 5 for `ROLESIGHT_LOG`). **Through the real consumers (fresh clone of 46b5a3c, `pip install -e '.[dev]'`):** `rolesight --help` and `autopilot --help` print usage; `rolesight init` in an empty directory writes `companies.json config.json data .env output resume`; CI's own commands: `ruff check job_hunt/ tests/ conftest.py` clean (before: **8 errors in 5 test files**, so the first push would have been red), `mypy` clean, `pytest --cov` **932 passed, 1 skipped** (the optional `anthropic` package), coverage 92.75%, on Python 3.12, 3.11.0rc1 and 3.13.16 (local runs, not GitHub Actions). **gitleaks 8.30.1 over all 303 commits:** 1 finding (a false positive: the posting phrase "APIs, middleware/integration" in `scripts/golden_set.csv`) → with `.gitleaks.toml` `no leaks found`; CI's secret-scan job would otherwise have failed. **History rewrite, dry run only (T89):** in a throwaway clone `git filter-repo --mailmap` left 314 commits and an identical HEAD tree, with 0 occurrences of the work domain anywhere. **Not done:** the real rewrite (T89, his go); creating the repository, `[project.urls]` and a CI badge (need his GitHub username, T01); the `scripts/golden_set*.csv` files (verbatim third-party postings, some with HR contact addresses) are still published by default, because his answer was about `companies.json` and the question stands; the `publish` job in `ci.yml` (PyPI on `v*` tags) is unchanged and does nothing until a PyPI trusted publisher exists. I earlier said CI had no publish step: wrong, I had read only its first 50 lines. **Choices to check:** `demo/` and `assets/` (upstream's GIF, fixtures and MCP icon, referenced by nothing) were deleted from the tree, not from history; the `autopilot` command is kept and `rolesight` added; the remote `origin` was renamed `upstream` with push disabled (`git push --dry-run upstream main` → refused). **Check yourself:** `pytest tests/test_public_release.py`; `git log --format=%ae | sort | uniq -c` | |
 
 ---
 
