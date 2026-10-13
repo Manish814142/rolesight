@@ -372,7 +372,7 @@ T11, T12, T14, T15, T16, T17 and T18 were verified 2026-10-07, T66 and T67 on 20
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
 | T79 | Rule 1 (the outside-India cap) is sometimes applied to an Indian city | doing · claude · 2026-10-13 (second attempt, measuring) | claude | M | — |
-| T92 | `doctor` checks the configured Gemini model, and never puts the API key in a URL | todo | — | XS | — |
+| T92 | `doctor` checks the configured Gemini model, and never puts the API key in a URL | doing · claude · 2026-10-13 | — | XS | — |
 | T93 | User-facing leftovers of the old names (two wrong `pip install` hints, the MCP server name) | todo | — | XS | — |
 | T94 | `harvest` defaults to files in Manish's Downloads folder | todo | — | XS | — |
 
