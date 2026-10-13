@@ -7,8 +7,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from job_hunt.adapters import ENRICHERS, enrich_job, fetch_company_jobs
-from job_hunt.adapters import base
+from job_hunt.adapters import ENRICHERS, base, enrich_job, fetch_company_jobs
 from job_hunt.adapters.phenom import PAGE_SIZE, fetch_description, fetch_phenom
 from job_hunt.models import JobPosting
 

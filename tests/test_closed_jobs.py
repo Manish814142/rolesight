@@ -184,6 +184,7 @@ def test_a_complete_paged_fetch_is_not_flagged(monkeypatch):
 def test_every_paged_adapter_flags_its_cap(monkeypatch, adapter):
     """Caps: Amazon 4,000, SmartRecruiters / Oracle HCM 2,000, Eightfold 1,000 (made small here)."""
     import importlib
+
     from job_hunt.adapters import base
     mod = importlib.import_module(f"job_hunt.adapters.{adapter}")
     page = getattr(mod, "PAGE_SIZE")

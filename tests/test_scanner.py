@@ -1,6 +1,5 @@
 """Scanner pipeline (non-Gemini scoring path) — fetch + LLM mocked, filesystem in tmp_path."""
 import json
-import types
 
 import pytest
 

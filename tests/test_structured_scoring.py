@@ -108,7 +108,7 @@ def test_not_json_raises(monkeypatch):
 # --- plumbing: scoring_mode "structured" is opt-in; the default stays holistic ----------------------------
 
 from job_hunt import scanner, scorer  # noqa: E402
-from job_hunt.db import get_job, init_db  # noqa: E402
+from job_hunt.db import get_job, init_db, save_job  # noqa: E402
 from job_hunt.models import JobPosting  # noqa: E402
 
 
@@ -130,7 +130,9 @@ def test_scorer_structured_mode_returns_details_and_stores_the_cap_in_the_reason
     monkeypatch.setattr(scorer.time, "sleep", lambda s: None)
     out = {**combine_subscores(facts(min_years=8)), **facts(min_years=8)}
     monkeypatch.setattr(scorer, "score_job_structured_with_gemini", lambda *a, **k: out)
-    db = str(tmp_path / "j.db"); init_db(db); from job_hunt.db import save_job; save_job(_job(), db_path=db)
+    db = str(tmp_path / "j.db")
+    init_db(db)
+    save_job(_job(), db_path=db)
     res = scorer.score_and_process_job(_job(), "resume", "k", db_path=db, config={"scoring_mode": "structured"})
     assert res["score"] <= 50 and res["details"]["capped_by"] == "asks for 6+ years"
     assert res["details"]["stack_fit"] == 100 and res["details"]["min_years"] == 8

@@ -2,8 +2,6 @@
 import logging
 from datetime import date, timedelta
 
-import pytest
-
 from job_hunt import scanner
 from job_hunt.db import init_db, save_job, update_job_status
 from job_hunt.models import JobPosting, job_key
