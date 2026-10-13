@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import logging
 import re
+import threading
 import time
 from typing import Any, List, Optional, Tuple
 from urllib.parse import urlparse
@@ -34,6 +35,36 @@ BOARD_BUDGET_SECONDS = 600.0
 # List-API placeholders instead of a city; the detail call has the real location(s). "Location Negotiable":
 # Accenture, 498 of its 2,000 India-search results, 8 of 12 sampled were in India (2026-10-07, T65).
 _MULTI_LOCATION_RE = re.compile(r"^(\d+\s+Locations?|Location\s+Negotiable)$", re.IGNORECASE)
+
+
+# During Workday's maintenance every tenant answers the jobs POST with a 303 to community.workday.com/maintenance-page;
+# `requests` follows it and the HTML is not JSON. One warning per scan says so, the other tenants log at debug (T76).
+_maintenance_reported = False
+_maintenance_lock = threading.Lock()
+
+
+def _redirected_away(resp: Any, base_domain: str) -> str:
+    """The final URL when a redirect took the answer to another host than the tenant's (the maintenance page), else ""."""
+    url = getattr(resp, "url", None)
+    if not isinstance(url, str) or not getattr(resp, "history", None):
+        return ""
+    host = urlparse(url).netloc
+    return url if host and host != base_domain else ""
+
+
+def _report_redirect(tenant: str, site: str, url: str) -> str:
+    """Log the redirect (once as a warning per process) and return the reason for mark_incomplete."""
+    global _maintenance_reported
+    label = "maintenance" if "maintenance" in url.lower() else "redirect"
+    with _maintenance_lock:
+        first, _maintenance_reported = not _maintenance_reported, True
+    message = (f"Workday answered with a redirect to {url} ({label}), not with jobs: its boards that are redirected "
+               "come back empty this scan; they are fetched next time and no job of theirs counts as missed")
+    if first:
+        logger.warning("%s (first seen at %s/%s)", message, tenant, site)
+    else:
+        logger.debug("Workday %s/%s: %s", tenant, site, message)
+    return f"Workday {label}: redirected to {url}"
 
 
 def workday_global_id(tenant: str, external_path: str, bullet_id: str = "", title: str = "") -> str:
@@ -131,6 +162,10 @@ def fetch_workday(tenant: str, dc: str, site: str, budget: float = BOARD_BUDGET_
             resp = http_post(url, headers=DEFAULT_HEADERS, json=payload, timeout=15)
             if resp.status_code == 404:
                 logger.debug("Workday board not found for %s/%s (HTTP 404)", tenant, site)
+                break
+            away = _redirected_away(resp, base_domain)
+            if away:
+                mark_incomplete(_report_redirect(tenant, site, away))
                 break
             resp.raise_for_status()
             data = resp.json()
