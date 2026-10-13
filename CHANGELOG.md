@@ -30,6 +30,11 @@ reconstructed from git history.
   demo GIF and fixtures, referenced by nothing) and `assets/`. The code of conduct no longer sends reports to the
   upstream author's address; `SECURITY.md` points at GitHub's private reporting.
 - README status refreshed from the stale 2026-10-04 figures (the Amazon description stub it listed was fixed in T57).
+- **No PyPI.** The upstream `publish` job (PyPI upload on a `v*` tag) and the tag trigger are removed from `ci.yml`: Manish has no PyPI
+  account and does not want one, and the job would have failed on every tag. Install is from a clone.
+- **Golden sets stay** (`scripts/golden_set.csv`, `golden_set_ai.csv`: verbatim public postings with Claude's labels), with a notice in the
+  README saying whose text it is and that it is removed on request.
+- **Links.** `[project.urls]` and the README badges point at `github.com/Manish814142/rolesight`; `.gitignore` covers office lock files.
 
 ### Fixed (2026-10-13, review of T76 and T87)
 - **T76:** a redirect to another host is a dead end only when its answer is not JSON. Before T76 a cross-host redirect that ended in JSON (a tenant moved to another Workday data centre) was followed and its jobs read; T76 had turned every such redirect into an empty board. And the "maintenance" warning is once per scan, not once per process (`workday.reset_redirect_report()` at the start of each scan's fetch), so the long-running MCP server warns on every scan. Checked through the real `requests` with two local servers: 303 to an HTML maintenance page → one warning, empty incomplete board; 308 to another host answering JSON → its job, not incomplete. 2 tests, red first.

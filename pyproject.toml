@@ -27,6 +27,11 @@ dependencies = [
     "pyyaml>=6.0",  # discover / harvest read india.yml (T66)
 ]
 
+[project.urls]
+Homepage = "https://github.com/Manish814142/rolesight"
+Repository = "https://github.com/Manish814142/rolesight"
+Issues = "https://github.com/Manish814142/rolesight/issues"
+
 [project.optional-dependencies]
 mcp = ["mcp>=1.9,<2"]
 claude = ["anthropic>=0.30.0"]

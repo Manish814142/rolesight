@@ -49,3 +49,6 @@ graphify-out/
 
 # Claude Code session scratch files
 scratchpad/
+
+# Office-suite lock files (a spreadsheet open on a CSV)
+.~lock.*#

@@ -23,8 +23,7 @@ Last recorded: 398 tests passing, coverage 89.99%, after the T30 review fix (202
 - The suite logs to a temporary directory (`ROLESIGHT_LOG`, set by `conftest.py`); it never touches `./scan.log`.
 
 **CI.** `.github/workflows/ci.yml` runs the same gates on Python 3.11, 3.12 and 3.13 (note that it lints
-`job_hunt/ tests/ conftest.py`, not only `job_hunt/`), a gitleaks scan of the whole history, and, on a `v*` tag, a PyPI
-publish job that does nothing useful until a PyPI trusted publisher is set up for the repository.
+`job_hunt/ tests/ conftest.py`, not only `job_hunt/`) and a gitleaks scan of the whole history. Nothing publishes a package.
 
 ## 2. CLI smoke tests (no keys needed)
 

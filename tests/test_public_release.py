@@ -99,3 +99,33 @@ def test_the_secret_scan_ignores_only_the_verbatim_job_postings():
     paths = config["allowlist"]["paths"]
     assert len(paths) == 1 and all(re.fullmatch(p, f) for p in paths for f in ("scripts/golden_set.csv", "scripts/golden_set_ai.csv"))
     assert not any(re.fullmatch(p, f) for p in paths for f in (".env", "config.json", "job_hunt/llm_utils.py", "scripts/score_golden_set.py"))
+
+
+# -- Manish's answers of 2026-10-13: no PyPI, keep the golden sets with a notice, publish at Manish814142/rolesight -----
+
+REPO_URL = "https://github.com/Manish814142/rolesight"
+
+
+def test_ci_does_not_publish_to_pypi_and_does_not_run_on_tags():
+    """He has no PyPI account and does not want one (T88). The upstream `publish` job would fail on every `v*` tag."""
+    import yaml
+    text = (ROOT / ".github/workflows/ci.yml").read_text()
+    assert "pypi" not in text.lower() and "hatch" not in text.lower()
+    workflow = yaml.safe_load(text)
+    assert "publish" not in workflow["jobs"]
+    triggers = workflow.get("on", workflow.get(True))   # PyYAML reads the key `on` as True
+    assert "tags" not in triggers["push"], "the upstream release tags must not start CI runs"
+
+
+def test_the_readme_says_the_golden_sets_hold_other_peoples_posting_text():
+    readme = (ROOT / "README.md").read_text()
+    assert "scripts/golden_set.csv" in readme and "scripts/golden_set_ai.csv" in readme
+    assert re.search(r"public job postings", readme) and re.search(r"removed (on|at) request|will be removed", readme)
+
+
+def test_the_project_links_point_at_the_new_repository():
+    project = tomllib.loads((ROOT / "pyproject.toml").read_text())["project"]
+    assert project["urls"]["Repository"] == REPO_URL
+    assert project["urls"]["Issues"] == REPO_URL + "/issues"
+    readme = (ROOT / "README.md").read_text()
+    assert f"{REPO_URL}/actions/workflows/ci.yml" in readme, "the CI badge"

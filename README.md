@@ -1,5 +1,9 @@
 # RoleSight
 
+[![CI](https://github.com/Manish814142/rolesight/actions/workflows/ci.yml/badge.svg)](https://github.com/Manish814142/rolesight/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue)](https://www.python.org/)
+
 **An AI job radar.** Every day it pulls open roles straight from the public job APIs of 224
 company boards hiring in India, drops the ones that obviously don't fit, has Google Gemini score
 the rest against your resume, and writes the matches to a CSV, best first.
@@ -33,6 +37,7 @@ from a clone ([Quick start](#quick-start)).
 - [Project layout](#project-layout)
 - [Documentation](#documentation)
 - [Development](#development)
+- [Third-party text](#third-party-text)
 - [Credits and license](#credits-and-license)
 
 ---
@@ -314,6 +319,14 @@ mypy
   [docs/tasks.md](docs/tasks.md). See [CONTRIBUTING.md](CONTRIBUTING.md).
 - **Record changes** in [CHANGELOG.md](CHANGELOG.md) under `[Unreleased]`, with the
   measurement that justifies them.
+
+---
+
+## Third-party text
+
+`scripts/golden_set.csv` and `scripts/golden_set_ai.csv` hold the text of public job postings, copied only to evaluate the
+scoring rubric (each row is a posting with a hand-given label; see [docs/07](docs/07-config-and-scoring.md)). The text belongs
+to the companies that posted it. If you represent one of them and want a posting removed, open an issue and it will be removed.
 
 ---
 
