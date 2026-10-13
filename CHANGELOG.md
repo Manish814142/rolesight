@@ -22,7 +22,8 @@ reconstructed from git history.
   every gate listing now names the CI paths.
 - **Secret scan.** CI's gitleaks job scans the whole history. Run locally (gitleaks 8.30.1, 303 commits): 1 finding, a false
   positive in `scripts/golden_set.csv` (the posting phrase "APIs, middleware/integration"); `.gitleaks.toml` allowlists the two
-  golden-set CSVs by path, and the rerun reports no leaks.
+  golden-set CSVs by path, and the rerun reports no leaks. After the rewrite, six more findings were the same phrase quoted in our own
+  notes (CHANGELOG, the board, a test docstring); `.gitleaks.toml` now also allowlists that one string, and the whole history is clean.
 - **Licence and credit.** `LICENSE` keeps Tarun Gupta's 2025 notice and adds Manish Singh's 2026 line; the README credits
   autopilot-jobhunt and says what was added since. `tests/test_public_release.py` guards the name, the notice, the credit,
   and that no e-mail address sits in a published file.

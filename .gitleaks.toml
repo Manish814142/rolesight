@@ -6,3 +6,4 @@ useDefault = true
 [allowlist]
 description = "Verbatim public job postings used as labelled test data; a phrase such as 'APIs, middleware/integration' trips generic-api-key."
 paths = ['''scripts/golden_set(_ai)?\.csv''']
+regexes = ['''^middleware/integration$''']   # the phrase quoted in our notes about that false positive

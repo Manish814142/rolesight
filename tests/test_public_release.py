@@ -99,6 +99,12 @@ def test_the_secret_scan_ignores_only_the_verbatim_job_postings():
     paths = config["allowlist"]["paths"]
     assert len(paths) == 1 and all(re.fullmatch(p, f) for p in paths for f in ("scripts/golden_set.csv", "scripts/golden_set_ai.csv"))
     assert not any(re.fullmatch(p, f) for p in paths for f in (".env", "config.json", "job_hunt/llm_utils.py", "scripts/score_golden_set.py"))
+    # Our own notes quote that phrase (CHANGELOG, the board, this file), which trips the same rule: allow that one string only.
+    regexes = config["allowlist"]["regexes"]
+    assert len(regexes) == 1 and re.search(regexes[0], "middleware/integration")
+    # Built at run time: written out, key-shaped strings would trip the very scan this test is about.
+    not_allowed = ("AIza" + "Sy" + "A1b2C3d4E5f6G7h8I9j0K1l2M3n4O5p6Q", "sk-" + "ant-api03-" + "abcdefghijklmnop", "ghp" + "_" + "a1B2" * 9)
+    assert not any(re.search(regexes[0], secret) for secret in not_allowed)
 
 
 # -- Manish's answers of 2026-10-13: no PyPI, keep the golden sets with a notice, publish at Manish814142/rolesight -----
