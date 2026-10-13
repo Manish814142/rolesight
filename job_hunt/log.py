@@ -10,6 +10,16 @@ MAX_LOG_BYTES = 5_000_000
 LOG_BACKUPS = 3
 
 
+def redact(text: str, *secrets: str | None) -> str:
+    """`text` with each secret replaced by ***, so an error message can be printed or logged (T92, T95).
+
+    Secrets shorter than 8 characters are left alone: replacing "a" would wreck the message and protects nothing."""
+    for secret in secrets:
+        if secret and len(secret) >= 8:
+            text = text.replace(secret, "***")
+    return text
+
+
 def log_path() -> Path:
     """Where the DEBUG log goes: $ROLESIGHT_LOG, else data/autopilot.log (the test suite sets the variable)."""
     return Path(os.getenv(LOG_PATH_ENV) or "data/autopilot.log")

@@ -2,6 +2,8 @@ from typing import Any
 
 import requests
 
+from job_hunt.log import redact
+
 
 def is_telegram_configured(bot_token: str | None, chat_id: str | None) -> bool:
     """True only when both values are set and neither is a template placeholder
@@ -23,10 +25,11 @@ def send_telegram(bot_token: str, chat_id: str, message: str) -> bool:
         if resp.status_code == 200:
             print("Telegram sent.")
             return True
-        print(f"Telegram failed: HTTP {resp.status_code} — {resp.text[:200]}")
+        print(f"Telegram failed: HTTP {resp.status_code} — {redact(resp.text[:200], bot_token)}")
         return False
     except Exception as e:
-        print(f"Telegram error: {e}")
+        # requests names the URL in its errors, and Telegram puts the token in the URL path
+        print(f"Telegram error: {redact(str(e), bot_token)}")
         return False
 
 

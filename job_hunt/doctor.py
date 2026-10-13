@@ -14,6 +14,7 @@ from dotenv import load_dotenv
 
 from job_hunt.adapters.base import DEFAULT_HEADERS
 from job_hunt.db import init_db
+from job_hunt.log import redact
 
 # Filter known benign SDK advisory from google-genai
 warnings.filterwarnings("ignore", message=".*automatic function calling.*")
@@ -114,11 +115,6 @@ def _configured_model() -> str:
     return _gemini_models(config)[0]
 
 
-def _mask(text: str, secret: str) -> str:
-    """`text` with the secret replaced, so an error message can be printed or logged (T92)."""
-    return text.replace(secret, "***") if secret and len(secret) >= 8 else text
-
-
 def check_gemini_quota(api_key: Optional[str] = None, model: Optional[str] = None) -> Tuple[bool, str]:
     """Send a 1-token test prompt to Gemini via GEMINI_API_KEY to confirm quota health, on the model a scan would use first."""
     if not api_key:
@@ -152,7 +148,7 @@ def check_gemini_quota(api_key: Optional[str] = None, model: Optional[str] = Non
         elapsed = time.time() - t0
         return True, f"Quota active (model: {model}, latency: {elapsed:.2f}s)"
     except Exception as e:
-        err_msg = _mask(str(e), api_key)
+        err_msg = redact(str(e), api_key)
         if "429" in err_msg or "ResourceExhausted" in err_msg or "quota" in err_msg.lower():
             return False, f"Quota exhausted (HTTP 429, model: {model}): {err_msg[:120]}"
         return False, f"Gemini API request failed (model: {model}): {err_msg[:120]}"
@@ -179,9 +175,9 @@ def check_telegram_credentials(
             bot_user = data.get("result", {}).get("username", "bot")
             chat_info = f", chat_id: {chat_id}" if chat_id and not _is_placeholder(chat_id) else " (chat_id missing)"
             return True, f"Connected to Telegram (@{bot_user}{chat_info})"
-        return False, f"Telegram API returned HTTP {resp.status_code}: {resp.text[:100]}"
+        return False, f"Telegram API returned HTTP {resp.status_code}: {redact(resp.text[:100], bot_token)}"
     except Exception as e:
-        return False, f"Telegram network error: {e}"
+        return False, f"Telegram network error: {redact(str(e), bot_token)}"
 
 
 def check_ats_egress() -> Dict[str, Tuple[bool, str]]:

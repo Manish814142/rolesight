@@ -9,6 +9,12 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed (2026-10-13, T95: the Telegram bot token in error messages)
+- Telegram's API puts the bot token in the URL path (`/bot<token>/sendMessage`), and `requests` names the URL in its connection errors. Measured with the real library and
+  no network: `str(e)` contains the token. `notifier.send_telegram` printed that text (into `data/scan.log` through `run_daily.sh`), and `doctor`'s Telegram check
+  returned it (printed, and logged with `RUN_PREFLIGHT_DOCTOR=1`). Both now replace the token with `***` (`/bot***/sendMessage`), also in the text of a failed response.
+  The helper is `job_hunt.log.redact`, which T92's Gemini fix now shares. Telegram is off today, so no token was printed.
+
 ### Changed (2026-10-13, T94: no personal default paths)
 - `harvest` and `discover` no longer default to files in one person's Downloads folder. `harvest` without `--yaml` (or `ROLESIGHT_HARVEST_YAML`) now stops with
   exit 1 and says so, before any request (before, on another machine it died with `FileNotFoundError: YAML not found: /home/user/Downloads/india.yml`). The LinkedIn
