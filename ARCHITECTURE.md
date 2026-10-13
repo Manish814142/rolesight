@@ -192,7 +192,7 @@ Measured on the date given. Each one has a task.
 - **Unreachable employers:** custom portals and platforms without a public API (Darwinbox,
   Zoho Recruit…; Phenom mostly fronts Workday, T26). The census found 52% of 458 careers pages
   JS-only or unidentified.
-- **Operations:** not scheduled: the timer is `scripts/systemd/install.sh`, run by Manish (T07); no off-machine backup (T01).
+- **Operations:** not scheduled: the timer is `scripts/systemd/install.sh`, run by Manish (T07); the code is backed up on GitHub (T01); the database, resume and keys are not.
 
 ---
 
