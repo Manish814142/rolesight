@@ -7,6 +7,7 @@ import csv
 import logging
 import sqlite3
 import types
+from datetime import date, timedelta
 from unittest.mock import MagicMock
 
 import pytest
@@ -49,7 +50,7 @@ def _use(monkeypatch, client):
 def _job(i):
     return JobPosting(global_id=f"greenhouse:x:{i}", ats="greenhouse", company="X", title=f"Backend Engineer {i}",
                       location="Bengaluru, India", is_remote=False, url=f"https://x/{i}", description_text="Node.js",
-                      posted_at="2026-10-08")
+                      posted_at=(date.today() - timedelta(days=1)).isoformat())   # not a literal: the scan's 7-day window
 
 
 def test_generate_reports_which_model_answered():

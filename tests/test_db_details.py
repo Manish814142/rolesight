@@ -1,7 +1,6 @@
 """T29: the jobs table keeps each posting's location, posted date and description (no network)."""
 import sqlite3
-
-import pytest
+from datetime import date, timedelta
 
 from job_hunt import scanner
 from job_hunt.db import get_job, init_db, save_job, update_job_details
@@ -17,7 +16,11 @@ CREATE TABLE jobs (
 """
 
 
-def _job(i=1, desc="Build Node.js services", posted="2026-10-05", location="Bengaluru, India"):
+# Yesterday, not a literal date: a scan drops jobs older than the 7-day window, so "2026-10-05" aged out on 2026-10-13.
+POSTED = (date.today() - timedelta(days=1)).isoformat()
+
+
+def _job(i=1, desc="Build Node.js services", posted=POSTED, location="Bengaluru, India"):
     return JobPosting(global_id=f"greenhouse:x:{i}", ats="greenhouse", company="X", title="Backend Engineer",
                       location=location, is_remote=False, url=f"https://x/{i}", description_text=desc, posted_at=posted)
 
@@ -65,7 +68,7 @@ def test_new_rows_carry_location_posted_date_and_description(tmp_path):
     db = str(tmp_path / "j.db")
     save_job(_job(), status="discovered", db_path=db)
     row = get_job("greenhouse:x:1", db_path=db)
-    assert row["location"] == "Bengaluru, India" and row["posted_at"] == "2026-10-05"
+    assert row["location"] == "Bengaluru, India" and row["posted_at"] == POSTED
     assert row["description"] == "Build Node.js services"
 
 
@@ -74,7 +77,7 @@ def test_skipped_rows_keep_location_and_date_but_not_the_description(tmp_path):
     db = str(tmp_path / "j.db")
     save_job(_job(desc="x" * 5000), status="skipped", db_path=db)
     row = get_job("greenhouse:x:1", db_path=db)
-    assert row["location"] == "Bengaluru, India" and row["posted_at"] == "2026-10-05" and not row["description"]
+    assert row["location"] == "Bengaluru, India" and row["posted_at"] == POSTED and not row["description"]
 
 
 def test_update_job_details_fills_an_existing_row(tmp_path):
