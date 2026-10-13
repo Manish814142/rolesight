@@ -1,6 +1,7 @@
 """Lightweight diagnostics and sanity checks for Autopilot."""
 from __future__ import annotations
 
+import json
 import os
 import sqlite3
 import time
@@ -94,41 +95,67 @@ def check_sqlite_write(db_path: str = "data/jobs.db") -> Tuple[bool, str]:
         return False, f"SQLite write failed: {e}"
 
 
-def check_gemini_quota(api_key: Optional[str] = None) -> Tuple[bool, str]:
-    """Send a 1-token test prompt to Gemini via GEMINI_API_KEY to confirm quota health."""
+def _configured_model() -> str:
+    """The model a scan tries first: GEMINI_MODEL (from .env) over config.json's gemini_model, else the default (T92).
+
+    Resolved the way load_config and llm_utils._gemini_models do, but without load_config: that exits when config.json
+    is missing, and doctor is what people run before they have one."""
+    from job_hunt.llm_utils import _gemini_models
+    config: Dict[str, Any] = {}
+    try:
+        loaded = json.loads(Path("config.json").read_text())
+        if isinstance(loaded, dict):
+            config = loaded
+    except (OSError, ValueError):
+        pass
+    env_model = os.getenv("GEMINI_MODEL")
+    if env_model and not _is_placeholder(env_model):
+        config["gemini_model"] = env_model
+    return _gemini_models(config)[0]
+
+
+def _mask(text: str, secret: str) -> str:
+    """`text` with the secret replaced, so an error message can be printed or logged (T92)."""
+    return text.replace(secret, "***") if secret and len(secret) >= 8 else text
+
+
+def check_gemini_quota(api_key: Optional[str] = None, model: Optional[str] = None) -> Tuple[bool, str]:
+    """Send a 1-token test prompt to Gemini via GEMINI_API_KEY to confirm quota health, on the model a scan would use first."""
     if not api_key:
         api_key = os.getenv("GEMINI_API_KEY")
 
     if not api_key or _is_placeholder(api_key):
         return False, "GEMINI_API_KEY is not configured or is a placeholder"
 
+    model = model or _configured_model()
     t0 = time.time()
     try:
         try:
             client = _get_gemini_client(api_key)
             client.models.generate_content(
-                model="gemini-3.5-flash-lite",
+                model=model,
                 contents="ping",
                 config={"max_output_tokens": 1},
             )
         except (ImportError, AttributeError, ModuleNotFoundError):
-            # Fallback to direct REST API probe
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key={api_key}"
+            # Fallback to direct REST API probe. The key goes in a header: in the URL it would end up in any
+            # error message that names the URL, which doctor prints and `RUN_PREFLIGHT_DOCTOR=1` writes to scan.log.
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
             payload: Dict[str, Any] = {
                 "contents": [{"parts": [{"text": "ping"}]}],
                 "generationConfig": {"maxOutputTokens": 1},
             }
-            resp = requests.post(url, json=payload, timeout=10)
+            resp = requests.post(url, json=payload, headers={"x-goog-api-key": api_key}, timeout=10)
             if resp.status_code != 200:
                 raise RuntimeError(f"HTTP {resp.status_code}: {resp.text[:120]}")
 
         elapsed = time.time() - t0
-        return True, f"Quota active (model: gemini-3.5-flash-lite, latency: {elapsed:.2f}s)"
+        return True, f"Quota active (model: {model}, latency: {elapsed:.2f}s)"
     except Exception as e:
-        err_msg = str(e)
+        err_msg = _mask(str(e), api_key)
         if "429" in err_msg or "ResourceExhausted" in err_msg or "quota" in err_msg.lower():
-            return False, f"Quota exhausted (HTTP 429): {err_msg[:120]}"
-        return False, f"Gemini API request failed: {err_msg[:120]}"
+            return False, f"Quota exhausted (HTTP 429, model: {model}): {err_msg[:120]}"
+        return False, f"Gemini API request failed (model: {model}): {err_msg[:120]}"
 
 
 def check_telegram_credentials(

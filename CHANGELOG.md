@@ -9,6 +9,14 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed (2026-10-13, T92: `doctor`'s Gemini check)
+- `doctor` pinged `gemini-3.5-flash-lite` whatever `gemini_model` / `GEMINI_MODEL` said, so a user on another model had the wrong one checked. It now
+  pings the model a scan would try first (`GEMINI_MODEL` from `.env`, else `config.json`'s `gemini_model`, else the default) and every message names it, failures
+  included (a 503 or 429 says which model). It still runs without a `config.json`.
+- The REST fallback (reached only without `google-genai`) put the API key in the URL (`…:generateContent?key=…`), so an error that names the URL would print
+  the key, and `RUN_PREFLIGHT_DOCTOR=1` writes doctor's output to `data/scan.log`. The key now goes in the `x-goog-api-key` header, and any error text has the key
+  replaced by `***` on both paths. `grep -rn '?key=' job_hunt` is empty and a test keeps it so.
+
 ### Changed (2026-10-13, T91 — one recruiter's personal address removed from the golden sets)
 - The labelled job postings in `scripts/golden_set.csv` and `scripts/golden_set_ai.csv` are copied verbatim from public boards. Of the 15 distinct e-mail addresses in them, one is an individual recruiter's (LogicMonitor, once in each file); it is now `[address removed]`. The others are role mailboxes (careers, accommodations, a diversity-and-inclusion team) and stay. Scoring is unaffected: the address carries no requirement. The published history still holds the old text.
 

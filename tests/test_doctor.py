@@ -1,8 +1,12 @@
 """Unit tests for autopilot doctor diagnostics."""
+import json
 import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock
 
+import requests
+
+from job_hunt import doctor
 from job_hunt.doctor import (
     check_ats_egress,
     check_gemini_quota,
@@ -99,3 +103,118 @@ def test_run_doctor_flow(monkeypatch, capsys):
         assert "[PASS] Gemini Quota" in out
         assert "[WARN] Telegram Bot" in out
         assert "[PASS] Network Egress (Greenhouse)" in out
+
+
+# -- T92: the model doctor pings is the one a scan would use first, and the API key never travels in a URL ------------
+
+KEY = "AIza-test-key-0123456789abcdef"
+
+
+def _client_that_records(monkeypatch):
+    client = MagicMock()
+    monkeypatch.setattr(doctor, "_get_gemini_client", lambda key: client)
+    return client
+
+
+def test_doctor_pings_the_model_in_config_json(monkeypatch, tmp_path):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.delenv("GEMINI_MODEL", raising=False)
+    (tmp_path / "config.json").write_text(json.dumps({"gemini_model": "gemini-config-model"}))
+    client = _client_that_records(monkeypatch)
+    ok, msg = check_gemini_quota(api_key=KEY)
+    assert ok and "gemini-config-model" in msg
+    assert client.models.generate_content.call_args.kwargs["model"] == "gemini-config-model"
+
+
+def test_gemini_model_in_the_environment_beats_config_json(monkeypatch, tmp_path):
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "config.json").write_text(json.dumps({"gemini_model": "gemini-config-model"}))
+    monkeypatch.setenv("GEMINI_MODEL", "gemini-env-model")
+    client = _client_that_records(monkeypatch)
+    ok, msg = check_gemini_quota(api_key=KEY)
+    assert client.models.generate_content.call_args.kwargs["model"] == "gemini-env-model" and "gemini-env-model" in msg
+
+
+def test_doctor_runs_without_a_config_json_and_pings_the_default_model(monkeypatch, tmp_path):
+    """doctor is the command people run before they have a config; it must not exit like load_config does."""
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.delenv("GEMINI_MODEL", raising=False)
+    client = _client_that_records(monkeypatch)
+    ok, msg = check_gemini_quota(api_key=KEY)
+    assert ok and client.models.generate_content.call_args.kwargs["model"] == "gemini-3.5-flash-lite"
+
+
+def test_a_placeholder_model_in_the_environment_is_ignored(monkeypatch, tmp_path):
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "config.json").write_text(json.dumps({"gemini_model": "gemini-config-model"}))
+    monkeypatch.setenv("GEMINI_MODEL", "YOUR_MODEL_here")
+    client = _client_that_records(monkeypatch)
+    check_gemini_quota(api_key=KEY)
+    assert client.models.generate_content.call_args.kwargs["model"] == "gemini-config-model"
+
+
+def _no_sdk(monkeypatch):
+    def boom(key):
+        raise ImportError("google-genai is not installed")
+    monkeypatch.setattr(doctor, "_get_gemini_client", boom)
+
+
+def test_the_rest_fallback_sends_the_key_in_a_header_not_in_the_url(monkeypatch, tmp_path):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.delenv("GEMINI_MODEL", raising=False)
+    (tmp_path / "config.json").write_text(json.dumps({"gemini_model": "gemini-config-model"}))
+    _no_sdk(monkeypatch)
+    seen = {}
+
+    def fake_post(url, **kwargs):
+        seen["url"], seen["headers"] = url, kwargs.get("headers") or {}
+        resp = MagicMock()
+        resp.status_code = 200
+        return resp
+    monkeypatch.setattr(doctor.requests, "post", fake_post)
+    ok, msg = check_gemini_quota(api_key=KEY)
+    assert ok
+    assert KEY not in seen["url"] and "key=" not in seen["url"]
+    assert seen["headers"].get("x-goog-api-key") == KEY
+    assert "gemini-config-model:generateContent" in seen["url"], "the REST probe asks for the configured model too"
+
+
+def test_a_failing_fallback_request_shows_no_part_of_the_key(monkeypatch, tmp_path):
+    monkeypatch.chdir(tmp_path)
+    _no_sdk(monkeypatch)
+
+    def failing_post(url, **kwargs):
+        # what requests puts into its message when the URL carried the key, and when a proxy echoes the header back
+        raise requests.ConnectionError(f"HTTPSConnectionPool: Max retries exceeded with url: /v1beta/models/m:generateContent?key={KEY}")
+    monkeypatch.setattr(doctor.requests, "post", failing_post)
+    ok, msg = check_gemini_quota(api_key=KEY)
+    assert not ok and KEY not in msg and KEY[:12] not in msg
+
+
+def test_an_sdk_error_that_echoes_the_key_is_masked_too(monkeypatch):
+    client = MagicMock()
+    client.models.generate_content.side_effect = RuntimeError(f"400 INVALID_ARGUMENT for key {KEY}")
+    monkeypatch.setattr(doctor, "_get_gemini_client", lambda key: client)
+    ok, msg = check_gemini_quota(api_key=KEY)
+    assert not ok and KEY not in msg
+
+
+def test_no_source_file_builds_a_url_with_the_key_in_the_query():
+    root = Path(__file__).resolve().parent.parent / "job_hunt"
+    offenders = [str(f.relative_to(root)) for f in root.rglob("*.py") if "?key=" in f.read_text()]
+    assert not offenders, offenders
+
+
+def test_a_failure_names_the_model_that_failed(monkeypatch, tmp_path):
+    """A 503 or a 429 on the configured model is only useful if the message says which model it was."""
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.delenv("GEMINI_MODEL", raising=False)
+    (tmp_path / "config.json").write_text(json.dumps({"gemini_model": "gemini-config-model"}))
+    client = MagicMock()
+    monkeypatch.setattr(doctor, "_get_gemini_client", lambda key: client)
+    client.models.generate_content.side_effect = RuntimeError("503 UNAVAILABLE. high demand")
+    ok, msg = check_gemini_quota(api_key=KEY)
+    assert not ok and "gemini-config-model" in msg
+    client.models.generate_content.side_effect = RuntimeError("429 RESOURCE_EXHAUSTED quota")
+    ok, msg = check_gemini_quota(api_key=KEY)
+    assert not ok and "gemini-config-model" in msg and "429" in msg
