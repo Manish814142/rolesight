@@ -1,6 +1,6 @@
 # Privacy: what leaves the machine
 
-JobNotify runs locally. This page lists every outbound destination in the code and what
+RoleSight runs locally. This page lists every outbound destination in the code and what
 each one receives. It was checked against the source on 2026-10-04.
 
 ## The short version
@@ -41,4 +41,4 @@ personal details (phone, email, address) from the resume file. Scoring doesn't n
 
 ## Telemetry
 
-None. JobNotify sends no analytics, usage pings or crash reports.
+None. RoleSight sends no analytics, usage pings or crash reports.

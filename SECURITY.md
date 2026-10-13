@@ -1,12 +1,12 @@
 # Security
 
-JobNotify fetches public job listings, sends a resume to an LLM for scoring, and can
+RoleSight fetches public job listings, sends a resume to an LLM for scoring, and can
 post alerts to Telegram. This page states what it guarantees and where the trust
 boundaries are. For exactly which data goes where, see [PRIVACY.md](PRIVACY.md).
 
 ## The never-apply invariant
 
-**JobNotify never applies to a job or submits anything on anyone's behalf.** It only:
+**RoleSight never applies to a job or submits anything on anyone's behalf.** It only:
 
 - fetches public job listings and scores them,
 - writes CSVs, and (with `autopilot draft`) a tailored resume and cover letter, to
@@ -21,8 +21,8 @@ extend the tool to auto-apply.
 
 - **Secrets.** `GEMINI_API_KEY`, the optional `TELEGRAM_TOKEN` / `TELEGRAM_CHAT_ID` and
   any other keys live in `.env` / `config.json`, which are both gitignored. Rotate any key
-  that may have leaked. The upstream CI's gitleaks scan doesn't run for this fork (it
-  isn't pushed anywhere), so check staged diffs yourself.
+  that may have leaked. CI scans every push and the whole history with gitleaks
+  (`.github/workflows/ci.yml`; `.gitleaks.toml` allowlists only the golden-set CSVs), but check staged diffs yourself too.
 - **The resume is personal data.** The real resume (`resume/<name>.md`) is gitignored; only
   the template is committed. Its full text is sent to Gemini with every scoring call.
 - **ATS endpoints are untrusted input.** Job titles, locations and descriptions come from
@@ -49,17 +49,15 @@ implausibly high score with a generic reason as a sign of injection.
 ## Fetching etiquette
 
 The ATS endpoints are the public job-board APIs that the vendors provide for listing
-jobs. JobNotify fetches 8 companies at a time, once per scan, with a browser-like
+jobs. RoleSight fetches 8 companies at a time, once per scan, with a browser-like
 User-Agent. Whoever runs it is responsible for keeping within each site's terms and rate
 limits. Don't raise `fetch_workers` aggressively or run scans in a tight loop.
 
 ## Reporting a problem
 
-This is a personal fork. Report issues to Manish directly, or add them to the
-[task board](docs/tasks.md#inbox) Inbox if they aren't sensitive. Issues that also affect
-the upstream project can go to
-[tarunlnmiit/autopilot-jobhunt](https://github.com/tarunlnmiit/autopilot-jobhunt/security/advisories/new).
+Open an issue on the project's GitHub page for anything that isn't sensitive. For a security
+problem, use GitHub's private vulnerability reporting (the repository's Security tab) instead of a public issue.
 
 ## Supported versions
 
-Only the current `main` of this fork.
+Only the current `main`.

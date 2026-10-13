@@ -1,10 +1,10 @@
 # 00 — User guide: what to change, and where
 
-For someone who wants to **use** JobNotify and change how it behaves, without reading the code. Every
+For someone who wants to **use** RoleSight and change how it behaves, without reading the code. Every
 section says the file, the setting and what happens when you change it. The other guides
 ([README](README.md)) explain *why*; this one explains *where*.
 
-JobNotify fetches open jobs from company career boards, throws away the ones that obviously don't fit
+RoleSight fetches open jobs from company career boards, throws away the ones that obviously don't fit
 (free, local), has Google Gemini score the rest against your resume, and writes the matches to a
 spreadsheet (CSV), best first. It **never applies** to anything; you do that yourself.
 
@@ -32,8 +32,8 @@ You need **Python 3.11 or newer** and a free **Gemini API key** from
 
 ```bash
 python3 --version        # must print 3.11 or higher
-git clone <the-repo-url> JobNotify
-cd JobNotify
+git clone <the-repo-url> RoleSight
+cd RoleSight
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e .
@@ -45,7 +45,7 @@ autopilot --help         # prints the list of commands
 - If `python3 --version` prints 3.10 or lower, pip stops with `requires a different Python: 3.10.12 not in '>=3.11'`.
   Use a newer interpreter for the `venv` line, e.g. `python3.11 -m venv .venv`.
 - `pip install -e .` takes about half a minute (measured: 32 s).
-- Every later session: `cd JobNotify && source .venv/bin/activate` first.
+- Every later session: `cd RoleSight && source .venv/bin/activate` first.
 
 ## 3. Set up your files
 
@@ -290,7 +290,7 @@ Details and the monthly company-list health check: [01](01-install.md#7-run-it-d
 | What you see | Why | What to do |
 |---|---|---|
 | `requires a different Python: 3.10.12 not in '>=3.11'` | Old Python | Use `python3.11 -m venv .venv` (or newer) |
-| `config.json not found` | You are not in the project folder, or never ran `init` | `cd JobNotify`, then `autopilot init` |
+| `config.json not found` | You are not in the project folder, or never ran `init` | `cd RoleSight`, then `autopilot init` |
 | Scores look wrong for someone else's resume | `.env` still has a live `RESUME_PATH` | Section 3, "A `.env` line beats `config.json`" |
 | A setting seems to be ignored | Spelling, or the wrong parent (`candidate.` or none) | Compare with the tables in section 4 |
 | Everything is `FAIL` in `doctor`, or "quota" in the scan | The Gemini key is wrong, or the day's free quota (about 500 calls per model) is used up | Check the key in `.env`; wait for the daily reset (midnight Pacific time) and run again. Unscored jobs wait for the next scan |

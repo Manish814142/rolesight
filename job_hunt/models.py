@@ -1,4 +1,4 @@
-"""Canonical models and hashing utilities for JobNotify."""
+"""Canonical models and hashing utilities for RoleSight."""
 from __future__ import annotations
 
 import hashlib

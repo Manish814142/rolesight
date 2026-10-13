@@ -11,7 +11,7 @@ the first scan then takes about 35 minutes (measured on 2026-10-04 with 215 comp
 - **Your resume as Markdown or plain text.** Gemini reads it as-is.
 - Optional: a Telegram bot, for alerts ([05](05-outputs-and-notifications.md#telegram-optional)).
 
-Not needed: TinyFish or OpenRouter keys. Those were part of the upstream project and were removed here.
+Not needed: TinyFish or OpenRouter keys. Those belonged to the original project and were removed.
 
 ## 1. Install
 
@@ -32,8 +32,8 @@ Or with `uv`: `uv venv --python 3.12 && uv pip install -e '.[dev]'`.
 - **`mcp`** (optional) adds the Claude Code MCP server ([06](06-mcp-and-skill.md)).
 - **`pip install -r requirements.txt`** also works: runtime dependencies only (no pytest/ruff/mypy),
   and no `autopilot` command; run `python -m job_hunt …` from the repo root.
-- **Don't run `pip install autopilot-jobhunt`.** That installs the upstream package from
-  PyPI, not this fork.
+- **RoleSight is not on PyPI.** Install it from a clone, as above. `pip install autopilot-jobhunt` installs the
+  original project's package, a different tool.
 
 Check that it worked:
 

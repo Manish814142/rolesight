@@ -1,11 +1,11 @@
 # System Architecture
 
-How JobNotify is built. JobNotify is a personal job radar for one candidate (Manish Singh:
-3 YOE, Node.js / backend / distributed systems, India or remote). It's a fork of
-`tarunlnmiit/autopilot-jobhunt` that is **never upstreamed**, so candidate-specific choices
-(the hardcoded pre-filter, the India company list) are deliberate. Read this together
-with [CLAUDE.md](CLAUDE.md) and the task board [docs/tasks.md](docs/tasks.md) before
-changing anything.
+How RoleSight is built. RoleSight is a job radar tuned for one candidate by default (Manish Singh:
+3 YOE, Node.js / backend / distributed systems, India or remote); [docs/00-user-guide.md](docs/00-user-guide.md)
+says what to change to tune it to someone else. It started from `tarunlnmiit/autopilot-jobhunt` (MIT) and is a
+separate project now, not kept in step with that one, so candidate-specific choices (the hardcoded pre-filter, the
+India company list) are deliberate defaults. Read this together with [CLAUDE.md](CLAUDE.md) and the task board
+[docs/tasks.md](docs/tasks.md) before changing anything.
 
 > ⚠️ **Invariant: drafts only.** Nothing in this project may ever submit an application or
 > fill in a form. All outputs are CSVs and draft files in `output/` for a human to review.
@@ -113,7 +113,7 @@ model and the legacy no-key path.
 | `resume/*.md` | Real resume (`candidate.resume_path`); only `YOUR_RESUME.md` is committed | ignored |
 | `data/jobs.db` | Seen-job store | ignored |
 | `data/scan.log` | `run_daily.sh` output | ignored |
-| `data/autopilot.log` | Full DEBUG log of every command (`autopilot` and `job_hunt.*` loggers); rotates at 5 MB, keeps 3 older files; `JOBNOTIFY_LOG` overrides the path | ignored |
+| `data/autopilot.log` | Full DEBUG log of every command (`autopilot` and `job_hunt.*` loggers); rotates at 5 MB, keeps 3 older files; `ROLESIGHT_LOG` overrides the path | ignored |
 | `scan.log` | Where this log lived before T16 (root dir, unrotated); no longer written | ignored |
 | `state/*.json` | Retired (T34): no longer written or read; `scripts/import_json_history.py` imports scores only they hold | ignored |
 | `output/` | CSVs and drafts | ignored |
@@ -144,7 +144,7 @@ DB writes and scoring are sequential.
 python3 -m venv .venv && source .venv/bin/activate
 pip install -e '.[gemini,dev,mcp]'
 pytest            # coverage gate 85% (pyproject)
-ruff check job_hunt
+ruff check job_hunt/ tests/ conftest.py
 mypy
 ```
 

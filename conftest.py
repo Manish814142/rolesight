@@ -18,8 +18,8 @@ def pytest_configure(config):
     """Point the DEBUG log at a temp dir. job_hunt opens its log file when it is first imported, so this
     runs before any test module imports it; otherwise every run appended megabytes to the repo's scan.log (T15)."""
     global _LOG_DIR
-    _LOG_DIR = tempfile.mkdtemp(prefix="jobnotify-test-log-")
-    os.environ["JOBNOTIFY_LOG"] = os.path.join(_LOG_DIR, "scan.log")
+    _LOG_DIR = tempfile.mkdtemp(prefix="rolesight-test-log-")
+    os.environ["ROLESIGHT_LOG"] = os.path.join(_LOG_DIR, "scan.log")
 
 
 def pytest_unconfigure(config):

@@ -1,8 +1,8 @@
-# autopilot-jobhunt (personal fork — JobNotify)
+# RoleSight
 
-Personal production job scanner for **Manish Singh** (3 YOE, Node.js / Backend /
-Distributed Systems, India or Remote). Forked from `tarunlnmiit/autopilot-jobhunt`
-but **never upstreamed** — personal, hardcoded choices (e.g. the pre-filter) are fine.
+Job radar and scanner, published as an open-source project; the default configuration is **Manish Singh's** (3 YOE,
+Node.js / Backend / Distributed Systems, India or Remote). Started from `tarunlnmiit/autopilot-jobhunt` (MIT) and not
+kept in step with it — personal, hardcoded choices (e.g. the pre-filter) are fine.
 
 Canonical pipeline: **Direct ATS APIs → regex pre-filter → Gemini score → SQLite → CSV**.
 Telegram is optional. The primary output is the CSV in `output/`.
@@ -36,7 +36,7 @@ autopilot draft 1 | URL [--jd-file F]   # resume + cover letter draft from the s
 autopilot mark 1 | URL applied          # application status (applied|interview|rejected|offer|none) in data/jobs.db; export shows it (T38)
 ```
 
-Tests / gates: `pytest` (coverage gate 85%), `ruff check job_hunt`, `mypy`.
+Tests / gates: `pytest` (coverage gate 85%), `ruff check job_hunt/ tests/ conftest.py` (what CI runs), `mypy`.
 Tests must make **no network calls** — stub `send_telegram`, adapters, and Gemini.
 
 ## Pipeline (`scanner.run_scan`)

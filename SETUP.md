@@ -14,8 +14,8 @@ autopilot doctor
 autopilot scan --posted-within 7
 ```
 
-Only a Gemini API key is required. TinyFish and OpenRouter, which the upstream
-project's setup needed, were removed from this fork. In this repo `companies.json`
+Only a Gemini API key is required. TinyFish and OpenRouter, which the original
+project's setup needed, were removed. In this repo `companies.json`
 (223 India-hiring boards) is already in place; `autopilot init` copies the same list.
 
 More: [README](README.md) · [all docs](docs/README.md) ·

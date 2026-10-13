@@ -11,7 +11,7 @@ every job's pre-filter decision, score and reason is there.
 | Every job logs `Gemini scoring error: google-genai is not installed` | `google-genai` is missing from the environment (an install from before T51, when it was optional) | `pip install -e .` or `pip install -r requirements.txt` |
 | `[FAIL] Gemini Quota` in `doctor` | Missing, placeholder or invalid `GEMINI_API_KEY`, or the quota is used up | Check `.env`; try again the next day if the quota is gone |
 | After `autopilot init`, a scan fetches nothing ("No direct ATS detected and no valid careers_url") | `init` copies an outdated 140-company list with no ATS entries (T50) | Use the repo's `companies.json` |
-| `pip install autopilot-jobhunt` behaves like a different tool | That's the upstream PyPI package | Install this repo with `pip install -e .` |
+| `pip install autopilot-jobhunt` behaves like a different tool | That's the original project's PyPI package, not RoleSight | Install this repo from a clone with `pip install -e .` |
 
 ## During a scan
 

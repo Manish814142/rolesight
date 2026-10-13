@@ -1,8 +1,8 @@
-# Dockerfile for Glama MCP listing + general container use.
-# Builds the autopilot-jobhunt MCP server (stdio transport).
+# Dockerfile for container use.
+# Builds the RoleSight MCP server (stdio transport).
 FROM python:3.11-slim
 
-LABEL org.opencontainers.image.description="Personal job radar (direct ATS adapters + Gemini scoring) — MCP server" \
+LABEL org.opencontainers.image.description="AI job radar (direct ATS adapters + Gemini scoring) — MCP server" \
       org.opencontainers.image.licenses="MIT"
 
 WORKDIR /app

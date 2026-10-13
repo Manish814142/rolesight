@@ -1,5 +1,5 @@
 # Smithery deployment config — https://smithery.ai/docs
-# Runs the autopilot-jobhunt MCP server over stdio. The server reads config.json /
+# Runs the RoleSight MCP server over stdio. The server reads config.json /
 # companies.json from its working directory; the env below overrides / supplies keys.
 startCommand:
   type: stdio

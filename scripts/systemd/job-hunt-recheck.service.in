@@ -1,5 +1,5 @@
 [Unit]
-Description=JobNotify monthly companies.json health check (report only)
+Description=RoleSight monthly companies.json health check (report only)
 
 [Service]
 Type=oneshot

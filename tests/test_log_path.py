@@ -11,7 +11,7 @@ def _file_handlers(logger: logging.Logger) -> list:
 
 def test_log_file_follows_the_env_var(tmp_path, monkeypatch):
     target = tmp_path / "custom.log"
-    monkeypatch.setenv("JOBNOTIFY_LOG", str(target))
+    monkeypatch.setenv("ROLESIGHT_LOG", str(target))
     logger = log.get_logger("autopilot-test-env-var")
     try:
         logger.info("hello from the test")
@@ -25,7 +25,7 @@ def test_log_file_follows_the_env_var(tmp_path, monkeypatch):
 
 
 def test_the_suite_does_not_log_into_the_repo():
-    """conftest points JOBNOTIFY_LOG at a temp dir before job_hunt is imported; the real consumer is the live logger."""
+    """conftest points ROLESIGHT_LOG at a temp dir before job_hunt is imported; the real consumer is the live logger."""
     handlers = _file_handlers(log.get_logger())
     assert handlers, "the autopilot logger should have a file handler"
     repo_log = Path("scan.log").resolve()
@@ -36,13 +36,13 @@ def test_the_suite_does_not_log_into_the_repo():
 # --- T16: location, rotation, module loggers ---------------------------------------
 
 def test_default_log_is_data_autopilot_log(monkeypatch):
-    monkeypatch.delenv("JOBNOTIFY_LOG", raising=False)
+    monkeypatch.delenv("ROLESIGHT_LOG", raising=False)
     assert log.log_path() == Path("data/autopilot.log")
 
 
 def test_a_missing_data_dir_is_created(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
-    monkeypatch.delenv("JOBNOTIFY_LOG", raising=False)
+    monkeypatch.delenv("ROLESIGHT_LOG", raising=False)
     logger = log.get_logger("autopilot-test-mkdir")
     try:
         logger.info("first line")
@@ -56,7 +56,7 @@ def test_a_missing_data_dir_is_created(tmp_path, monkeypatch):
 
 def test_the_log_rotates_at_the_size_limit(tmp_path, monkeypatch):
     target = tmp_path / "rot.log"
-    monkeypatch.setenv("JOBNOTIFY_LOG", str(target))
+    monkeypatch.setenv("ROLESIGHT_LOG", str(target))
     monkeypatch.setattr(log, "MAX_LOG_BYTES", 2_000)
     logger = log.get_logger("autopilot-test-rotation")
     try:

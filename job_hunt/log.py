@@ -5,13 +5,13 @@ import sys
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
-LOG_PATH_ENV = "JOBNOTIFY_LOG"
+LOG_PATH_ENV = "ROLESIGHT_LOG"
 MAX_LOG_BYTES = 5_000_000
 LOG_BACKUPS = 3
 
 
 def log_path() -> Path:
-    """Where the DEBUG log goes: $JOBNOTIFY_LOG, else data/autopilot.log (the test suite sets the variable)."""
+    """Where the DEBUG log goes: $ROLESIGHT_LOG, else data/autopilot.log (the test suite sets the variable)."""
     return Path(os.getenv(LOG_PATH_ENV) or "data/autopilot.log")
 
 

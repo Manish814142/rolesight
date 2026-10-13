@@ -9,6 +9,25 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Changed (2026-10-13, T88: renamed JobNotify → RoleSight, prepared for a public MIT release)
+- **Name.** The project, the distribution (`pyproject.toml` `name = "rolesight"`), the Claude skill (`skills/rolesight`) and every
+  doc now say RoleSight. A `rolesight` command is added next to `autopilot` (re-run `pip install -e .` to get it); the
+  `autopilot-jobhunt` command alias, which existed for the upstream package's registry listing, is gone. The log override
+  variable `JOBNOTIFY_LOG` is now `ROLESIGHT_LOG`. Older entries below keep the name they were written under.
+- **CI would have been red on the first push.** It lints `job_hunt/ tests/ conftest.py`; the local gate only linted `job_hunt/`.
+  Measured on a fresh clone: 8 ruff errors in 5 test files (2 unused imports, 3 import orders, 3 chained statements); fixed, and
+  every gate listing now names the CI paths.
+- **Secret scan.** CI's gitleaks job scans the whole history. Run locally (gitleaks 8.30.1, 303 commits): 1 finding, a false
+  positive in `scripts/golden_set.csv` (the posting phrase "APIs, middleware/integration"); `.gitleaks.toml` allowlists the two
+  golden-set CSVs by path, and the rerun reports no leaks.
+- **Licence and credit.** `LICENSE` keeps Tarun Gupta's 2025 notice and adds Manish Singh's 2026 line; the README credits
+  autopilot-jobhunt and says what was added since. `tests/test_public_release.py` guards the name, the notice, the credit,
+  and that no e-mail address sits in a published file.
+- **Removed** what belonged to the upstream listing, not to this project: `server.json`, `glama.json`, `demo/` (the upstream
+  demo GIF and fixtures, referenced by nothing) and `assets/`. The code of conduct no longer sends reports to the
+  upstream author's address; `SECURITY.md` points at GitHub's private reporting.
+- README status refreshed from the stale 2026-10-04 figures (the Amazon description stub it listed was fixed in T57).
+
 ### Fixed (2026-10-13, review of T76 and T87)
 - **T76:** a redirect to another host is a dead end only when its answer is not JSON. Before T76 a cross-host redirect that ended in JSON (a tenant moved to another Workday data centre) was followed and its jobs read; T76 had turned every such redirect into an empty board. And the "maintenance" warning is once per scan, not once per process (`workday.reset_redirect_report()` at the start of each scan's fetch), so the long-running MCP server warns on every scan. Checked through the real `requests` with two local servers: 303 to an HTML maintenance page → one warning, empty incomplete board; 308 to another host answering JSON → its job, not incomplete. 2 tests, red first.
 - **T87:** three `tests/test_discovery.py` tests posted on a literal `2026-09-30` / `2026-10-01` and would have failed from about April 2027 against discover's 180-day rule; they now post ten days before today. Found by running the whole suite with the clock moved +30 / +200 / +400 days (`time-machine` in a throw-away venv, started before any test module is imported); the only other failures at those dates come from SQLite's own `date('now')`, which the tool does not move (not a real failure: the product code never reads SQLite's clock).

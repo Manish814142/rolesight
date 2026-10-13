@@ -1,4 +1,4 @@
-# T45 — A web page to set up and use JobNotify (design proposal)
+# T45 — A web page to set up and use RoleSight (design proposal)
 
 **Status: proposal for Manish's review. Nothing in this document is built.** The brainstorming process for a new
 subsystem requires an approved written spec, then an approved plan, before any code. Section 7 lists what I need from you.

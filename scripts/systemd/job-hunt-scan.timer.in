@@ -1,5 +1,5 @@
 [Unit]
-Description=Run the JobNotify daily job scan every day at @AT@
+Description=Run the RoleSight daily job scan every day at @AT@
 
 [Timer]
 OnCalendar=*-*-* @AT@:00

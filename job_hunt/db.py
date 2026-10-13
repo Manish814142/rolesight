@@ -1,4 +1,4 @@
-"""SQLite storage and deduplication module for JobNotify."""
+"""SQLite storage and deduplication module for RoleSight."""
 from __future__ import annotations
 
 import os

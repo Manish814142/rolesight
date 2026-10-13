@@ -1,20 +1,21 @@
-# JobNotify
+# RoleSight
 
-**A personal job radar.** Every day it pulls open roles straight from the public job APIs
-of ~215 companies hiring in India. It drops the ones that obviously don't fit, has Google
-Gemini score the rest against a resume, and writes the matches to a CSV, best first.
+**An AI job radar.** Every day it pulls open roles straight from the public job APIs of 224
+company boards hiring in India, drops the ones that obviously don't fit, has Google Gemini score
+the rest against your resume, and writes the matches to a CSV, best first.
 
-It is built for one candidate: Manish Singh, 3 years of experience in Node.js, backend
-and distributed systems, looking in India or for genuinely remote roles. The filters and
-the company list are tuned for him on purpose.
+The defaults are one profile's: 3 years of experience in Node.js, backend and distributed systems,
+looking in India or for genuinely remote roles. That profile is the worked example. The
+[user guide](docs/00-user-guide.md) lists the few files and settings to change for yours (candidate
+profile, title and location rules, resume), and the company list is a starting point so you don't
+begin from scratch.
 
 > 🔒 **Drafts only — it never applies.** Nothing in this project submits an application
 > or fills in a form. It finds and ranks jobs; you decide and apply yourself.
 
-JobNotify is a personal fork of
-[tarunlnmiit/autopilot-jobhunt](https://github.com/tarunlnmiit/autopilot-jobhunt) (MIT).
-It has been reworked heavily and is **not** upstreamed or published.
-`pip install autopilot-jobhunt` installs the *upstream* package from PyPI, not this code.
+RoleSight started from [autopilot-jobhunt](https://github.com/tarunlnmiit/autopilot-jobhunt) by Tarun Gupta (MIT)
+and has been largely rewritten since: see [Credits and license](#credits-and-license). It is not on PyPI; install it
+from a clone ([Quick start](#quick-start)).
 
 ---
 
@@ -61,8 +62,8 @@ the company's own job page.
 
 | Area | What you get |
 |---|---|
-| **Direct ATS APIs** | Adapters for Greenhouse (US and EU), Lever, Ashby, SmartRecruiters, Workday, Oracle HCM, Eightfold, Amazon Jobs, Workable, Recruitee and Personio. Parallel fetching (8 workers) with a hard time limit on every request, so one slow board can't stall a scan. |
-| **Curated company list** | `companies.json`: 223 boards, each checked to be live, to belong to the right employer and to have India jobs. `autopilot discover` adds companies from a pasted list in any format and applies the same checks. |
+| **Direct ATS APIs** | Adapters for Greenhouse (US and EU), Lever, Ashby, SmartRecruiters, Workday, Oracle HCM, Eightfold, Phenom, Amazon Jobs, Workable, Recruitee and Personio. Parallel fetching (8 workers) with a hard time limit on every request, so one slow board can't stall a scan. |
+| **Curated company list** | `companies.json`: 224 boards, each checked to be live, to belong to the right employer and to have India jobs. `autopilot discover` adds companies from a pasted list in any format and applies the same checks. |
 | **Local pre-filter** | Word-bounded title rules (backend / Node.js / SDE / software engineer in; staff / lead / manager / other stacks out), India-or-remote location rules, and an optional "posted within N days" window. |
 | **Full descriptions** | For Workday, SmartRecruiters, Oracle HCM and Eightfold, whose list APIs carry little or no description, the full text is fetched for survivors only, just before scoring. |
 | **Resume-aware scoring** | Gemini reads the whole resume, the candidate profile and the whole job description. It returns a score and one sentence explaining it. One job per call, by design: batching measurably inflated scores. |
@@ -77,7 +78,7 @@ the company's own job page.
 
 ```mermaid
 flowchart TD
-    C["companies.json<br/>215 boards"] --> F["Fetch<br/>public ATS APIs, 8 in parallel"]
+    C["companies.json<br/>224 boards"] --> F["Fetch<br/>public ATS APIs, 8 in parallel"]
     F --> D{"Seen before?<br/>data/jobs.db"}
     D -- "already scored" --> X["skip"]
     D -- "new, or not scored yet" --> P{"Pre-filter<br/>title · location · posted date"}
@@ -89,48 +90,47 @@ flowchart TD
     O -- "score ≥ min_score and Telegram set up" --> T["Telegram alert<br/>status: notified"]
 ```
 
-**The first full production scan** (2026-10-04, 215 companies, `--posted-within 7`,
-measured from `scan.log` and the CSV it wrote):
+**A full production run** (2026-10-12, 224 boards, 7-day window, `min_score` 70; measured from `data/scan.log`, the
+database and the CSV it wrote; 145 jobs from an earlier run were already scored):
 
 | Stage | Result |
 |---|---|
-| Fetch all 215 boards | 8.9 min |
-| Passed the pre-filter but posted more than 7 days ago | 1,044 (saved as `skipped`) |
-| Sent to scoring | 226 jobs (23 of them were repeats of one Sabre posting, from a Workday paging bug fixed since: T47) |
-| Full descriptions fetched | 170 of 226, in 32 s |
-| Gemini scoring | ~24 min (about 6.3 s per job, including the 4.2 s pacing) |
-| Total | 34.3 min |
-| Scores in the CSV | 74 rows ≥ 60, 67 ≥ 70, 38 ≥ 80 |
+| Fetch all boards | 5.0 min, 33,652 jobs, 17,104 of them in India |
+| Rejected by the pre-filter | 31,920 |
+| Passed the filter but posted more than 7 days ago | 1,310 |
+| Full descriptions fetched | 70 s |
+| Gemini scoring | 317 jobs in 39.3 min (316 on `gemini-3.5-flash-lite`, 1 on the fallback model; 0 failed) |
+| Total | 48.5 min |
+| Scores | 60 of the 317 at 70 or above, 29 at 85 or above |
 
-Daily scans after the first one only score jobs not seen before, so they should be much
-shorter. That is *inferred*; no repeat daily run has been measured yet.
+A later scan only scores jobs it has not seen, so it should be shorter. That is *inferred*; no repeat run has
+been measured yet.
 
 ---
 
 ## Current status
 
-As of 2026-10-04. The live list of work is the task board, [docs/tasks.md](docs/tasks.md).
+As of 2026-10-13. The live list of work is the task board, [docs/tasks.md](docs/tasks.md).
 
 **Working**
-- Fetching from all 10 ATS platforms, the pre-filter, the posted-date window, scoring and
-  the CSV, as in the first scan above.
-- `discover` for adding companies, `doctor`, `export`.
-- Description enrichment for Workday, SmartRecruiters and Oracle HCM (T19–T22, verified).
-- One database row per posting, keyed by its ATS id, so separate openings with the same
-  title are all scored (T30); Workday paging no longer repeats postings (T47).
+- Fetching, the pre-filter, the posted-date window, description enrichment, scoring, the CSV and the seen-job
+  memory, as in the run above.
+- `discover` for adding companies, `doctor`, `export`, `mark`, `draft`.
+- One database row per posting, keyed by its ATS id, so separate openings with the same title are all scored.
+- A job that disappears from its board is marked closed after three scans without it.
 
 **Known gaps** (each is a task on the board)
-- **Not scheduled yet.** There is no timer installed; scans run by hand. The unit files are
-  ready: `scripts/systemd/install.sh` installs a daily systemd user timer when you choose (T07).
-- **Amazon jobs are scored on a stub.** Their description is cut to 202 characters although
-  the API has the full text (T57).
-- **Scores vary a little between runs.** On the 20 hardest labelled jobs, 5 runs each at the default temperature: 2 had a spread over 20 points and 2-3 crossed `min_score`. Temperature 0 does not fix it: re-measured on `gemini-3.5-flash-lite` only, it behaved like 0.1 (T60). With the T73 rubric, two runs of all 82 labelled jobs changed no pass/fail decision at 60 or 70.
-- **Coarse scores.** Many jobs tie at 90 (21 of 203 in the first scan). The rubric (T48)
-  lowers false positives at `min_score` 70 (7 → 4 of 75 labelled jobs) but does not rank better;
-  breaking ties needs sub-scores (T41). The labels behind that measurement are Claude's, not
-  yours yet (T59).
-- **Telegram is unverified.** The last send attempts (2026-10-03) failed with HTTP 404, so
-  treat Telegram as off (T06). The CSV is the primary output.
+- **Not scheduled by default.** Scans run by hand. `scripts/systemd/install.sh` installs a daily systemd user
+  timer when you choose.
+- **Telegram is unverified.** The last send attempts (2026-10-03) failed with HTTP 404, so treat Telegram as off.
+  The CSV is the primary output.
+- **Scores vary a little between runs.** On the 20 hardest labelled jobs, 5 runs each at the default temperature:
+  2 had a spread over 20 points and 2-3 crossed `min_score`. Temperature 0 does not fix it. With the T73 rubric (the
+  current one adds a rule for AI titles, T74), two runs of all 82 labelled jobs changed no pass/fail decision at 60 or 70.
+- **Coarse scores.** Many jobs tie at 90, so the order inside the top band is arbitrary; breaking ties needs sub-scores
+  (opt-in, `scoring_mode: structured`). All but one of the 82 labels behind these measurements were made by Claude,
+  not by a human, and are not yet confirmed (T59), so treat the figures as indicative.
+- **The outside-India rule sometimes caps a job in an Indian city** (T79).
 
 ---
 
@@ -158,7 +158,7 @@ autopilot scan --posted-within 7
 ls output/                              # jobs_YYYY-MM-DD.csv, best score first
 ```
 
-In this repo `companies.json` (223 India boards) is already in place. `autopilot init`, for a pip install in an
+In this repo `companies.json` (224 boards) is already in place. `autopilot init`, for a pip install in an
 empty directory, copies the same curated list.
 
 ---
@@ -200,8 +200,9 @@ A value in `.env` overrides `config.json`, unless it is a template placeholder
 (`YOUR_…`, `…_here`). It also overrides variables already exported in your shell.
 The full reference is in [docs/07-config-and-scoring.md](docs/07-config-and-scoring.md).
 
-The **pre-filter rules are hardcoded** in `job_hunt/prefilter.py` on purpose: this is a
-personal fork, and the rules are tuned to one profile.
+The **pre-filter rules are hardcoded** in `job_hunt/prefilter.py` on purpose: they are tuned to one
+profile, so edit them for yours ([the guide](docs/00-user-guide.md) lists the patterns).
+`python scripts/check_filter.py "Java Developer" "Pune, India"` shows what the filter does with one job.
 
 ---
 
@@ -226,15 +227,17 @@ Details, including what each DB status means: [docs/05-outputs-and-notifications
 
 | ATS | Boards |
 |---|---|
-| Workday | 78 |
+| Workday | 82 |
 | Greenhouse | 74 |
 | Lever | 23 |
 | Ashby | 20 |
 | SmartRecruiters | 13 |
+| Eightfold | 4 |
 | Oracle HCM | 4 |
 | Workable | 2 |
 | Amazon Jobs | 1 |
-| **Total** | **215** (counted 2026-10-04) |
+| Phenom | 1 |
+| **Total** | **224** (counted 2026-10-13) |
 
 To add companies, paste their names into a file in any format and run
 `autopilot discover --add-file paste.txt --report /tmp/r.csv --out /tmp/v.json --merge companies.json`.
@@ -302,7 +305,7 @@ The design: [ARCHITECTURE.md](ARCHITECTURE.md).
 ```bash
 pip install -e '.[dev]'
 pytest                 # coverage gate 85%
-ruff check job_hunt
+ruff check job_hunt/ tests/ conftest.py   # the paths CI lints
 mypy
 ```
 
@@ -316,7 +319,9 @@ mypy
 
 ## Credits and license
 
-Forked from [autopilot-jobhunt](https://github.com/tarunlnmiit/autopilot-jobhunt) by
-[@tarunlnmiit](https://github.com/tarunlnmiit). The original scanned careers pages
-through TinyFish and scored with OpenRouter; both were removed here (T42) in favour of direct ATS APIs,
-a local pre-filter, SQLite memory and Gemini scoring. MIT license; see [LICENSE](LICENSE).
+RoleSight started from [autopilot-jobhunt](https://github.com/tarunlnmiit/autopilot-jobhunt) by
+[@tarunlnmiit](https://github.com/tarunlnmiit) (MIT). Parts of its MCP server, drafting, Telegram and CLI code are
+still here. The original crawled company careers pages through TinyFish and scored with OpenRouter; both were removed.
+Added or rewritten since: the direct ATS adapters, the local pre-filter, the SQLite seen-job memory, the Gemini
+scoring with its rubric and labelled test set, the company discovery tooling, the user guide and most of the tests.
+Released under the MIT licence; the original copyright notice stays in [LICENSE](LICENSE).

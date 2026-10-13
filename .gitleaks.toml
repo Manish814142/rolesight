@@ -1,0 +1,8 @@
+title = "RoleSight secret scan"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Verbatim public job postings used as labelled test data; a phrase such as 'APIs, middleware/integration' trips generic-api-key."
+paths = ['''scripts/golden_set(_ai)?\.csv''']

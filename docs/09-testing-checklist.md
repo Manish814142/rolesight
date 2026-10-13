@@ -7,7 +7,7 @@ program itself.
 
 ```bash
 pytest                    # whole suite; coverage gate 85% (pyproject.toml)
-ruff check job_hunt       # CI also lints tests/ and conftest.py: ruff check job_hunt/ tests/ conftest.py
+ruff check job_hunt/ tests/ conftest.py   # the same paths CI lints
 mypy                      # checks job_hunt/
 ```
 
@@ -20,11 +20,11 @@ Last recorded: 398 tests passing, coverage 89.99%, after the T30 review fix (202
 - Stub `requests.get` / `requests.post` (or `adapters.base.http_get` / `http_post`) for
   adapters, `score_job_with_gemini` / `_get_genai_client_and_types` for Gemini, and
   `scanner.send_telegram` for Telegram.
-- The suite logs to a temporary directory (`JOBNOTIFY_LOG`, set by `conftest.py`); it never touches `./scan.log`.
+- The suite logs to a temporary directory (`ROLESIGHT_LOG`, set by `conftest.py`); it never touches `./scan.log`.
 
-**CI.** `.github/workflows/ci.yml` runs the same gates on Python 3.11, 3.12 and 3.13, plus a
-gitleaks secret scan. This fork isn't pushed anywhere yet (T01), so **CI doesn't run for
-it**. The local gates are the only check.
+**CI.** `.github/workflows/ci.yml` runs the same gates on Python 3.11, 3.12 and 3.13 (note that it lints
+`job_hunt/ tests/ conftest.py`, not only `job_hunt/`), a gitleaks scan of the whole history, and, on a `v*` tag, a PyPI
+publish job that does nothing useful until a PyPI trusted publisher is set up for the repository.
 
 ## 2. CLI smoke tests (no keys needed)
 
@@ -80,7 +80,7 @@ import asyncio
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 async def main():
-    p = StdioServerParameters(command="bash", args=["-c", "cd /home/user/codes/random_projects/JobNotify && .venv/bin/autopilot mcp"])
+    p = StdioServerParameters(command="bash", args=["-c", "cd /path/to/rolesight && .venv/bin/autopilot mcp"])
     async with stdio_client(p) as (r, w), ClientSession(r, w) as s:
         await s.initialize()
         print([t.name for t in (await s.list_tools()).tools])

@@ -54,7 +54,8 @@ using on its first lines (`Min score: … | Top N: …`, `LLM provider: … | Mo
 ## The pre-filter (`job_hunt/prefilter.py`)
 
 Local, free and deterministic. The rules are **hardcoded for one profile** (Node.js /
-backend, about 3 YOE, India or remote). That's deliberate: this is a personal fork. The
+backend, about 3 YOE, India or remote). That's deliberate: the defaults are one profile's, and
+[00-user-guide](00-user-guide.md) says what to change for yours. The
 patterns are case-insensitive and word-bounded, so `java` doesn't match "JavaScript",
 `test` doesn't match "Latest", and `intern` doesn't match "Internal".
 

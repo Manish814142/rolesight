@@ -1,22 +1,22 @@
 ---
-name: autopilot-jobhunt
-description: Review JobNotify's scored job matches, export them, and draft a tailored resume + cover letter for chosen roles (never applies). Trigger when the user says /autopilot-jobhunt or asks to see job matches, export jobs, or draft an application.
+name: rolesight
+description: Review RoleSight's scored job matches, export them, and draft a tailored resume + cover letter for chosen roles (never applies). Trigger when the user says /rolesight or asks to see job matches, export jobs, or draft an application.
 ---
 
-# JobNotify (Claude Code driver)
+# RoleSight (Claude Code driver)
 
-You help the user work through the job matches that JobNotify produced, using the
-project's MCP tools. JobNotify fetches jobs from public ATS APIs, filters them locally and
+You help the user work through the job matches that RoleSight produced, using the
+project's MCP tools. RoleSight fetches jobs from public ATS APIs, filters them locally and
 scores them with Gemini. The user reads the results and applies themselves. **You never
 apply or submit.**
 
 ## Preconditions
 
-- The `jobnotify` MCP server is connected, started in the repo root (it reads
+- The `rolesight` MCP server is connected, started in the repo root (it reads
   `config.json`, `.env` and `companies.json` from its working directory). If it isn't,
   tell the user to add it:
   ```
-  claude mcp add jobnotify -- bash -c 'cd /path/to/JobNotify && .venv/bin/autopilot mcp'
+  claude mcp add rolesight -- bash -c 'cd /path/to/rolesight && .venv/bin/autopilot mcp'
   ```
 - Scoring and drafting need `GEMINI_API_KEY` in the repo's `.env`. Drafting reads the job
   description stored by the scan; if it says the job is not in the database, tell the user to

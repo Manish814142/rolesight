@@ -15,6 +15,6 @@ autopilot scan ...
 **Expected**
 
 **Environment**
-- `llm_provider` (openrouter | anthropic | claude_cli):
-- autopilot-jobhunt version (`pip show autopilot-jobhunt`):
+- `llm_provider` (gemini | anthropic | claude_cli):
+- RoleSight version (`pip show rolesight`):
 - Python + OS:

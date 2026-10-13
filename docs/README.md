@@ -1,6 +1,6 @@
-# JobNotify documentation
+# RoleSight documentation
 
-JobNotify fetches open jobs from the public ATS APIs of about 215 India-hiring companies,
+RoleSight fetches open jobs from the public ATS APIs of about 215 India-hiring companies,
 filters them locally, scores the survivors against a resume with Gemini, and writes a
 best-first CSV. It **never applies** to anything. The project overview is in the
 [top-level README](../README.md).
@@ -15,7 +15,7 @@ best-first CSV. It **never applies** to anything. The project overview is in the
 | 03 | [API keys](03-api-keys.md) | Which keys exist, which are required, precedence |
 | 04 | [Companies & scanning](04-companies-and-scanning.md) | `companies.json`, `discover` (add / recheck / census), what a scan does, per-ATS details, timings |
 | 05 | [Outputs & notifications](05-outputs-and-notifications.md) | CSV columns, DB statuses, state files, logs, `export`, drafts, Telegram |
-| 06 | [MCP server & skill](06-mcp-and-skill.md) | Using JobNotify from Claude Code |
+| 06 | [MCP server & skill](06-mcp-and-skill.md) | Using RoleSight from Claude Code |
 | 07 | [Config & scoring](07-config-and-scoring.md) | Every config key; the pre-filter rules; the scoring prompt and what scores mean |
 | 08 | [Troubleshooting](08-troubleshooting.md) | Known symptoms, causes and fixes |
 | 09 | [Testing checklist](09-testing-checklist.md) | Gates, smoke tests, a real small scan, MCP check |

@@ -1,5 +1,5 @@
 [Unit]
-Description=JobNotify daily job scan (run_daily.sh)
+Description=RoleSight daily job scan (run_daily.sh)
 
 [Service]
 Type=oneshot

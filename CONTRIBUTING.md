@@ -1,8 +1,8 @@
 # Contributing
 
-JobNotify is a personal fork. The contributors are Manish and the AI agents working for
-him (Claude Code, Antigravity). This page is the short version of how work gets done;
-the details live in the task board.
+RoleSight is Manish's project. The work is done by him and the AI agents working for
+him (Claude Code, Antigravity); issues and pull requests from others are welcome and go through the same gates.
+This page is the short version of how work gets done; the details live in the task board.
 
 ## Where work comes from
 
@@ -29,7 +29,7 @@ pip install -e '.[gemini,dev,mcp]'
 
 ```bash
 pytest               # coverage gate 85%
-ruff check job_hunt
+ruff check job_hunt/ tests/ conftest.py
 mypy
 ```
 
@@ -55,8 +55,8 @@ More on testing: [docs/09-testing-checklist.md](docs/09-testing-checklist.md).
   `tasks: …`.
 - **Stage only your own files** (`git add <paths>`, never `git add -A`). Another agent may
   be working in the same tree.
-- **Commit on `main`.** Never push to `origin`: it is the upstream repo. A private backup
-  remote is task T01.
+- **Commit on `main`.** The remote `upstream` is the original project (autopilot-jobhunt), kept read-only
+  to compare against; this project's own repository is `origin`.
 - **Record the change** in [CHANGELOG.md](CHANGELOG.md) under `[Unreleased]`.
 
 ## Code of conduct

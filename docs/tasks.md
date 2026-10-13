@@ -1,4 +1,4 @@
-# TASKS — JobNotify task board
+# TASKS — RoleSight task board
 
 The one shared board for everyone working on this repo: Manish, Claude Code,
 Antigravity, or any other agent.
@@ -49,7 +49,7 @@ First read `CLAUDE.md` (project context) and this whole file. Then repeat:
 3. **Implement** that task only, with tests. Unrelated problems you notice go in the
    [Inbox](#inbox), not into this change.
 4. **Check.** Run the task's *Done when* through the real program (not a proxy), then
-   `pytest`, `ruff check job_hunt` and `mypy`. If a check fails, or you couldn't run it,
+   `pytest`, `ruff check job_hunt/ tests/ conftest.py` and `mypy`. If a check fails, or you couldn't run it,
    say so. Don't hand it over as done.
 5. **Commit** the work, with a message that starts with the ID
    (`T03: stop scoring when Gemini quota is exhausted`). Add a CHANGELOG line under

@@ -1,6 +1,6 @@
 # 02 — LLM providers
 
-JobNotify uses an LLM for two things: **scoring** jobs (every scan) and **drafting**
+RoleSight uses an LLM for two things: **scoring** jobs (every scan) and **drafting**
 applications (`autopilot draft`, on demand). The two choose their provider differently.
 
 ## Who does the scoring

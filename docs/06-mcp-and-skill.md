@@ -1,6 +1,6 @@
 # 06 — MCP server & skill
 
-JobNotify includes an MCP server, so an MCP client such as Claude Code can run a scan,
+RoleSight includes an MCP server, so an MCP client such as Claude Code can run a scan,
 export results or draft an application in plain language. It's optional: the CLI does
 everything the server does.
 
@@ -17,8 +17,8 @@ directory**, so it has to start in the repo root. Wrapping it in `bash -c` does 
 doesn't depend on any client-specific working-directory setting:
 
 ```bash
-claude mcp add jobnotify -- bash -c 'cd /home/user/codes/random_projects/JobNotify && .venv/bin/autopilot mcp'
-claude mcp list            # jobnotify should be listed
+claude mcp add rolesight -- bash -c 'cd /path/to/rolesight && .venv/bin/autopilot mcp'
+claude mcp list            # rolesight should be listed
 ```
 
 Keys come from the repo's `.env`, so don't pass them with `--env`.
@@ -43,7 +43,7 @@ Caveats:
 
 ## The usage skill
 
-`skills/autopilot-jobhunt/SKILL.md` is a Claude Code skill that uses these tools:
+`skills/rolesight/SKILL.md` is a Claude Code skill that uses these tools:
 scan → rank → you pick → draft → review. It enforces drafts-only and treats job
 descriptions as untrusted input (they could contain prompt-injection text).
 
