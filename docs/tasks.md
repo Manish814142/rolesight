@@ -372,7 +372,10 @@ T11, T12, T14, T15, T16, T17 and T18 were verified 2026-10-07, T66 and T67 on 20
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
 | T79 | Rule 1 (the outside-India cap) is sometimes applied to an Indian city | changes · claude (fix reverted 2026-10-11; see review notes) | — | M | — |
-| T75 | Every per-job lookup scans the whole `jobs` table | doing · claude · 2026-10-13 | claude | S | — |
+| T75 | Every per-job lookup scans the whole `jobs` table | review · claude · a465be9 | claude | S | — |
+| T87 | Two scan tests had a literal posted date that aged out of the 7-day window | review · claude · 05fb89f | claude | XS | — |
+
+**T87 · Two scan tests had a literal posted date.** `tests/test_db_details.py` (`2026-10-05`) failed on 2026-10-13 and `tests/test_score_model.py` (`2026-10-08`) would have from 2026-10-16: a real `run_scan` drops jobs older than the window. *Done when:* both use yesterday and the suite passes with and without network.
 
 **T75 · Every per-job lookup scans the whole `jobs` table. `get_job` / `has_job` / `update_job_status` / `update_job_details` use `WHERE global_id = ?`, which cannot use the partial unique index `idx_jobs_ats_global_id` (its condition `global_id IS NOT NULL AND global_id != ''` is not implied): EXPLAIN QUERY PLAN → `SCAN jobs`. 2.7 ms per `get_job` on a copy of the production DB (30,367 rows); a scan calls it once per fetched job (~40k), so ~110 s per scan (inferred), growing with the table. Fix as in T33's `record_sightings`: add `ats = ?` and the index condition (`SEARCH … USING INDEX`), or a plain index on `global_id`** *Done when:* `EXPLAIN QUERY PLAN` of each lookup the program really runs says `SEARCH … USING INDEX`, none says `SCAN jobs`, and the same ids still return the same rows.
 
@@ -556,7 +559,7 @@ Which terms would you add?
 
 ## Inbox
 
-New findings go here with the next free ID (next: **T87**), an evidence tag and the
+New findings go here with the next free ID (next: **T88**), an evidence tag and the
 file:line. Manish or the triaging agent moves each one into a priority table.
 
 | ID | Finding | Evidence | Added by |
@@ -577,6 +580,8 @@ The implementer adds a row when a task reaches `review`; the verifier removes it
 
 | ID | Commit(s) | Implementer | Evidence (command → result) |
 |---|---|---|---|
+| T75 | a465be9 | claude | **On a copy of the production database (43,466 rows, 2026-10-13):** `EXPLAIN QUERY PLAN` of `SELECT * FROM jobs WHERE global_id = ? LIMIT 1` `SCAN jobs` → `SEARCH jobs USING INDEX idx_jobs_global_id (global_id=?)`; bare lookup **2.18 ms → 0.024 ms**, `get_job` 2.84 → 0.45 ms (it still runs `init_db` per call); `init_db` on the copy builds the index in 0.04 s; 300 random ids return the same rows with and without it; `PRAGMA integrity_check` ok. `tests/test_db_lookup_index.py` (5): the SQL each of `get_job`, `has_job`, `update_job_status`, `update_job_details` really sends is captured with sqlite3's trace hook and run through `EXPLAIN QUERY PLAN`; the 4 plan tests were red before the index. Gates: 909 passed (also under `unshare -rn`), coverage 92.69%, ruff/mypy clean. **Saving per scan is inferred** (about 35,000 lookups × 2.4 ms ≈ 80 s of a 48.5-minute scan), not timed in a scan. **Check yourself:** `python scripts/...` n/a — `python3 -c "import sqlite3; c=sqlite3.connect('data/jobs.db'); print(c.execute('EXPLAIN QUERY PLAN SELECT * FROM jobs WHERE global_id=?',('x',)).fetchall())"` → `SEARCH … idx_jobs_global_id` (your database gets the index at the next `init_db`, i.e. the next scan or `doctor`) | |
+| T87 | 05fb89f | claude | `pytest tests/test_db_details.py` failed on 2026-10-13 (`Funnel: … too old 1 | queued 0`) with and without T75's index; fixed by posting "yesterday". Found the second one by running the suite with the code's clock +20 days (a throw-away plugin, not committed): the remaining failures were tests that read the real clock, i.e. artifacts of the simulation. 909 passed, also under `unshare -rn` | |
 | T09 | 4f3d83a | claude | `./run_daily.sh` (real `data/jobs.db`, `config.json`, 224 boards, `min_score` 70, 7-day window), 19:20–20:08 IST on 2026-10-12, **48.5 min**, `data/scan.log` last line `Scan finished with exit code 0`. Funnel line: `fetched 33652 | India 17104 | already scored 105 | pre-filter rejected 31920 | too old 1310 | queued 317 | scored 317 (gemini-3.5-flash-lite 316, gemini-3.1-flash-lite 1) | failed 0 | left for next scan 0`; fetch 5.0 min, descriptions 70 s, scoring 39.3 min. **Done-when read from the artifacts:** SQL `select count(*) from jobs where substr(scored_at,1,10)='2026-10-12'` → 317 (status `scored` 462 = 145 + 317); `output/jobs_2026-10-12.csv` has 317 rows and a `Model` column; table `scans` holds the run with a finish time. 60 of 317 scored ≥ 70, 29 ≥ 85; `open_matches.csv` 93 rows. T77 live: 55 jobs rejected as `names a non-India place`; T78 live: 14 boards stopped at the window, 0 jobs closed (first run with sighting memory), 3,206 rows at `missed_scans` 1. **Caveats:** (1) one job (Amazon SDE 2, AFT Inventory, 85) was scored by `gemini-3.1-flash-lite` after a `Connection reset by peer` on 3.5, shown in the Model column; (2) `autopilot doctor` had migrated the production DB in place before I took the backup, so `data/jobs.db.bak-2026-10-12` is the migrated file (30,367 rows before and after; the pre-migration file is gone); (3) 33 of the 93 open matches are old-prompt scores, T86. T06 (Telegram) and T07 (timer) are Manish's and were not needed for a manual run. **Check yourself:** `tail -3 data/scan.log`; `python3 -c "import sqlite3; print(sqlite3.connect('data/jobs.db').execute(\"select score_model,count(*) from jobs where substr(scored_at,1,10)='2026-10-12' group by 1\").fetchall())"` → `[('gemini-3.1-flash-lite', 1), ('gemini-3.5-flash-lite', 316)]` | |
 
 ---
