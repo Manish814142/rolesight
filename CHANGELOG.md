@@ -35,6 +35,8 @@ reconstructed from git history.
 - **Golden sets stay** (`scripts/golden_set.csv`, `golden_set_ai.csv`: verbatim public postings with Claude's labels), with a notice in the
   README saying whose text it is and that it is removed on request.
 - **Links.** `[project.urls]` and the README badges point at `github.com/Manish814142/rolesight`; `.gitignore` covers office lock files.
+- **History (T89).** The 251 commits after the fork point were rewritten so that none carries Manish's work address (author and committer are his personal address);
+  the original author's 68 commits, tags and refs keep their exact ids, and the old objects are pruned. All commit ids written in the board and this file were remapped.
 
 ### Fixed (2026-10-13, review of T76 and T87)
 - **T76:** a redirect to another host is a dead end only when its answer is not JSON. Before T76 a cross-host redirect that ended in JSON (a tenant moved to another Workday data centre) was followed and its jobs read; T76 had turned every such redirect into an empty board. And the "maintenance" warning is once per scan, not once per process (`workday.reset_redirect_report()` at the start of each scan's fetch), so the long-running MCP server warns on every scan. Checked through the real `requests` with two local servers: 303 to an HTML maintenance page → one warning, empty incomplete board; 308 to another host answering JSON → its job, not incomplete. 2 tests, red first.
