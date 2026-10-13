@@ -3,8 +3,9 @@ from __future__ import annotations
 
 import os
 import sqlite3
+from contextlib import contextmanager
 from datetime import date, datetime, timezone
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Iterator, List, Optional
 
 from job_hunt.models import JobPosting, canonical_hash, url_hash
 from job_hunt.prefilter import current_age_days
@@ -13,6 +14,20 @@ DEFAULT_DB_PATH = "data/jobs.db"
 
 # PRAGMA user_version of a database whose Workday ids were re-derived (see _rekey_workday).
 SCHEMA_VERSION = 1
+
+
+@contextmanager
+def connect(db_path: str = DEFAULT_DB_PATH) -> Iterator[sqlite3.Connection]:
+    """A connection that commits when the block ends well, rolls back when it raises, and is then closed (T90).
+
+    `with sqlite3.connect(path) as conn:` does the first two but never closes: the connection lived until garbage collection,
+    and Python 3.13 reports each one as `ResourceWarning: unclosed database`."""
+    conn = sqlite3.connect(db_path)
+    try:
+        with conn:
+            yield conn
+    finally:
+        conn.close()
 
 
 def _rekey_workday(conn: sqlite3.Connection) -> None:
@@ -130,57 +145,55 @@ def _ensure_detail_columns(conn: sqlite3.Connection) -> None:
                 conn.execute("UPDATE jobs SET first_seen = discovered_at WHERE first_seen IS NULL;")
 
 
-def init_db(db_path: str = DEFAULT_DB_PATH) -> sqlite3.Connection:
+def init_db(db_path: str = DEFAULT_DB_PATH) -> None:
     """Initialize SQLite database, run migrations, and create indexes."""
     db_dir = os.path.dirname(db_path)
     if db_dir:
         os.makedirs(db_dir, exist_ok=True)
 
-    conn = sqlite3.connect(db_path)
-    conn.execute(
-        """
-        CREATE TABLE IF NOT EXISTS jobs (
-            id              INTEGER PRIMARY KEY AUTOINCREMENT,
-            canonical_hash  TEXT,
-            url_hash        TEXT,
-            global_id       TEXT,
-            title           TEXT,
-            company         TEXT,
-            ats             TEXT,
-            url             TEXT,
-            score           INTEGER DEFAULT NULL,
-            score_reason    TEXT DEFAULT NULL,
-            status          TEXT DEFAULT 'discovered',
-            discovered_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            scored_at       TIMESTAMP DEFAULT NULL
-        );
-        """
-    )
-    # One row per scan run (T31): `draft N` / `mark N` mean job N of the last *completed* scan, best score first.
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS scans (id INTEGER PRIMARY KEY AUTOINCREMENT, started_at TEXT NOT NULL, "
-        "finished_at TEXT DEFAULT NULL);"
-    )
-    _migrate_db(conn)
-    _ensure_detail_columns(conn)
-    conn.execute("CREATE INDEX IF NOT EXISTS idx_jobs_canonical ON jobs(canonical_hash);")
-    conn.execute("CREATE INDEX IF NOT EXISTS idx_jobs_status ON jobs(status);")
-    # get_job / has_job / update_job_* look a job up by its bare global_id; the partial unique index below is on
-    # (ats, global_id) with a WHERE clause that `global_id = ?` does not imply, so SQLite scanned the table (T75).
-    conn.execute("CREATE INDEX IF NOT EXISTS idx_jobs_global_id ON jobs(global_id);")
-    conn.execute(
-        "CREATE UNIQUE INDEX IF NOT EXISTS idx_jobs_ats_global_id ON jobs(ats, global_id) "
-        "WHERE global_id IS NOT NULL AND global_id != '';"
-    )
-    conn.execute(
-        "CREATE UNIQUE INDEX IF NOT EXISTS idx_jobs_canonical_fallback ON jobs(canonical_hash) "
-        "WHERE global_id IS NULL OR global_id = '';"
-    )
-    if conn.execute("PRAGMA user_version").fetchone()[0] < SCHEMA_VERSION:
-        _rekey_workday(conn)
-        conn.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")
-    conn.commit()
-    return conn
+    with connect(db_path) as conn:
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS jobs (
+                id              INTEGER PRIMARY KEY AUTOINCREMENT,
+                canonical_hash  TEXT,
+                url_hash        TEXT,
+                global_id       TEXT,
+                title           TEXT,
+                company         TEXT,
+                ats             TEXT,
+                url             TEXT,
+                score           INTEGER DEFAULT NULL,
+                score_reason    TEXT DEFAULT NULL,
+                status          TEXT DEFAULT 'discovered',
+                discovered_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                scored_at       TIMESTAMP DEFAULT NULL
+            );
+            """
+        )
+        # One row per scan run (T31): `draft N` / `mark N` mean job N of the last *completed* scan, best score first.
+        conn.execute(
+            "CREATE TABLE IF NOT EXISTS scans (id INTEGER PRIMARY KEY AUTOINCREMENT, started_at TEXT NOT NULL, "
+            "finished_at TEXT DEFAULT NULL);"
+        )
+        _migrate_db(conn)
+        _ensure_detail_columns(conn)
+        conn.execute("CREATE INDEX IF NOT EXISTS idx_jobs_canonical ON jobs(canonical_hash);")
+        conn.execute("CREATE INDEX IF NOT EXISTS idx_jobs_status ON jobs(status);")
+        # get_job / has_job / update_job_* look a job up by its bare global_id; the partial unique index below is on
+        # (ats, global_id) with a WHERE clause that `global_id = ?` does not imply, so SQLite scanned the table (T75).
+        conn.execute("CREATE INDEX IF NOT EXISTS idx_jobs_global_id ON jobs(global_id);")
+        conn.execute(
+            "CREATE UNIQUE INDEX IF NOT EXISTS idx_jobs_ats_global_id ON jobs(ats, global_id) "
+            "WHERE global_id IS NOT NULL AND global_id != '';"
+        )
+        conn.execute(
+            "CREATE UNIQUE INDEX IF NOT EXISTS idx_jobs_canonical_fallback ON jobs(canonical_hash) "
+            "WHERE global_id IS NULL OR global_id = '';"
+        )
+        if conn.execute("PRAGMA user_version").fetchone()[0] < SCHEMA_VERSION:
+            _rekey_workday(conn)
+            conn.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")
 
 
 def has_job(
@@ -191,7 +204,7 @@ def has_job(
     """Check if a job exists by global_id or canonical_hash."""
     init_db(db_path)
     lookup_key = key or c_hash or ""
-    with sqlite3.connect(db_path) as conn:
+    with connect(db_path) as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT 1 FROM jobs WHERE global_id = ? LIMIT 1;", (lookup_key,))
         if cursor.fetchone() is not None:
@@ -215,7 +228,7 @@ def save_job(
     u_hash = url_hash(job.url)
     now = datetime.now(timezone.utc).isoformat()
 
-    with sqlite3.connect(db_path) as conn:
+    with connect(db_path) as conn:
         cursor = conn.cursor()
         try:
             cursor.execute(
@@ -264,7 +277,7 @@ def update_job_details(
     if not sets:
         return
     assignments = ", ".join(f"{k} = ?" for k in sets)
-    with sqlite3.connect(db_path) as conn:
+    with connect(db_path) as conn:
         cur = conn.execute(f"UPDATE jobs SET {assignments} WHERE global_id = ?;", (*sets.values(), key))
         if cur.rowcount == 0:
             conn.execute(f"UPDATE jobs SET {assignments} WHERE canonical_hash = ?;", (*sets.values(), key))
@@ -288,7 +301,7 @@ def update_job_status(
     lookup_key = key or c_hash or ""
     now_iso = datetime.now(timezone.utc).isoformat() if score is not None else None
 
-    with sqlite3.connect(db_path) as conn:
+    with connect(db_path) as conn:
         cursor = conn.cursor()
         if score is not None:
             cursor.execute(
@@ -329,7 +342,7 @@ def get_job(
     """Retrieve a job by global_id (primary) or canonical_hash (fallback)."""
     init_db(db_path)
     lookup_key = key or c_hash or ""
-    with sqlite3.connect(db_path) as conn:
+    with connect(db_path) as conn:
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM jobs WHERE global_id = ? LIMIT 1;", (lookup_key,))
@@ -344,7 +357,7 @@ def get_job(
 def get_job_by_url(url: str, db_path: str = DEFAULT_DB_PATH) -> Optional[Dict[str, Any]]:
     """The stored row for a job URL (matched on url_hash), or None."""
     init_db(db_path)
-    with sqlite3.connect(db_path) as conn:
+    with connect(db_path) as conn:
         conn.row_factory = sqlite3.Row
         row = conn.execute("SELECT * FROM jobs WHERE url_hash = ? LIMIT 1;", (url_hash(url),)).fetchone()
         return dict(row) if row else None
@@ -353,7 +366,7 @@ def get_job_by_url(url: str, db_path: str = DEFAULT_DB_PATH) -> Optional[Dict[st
 def start_scan(db_path: str = DEFAULT_DB_PATH) -> int:
     """Record that a scan run started; returns its id (T31)."""
     init_db(db_path)
-    with sqlite3.connect(db_path) as conn:
+    with connect(db_path) as conn:
         cur = conn.execute("INSERT INTO scans (started_at) VALUES (?);", (datetime.now(timezone.utc).isoformat(),))
         conn.commit()
         return int(cur.lastrowid or 0)
@@ -362,7 +375,7 @@ def start_scan(db_path: str = DEFAULT_DB_PATH) -> int:
 def finish_scan(scan_id: int, db_path: str = DEFAULT_DB_PATH) -> None:
     """Record that scan `scan_id` finished: from now on it is the "last scan" of `draft N`."""
     init_db(db_path)
-    with sqlite3.connect(db_path) as conn:
+    with connect(db_path) as conn:
         conn.execute("UPDATE scans SET finished_at = ? WHERE id = ?;", (datetime.now(timezone.utc).isoformat(), scan_id))
         conn.commit()
 
@@ -374,7 +387,7 @@ def last_scan_jobs(db_path: str = DEFAULT_DB_PATH) -> Optional[List[Dict[str, An
     if not os.path.exists(db_path):
         return None
     init_db(db_path)
-    with sqlite3.connect(db_path) as conn:
+    with connect(db_path) as conn:
         conn.row_factory = sqlite3.Row
         scan = conn.execute("SELECT started_at, finished_at FROM scans WHERE finished_at IS NOT NULL "
                             "ORDER BY id DESC LIMIT 1;").fetchone()
@@ -390,7 +403,7 @@ def open_match_rows(min_score: int, db_path: str = DEFAULT_DB_PATH) -> List[Dict
     """Scored jobs at or above `min_score` that Manish has not applied to (no application status at all) and that are
     not closed (T33), best first (T39, output/open_matches.csv). The posted-date window is applied by the caller."""
     init_db(db_path)
-    with sqlite3.connect(db_path) as conn:
+    with connect(db_path) as conn:
         conn.row_factory = sqlite3.Row
         rows = conn.execute(
             "SELECT * FROM jobs WHERE status IN ('scored', 'notified') AND score >= ? AND application_status IS NULL "
@@ -436,7 +449,7 @@ def record_sightings(boards: Dict[tuple, List[JobPosting]], closed_after: int = 
     init_db(db_path)
     now = datetime.now(timezone.utc).isoformat()
     closed = 0
-    with sqlite3.connect(db_path) as conn:
+    with connect(db_path) as conn:
         for (ats, company), jobs in boards.items():
             with_id = [(now, j.ats, j.global_id) for j in jobs if j.global_id]
             without = [(now, canonical_hash(j.title, j.company, j.location)) for j in jobs if not j.global_id]
@@ -465,7 +478,7 @@ def set_application_status(row_id: int, status: Optional[str], day: Optional[str
                            db_path: str = DEFAULT_DB_PATH) -> None:
     """Record (or with None, clear) the application status and its date on one row (T38)."""
     init_db(db_path)
-    with sqlite3.connect(db_path) as conn:
+    with connect(db_path) as conn:
         conn.execute("UPDATE jobs SET application_status = ?, application_date = ? WHERE id = ?;",
                      (status, day, row_id))
         conn.commit()
@@ -477,7 +490,7 @@ def scored_jobs_since(cutoff_date: str, db_path: str = DEFAULT_DB_PATH) -> Optio
     if not os.path.exists(db_path):
         return None
     init_db(db_path)
-    with sqlite3.connect(db_path) as conn:
+    with connect(db_path) as conn:
         conn.row_factory = sqlite3.Row
         rows = conn.execute(
             "SELECT * FROM jobs WHERE status IN ('scored', 'notified') AND score IS NOT NULL "
@@ -490,7 +503,7 @@ def get_jobs_by_status(
 ) -> List[Dict[str, Any]]:
     """Retrieve all jobs with a specific status."""
     init_db(db_path)
-    with sqlite3.connect(db_path) as conn:
+    with connect(db_path) as conn:
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM jobs WHERE status = ? ORDER BY id DESC;", (status,))

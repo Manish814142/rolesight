@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import json
 import os
-import sqlite3
 import time
 import warnings
 from pathlib import Path
@@ -13,7 +12,7 @@ import requests
 from dotenv import load_dotenv
 
 from job_hunt.adapters.base import DEFAULT_HEADERS
-from job_hunt.db import init_db
+from job_hunt.db import connect, init_db
 from job_hunt.log import redact
 
 # Filter known benign SDK advisory from google-genai
@@ -76,7 +75,7 @@ def check_sqlite_write(db_path: str = "data/jobs.db") -> Tuple[bool, str]:
         p.parent.mkdir(parents=True, exist_ok=True)
         init_db(db_path)
 
-        with sqlite3.connect(db_path) as conn:
+        with connect(db_path) as conn:
             cursor = conn.cursor()
             # Perform a test probe transaction
             test_hash = "__doctor_probe_hash__"
