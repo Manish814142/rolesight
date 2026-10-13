@@ -109,8 +109,9 @@ since those would have been on the pages read, and for no older or undated job.
 
 ## Harvest inputs (not in repo)
 
-`harvester.py` defaults to `/home/user/Downloads/india.yml` (ATS slugs) and
-`/home/user/Downloads/linkedin-size-filter-backup-2026-10-03.json` (headcount cache).
+`harvest` has no default input file (T94): pass `--yaml FILE` (ATS slugs; Manish keeps `india.yml` in `~/Downloads`) or set `ROLESIGHT_HARVEST_YAML`.
+The optional headcount cache (his is `linkedin-size-filter-backup-2026-10-03.json`, also in `~/Downloads`) comes from `--linkedin FILE` or
+`ROLESIGHT_LINKEDIN_CACHE`; `discover` reads it only from that variable and shows headcount "Unknown" without it.
 Headcount is badge metadata only — **not** a filter (the cache is stale).
 A board counts as active only with HTTP 200 **and** ≥1 job; each company appears once.
 Matches on a non-declared ATS are tagged `ats_fallback_from`.

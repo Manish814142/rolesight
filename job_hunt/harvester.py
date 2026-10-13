@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import re
 import sys
 import xml.etree.ElementTree as ET
@@ -30,8 +31,15 @@ from job_hunt.validator import KNOWN_CORRECTIONS
 logger = logging.getLogger(__name__)
 
 # ── Defaults ──────────────────────────────────────────────────────────────────
-DEFAULT_YAML = "/home/user/Downloads/india.yml"
-DEFAULT_LINKEDIN = "/home/user/Downloads/linkedin-size-filter-backup-2026-10-03.json"
+# No file path is assumed (T94). The ATS slug list (india.yml) must be given with --yaml or ROLESIGHT_HARVEST_YAML; the optional
+# LinkedIn headcount cache with --linkedin or ROLESIGHT_LINKEDIN_CACHE. Headcount is badge metadata only, so no cache is fine.
+YAML_ENV = "ROLESIGHT_HARVEST_YAML"
+LINKEDIN_ENV = "ROLESIGHT_LINKEDIN_CACHE"
+
+
+def default_linkedin_cache() -> str:
+    """The headcount cache path from the environment, or "" when none is configured."""
+    return os.getenv(LINKEDIN_ENV, "")
 DEFAULT_OUT = "companies.json"
 
 # Same-slug boards that belong to another employer, or are abandoned stubs: removed from companies.json on
@@ -268,8 +276,8 @@ def load_candidates(
 
 
 def run_harvest(
-    yaml_path: str = DEFAULT_YAML,
-    linkedin_path: str = DEFAULT_LINKEDIN,
+    yaml_path: str,
+    linkedin_path: str = "",
     out_path: str = DEFAULT_OUT,
     max_workers: int = 30,
 ) -> List[Dict[str, Any]]:
@@ -381,8 +389,8 @@ def run_harvest(
 
 def main(argv: Optional[List[str]] = None) -> None:
     argv = argv or sys.argv[1:]
-    yaml_path = DEFAULT_YAML
-    linkedin_path = DEFAULT_LINKEDIN
+    yaml_path = os.getenv(YAML_ENV, "")
+    linkedin_path = default_linkedin_cache()
     out_path = DEFAULT_OUT
     workers = 30
     force = "--force" in argv
@@ -403,6 +411,15 @@ def main(argv: Optional[List[str]] = None) -> None:
             i += 2
         else:
             i += 1
+
+    if not yaml_path:
+        print(
+            "harvest needs the list of ATS slugs to probe: pass --yaml FILE (or set ROLESIGHT_HARVEST_YAML).\n"
+            "harvest is the older list builder; `autopilot discover --add-file paste.txt --merge companies.json` "
+            "is the supported way to add companies.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
 
     if Path(out_path).exists() and not force:
         print(

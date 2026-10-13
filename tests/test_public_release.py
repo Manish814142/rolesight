@@ -179,3 +179,8 @@ def test_the_doctor_banner_says_rolesight(monkeypatch, capsys, tmp_path):
     doctor.run_doctor(db_path=str(tmp_path / "x.db"), env_path=str(tmp_path / "no.env"))
     out = capsys.readouterr().out
     assert "ROLESIGHT DOCTOR DIAGNOSTICS" in out and "AUTOPILOT" not in out
+
+
+def test_no_source_file_names_a_personal_path():
+    offenders = [str(f.relative_to(ROOT)) for f in (ROOT / "job_hunt").rglob("*.py") if "/home/user" in f.read_text()]
+    assert not offenders, offenders

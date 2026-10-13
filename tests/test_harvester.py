@@ -400,7 +400,7 @@ def test_harvest_cli_refuses_to_overwrite_an_existing_file(tmp_path: Path, monke
     out.write_text('[{"name": "curated"}]')
     calls, harvester_main = _run_cli(monkeypatch, None)
     with pytest.raises(SystemExit) as exc:
-        harvester_main(["--out", str(out)])
+        harvester_main(["--yaml", "any.yml", "--out", str(out)])
     assert exc.value.code not in (0, None)
     assert calls == [] and out.read_text() == '[{"name": "curated"}]'
     assert "--force" in capsys.readouterr().err
@@ -410,13 +410,13 @@ def test_harvest_cli_force_overwrites(tmp_path: Path, monkeypatch) -> None:
     out = tmp_path / "companies.json"
     out.write_text("[]")
     calls, harvester_main = _run_cli(monkeypatch, None)
-    harvester_main(["--out", str(out), "--force"])
+    harvester_main(["--yaml", "any.yml", "--out", str(out), "--force"])
     assert len(calls) == 1 and calls[0][2] == str(out)
 
 
 def test_harvest_cli_writes_a_new_file_without_force(tmp_path: Path, monkeypatch) -> None:
     calls, harvester_main = _run_cli(monkeypatch, None)
-    harvester_main(["--out", str(tmp_path / "new.json")])
+    harvester_main(["--yaml", "any.yml", "--out", str(tmp_path / "new.json")])
     assert len(calls) == 1
 
 
@@ -445,3 +445,61 @@ def test_run_harvest_drops_boards_removed_on_evidence(tmp_path: Path) -> None:
         run_harvest(yaml_path=str(yaml_file), linkedin_path=str(linkedin_file), out_path=str(out_file), max_workers=2)
 
     assert [(e["name"], e["ats"]) for e in json.loads(out_file.read_text())] == [("AcmeCo", "ashby")]
+
+
+# -- T94: no personal default paths ---------------------------------------------------------------------------------
+
+def test_harvest_without_a_yaml_says_how_to_pass_one_and_does_nothing(tmp_path: Path, monkeypatch, capsys) -> None:
+    import pytest
+    monkeypatch.delenv("ROLESIGHT_HARVEST_YAML", raising=False)
+    monkeypatch.setattr("job_hunt.harvester.run_harvest", lambda *a, **k: pytest.fail("must not start without a YAML"))
+    from job_hunt.harvester import main as harvester_main
+    with pytest.raises(SystemExit) as exc:
+        harvester_main(["--out", str(tmp_path / "x.json")])
+    assert exc.value.code == 1
+    err = capsys.readouterr().err
+    assert "--yaml" in err and "discover" in err and "ROLESIGHT_HARVEST_YAML" in err
+
+
+def test_the_real_harvest_command_without_a_yaml_exits_1_before_any_request(tmp_path: Path) -> None:
+    import os
+    import subprocess
+    import sys
+    env = {k: v for k, v in os.environ.items() if k not in ("ROLESIGHT_HARVEST_YAML", "ROLESIGHT_LINKEDIN_CACHE")}
+    done = subprocess.run([sys.executable, "-m", "job_hunt", "harvest"], cwd=tmp_path, env=env, capture_output=True,
+                          text=True, timeout=60)
+    assert done.returncode == 1
+    assert "--yaml" in done.stderr and "Loaded" not in done.stdout and "Phase" not in done.stdout
+
+
+def test_the_yaml_can_come_from_the_environment_and_the_flag_wins(tmp_path: Path, monkeypatch) -> None:
+    calls = []
+    monkeypatch.setattr("job_hunt.harvester.run_harvest", lambda *a, **k: calls.append(a))
+    monkeypatch.setenv("ROLESIGHT_HARVEST_YAML", "from_env.yml")
+    from job_hunt.harvester import main as harvester_main
+    harvester_main(["--out", str(tmp_path / "a.json")])
+    harvester_main(["--yaml", "from_flag.yml", "--out", str(tmp_path / "b.json")])
+    assert [c[0] for c in calls] == ["from_env.yml", "from_flag.yml"]
+
+
+def test_the_linkedin_cache_is_only_read_when_given(tmp_path: Path, monkeypatch) -> None:
+    calls = []
+    monkeypatch.setattr("job_hunt.harvester.run_harvest", lambda *a, **k: calls.append(a))
+    from job_hunt.harvester import main as harvester_main
+    monkeypatch.delenv("ROLESIGHT_LINKEDIN_CACHE", raising=False)
+    harvester_main(["--yaml", "y.yml", "--out", str(tmp_path / "a.json")])
+    monkeypatch.setenv("ROLESIGHT_LINKEDIN_CACHE", "/data/li.json")
+    harvester_main(["--yaml", "y.yml", "--out", str(tmp_path / "b.json")])
+    harvester_main(["--yaml", "y.yml", "--linkedin", "flag.json", "--out", str(tmp_path / "c.json")])
+    assert [c[1] for c in calls] == ["", "/data/li.json", "flag.json"]
+
+
+def test_no_cache_configured_is_quiet_but_a_wrong_path_still_warns(tmp_path: Path, caplog) -> None:
+    import logging
+
+    from job_hunt.company_builder import load_linkedin_cache
+    caplog.set_level(logging.WARNING)
+    assert load_linkedin_cache("") == ({}, {})
+    assert not caplog.records
+    assert load_linkedin_cache(str(tmp_path / "missing.json")) == ({}, {})
+    assert any("not found" in r.getMessage() for r in caplog.records)

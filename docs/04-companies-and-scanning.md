@@ -114,8 +114,8 @@ Eightfold and Phenom 7% each, Oracle HCM and Darwinbox 6% each.
 
 ### Don't use `harvest` / `validate` on the curated list
 
-`autopilot harvest` rebuilds a list from `india.yml` plus a LinkedIn cache (by default in
-`~/Downloads`, not in the repo). It **refuses to overwrite an existing output file** (default `companies.json`) unless you pass
+`autopilot harvest --yaml india.yml` rebuilds a list from that slug file (there is no default; also `ROLESIGHT_HARVEST_YAML`) plus an optional
+LinkedIn headcount cache (`--linkedin FILE` or `ROLESIGHT_LINKEDIN_CACHE`); neither file is in the repo. It **refuses to overwrite an existing output file** (default `companies.json`) unless you pass
 `--force`, and it skips the boards removed on evidence (`harvester.EXCLUDED_BOARDS`: same-slug boards of
 another employer, abandoned stubs; T43). A rebuilt list still lacks everything you added with `discover`.
 `autopilot validate` rewrites `companies.json` in place, and accepts empty boards. If you use

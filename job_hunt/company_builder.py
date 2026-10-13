@@ -50,7 +50,9 @@ def is_blocked_headcount(headcount: Optional[str]) -> bool:
 
 
 def load_linkedin_cache(cache_path: str) -> Tuple[Dict[str, str], Dict[str, str]]:
-    """Load companyCache and slugCache from LinkedIn size filter backup JSON."""
+    """Load companyCache and slugCache from LinkedIn size filter backup JSON. An empty path means none is configured (T94)."""
+    if not cache_path:
+        return {}, {}
     p = Path(cache_path)
     if not p.exists():
         logger.warning("LinkedIn cache file not found: %s", cache_path)

@@ -609,3 +609,17 @@ def test_main_never_starts_a_full_discovery_on_help_or_an_unknown_flag(argv, tmp
     else:
         assert ei.value.code not in (0, None) and "--add-flie" in str(ei.value.code) + out.err
     assert sorted(p.name for p in tmp_path.rglob("*")) == before   # nothing written
+
+
+# -- T94: discover reads a LinkedIn headcount cache only when one is configured ------------------------------------------
+
+def test_discover_reads_the_linkedin_cache_only_when_configured(monkeypatch):
+    seen = []
+    monkeypatch.setattr(disc, "load_linkedin_cache", lambda path: seen.append(path) or ({}, {}))
+    monkeypatch.setattr(disc, "fetch_company_jobs", lambda c: [])
+    seeds = parse_seeds("DP World | https://ehpv.fa.em2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1\n")
+    monkeypatch.delenv("ROLESIGHT_LINKEDIN_CACHE", raising=False)
+    disc.discover(seeds, workers=1)
+    monkeypatch.setenv("ROLESIGHT_LINKEDIN_CACHE", "/data/li.json")
+    disc.discover(seeds, workers=1)
+    assert seen == ["", "/data/li.json"]

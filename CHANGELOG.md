@@ -9,6 +9,13 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Changed (2026-10-13, T94: no personal default paths)
+- `harvest` and `discover` no longer default to files in one person's Downloads folder. `harvest` without `--yaml` (or `ROLESIGHT_HARVEST_YAML`) now stops with
+  exit 1 and says so, before any request (before, on another machine it died with `FileNotFoundError: YAML not found: /home/user/Downloads/india.yml`). The LinkedIn
+  headcount cache is read only when given (`--linkedin`, or `ROLESIGHT_LINKEDIN_CACHE`), and `discover` without it no longer logs a warning naming that path;
+  headcount shows "Unknown", as it did when the file was missing. Manish's old behaviour is one variable each. `grep -rn '/home/user' job_hunt` is empty.
+  Three existing CLI tests now pass `--yaml`, because the command requires it.
+
 ### Fixed (2026-10-13, T93: old product names a user could trip over)
 - The two "install this" hints named a package that does not exist (`autopilot-jobs[mcp]`, `autopilot-jobs[claude]`; the distribution is `rolesight`
   and is not on PyPI). They now give the command that works in a clone: `pip install -e '.[mcp]'` and `pip install -e '.[claude]'`.

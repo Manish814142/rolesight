@@ -48,7 +48,7 @@ from job_hunt.adapters import detect_ats, fetch_company_jobs
 from job_hunt.adapters.base import DEFAULT_HEADERS
 from job_hunt.adapters.workday import item_location
 from job_hunt.company_builder import CORPORATE_SUFFIX_RE, load_linkedin_cache, match_headcount
-from job_hunt.harvester import ATS_PROBES, DEFAULT_LINKEDIN, _probe
+from job_hunt.harvester import ATS_PROBES, _probe, default_linkedin_cache
 from job_hunt.models import JobPosting
 from job_hunt.prefilter import (
     LOCATION_INDIA_COUNTRY_CODE,
@@ -438,7 +438,7 @@ def discover(seeds: List[Dict[str, Any]], workers: int = 40) -> Tuple[List[Dict[
                                eightfold_seeds))
         wd_rows += list(ex.map(lambda s: evaluate_entry(s["name"], {"ats": "phenom", **s["phenom"]}), phenom_seeds))
 
-    company_cache, slug_cache = load_linkedin_cache(DEFAULT_LINKEDIN)
+    company_cache, slug_cache = load_linkedin_cache(default_linkedin_cache())
     verified: List[Dict[str, Any]] = []
     rows: List[Dict[str, Any]] = []
     by_seed: Dict[str, List[Dict[str, Any]]] = {}
