@@ -165,6 +165,9 @@ def init_db(db_path: str = DEFAULT_DB_PATH) -> sqlite3.Connection:
     _ensure_detail_columns(conn)
     conn.execute("CREATE INDEX IF NOT EXISTS idx_jobs_canonical ON jobs(canonical_hash);")
     conn.execute("CREATE INDEX IF NOT EXISTS idx_jobs_status ON jobs(status);")
+    # get_job / has_job / update_job_* look a job up by its bare global_id; the partial unique index below is on
+    # (ats, global_id) with a WHERE clause that `global_id = ?` does not imply, so SQLite scanned the table (T75).
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_jobs_global_id ON jobs(global_id);")
     conn.execute(
         "CREATE UNIQUE INDEX IF NOT EXISTS idx_jobs_ats_global_id ON jobs(ats, global_id) "
         "WHERE global_id IS NOT NULL AND global_id != '';"
