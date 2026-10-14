@@ -67,7 +67,7 @@ They are applied in this order:
    - Other stacks: `frontend`, `react`, `angular`, `vue`, `ios`, `android`, `flutter`,
      `java`, `golang`, `.net`, `c#`. (`python` was on this list until T62: Manish allowed it on 2026-10-10,
      so "Python Developer" and "Backend Engineer (Python)" now reach Gemini.)
-   - Other roles: `qa`, `test`/`tester`/`testing`, `intern`/`internship`, `devops`, `sre`.
+   - Other roles: `qa`, `quality`, `test`/`tester`/`testing`, `intern`/`internship`, `devops`, `sre`.
 
    "Senior" / "Sr." are **not** excluded. At Indian companies they often mean 3–6 years,
    so Gemini judges them (227 India jobs had been blocked by that word alone).
@@ -162,8 +162,11 @@ One Gemini call per job. The prompt contains:
   `Scoring rubric: <id>` at its start. `python scripts/rubric_ids.py --db data/jobs.db` prints each id with the commit that
   first had that text, and how many scored rows carry each id (`-` = scored before ids were recorded). The id covers the rubric
   text only: a change to the code around the prompt, to your profile or to your resume does not change it. After you edit the
-  rubric, the rows with another id are the ones to re-score (`UPDATE jobs SET status='discovered' WHERE score_rubric IS NOT '<new id>'
-  AND status IN ('scored','notified')` on a backup, then a scan; it costs one Gemini call each).
+  rubric, the rows with another id are the ones scored under older wording. **Do not reset them all to `discovered`:** a scan
+  re-scores only a job it fetches again, that passes today's pre-filter and is inside the posted window. Any other row set back
+  to `discovered` is never scored again and drops out of `open_matches.csv` and `export`. In T86, 3 of 145 old rows qualified.
+  Pick the rows that qualify (as T86 did, against a fresh fetch), back up `data/jobs.db`, reset only those, then scan: one Gemini
+  call each.
 
 Settings: temperature 0.1, JSON output, model fallback and retries as in
 [02](02-providers.md). A job with no description is sent as "No full description

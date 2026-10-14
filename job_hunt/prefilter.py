@@ -47,9 +47,12 @@ _PLATFORM_ROLE_WORDS = (
     r"|cpq|zuora|mulesoft|boomi|informatica|tableau|bi|rpa|uipath|reltio|lims|mainframe|cobol"
     r"|sharepoint|siebel|pega|agentforce"
 )
+# "quality" sits with qa/test (review of T96, 2026-10-14): T96's "software ... engineer" rule let "Software Quality Engineer"
+# through, scored 75 on its first scan; on the 2026-10-13 fetch all 13 passing titles with the word were QA, test
+# automation or construction quality.
 TITLE_EXCLUDE_PATTERN = re.compile(
     r"\b(lead|principal|(?<!technical\s)staff|manager|director|architect|front[\s-]?end"
-    r"|react(\.?js)?|angular(js)?|vue(\.?js)?|ios|android|flutter|qa|test(er|ers|ing)?"
+    r"|react(\.?js)?|angular(js)?|vue(\.?js)?|ios|android|flutter|qa|quality|test(er|ers|ing)?"
     r"|intern(s|ship)?|devops|sre|java|golang)\b"
     r"|\.net\b|\bc#(?!\w)"
     rf"|\b({_PLATFORM_ROLE_WORDS})\b"

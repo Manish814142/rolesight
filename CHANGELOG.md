@@ -9,6 +9,15 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed (2026-10-14, review of T96, T97 and T86)
+- **`quality` joins `qa` and `test…` in the title exclude list.** T96's "software … engineer" rule let quality-engineering titles through, and the first scan
+  scored KLA's "Software Quality Engineer" 75 (its own reason: "quality engineering and test automation"). On the fetch of 2026-10-13 the word removes 13
+  passing titles (4 in the 7-day window), all QA, test automation or construction quality ("Software Quality Automation Engineer – Python & Playwright",
+  "Sr. Engineer, Construction Quality- CSA"), and adds none; "Senior Software Engineer" still passes. The KLA row already scored stays in the database.
+- **`docs/07` no longer tells you to reset every row with an older rubric id.** A scan re-scores only a job it fetches again, that passes today's pre-filter
+  and is inside the posted window; any other row set back to `discovered` is never scored again and drops out of `open_matches.csv` and `export` (T86: 3 of
+  145 qualified). The bulk `UPDATE` it printed would have reset 459 rows of today's database.
+
 ### Done (2026-10-14, T86: the old-prompt scores)
 - Manish said "yes you can re-score" for the 145 rows scored on 2026-10-04 (older prompt). A scan can re-score only a job it fetches, that passes today's pre-filter and
   is inside the 7-day window, so resetting all 145 would have re-scored 3 and left 142 as `discovered` for good; only those 3 were reset (Autodesk, State Street,

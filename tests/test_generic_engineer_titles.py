@@ -58,3 +58,15 @@ def test_the_words_a_title_must_not_start_with_are_not_enough_to_pass():
     """'Engineering' and 'Engineers' are not the word 'engineer'."""
     assert not should_evaluate_job(_job("Engineering Specialist"))[0]
     assert not should_evaluate_job(_job("Engineers Wanted"))[0]
+
+
+def test_quality_engineering_titles_stay_out_like_qa_and_test():
+    """Review of T96 (2026-10-14): `qa` and `test…` were already excluded, but "software … engineer" let quality-engineering
+    titles through, and the first scan scored KLA's "Software Quality Engineer" 75 (its reason: "quality engineering and test
+    automation"). On the 2026-10-13 fetch every passing title with "quality" was QA, test automation or construction quality."""
+    from job_hunt.prefilter import title_is_candidate
+    for title in ("Software Quality Engineer", "Senior Software Engineer, Quality Engineering",
+                  "Software Quality Automation Engineer – Python & Playwright", "Engineer Quality"):
+        assert not title_is_candidate(title), title
+    for title in ("Backend Engineer", "Senior Engineer", "Software Engineer II"):
+        assert title_is_candidate(title), title
