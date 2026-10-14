@@ -13,7 +13,8 @@ LOG_BACKUPS = 3
 def redact(text: str, *secrets: str | None) -> str:
     """`text` with each secret replaced by ***, so an error message can be printed or logged (T92, T95).
 
-    Secrets shorter than 8 characters are left alone: replacing "a" would wreck the message and protects nothing."""
+    Secrets shorter than 8 characters are left alone: replacing "a" would wreck the message and protects nothing.
+    Redact the whole text, then cut it: a secret cut in half no longer matches and its first part would be printed."""
     for secret in secrets:
         if secret and len(secret) >= 8:
             text = text.replace(secret, "***")

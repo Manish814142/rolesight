@@ -25,7 +25,7 @@ def send_telegram(bot_token: str, chat_id: str, message: str) -> bool:
         if resp.status_code == 200:
             print("Telegram sent.")
             return True
-        print(f"Telegram failed: HTTP {resp.status_code} — {redact(resp.text[:200], bot_token)}")
+        print(f"Telegram failed: HTTP {resp.status_code} — {redact(resp.text, bot_token)[:200]}")
         return False
     except Exception as e:
         # requests names the URL in its errors, and Telegram puts the token in the URL path

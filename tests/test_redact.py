@@ -59,3 +59,40 @@ def test_doctor_does_not_return_the_token_from_a_failed_response(monkeypatch):
     monkeypatch.setattr(doctor.requests, "get", lambda *a, **k: resp)
     ok, msg = doctor.check_telegram_credentials(bot_token=TOKEN, chat_id="42")
     assert not ok and TOKEN not in msg
+
+
+# -- review 2026-10-14: the secret is masked before the text is cut, so a token that straddles the cut leaves no part behind --
+
+def _straddling(n):
+    """A response body whose token starts n characters before the place the message is cut."""
+    return "x" * n + TOKEN
+
+
+def test_doctor_masks_a_token_that_straddles_the_cut(monkeypatch):
+    resp = MagicMock()
+    resp.status_code = 401
+    resp.text = _straddling(80)              # doctor keeps 100 characters
+    monkeypatch.setattr(doctor.requests, "get", lambda *a, **k: resp)
+    ok, msg = doctor.check_telegram_credentials(bot_token=TOKEN, chat_id="42")
+    assert not ok and TOKEN[:20] not in msg
+
+
+def test_send_telegram_masks_a_token_that_straddles_the_cut(monkeypatch, capsys):
+    resp = MagicMock()
+    resp.status_code = 401
+    resp.text = _straddling(180)             # send_telegram keeps 200 characters
+    monkeypatch.setattr(notifier.requests, "post", lambda *a, **k: resp)
+    notifier.send_telegram(TOKEN, "42", "hi")
+    assert TOKEN[:20] not in capsys.readouterr().out
+
+
+def test_the_gemini_rest_fallback_masks_a_key_that_straddles_the_cut(monkeypatch, tmp_path):
+    key = "AIza" + "k" * 35
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(doctor, "_get_gemini_client", lambda k: (_ for _ in ()).throw(ImportError("no sdk")))
+    resp = MagicMock()
+    resp.status_code = 400
+    resp.text = "y" * 90 + key               # "HTTP 400: " + 90 + the start of the key: the message keeps 120 characters
+    monkeypatch.setattr(doctor.requests, "post", lambda *a, **k: resp)
+    ok, msg = doctor.check_gemini_quota(api_key=key)
+    assert not ok and key[:12] not in msg

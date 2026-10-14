@@ -9,6 +9,12 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed (2026-10-14, review of T92 and T95: a secret cut in half)
+- `doctor`'s Telegram check and `send_telegram` cut a failed response's text to 100 / 200 characters and then masked the token; the REST fallback of `doctor`'s
+  Gemini check did the same with the key (120 characters). A secret that straddled the cut no longer matched, so its first part was printed. Each now masks the
+  whole text, then cuts it (`tests/test_redact.py`: three tests, red before the fix). Neither Telegram nor Google is known to echo the secret in a response body;
+  this closes the case where one does.
+
 ### Added (2026-10-13, T69 g: how many generic engineer titles does the filter drop?)
 - `scripts/measure_generic_titles.py` (with `tests/test_measure_generic_titles.py`) counts, from a saved `measure_prefilter.py --save` fetch, the India jobs the title rule drops
   only for lacking an include word, by kind (bare "Senior Engineer" / "Engineer II", qualified, other), with the 7-day window and the companies. Measured on 2026-10-13: 26 bare-title jobs

@@ -35,12 +35,13 @@ logger = logging.getLogger(__name__)
 # LinkedIn headcount cache with --linkedin or ROLESIGHT_LINKEDIN_CACHE. Headcount is badge metadata only, so no cache is fine.
 YAML_ENV = "ROLESIGHT_HARVEST_YAML"
 LINKEDIN_ENV = "ROLESIGHT_LINKEDIN_CACHE"
+DEFAULT_OUT = "companies.json"
 
 
 def default_linkedin_cache() -> str:
     """The headcount cache path from the environment, or "" when none is configured."""
     return os.getenv(LINKEDIN_ENV, "")
-DEFAULT_OUT = "companies.json"
+
 
 # Same-slug boards that belong to another employer, or are abandoned stubs: removed from companies.json on
 # evidence (CLAUDE.md), so a harvest must not bring them back. (ats, slug), compared in lower case.

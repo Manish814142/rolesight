@@ -142,7 +142,7 @@ def check_gemini_quota(api_key: Optional[str] = None, model: Optional[str] = Non
             }
             resp = requests.post(url, json=payload, headers={"x-goog-api-key": api_key}, timeout=10)
             if resp.status_code != 200:
-                raise RuntimeError(f"HTTP {resp.status_code}: {resp.text[:120]}")
+                raise RuntimeError(f"HTTP {resp.status_code}: {resp.text}")   # masked, then cut, below
 
         elapsed = time.time() - t0
         return True, f"Quota active (model: {model}, latency: {elapsed:.2f}s)"
@@ -174,7 +174,7 @@ def check_telegram_credentials(
             bot_user = data.get("result", {}).get("username", "bot")
             chat_info = f", chat_id: {chat_id}" if chat_id and not _is_placeholder(chat_id) else " (chat_id missing)"
             return True, f"Connected to Telegram (@{bot_user}{chat_info})"
-        return False, f"Telegram API returned HTTP {resp.status_code}: {redact(resp.text[:100], bot_token)}"
+        return False, f"Telegram API returned HTTP {resp.status_code}: {redact(resp.text, bot_token)[:100]}"
     except Exception as e:
         return False, f"Telegram network error: {redact(str(e), bot_token)}"
 
