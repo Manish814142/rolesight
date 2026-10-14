@@ -152,3 +152,22 @@ def test_a_board_in_both_sets_counts_no_misses(tmp_path):
     board = ("eightfold", "Qualcomm")
     record_sightings({board: [kept]}, closed_after=1, db_path=path, incomplete={board}, windowed={board: WINDOW})
     assert db.get_job(gone.global_id, db_path=path)["closed_at"] is None
+
+
+def test_the_window_edge_is_judged_by_the_local_date_the_fetch_used(scan, monkeypatch):
+    """Found at 05:16 IST on 2026-10-15, when UTC was still 2026-10-14: the miss rule took UTC's date while the fetch's window
+    (prefilter.is_too_old) takes the local one, so a job at the edge looked a day newer and counted a miss, eating the margin.
+    The local date is set a day after UTC's here, as it is between 00:00 and 05:30 in India, so this fails at any hour."""
+    from datetime import datetime, timezone
+    local_today = datetime.now(timezone.utc).date() + timedelta(days=1)
+
+    class LocalDate(date):
+        @classmethod
+        def today(cls):
+            return local_today
+
+    monkeypatch.setattr(db, "date", LocalDate)
+    edge, new = _job("edge", (local_today - timedelta(days=WINDOW)).isoformat()), _job("new", local_today.isoformat())
+    _stored(edge, new)
+    scan([new])
+    assert _row(edge)["missed_scans"] == 0

@@ -9,6 +9,14 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed (2026-10-15, T109: the window-miss rule used UTC's date)
+- `db._unseen_inside_window` (T78: a board whose fetch stopped at the posted-date window counts a miss only for jobs inside the window, with a
+  day of margin) took today's date in UTC, while the window itself (`prefilter.is_too_old`) and every other age use the local date. From 00:00
+  to 05:30 IST UTC is a day behind, so a job at the window's edge looked a day newer and counted a miss, eating the margin; three such scans
+  could close a job that was still open. Found when `tests/test_window_closing.py::test_the_last_day_of_the_window_gets_a_margin` failed at
+  05:16 IST on 2026-10-15 (passing the day before). It now uses the local date; a new test sets the local date a day after UTC's, so it fails on
+  the old code at any hour.
+
 ### Added (2026-10-14, docs/10: limitations and future work)
 - `docs/10-limitations-and-future-work.md`: what is still fixed to one setup and where in the code (India in six places, among them four
   adapters that ask the board for India jobs only; the reachable job boards; Gemini's free tier, score noise, a rubric measured for one

@@ -446,7 +446,9 @@ WINDOW_STOP_MARGIN_DAYS = 1
 
 def _unseen_inside_window(conn: sqlite3.Connection, ats: str, company: str, now: str, window_days: int) -> List[int]:
     """Row ids of the board's open jobs not seen in this scan whose posted date puts them inside the window."""
-    today = datetime.now(timezone.utc).date()
+    # The local date, as the fetch's window (prefilter.is_too_old) uses: UTC's is a day behind India's from 00:00 to 05:30 IST,
+    # which made a job at the window's edge look a day newer and count a miss (found 2026-10-15 at 05:16 IST).
+    today = date.today()
     ids = []
     rows = conn.execute("SELECT id, posted_at, first_seen FROM jobs WHERE ats = ? AND company = ? AND closed_at IS NULL "
                         "AND (last_seen IS NULL OR last_seen < ?);", (ats, company, now))

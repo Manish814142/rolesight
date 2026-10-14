@@ -373,6 +373,7 @@ T11, T12, T14, T15, T16, T17 and T18 were verified 2026-10-07, T66 and T67 on 20
 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
+| T109 | The window-miss rule (T78) took UTC's date: from 00:00 to 05:30 IST a job at the window's edge counted a miss | review · claude · (this commit) | claude | XS | — |
 
 **T105 · finding (Inbox text, jobnotify-7f's review of T103):** **`init` leaves `.env` and `config.json` at mode 664, and `init --resume` may now save the Gemini key into `.env`** (`onboarding._save_key`; the scaffold copy; no `chmod` anywhere). The umask here is 002, so the key would sit in a group-writable, world-readable file. Possible fix: create `.env` with 0600 and `os.chmod(env_file, 0o600)` after writing the key *(evidence: measured (`stat -c %a` in a fresh `init` directory: 664; no chmod in `onboarding.py`))*
 
@@ -616,7 +617,7 @@ Which terms would you add?
 
 ## Inbox
 
-New findings go here with the next free ID (next: **T109**), an evidence tag and the
+New findings go here with the next free ID (next: **T110**), an evidence tag and the
 file:line. Manish or the triaging agent moves each one into a priority table.
 
 | ID | Finding | Evidence | Added by |
@@ -632,6 +633,7 @@ The implementer adds a row when a task reaches `review`; the verifier removes it
 
 | ID | Commit(s) | Implementer | Evidence (command → result) |
 |---|---|---|---|
+| T109 | (this commit) | claude | **Found:** `pytest` at 05:16 IST on 2026-10-15 (`date -u` → 2026-10-14 23:46) failed `test_window_closing.py::test_the_last_day_of_the_window_gets_a_margin` (`missed_scans` 1, expected 0), which passed on 2026-10-14. **Cause, predicted then confirmed:** `db._unseen_inside_window` used `datetime.now(timezone.utc).date()`; `prefilter` (the window) and every other age use `date.today()` (`grep`: the only UTC "today" in `job_hunt/`). **Red first:** a new test sets `db.date.today()` to UTC's date + 1 day, so the old code fails it at any hour; both tests failed before the one-line fix, all 11 pass after. **Gates:** 1,478 passed (3.12, at 05:17 IST, the failing hour), ruff and mypy clean. **Not run:** 3.11/3.13 (CI runs in UTC, where the old test could not fail). **Check yourself:** `pytest tests/test_window_closing.py` | |
 
 ---
 
