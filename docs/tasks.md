@@ -373,6 +373,9 @@ T11, T12, T14, T15, T16, T17 and T18 were verified 2026-10-07, T66 and T67 on 20
 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
+| T105 | `init` writes `.env` / `config.json` readable by other users, and `init --resume` can save the key into `.env` (Manish: do it) | doing · claude · 2026-10-14 | claude | XS | — |
+| T104 | A `candidate.titles` block without `exclude` drops every default exclusion silently (Manish: do it) | doing · claude · 2026-10-14 | claude | XS | — |
+| T106 | The MCP export ignores `candidate.rubric_file`; `SDE6`+ without a space no longer passes (Manish: do it) | doing · claude · 2026-10-14 | claude | XS | — |
 
 **T102 · TinyFish leftovers (Manish, 2026-10-14: "if TinyFish is not used in our project and not important, you can remove it").** Measured: nothing in `job_hunt/`, packaging, scripts or CI references it (one comment in `main.py`); his `.env` has no line and his `config.json` held a dead `tinyfish_api_key`. The root `.env.example` still offered TinyFish and OpenRouter keys and had drifted from `job_hunt/data/env_example` (live `CANDIDATE_NAME`, `MIN_SCORE=60`: T81's trap). *Done when:* the root file equals the packaged template (a test), names neither, and no config or env file of his mentions TinyFish.
 
