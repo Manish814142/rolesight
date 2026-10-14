@@ -275,7 +275,6 @@ at 400 jobs; T02 (7 days) and T05 (70) are decided and verified.
 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
-| T01 | Back up the repo to a private remote (done 2026-10-13 differently: the repo is **public** at github.com/Manish814142/rolesight, pushed by claude on his request; `main` only, CI green on all 4 jobs) | review · manish | — | XS | — |
 | T06 | Check that Telegram works | manish | — | XS | — |
 | T07 | Schedule `run_daily.sh` with a systemd user timer | manish | — | S | T02, T03, T04, T05 |
 
@@ -286,6 +285,7 @@ T03 and T04 were verified 2026-10-07, T64 on 2026-10-08, T02 and T05 on 2026-10-
 disk (measured). Create a private GitHub repo, run `git remote add backup <url>`, and push `main`.
 Never push to `origin`.
 *Done when:* `git ls-remote backup main` prints the same hash as `git rev-parse HEAD`.
+**Resolved 2026-10-14 (claude; Manish: "I pushed to the public repo, so you can take the call").** Done differently: the repository is public at github.com/Manish814142/rolesight and `origin` is it, so the code and its history are backed up there. Done-when, read on the day: `git ls-remote origin main` and `git rev-parse HEAD` both print `42fa036`. What no remote holds, by design: `.env`, `config.json`, the resume and `data/jobs.db` (git-ignored, secrets or personal data); the only other copies of the database are `data/jobs.db.bak-*` on the same disk, which guard against a bad edit, not a disk failure. An off-disk copy of those four is Manish's to make; nothing in the repository can do it for him without putting them on a remote.
 
 **T02 · Posted-date window on by default.** `--posted-within N` /
 `candidate.max_posted_age_days` exists (d534a57). But `config.json` doesn't set it and
@@ -373,6 +373,9 @@ T11, T12, T14, T15, T16, T17 and T18 were verified 2026-10-07, T66 and T67 on 20
 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
+| T101 | Commit headers (author and committer addresses) are checked by a test, not only the files: this machine's global git identity is a work address | review · claude · 87a2975 | claude | XS | — |
+
+**T101 · Commit headers.** `tests/test_public_release.py` refused a work or personal address in a published *file*, but nothing looked at the *headers* of commits: git takes `user.email` from the global config when a clone, a CI runner or a new tool has no local one, and this machine's global identity (`git config --global user.email`) is a work address (measured: global ends in the work domain; this repository's local config in the personal one). Manish: "you can take the call" on the global email; changing the global config would put his personal address on commits in his other repositories, so it is left alone and the guard is a test instead. **Done:** `test_every_commit_is_authored_and_committed_under_an_expected_address` fails on any author or committer domain outside `EXPECTED_COMMIT_DOMAINS` (personal mail, the original author's university, GitHub, the assistant trailer); the work domain is not written in the test (public file). Measured on `main`: 616 commits personal, 118 original author, 18 GitHub, the work domain 0 times in author, committer or message.
 
 **T100 · Question for Manish: do you want Developer Advocate roles scored? The first scan with T79's rubric scored Autodesk's "Senior Developer Advocate (APIs)" **82** (its reason: "the role focuses on developer advocacy and API support rather than pure backend engineering"); it is in `open_matches.csv`. Nothing in the filter or in `candidate.not_suitable` ("Pure Frontend without backend, Internships, Non-technical management") covers advocacy, so Gemini judges the stack and scores it high. On the fetch of 2026-10-13, 3 passing titles name advocate / evangelist / developer relations (2 in the 7-day window). If not: add "Developer advocacy / developer relations" to `not_suitable` in your `config.json` (rubric rule 2 then caps them at 40), or ask for `advocate` in the title exclude list. Not changed: no earlier choice of yours covers it (QA was covered: `quality` now joins `qa`/`test`)** *(Inbox text of 2026-10-14; evidence: measured (live `data/jobs.db`, saved fetch))* **Decision (Manish, 2026-10-14), the same rule as for "AI / ML Engineer":** if his skills match the profile, keep the role, otherwise reject; he left the reading of his resume to Claude. Developer advocacy / developer relations is a different job (talks, articles, community, demos; the resume has none of it and shows backend engineering), so these titles are rejected in the pre-filter, not left to Gemini's score. *Done when:* the Developer Advocate / DevRel / evangelist titles on the 2026-10-13 fetch no longer pass, no other passing title changes (measured over the whole fetch), tests pin both sides, and the labelled `no` for "Senior Developer Advocate" is consistent with it.
 
@@ -600,7 +603,7 @@ Which terms would you add?
 
 ## Inbox
 
-New findings go here with the next free ID (next: **T101**), an evidence tag and the
+New findings go here with the next free ID (next: **T102**), an evidence tag and the
 file:line. Manish or the triaging agent moves each one into a priority table.
 
 | ID | Finding | Evidence | Added by |
@@ -616,6 +619,7 @@ The implementer adds a row when a task reaches `review`; the verifier removes it
 
 | ID | Commit(s) | Implementer | Evidence (command → result) |
 |---|---|---|---|
+| T101 | 87a2975 | claude | Tests: `python -m pytest` 1176 passed, exit 0 (85% gate; also exit 0 under `unshare -rn`), `ruff check job_hunt/ tests/ conftest.py` and `mypy` clean. The guard passes on today's history by nature, so its teeth are shown by mutants: personal domain taken off the list → the real-repo test fails; the scan returning nothing → the synthetic-stray test fails; reading only the author address → the committer test fails (a first version missed that one; `test_the_commit_scan_reads_the_committer_too` was added) → **3 of 3 killed**. Synthetic repos built in `tmp_path` carry a stray author and a stray committer. Read on the day, no code: `git log main --format=%ae%n%ce` → 616 gmail.com, 118 lnmiit.ac.in, 18 github.com; the work domain 0 in headers and messages; `git config --local user.email` ends `@gmail.com`, `--global` ends in the work domain. **Not changed on purpose:** `~/.gitconfig`. **T01** is closed in the same commit range (Done log), **TinyFish key:** nothing left in the repository (`.env` has no line, `config.json` a placeholder, no environment variable, and the 12 key-shaped strings in history are the upstream docs' `sk-tinyfish-your-…` placeholders); revoking it is only possible in his TinyFish account. |
 
 ---
 
@@ -715,6 +719,7 @@ and CHANGELOG (inferred), and their numbers from CHANGELOG unless marked measure
 | T69 | (a) structured and batch scoring read `gemini_temperature`; (b) the deprecated scorer sends the whole resume and the description up to `MAX_DESCRIPTION_CHARS`; (c) "Embedded Finance/Payments/…" is not embedded systems; (f) structured stack cap 50, as rubric rule 4 | 5a1c531 | Reviewer: diff read (defaults unchanged, so the daily single-call scan is not affected: it already read the setting); (c) on the 2026-10-13 fetch one title has the phrase, "Manager, Embedded Finance Operations", still excluded by `manager`: 0 jobs change, as claimed; suite green on four environments (below, T98) | verified · claude · 2026-10-14 |
 | T98 | MCP server on `mcp` 1.x and 2.x; a tool that cannot run answers the client with the reason (it used to hang it) | 29a0218 | Reviewer: CI's exact commands on **3.11, 3.12 and 3.13 with `mcp` 2.3.0** (what `<3` now resolves to, as CI will) → ruff and mypy clean, 1,157 passed + 1 skipped (`anthropic` absent), coverage 93.36%; his `.venv` (`mcp` 1.30.0) → 1,158 passed. **Parameter schemas through a real stdio client from an empty directory, both SDKs:** identical (`draft_application` requires `job_ref`, `export_jobs` has `min_score`/`days` with their descriptions), so the error-translating wrapper does not hide the signature; the real-client tests' own call with arguments would have passed even without them, this check closes that. `@dependabot unignore mcp` is **not needed**: the ignore only stops proposals of 2.x versions, which `<3` already allows; a 3.x release is still proposed | verified · claude · 2026-10-14 |
 | T100 | Developer Advocate / advocacy / evangelist / DevRel / developer relations titles are rejected before Gemini (Manish, 2026-10-14: keep a role only if his skills match it) | abbe274 | Reviewer: the filter at `3eda7e1` against the new one on the 2026-10-13 fetch: survivors 2,196 → 2,193, lost exactly Amazon "Developer Advocate, Developer Solutions and Engineering Team", Autodesk "Senior Developer Advocate (APIs)", Salesforce "Developer Advocate", gained 0; their stored scores 35, 82, 25 (and Neo4j's 10 of 2026-10-04), as cited; `check_filter.py`: the Autodesk title REJECTED, "Backend Engineer, Developer Platform" KEPT; gates with `mcp` 1.30 (1,173 passed) and 2.3.0 (1,172 + 1 skipped), ruff and mypy clean. Autodesk's 82 stays in the database and in `open_matches.csv` until the posting ages out (scored rows are final) | verified · claude · 2026-10-14 |
+| T01 | Code backed up off this disk: the repository is public on GitHub (done differently from the private remote the task named) | — (pushed 2026-10-13/14; head `42fa036`) | `git ls-remote origin main` → `42fa036…`; `git rev-parse HEAD` → `42fa036…`; `git rev-list --count origin/main..main` → 0 (measured 2026-10-14, after the reviewer's push; CI on that commit: success). Not covered, stated plainly: `.env`, `config.json`, the resume and `data/jobs.db` are on no remote | verified · claude · 2026-10-14 (Manish delegated the call) |
 | — | Commit the working tree; tree clean | d773438 … bfe74de | 355 tests pass, ruff and mypy clean (measured 2026-10-04) | pre-board |
 | — | Location filter: Delhi / NCR / Kolkata and case-sensitive `, in` | d773438 | "Indianapolis, IN" still rejected (unit test) | pre-board |
 | — | Full resume in the scoring prompts | d773438 | previously first 2,500 of ~4,000 chars | pre-board |
