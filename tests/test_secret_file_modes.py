@@ -55,6 +55,21 @@ def test_doctor_warns_about_a_key_file_others_can_read(tmp_path):
     assert doctor.check_secret_file_modes(tmp_path) == []
 
 
+@pytest.mark.parametrize("mode", [0o640, 0o604, 0o644, 0o664, 0o666])
+def test_doctor_warns_when_the_group_or_anyone_else_can_read_the_key_file(tmp_path, mode):
+    """Found in review (a mutant that looked only at "others" survived): a group-readable file counts too."""
+    (tmp_path / ".env").write_text(f'GEMINI_API_KEY="{FAKE_KEY}"\n')
+    os.chmod(tmp_path / ".env", mode)
+    assert len(doctor.check_secret_file_modes(tmp_path)) == 1
+
+
+@pytest.mark.parametrize("mode", [0o600, 0o400])
+def test_doctor_is_quiet_about_a_key_file_only_its_owner_can_read(tmp_path, mode):
+    (tmp_path / ".env").write_text(f'GEMINI_API_KEY="{FAKE_KEY}"\n')
+    os.chmod(tmp_path / ".env", mode)
+    assert doctor.check_secret_file_modes(tmp_path) == []
+
+
 def test_doctor_prints_the_warning(tmp_path, monkeypatch, capsys):
     monkeypatch.chdir(tmp_path)
     (tmp_path / ".env").write_text(f'TELEGRAM_TOKEN="{FAKE_KEY}"\n')

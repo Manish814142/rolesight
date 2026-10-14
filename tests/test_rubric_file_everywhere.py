@@ -5,7 +5,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from job_hunt import llm_utils, prefilter, tools
+from job_hunt import llm_utils, main, prefilter, tools
 
 ROOT = Path(__file__).resolve().parent.parent
 MINE = "SCORING RUBRIC for Asha\n1. a rule"
@@ -22,6 +22,17 @@ def test_the_mcp_export_compares_with_the_persons_rubric(tmp_path, monkeypatch):
     seen = {}
     monkeypatch.setattr(tools, "export_jobs", lambda **kw: seen.setdefault("rubric", llm_utils.SCORING_RUBRIC))
     tools.tool_export(config_path=str(tmp_path / "config.json"))
+    assert seen["rubric"] == MINE
+
+
+def test_the_cli_export_compares_with_the_persons_rubric(tmp_path, monkeypatch):
+    """Found in review: no test covered the CLI branch (removing its rubric line broke nothing)."""
+    _project(tmp_path)
+    monkeypatch.chdir(tmp_path)
+    seen = {}
+    monkeypatch.setattr(main, "export_jobs", lambda min_score=0, days=0: seen.setdefault("rubric", llm_utils.SCORING_RUBRIC))
+    monkeypatch.setattr(sys, "argv", ["autopilot", "export"])
+    main.main()
     assert seen["rubric"] == MINE
 
 
