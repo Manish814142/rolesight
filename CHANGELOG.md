@@ -9,6 +9,18 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Done (2026-10-14, T86: the old-prompt scores)
+- Manish said "yes you can re-score" for the 145 rows scored on 2026-10-04 (older prompt). A scan can re-score only a job it fetches, that passes today's pre-filter and
+  is inside the 7-day window, so resetting all 145 would have re-scored 3 and left 142 as `discovered` for good; only those 3 were reset (Autodesk, State Street,
+  Wolters Kluwer), after a backup (`data/jobs.db.bak-2026-10-14-before-T86`) and a copy of the 145 old scores (`data/old_prompt_scores_2026-10-04.json`).
+- Real `./run_daily.sh`, 12:31 to 12:53 IST (22.5 min): `Funnel: fetched 34268 | India 18070 | already scored 369 | pre-filter rejected 32210 | too old 1533 | queued 156 |
+  scored 156 (gemini-3.5-flash-lite 156) | failed 0 | left for next scan 0`. Every new row carries rubric `82e017b4` (T97) and model `gemini-3.5-flash-lite`.
+- The 3 rows: Autodesk "Senior Developer Advocate" 50 → 82, State Street "Emerging Technology and Transformation Developer - AVP" 75 → 45 (LLM and agent workflows as the
+  main duty: rule 8), Wolters Kluwer "Associate Enterprise Software Engineer - DevSecOps" 45 → 75. Three rows say nothing about the rubric on average; T60 measured swings
+  of this size between runs of the same prompt on ambiguous postings.
+- Of the new scores 29 of 156 are 70 or more; of the 51 generic-engineer titles T96 lets through 1 reached 70 (KLA "Software Quality Engineer", 75), of the 3 places T84 adds
+  none did. `open_matches.csv`: 87 rows (18 of 2026-10-04, 40 of 2026-10-12, 29 of 2026-10-14); its `Rubric` column is blank for the 58 rows scored before T97.
+
 ### Fixed (2026-10-14, T99: scored rows with no posted date no longer sit in `open_matches.csv` at any age)
 - Rows scored before T29 (all 145 of 2026-10-04) have no `posted_at`, and a scan skipped them at "Skipping previously scored job", so they never got one;
   `open_matches.csv` keeps undated jobs, so it listed them whatever the posting's real age. When a scan fetches a job whose stored row is `scored`/`notified`
