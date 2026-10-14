@@ -116,7 +116,8 @@ been measured yet.
 
 ## Current status
 
-As of 2026-10-13. The live list of work is the task board, [docs/tasks.md](docs/tasks.md).
+As of 2026-10-14. The live list of work is the task board, [docs/tasks.md](docs/tasks.md); everything that is still fixed to
+one setup, and ideas for extending it, is in [docs/10 — Limitations and future work](docs/10-limitations-and-future-work.md).
 
 **Working**
 - Fetching, the pre-filter, the posted-date window, description enrichment, scoring, the CSV and the seen-job
@@ -126,6 +127,9 @@ As of 2026-10-13. The live list of work is the task board, [docs/tasks.md](docs/
 - A job that disappears from its board is marked closed after three scans without it.
 
 **Known gaps** (each is a task on the board)
+- **India only.** The location filter, four job-board adapters (Workday, Eightfold, Phenom, Oracle HCM ask the board for
+  India jobs), rubric rule 1 and `discover` are built for India, and so is the company list. Other countries are task T108
+  (a design is on the board).
 - **Not scheduled by default.** Scans run by hand. `scripts/systemd/install.sh` installs a daily systemd user
   timer when you choose.
 - **Telegram is unverified.** The last send attempts (2026-10-03) failed with HTTP 404, so treat Telegram as off.
@@ -136,7 +140,6 @@ As of 2026-10-13. The live list of work is the task board, [docs/tasks.md](docs/
 - **Coarse scores.** Many jobs tie at 90, so the order inside the top band is arbitrary; breaking ties needs sub-scores
   (opt-in, `scoring_mode: structured`). All but one of the 82 labels behind these measurements were made by Claude,
   not by a human, and are not yet confirmed (T59), so treat the figures as indicative.
-- **The outside-India rule sometimes caps a job in an Indian city** (T79).
 
 ---
 
@@ -306,6 +309,7 @@ The design: [ARCHITECTURE.md](ARCHITECTURE.md).
 | [docs/07 — Config & scoring](docs/07-config-and-scoring.md) | Every config key; the pre-filter and scoring in detail |
 | [docs/08 — Troubleshooting](docs/08-troubleshooting.md) | Known errors and fixes |
 | [docs/09 — Testing checklist](docs/09-testing-checklist.md) | Gates and smoke tests |
+| [docs/10 — Limitations and future work](docs/10-limitations-and-future-work.md) | What is still fixed to one setup (India, the ATS list, Gemini's free tier…), and ideas to extend RoleSight |
 | [docs/tasks.md](docs/tasks.md) | The task board: what's pending, in review and done |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | Components, data flow, rules, limitations |
 | [CHANGELOG.md](CHANGELOG.md) | What changed, with measurements |

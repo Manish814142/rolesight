@@ -9,6 +9,18 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Added (2026-10-14, docs/10: limitations and future work)
+- `docs/10-limitations-and-future-work.md`: what is still fixed to one setup and where in the code (India in six places, among them four
+  adapters that ask the board for India jobs only; the reachable job boards; Gemini's free tier, score noise, a rubric measured for one
+  person, AI-made test labels; scheduling, Telegram, no web UI), and the ideas not started (other countries, scoring a job found anywhere,
+  a short daily list, learning from the person's decisions, referrals, follow-ups, interview prep, region company lists). Linked from the
+  README, `docs/README.md`, `ARCHITECTURE.md` and `CONTRIBUTING.md` (Manish: no development now; publish what is left so others can extend it).
+- Found while writing it and checked with `rolesight check-filter`: `"cities": ["Dubai"]` already lets "Dubai, United Arab Emirates" through
+  the filter (a chosen city counts even when the India lists do not know it), but remote jobs open to India still pass and the adapters
+  still fetch India only, so it is not a working setup for Dubai (T108).
+- Stale text corrected: the README's known gaps no longer list the rule-1 problem fixed by T79 and now lead with "India only";
+  `ARCHITECTURE.md` no longer says generic "Senior Engineer" titles are not scanned (scored since T96).
+
 ### Changed (2026-10-14, backups of the key files are ignored)
 - `.gitignore` ignores `config.json.bak*` and `.env.bak*`: a dated backup of Manish's `config.json` (`config.json.bak-2026-10-14`, holding his key)
   showed up as untracked, so a careless `git add` could have committed it. Backups now go to `data/backups/` (ignored, folder 700, files 600).

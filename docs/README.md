@@ -19,6 +19,7 @@ best-first CSV. It **never applies** to anything. The project overview is in the
 | 07 | [Config & scoring](07-config-and-scoring.md) | Every config key; the pre-filter rules; the scoring prompt and what scores mean |
 | 08 | [Troubleshooting](08-troubleshooting.md) | Known symptoms, causes and fixes |
 | 09 | [Testing checklist](09-testing-checklist.md) | Gates, smoke tests, a real small scan, MCP check |
+| 10 | [Limitations and future work](10-limitations-and-future-work.md) | What is fixed today and where in the code (India only, the reachable job boards, scoring limits), and ideas to extend it |
 | — | [Task board](tasks.md) | Pending work by priority; how agents claim, finish and verify tasks |
 
 ## Also see

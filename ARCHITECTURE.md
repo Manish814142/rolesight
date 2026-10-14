@@ -183,8 +183,8 @@ Measured on the date given. Each one has a task.
 - **Pre-filter recall** (measured 2026-10-07; jobs blocked before Gemini sees them): titles with
   "python" (9 of 32 score ≥ 80; decision T62) and "AI Engineer" / "Forward Deployed Engineer"
   (21 of 68 score ≥ 70 on 3.5; decision T74). Amazon's "Software Dev Engineer" spelling was blocked
-  until T72 (33 of 56 score ≥ 80). Generic "Senior Engineer" / "Engineer II" titles (~250 India jobs,
-  mostly hardware companies) are not scanned.
+  until T72 (33 of 56 score ≥ 80). Generic "Senior Engineer" / "Engineer II" titles are scored since T96
+  (`generic_engineer_titles`); the title words are `config.json` `candidate.titles` since T103.
 - **Onsite outside India:** "India anywhere in the location" passes multi-location jobs; the
   prompt caps roles that need onsite work abroad at 30 (rubric rule 1, T24).
 - **One store** since T31–T34: `data/jobs.db`. Scores held only by the retired `state/*.json` files need
@@ -198,6 +198,7 @@ Measured on the date given. Each one has a task.
 
 ## 8. Roadmap
 
-The roadmap is the task board, [docs/tasks.md](docs/tasks.md). Accuracy work (what Gemini
+The roadmap is the task board, [docs/tasks.md](docs/tasks.md); what is still fixed to one setup (India first: T108) and the
+ideas for extending RoleSight are in [docs/10-limitations-and-future-work.md](docs/10-limitations-and-future-work.md). Accuracy work (what Gemini
 sees, how it scores, which jobs reach it) comes first; then scheduling and operations;
 then a single SQLite source of truth, tracking features and cleanup.

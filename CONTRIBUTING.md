@@ -6,7 +6,8 @@ This page is the short version of how work gets done; the details live in the ta
 
 ## Where work comes from
 
-**[docs/tasks.md](docs/tasks.md)** is the single board.
+**[docs/tasks.md](docs/tasks.md)** is the single board. For a first look at what could be extended (other countries than
+India, more job boards, the ideas not started yet), read [docs/10 — Limitations and future work](docs/10-limitations-and-future-work.md).
 
 - **Implementing:** follow its *Working loop*. Pick the next task in priority order, claim
   it, implement it with tests, run its *Done when* check plus the gates, commit, and add
