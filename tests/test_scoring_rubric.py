@@ -509,3 +509,13 @@ def test_variance_script_survives_a_failed_call(tmp_path, monkeypatch):
     out = tmp_path / "runs.json"
     assert msv.main(["--csv", "scripts/golden_set_ai.csv", "--ids", "ai65", "--runs", "3", "--save", str(out)]) == 0
     assert json.loads(out.read_text()) == {"ai65": [75, 75]}
+
+
+def test_location_cap_never_applies_to_an_indian_city():
+    """T79: rule 1 capped Notion's on-site Hyderabad role (ai65, labelled apply) at <= 30 in 5 of 20 runs on 2026-10-14,
+    reading "Bengaluru" in the candidate's preferences as a limit. Rule 1's own bracket now names every Indian city and
+    on-site work; with it ai65 was capped 0 of 20 times, and the 82 labelled jobs ranked no worse (CHANGELOG 2026-10-14)."""
+    rule1 = llm_utils.SCORING_RUBRIC.split("1. ")[1].split("2. ")[0]
+    assert "on-site presence outside India" in rule1                       # the cap itself is unchanged
+    assert "Roles in any Indian city, whether on-site, hybrid or remote" in rule1
+    assert "remote roles open to India" in rule1

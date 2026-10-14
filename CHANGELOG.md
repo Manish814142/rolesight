@@ -9,6 +9,18 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Changed (2026-10-14, T79: rule 1 never caps a role in an Indian city)
+- Rule 1 of the scoring rubric (the ≤ 30 cap for on-site work outside India) sometimes capped an on-site role in an Indian city other than Bengaluru:
+  Notion's Forward Deployed Engineer in Hyderabad (`ai65`, labelled `apply`) scored ≤ 30 in 5 of 20 runs, the reasons citing the candidate's Bengaluru
+  preference. The rule's bracket now reads "(Roles in any Indian city, whether on-site, hybrid or remote, and remote roles open to India are eligible for higher
+  scores)" instead of "(India-based roles, India hybrid, or remote roles …)"; the cap itself is unchanged. Measured on `gemini-3.5-flash-lite` (pinned), all
+  runs on 2026-10-14 against a same-day control, criteria fixed beforehand: ai65 capped **0 of 20** (control 5 of 20); the 82 labelled jobs, two runs: AUC
+  **0.955 / 0.953** vs 0.921, `apply` +1.5 points on average, 0 false positives at 70 in every run, highest `no` 50; `apply` at 70 is 12 of 14 in every run,
+  control included (the same two jobs, g8 and j7, whose labels are open questions in T59). The first attempt (an added sentence, 2026-10-11) was reverted for
+  lowering the ranking; this one changes only the existing bracket. **Noise worth knowing:** the unchanged rubric's AUC on the 82 was 0.976 on 2026-10-11,
+  0.949 on 2026-10-13 (66 answered) and 0.921 today, so a rubric change is only comparable to a control scored the same day. Score files in
+  `data/golden_runs/t79c_*` (git-ignored).
+
 ### Changed (2026-10-14, T84 and T96: more of what reaches Gemini, on Manish's answers)
 - **T84, the location check is on the country.** Manish applies to all of India, so `location_is_india` now also accepts any Indian state or union territory and some 150
   more cities (Coimbatore, Indore, Nagpur, Bhubaneswar, Lucknow, Kochi, ... `LOCATION_INDIA_MORE_PATTERN`), not only 11 cities and the word "india"; upper-case `IND`
