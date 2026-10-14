@@ -60,7 +60,8 @@ rolesight init --resume ~/Downloads/my_cv.pdf    # your settings, drafted from y
 (`rolesight` and `autopilot` are the same program.) `rolesight init` creates whatever is missing and skips what
 already exists: `config.json` (your settings), `.env` (your key), `rubric.md` (how a job is scored against you),
 `resume/YOUR_RESUME.md` (a template) and the company list `companies.json`. All of them stay on your computer;
-`config.json`, `.env`, `rubric.md` and your resume are kept out of git.
+`config.json`, `.env`, `rubric.md` and your resume are kept out of git. `.env` and `config.json` are created readable by you
+only (mode 600), as they hold your key; `rolesight doctor` warns about an older one others can read (`chmod 600 .env config.json`).
 
 1. **Your key.** Get a free Gemini key at [aistudio.google.com/apikey](https://aistudio.google.com/apikey). Run
    `rolesight init --resume …` in a terminal and it asks for the key and saves it to `.env`; or open `.env` and
@@ -182,8 +183,9 @@ How an entry matches: as **whole words, in any case** (`java` matches "Senior JA
 "JavaScript"). **Spaces and hyphens inside an entry are optional**: `back end` also matches "Back-End" and
 "backend". List variants separately (`node`, `nodejs`, `node.js`). Use words and `. + # / & -` only; `.net`,
 `c#` and `c++` work as written. Without a `titles` block the defaults are used: the example config has them in
-full (`config.example.json`), 31 include and 91 exclude entries written for a 3-year backend engineer. A `titles`
-block is taken as written: a list you leave out is empty. If an include entry contains an excluded word, so that
+full (`config.example.json`), 35 include and 91 exclude entries written for a 3-year backend engineer. A `titles`
+block is taken as written: a list you leave out is empty, and the scan and `check-filter` say so (`candidate.titles has
+no "exclude" list…`); write `"exclude": []` if you really mean none. If an include entry contains an excluded word, so that
 it can never pass, the scan says so at its start (`Title filter: include entry … can never pass`).
 
 ### Places: `job_hunt/prefilter.py`

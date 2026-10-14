@@ -87,6 +87,8 @@ def tool_export(min_score: int = 0, days: int = 0, config_path: str = "config.js
     project_root = Path(config_path).parent.resolve()
     os.chdir(project_root)
     try:
+        from job_hunt.onboarding import use_rubric_of_config_file
+        use_rubric_of_config_file()                     # T106: the person's rubric is "current" for the Rubric column
         export_jobs(min_score=min_score, days=days)
         return "Export complete. Check output/ directory."
     finally:

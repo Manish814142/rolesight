@@ -9,6 +9,25 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed (2026-10-14, T105: key files readable by their owner only)
+- `init` wrote `.env` and `config.json` with the umask: 664 here (group-writable, world-readable), and since T103 `init --resume` can save the
+  Gemini key into `.env`. Both are now created with mode 600 from the first byte (`onboarding.write_private`), and saving a typed key
+  tightens an existing `.env` to 600. `rolesight doctor` warns when `.env` or `config.json` holds a real key (not a placeholder) and others
+  can read it: `[WARN] Key file: .env holds a key and other users can read it (mode 664): run chmod 600 .env`. Measured: a real `init` with
+  umask 002 gives `.env` 600, `config.json` 600, `companies.json` 664; the check on this checkout's own files (664, real keys) reports both.
+
+### Changed (2026-10-14, T104: a titles block that leaves a list out says so)
+- A `candidate.titles` block is still taken as written, but without `exclude` (no title rejected for a word) or `generic_engineer_titles`
+  (bare "Senior Engineer" titles not scored) the scan log and `check-filter` (on stderr) now say what that means and how to change it.
+  `"exclude": []` written out does not warn. The note is not part of the rules (`TitleRules` equality unchanged).
+
+### Fixed (2026-10-14, T106: every "current rubric" follows rubric_file; SDE6-SDE9)
+- The MCP `export_jobs` tool compared stored scores with the built-in rubric, not the person's `rubric_file`, so their own scores showed
+  in a `Rubric` column as older. Through a real MCP client: with the fix no column, with `tools.py` reverted the column is back.
+  `scripts/rubric_ids.py` had the same blind spot; it now prints `Your rubric (rubric.md): <id>` and marks that id `(current)`.
+- The default include list has `sde6`-`sde9` again (the old `sde\d*` took any number; T103 listed `sde1`-`sde5`). Re-measured: 0 of
+  39,985 jobs and 0 of 34,624 titles decided differently; still different: SDE10 and above written without a space (0 in that data).
+
 ### Fixed (2026-10-14, CI's secret scan: two fake test keys)
 - The first push of T103 failed CI's gitleaks job: `generic-api-key` on a fake key written out in `tests/test_onboarding.py`. Run locally over the whole
   history (gitleaks 8.24.3, CI's version, checksum verified), it also found an older one, `tests/test_doctor.py` (T92); neither is a real key (my

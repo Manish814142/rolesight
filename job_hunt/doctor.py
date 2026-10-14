@@ -204,6 +204,32 @@ def check_ats_egress() -> Dict[str, Tuple[bool, str]]:
     return results
 
 
+def check_secret_file_modes(directory: Path) -> list[str]:
+    """Key files (.env, config.json) that hold a real key and that other users can read (T105). POSIX only."""
+    if os.name == "nt":
+        return []
+    from dotenv import dotenv_values
+    out = []
+    for name in (".env", "config.json"):
+        path = Path(directory) / name
+        if not path.is_file():
+            continue
+        mode = path.stat().st_mode & 0o777
+        if not mode & 0o044:
+            continue
+        if name == ".env":
+            values = [v for k, v in dotenv_values(path).items() if "KEY" in k.upper() or "TOKEN" in k.upper()]
+        else:
+            try:
+                cfg = json.loads(path.read_text(encoding="utf-8"))
+            except (OSError, ValueError):
+                continue
+            values = [v for k, v in cfg.items() if k.endswith("_api_key")] + [(cfg.get("telegram") or {}).get("token")]
+        if any(isinstance(v, str) and not _is_placeholder(v) for v in values):
+            out.append(f"{name} holds a key and other users can read it (mode {mode:o}): run chmod 600 {name}")
+    return out
+
+
 def run_doctor(db_path: str = "data/jobs.db", env_path: str = ".env") -> bool:
     """Execute all diagnostic checks and output a clean pass/fail checklist to the terminal."""
     load_env_file(env_path)
@@ -239,6 +265,10 @@ def run_doctor(db_path: str = "data/jobs.db", env_path: str = ".env") -> bool:
         print(f"[WARN] Telegram Bot: {tg_msg} (alerts will be skipped)")
     else:
         print(f"[FAIL] Telegram Bot: {tg_msg}")
+
+    # Key files readable by other users (T105): a warning, the checks above still decide the status
+    for warning in check_secret_file_modes(Path(env_path).parent):
+        print(f"[WARN] Key file: {warning}")
 
     # 4. ATS Egress checks
     egress_results = check_ats_egress()

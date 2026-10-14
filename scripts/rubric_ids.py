@@ -75,8 +75,14 @@ def main(argv: Optional[List[str]] = None) -> int:
     parser.add_argument("--db", help="also count this database's scored rows by rubric id (opened read-only)")
     args = parser.parse_args(argv)
     repo = Path(__file__).resolve().parent.parent
+    print(f"This checkout: {rubric_id()}")
+    from job_hunt.onboarding import (
+        use_rubric_of_config_file,  # T106: config.json's rubric_file, if any, is the current one
+    )
+    source = use_rubric_of_config_file()
     current = rubric_id()
-    print(f"This checkout: {current}")
+    if source != "built-in":
+        print(f"Your rubric ({source}): {current}")
     print("\nRubric versions in the git history (first commit of each):")
     for v in rubric_versions(repo):
         mark = "  (current)" if v["id"] == current else ""

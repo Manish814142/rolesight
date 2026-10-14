@@ -127,16 +127,6 @@ def init_project(resume: str | None = None, yes: bool = False) -> None:
     _init(resume=resume, yes=yes)
 
 
-def _use_rubric_of_config_file() -> None:
-    """export marks scores from another rubric (T97 column): "the current rubric" is the person's rubric_file (T103)."""
-    from job_hunt.llm_utils import RubricError, configure_rubric
-    from job_hunt.onboarding import optional_config
-    try:
-        configure_rubric(optional_config())
-    except RubricError as e:
-        print(f"Note: {e} The Rubric column compares with the built-in rubric.", file=sys.stderr)
-
-
 from job_hunt.exporter import export_jobs_to_csv, job_from_db_row, job_to_export_row  # noqa: E402
 
 _job_to_row = job_to_export_row
@@ -263,7 +253,8 @@ def main() -> None:
     # export reads local scan state only — no API keys needed, so skip load_config()
     if cmd == "export":
         min_score, days = _parse_export_args(sys.argv)
-        _use_rubric_of_config_file()
+        from job_hunt.onboarding import use_rubric_of_config_file
+        use_rubric_of_config_file()
         export_jobs(min_score=min_score, days=days)
         return
 

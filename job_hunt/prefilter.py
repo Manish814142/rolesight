@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import date, datetime, timedelta, timezone
 from typing import Optional, Tuple
 
@@ -20,7 +20,8 @@ from job_hunt.models import JobPosting
 # Product startups often title backend roles "Product/Platform/Infrastructure Engineer".
 # AI / Forward Deployed Engineer titles (T74, Manish 2026-10-10): the scoring rubric rejects the ones that need heavy AI.
 DEFAULT_TITLE_INCLUDE: Tuple[str, ...] = (
-    "back end", "node", "nodejs", "node.js", "sde", "sde1", "sde2", "sde3", "sde4", "sde5", "software engineer",
+    "back end", "node", "nodejs", "node.js", "sde", "sde1", "sde2", "sde3", "sde4", "sde5", "sde6", "sde7", "sde8", "sde9",
+    "software engineer",
     "software dev engineer", "software development engineer", "member of technical staff", "mts", "computer scientist",
     "developer", "full stack", "api", "distributed", "platform engineer", "product engineer", "infrastructure engineer",
     "systems engineer", "gen ai engineer", "generative ai engineer", "agentic ai engineer", "applied ai engineer", "ai engineer",
@@ -129,6 +130,8 @@ class TitleRules:
     exclude: Tuple[str, ...] = DEFAULT_TITLE_EXCLUDE
     exceptions: Tuple[str, ...] = DEFAULT_TITLE_EXCEPTIONS
     generic_engineer_titles: bool = True
+    # Keys a candidate.titles block left out (T104): what you write is what you get, so the scan says what that means.
+    omitted: Tuple[str, ...] = field(default=(), compare=False)
 
     @classmethod
     def from_config(cls, config: dict) -> "TitleRules":
@@ -143,16 +146,24 @@ class TitleRules:
         if unknown:
             raise TitleRulesError(f"candidate.titles: unknown key {', '.join(unknown)} (allowed: {', '.join(_TITLE_KEYS)})")
         rules = cls(include=_terms(block, "include"), exclude=_terms(block, "exclude"), exceptions=_terms(block, "exceptions"),
-                    generic_engineer_titles=bool(block.get("generic_engineer_titles", False)))
+                    generic_engineer_titles=bool(block.get("generic_engineer_titles", False)),
+                    omitted=tuple(k for k in ("exclude", "generic_engineer_titles") if k not in block))
         if not rules.include and not rules.generic_engineer_titles:
             raise TitleRulesError("candidate.titles.include is empty, so no title would pass: add the roles you want, "
                                   'e.g. "include": ["backend", "software engineer"]')
         return rules
 
     def warnings(self) -> list[str]:
-        """Include entries that can never pass because an exclude word is part of them."""
+        """What may not be meant: include entries an exclude word always blocks, and lists the block left out (T104)."""
         compiled = _CompiledTitleRules(self)
         out = []
+        if "exclude" in self.omitted:
+            out.append('candidate.titles has no "exclude" list, so no title is rejected for a word (lead, manager, intern, java...): '
+                       'the default lists apply only without a titles block. Copy "exclude" from config.example.json, '
+                       'or write "exclude": [] to mean none')
+        if "generic_engineer_titles" in self.omitted:
+            out.append('candidate.titles has no "generic_engineer_titles", so bare titles such as "Senior Engineer" or '
+                       '"Engineer II" are not scored; add "generic_engineer_titles": true to score them, or false to keep this')
         for term in self.include:
             hit = compiled.exclusion(term)
             if hit:

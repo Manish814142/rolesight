@@ -47,6 +47,21 @@ RUBRIC_HEADINGS = re.findall(r"^\d\. [^\n]+:$", DEFAULT_SCORING_RUBRIC, re.MULTI
 
 # -- plain `init`: the templates -----------------------------------------------------------------------------------------
 
+# Files that hold (or will hold) keys: readable by their owner only (T105). The umask gave 664 here, world-readable.
+PRIVATE_FILES = (".env", "config.json")
+
+
+def write_private(path: Path, text: str) -> None:
+    """Create `path` with mode 600 from the first byte (no moment in which others can read it), or tighten it and write."""
+    if os.name == "nt":                      # no POSIX modes; the user profile's ACL applies
+        path.write_text(text, encoding="utf-8")
+        return
+    fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    os.chmod(path, 0o600)                    # an existing file keeps its old mode through os.open
+    with os.fdopen(fd, "w", encoding="utf-8") as fh:
+        fh.write(text)
+
+
 def _scaffold(cwd: Path) -> bool:
     """Copy the templates that are missing; True when config.json was created now."""
     data = pkg_resources.files("job_hunt.data")
@@ -55,7 +70,11 @@ def _scaffold(cwd: Path) -> bool:
         if dest.exists():
             print(f"  {dest.name} already exists, skipping")
             return False
-        dest.write_text(data.joinpath(src).read_text(encoding="utf-8"), encoding="utf-8")
+        text = data.joinpath(src).read_text(encoding="utf-8")
+        if dest.name in PRIVATE_FILES:
+            write_private(dest, text)
+        else:
+            dest.write_text(text, encoding="utf-8")
         print(f"✓ {label}")
         return True
 
@@ -116,8 +135,8 @@ def _save_key(env_file: Path, key: str) -> None:
             out.append(line)
     if not done:
         out.append(f'GEMINI_API_KEY="{key}"')
-    env_file.write_text("\n".join(out) + "\n", encoding="utf-8")
-    print("✓ key saved to .env")
+    write_private(env_file, "\n".join(out) + "\n")
+    print("✓ key saved to .env (readable by you only)")
 
 
 def _models(cwd: Path) -> List[str]:
@@ -490,6 +509,17 @@ def optional_config(cwd: Optional[Path] = None) -> Dict[str, Any]:
         sys.exit(f"config.json is not valid JSON: {e}")
 
 
+def use_rubric_of_config_file() -> str:
+    """The rubric of config.json's candidate.rubric_file (if any) becomes the current one, so that export marks only scores from
+    another rubric (T97 column). A missing file is a note, not an error: export does not score. Returns where it came from."""
+    from job_hunt.llm_utils import RubricError, configure_rubric
+    try:
+        return configure_rubric(optional_config())
+    except RubricError as e:
+        print(f"Note: {e} The Rubric column compares with the built-in rubric.", file=sys.stderr)
+        return "built-in"
+
+
 def configure_titles_or_exit(config: Dict[str, Any]) -> TitleRules:
     try:
         return configure_titles(config)
@@ -514,6 +544,8 @@ def check_filter_command(argv: List[str]) -> None:
                      is_remote=args.remote, url="https://example.com/check")
     kept, reason = should_evaluate_job(job, cities=cities)
     print("KEPT" if kept else f"REJECTED — {reason}")
+    for warning in rules.warnings():                      # T104: on stderr, stdout stays one line for scripts
+        print(f"  note: {warning}", file=sys.stderr)
     source = "config.json candidate.titles" if (config.get("candidate") or {}).get("titles") is not None else "the default title words"
     print(f"  (titles: {source}, {len(rules.include)} include / {len(rules.exclude)} exclude"
           f"{'; cities: ' + ', '.join(cities) if cities else ''})", file=sys.stderr)   # stdout stays one line for scripts

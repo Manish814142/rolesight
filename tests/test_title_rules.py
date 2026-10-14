@@ -190,3 +190,34 @@ def test_configure_titles_switches_the_filter_the_scan_and_the_adapters_use():
 def test_title_exclusions_lists_every_excluded_word_for_the_measuring_script():
     assert prefilter.title_exclusions("Lead Java Developer, Android") == {"lead", "java", "android"}
     assert prefilter.title_exclusions("Member of Technical Staff") == set()
+
+
+# -- T104: a block that leaves a list out is taken as written, but says so -------------------------------------------------
+
+def test_a_block_without_exclude_warns_that_nothing_is_excluded():
+    rules = TitleRules.from_config({"candidate": {"titles": {"include": ["backend", "software engineer"]}}})
+    warnings = rules.warnings()
+    assert any('no "exclude" list' in w and "config.example.json" in w for w in warnings), warnings
+    assert any('no "generic_engineer_titles"' in w for w in warnings), warnings
+
+
+def test_lists_written_out_on_purpose_do_not_warn():
+    rules = TitleRules.from_config({"candidate": {"titles": {"include": ["backend"], "exclude": [], "generic_engineer_titles": False}}})
+    assert rules.warnings() == []
+
+
+def test_the_omitted_lists_do_not_change_what_the_rules_are():
+    with_note = TitleRules.from_config({"candidate": {"titles": {"include": ["backend"]}}})
+    written = TitleRules.from_config({"candidate": {"titles": {"include": ["backend"], "exclude": [], "generic_engineer_titles": False}}})
+    assert with_note == written                               # the note is not part of the filter
+
+
+def test_check_filter_shows_the_warning(tmp_path, monkeypatch, capsys):
+    import json
+
+    from job_hunt import onboarding
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "config.json").write_text(json.dumps({"candidate": {"titles": {"include": ["backend"]}}}))
+    onboarding.check_filter_command(["Backend Engineer Intern", "Pune, India"])
+    printed = capsys.readouterr()
+    assert printed.out.splitlines()[0] == "KEPT" and 'no "exclude" list' in printed.err
