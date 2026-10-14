@@ -29,6 +29,9 @@ scorer) and, with `scoring_mode: structured`, **Stack fit**, **Role fit**, **Sen
 `gemini-3.5-flash-lite`, i.e. the fallback answered (primary failed or out of quota) or `gemini_model` is set to another
 model. The models score differently (T70: `gemini-3.1-flash-lite` gives weak fits ~7 points more), so compare scores
 only within one model.
+**Rubric** (T97) appears when some score in the file is not from the rubric this checkout sends, provided at least one score
+carries an id: an older rubric shows its 8-digit id, a score from before ids were recorded (2026-10-14) shows a blank.
+Decode an id with `python scripts/rubric_ids.py`. A normal scan, all on the current rubric, has no such column.
 
 A CSV contains only jobs scored in that scan. Jobs scored on earlier days are in earlier
 CSVs and in `data/jobs.db` (`autopilot export --days N`).
@@ -85,6 +88,8 @@ key), `canonical_hash` (MD5 of title + company + location; fallback key and an i
 `posted_at` and `description`. Skipped postings keep location and date only; queued ones keep
 the description the scorer saw. Rows from before T29 have these empty. `score_model` (T71) is the
 Gemini model that produced `score`; it is empty for rows scored before T71 and for the deprecated providers.
+`score_rubric` (T97) is the id of the rubric text that did (`llm_utils.rubric_id()`); it is empty for rows scored before T97
+and for the deprecated providers.
 `application_status` / `application_date` (T38) are set by `autopilot mark`, independent of `status`.
 Is a posting still up (T33)? `first_seen` / `last_seen` are the first and the latest scan that fetched it;
 `missed_scans` counts scans in a row in which its board answered with jobs but not this one, and `closed_at` is set

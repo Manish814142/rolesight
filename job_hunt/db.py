@@ -117,6 +117,10 @@ DETAIL_COLUMNS = ("location", "posted_at", "description")
 # The Gemini model that produced `score` (T71): models score differently (T70), and a scan falls back to another
 # model when the primary fails. NULL = unknown (rows scored before T71, or by the deprecated providers).
 SCORE_MODEL_COLUMN = "score_model"
+# Which scoring prompt wrote `score` (T97): a short id of the rubric text (llm_utils.rubric_id). The rubric changes
+# (T58, T73, T74, T79) and a scored row is final, so this is how rows from older wording are found. NULL = unknown
+# (rows scored before T97, or by the deprecated providers, whose prompt is a different one).
+SCORE_RUBRIC_COLUMN = "score_rubric"
 # Where Manish's application stands (T38, `autopilot mark`): applied / interview / rejected / offer and the local date
 # it was marked. Separate from `status`, which is the scanner's own lifecycle (skipped/discovered/scored/notified).
 APPLICATION_COLUMNS = ("application_status", "application_date")
@@ -132,10 +136,10 @@ DEFAULT_CLOSED_AFTER_MISSED_SCANS = 3
 
 
 def _ensure_detail_columns(conn: sqlite3.Connection) -> None:
-    """Add the detail, score-model, application and sighting columns to a database that predates them (idempotent).
+    """Add the detail, score-model, score-rubric, application and sighting columns to a database that predates them (idempotent).
     first_seen is backfilled from discovered_at, the time the row was first saved."""
     have = {row[1] for row in conn.execute("PRAGMA table_info(jobs)")}
-    for col in (*DETAIL_COLUMNS, SCORE_MODEL_COLUMN, *APPLICATION_COLUMNS):
+    for col in (*DETAIL_COLUMNS, SCORE_MODEL_COLUMN, SCORE_RUBRIC_COLUMN, *APPLICATION_COLUMNS):
         if col not in have:
             conn.execute(f"ALTER TABLE jobs ADD COLUMN {col} TEXT")
     for col, decl in SIGHTING_COLUMNS.items():
@@ -292,10 +296,11 @@ def update_job_status(
     db_path: str = DEFAULT_DB_PATH,
     c_hash: Optional[str] = None,
     model: Optional[str] = None,
+    rubric: Optional[str] = None,
 ) -> None:
-    """Update status, score, score_reason, scored_at and score_model for a job by global_id or canonical_hash.
+    """Update status, score, score_reason, scored_at, score_model and score_rubric for a job by global_id or canonical_hash.
 
-    `model` is stored with a score (None = unknown); a status-only update leaves score and model alone.
+    `model` and `rubric` are stored with a score (None = unknown); a status-only update leaves score, model and rubric alone.
     """
     init_db(db_path)
     lookup_key = key or c_hash or ""
@@ -307,19 +312,19 @@ def update_job_status(
             cursor.execute(
                 """
                 UPDATE jobs
-                SET status = ?, score = ?, score_reason = ?, scored_at = ?, score_model = ?
+                SET status = ?, score = ?, score_reason = ?, scored_at = ?, score_model = ?, score_rubric = ?
                 WHERE global_id = ?;
                 """,
-                (status, score, score_reason, now_iso, model, lookup_key),
+                (status, score, score_reason, now_iso, model, rubric, lookup_key),
             )
             if cursor.rowcount == 0:
                 cursor.execute(
                     """
                     UPDATE jobs
-                    SET status = ?, score = ?, score_reason = ?, scored_at = ?, score_model = ?
+                    SET status = ?, score = ?, score_reason = ?, scored_at = ?, score_model = ?, score_rubric = ?
                     WHERE canonical_hash = ?;
                     """,
-                    (status, score, score_reason, now_iso, model, lookup_key),
+                    (status, score, score_reason, now_iso, model, rubric, lookup_key),
                 )
         else:
             cursor.execute(

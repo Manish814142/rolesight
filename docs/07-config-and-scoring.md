@@ -156,6 +156,14 @@ One Gemini call per job. The prompt contains:
   `min_score` 70 on 82 labelled jobs, `apply` 14/14, two runs each); 85+ only when stack, seniority
   and location all fit. The text is tuned to one candidate (about 3.3 years; Node.js, TypeScript,
   Python).
+- **Which rubric scored a row** (T97): the rubric has changed several times (T58, T73, T74, T79) and a scored row is final,
+  so every new score is stored with `jobs.score_rubric`, 8 hex digits of the SHA-256 of the rubric text
+  (`llm_utils.rubric_id()`; the opt-in structured mode has its own id for its own instructions). The scan logs
+  `Scoring rubric: <id>` at its start. `python scripts/rubric_ids.py --db data/jobs.db` prints each id with the commit that
+  first had that text, and how many scored rows carry each id (`-` = scored before ids were recorded). The id covers the rubric
+  text only: a change to the code around the prompt, to your profile or to your resume does not change it. After you edit the
+  rubric, the rows with another id are the ones to re-score (`UPDATE jobs SET status='discovered' WHERE score_rubric IS NOT '<new id>'
+  AND status IN ('scored','notified')` on a backup, then a scan; it costs one Gemini call each).
 
 Settings: temperature 0.1, JSON output, model fallback and retries as in
 [02](02-providers.md). A job with no description is sent as "No full description

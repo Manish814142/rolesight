@@ -215,7 +215,7 @@ profile, so edit them for yours ([the guide](docs/00-user-guide.md) lists the pa
 
 | Path | Contents |
 |---|---|
-| `output/jobs_YYYY-MM-DD.csv` | One file per scan (`_1`, `_2`, … if one already exists). Columns: Company, Role, Location, Posted, Application URL, LinkedIn people, Score (%), Reason, Worth Applying, Scan Date (plus Stack, Stack fit, Role fit, … only when a scorer provides them, and Model when a model other than the primary scored some job). Best score first. |
+| `output/jobs_YYYY-MM-DD.csv` | One file per scan (`_1`, `_2`, … if one already exists). Columns: Company, Role, Location, Posted, Application URL, LinkedIn people, Score (%), Reason, Worth Applying, Scan Date (plus Stack, Stack fit, Role fit, … only when a scorer provides them, Model when a model other than the primary scored some job, and Rubric when a score is not from the current rubric). Best score first. |
 | `output/open_matches.csv` | Rewritten every scan: jobs ≥ `min_score` you haven't marked (`autopilot mark`), inside the posted-date window, best first |
 | `data/jobs.db` | SQLite seen-job memory: `skipped` → `discovered` → `scored` / `notified` |
 | `state/*.json` | Retired (T34): no longer written or read; `scripts/import_json_history.py` imports what only they hold |

@@ -9,6 +9,20 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Added (2026-10-14, T97: every stored score records which rubric produced it)
+- `jobs.score_rubric` holds `llm_utils.rubric_id()`, 8 hex digits of the SHA-256 of the scoring prompt text (`SCORING_RUBRIC` for single and batch scoring;
+  the opt-in structured mode has its own instructions and its own id). Each of the three scoring functions returns the id of the text it sent, the scorer
+  stores it with the score and `init_db` adds the column to an existing database (a copy of the production file: 43,466 rows and the 462 scored ones kept, 0.02 s). Rows
+  scored before this change, and by the deprecated providers, stay empty ("unknown"); nothing is guessed for them.
+- The scan logs `Scoring rubric: <id>` after its provider line (Gemini only). `export` and `open_matches.csv` get a `Rubric` column when some score is not from the
+  current rubric and at least one carries an id (so an all-unknown file is unchanged, as before). It exists because the rubric changed in T58, T73, T74 and T79
+  while a scored row is final: T86 found 33 old-prompt rows in `open_matches.csv` only from commit dates.
+- `python scripts/rubric_ids.py [--db data/jobs.db]` prints every distinct rubric in the git history with the commit that first had it, and the database's scored rows
+  by id (read-only). Measured on 2026-10-14: `82e017b4` (current) is `f5daced`'s rule 1; `12a5ae0c` (5,563 characters, `7bc5b61`) is the one that scored the 317 rows of
+  2026-10-12.
+- The id covers the rubric text only, not the code around the prompt, the candidate profile or the resume. Four older tests that compared a whole scoring result now
+  expect the extra `rubric` key.
+
 ### Changed (2026-10-14, CI: Dependabot's two pull requests)
 - CI uses `actions/checkout@v7`, `actions/setup-python@v7` and `gitleaks/gitleaks-action@v3` (Dependabot #2; its CI run passed on all three Pythons and
   gitleaks v3 scanned: "1 commits scanned … no leaks found").

@@ -22,7 +22,7 @@ from job_hunt.db import (
     update_job_details,
     update_job_status,
 )
-from job_hunt.llm_utils import chat_with_llm
+from job_hunt.llm_utils import STRUCTURED_INSTRUCTIONS, chat_with_llm, rubric_id
 from job_hunt.log import get_logger
 from job_hunt.models import job_key
 from job_hunt.notifier import is_telegram_configured, send_telegram
@@ -316,6 +316,8 @@ def run_scan(config: dict, companies: list[dict]) -> None:
         "claude_cli": config.get("claude_cli_model") or "claude default",
     }
     logger.info(f"LLM provider: {provider} | Model: {model_by_provider.get(provider, 'default')}")
+    if provider == "gemini":   # the other providers score with their own prompt, not this rubric (T97)
+        logger.info(f"Scoring rubric: {rubric_id(STRUCTURED_INSTRUCTIONS if config.get('scoring_mode') == 'structured' else None)}")
 
     resume_path = Path(config.get("candidate", {}).get("resume_path", "resume/YOUR_RESUME.md"))
     resume = resume_path.read_text()
@@ -527,6 +529,7 @@ def run_scan(config: dict, companies: list[dict]) -> None:
                     "worth_applying": res["score"] >= min_score,
                     "posted_at": job.posted_at,
                     "model": res.get("model"),
+                    "rubric": res.get("rubric"),
                     **(res.get("details") or {}),
                 })
         else:

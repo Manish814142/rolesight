@@ -62,7 +62,7 @@ def test_generate_reports_which_model_answered():
 def test_score_job_with_gemini_returns_the_model(monkeypatch):
     _use(monkeypatch, _client(lambda m, n: OK_JSON))
     res = llm_utils.score_job_with_gemini({"title": "t", "content": "d"}, "resume", {"gemini_api_key": "k"})
-    assert res == {"score": 72, "reason": "fine", "model": PRIMARY}
+    assert res == {"score": 72, "reason": "fine", "model": PRIMARY, "rubric": llm_utils.rubric_id()}   # rubric: T97
 
 
 def test_structured_and_batch_scoring_return_the_model(monkeypatch):
@@ -73,7 +73,7 @@ def test_structured_and_batch_scoring_return_the_model(monkeypatch):
     assert llm_utils.score_job_structured_with_gemini({"title": "t"}, "r", {"gemini_api_key": "k"})["model"] == FALLBACK
     _use(monkeypatch, _client(lambda m, n: '[{"job_id": "0", "score": 70, "reason": "a"}]'))
     out = llm_utils.score_jobs_batch_with_gemini([{"id": "0", "title": "t"}], "r", {"gemini_api_key": "k"})
-    assert out == {"0": {"score": 70, "reason": "a", "model": PRIMARY}}
+    assert out == {"0": {"score": 70, "reason": "a", "model": PRIMARY, "rubric": llm_utils.rubric_id()}}
 
 
 def test_init_db_adds_the_model_column_to_an_existing_database(tmp_path):

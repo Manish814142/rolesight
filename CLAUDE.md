@@ -29,6 +29,7 @@ autopilot discover --seeds scripts/company_seeds.txt --report /tmp/r.csv --out /
 python scripts/check_filter.py "Java Developer" "Pune, India" [--remote]   # KEPT or REJECTED + the reason, for one job (T80)
 python scripts/measure_prefilter.py --jobs saved.json   # pre-filter survivors + what each exclusion word costs (--save fetches all, ~9 min)
 python scripts/measure_generic_titles.py --jobs saved.json   # India jobs dropped only for a generic title ("Senior Engineer"), by kind and company (T69 g)
+python scripts/rubric_ids.py [--db data/jobs.db]   # which rubric text each stored score's id means, and how many scored rows carry each id (T97; read-only)
 python scripts/measure_workday_tenants.py   # per-tenant Workday fetch time, detail calls, survivors (~4-9 min, real network)
 python scripts/score_golden_set.py         # score the labelled jobs with the rubric off/on (~150 Gemini calls); --from-scores re-analyses
 autopilot doctor            # SQLite / Gemini / Telegram / ATS egress checks
@@ -61,7 +62,8 @@ Tests must make **no network calls** — stub `send_telegram`, adapters, and Gem
    `"gemini_scoring_mode": "batch"` scores `gemini_batch_size` (10) jobs per call — ~17×
    faster but measured to inflate weak fits by ~15 points (see CHANGELOG 2026-10-04).
    Each stored score names the model that answered (`jobs.score_model`, funnel line, CSV `Model` column when
-   a model other than the primary scored; T71).
+   a model other than the primary scored; T71) and the id of the rubric text (`jobs.score_rubric`, scan log `Scoring rubric:`, CSV `Rubric`
+   column when a score is not from the current one; `python scripts/rubric_ids.py [--db data/jobs.db]` decodes the ids; T97).
 7. Per-job Telegram alert (if configured) → results sorted best-first → incremental CSV
    `output/jobs_YYYY-MM-DD[_N].csv` (never overwrites) and the rolling `output/open_matches.csv` (rewritten every
    run: ≥ min_score, not marked applied, inside the posted window; T39); the scan's row in table `scans` is finished,

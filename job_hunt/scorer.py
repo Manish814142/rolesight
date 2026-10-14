@@ -102,14 +102,15 @@ def score_and_process_job(
     details = {k: scoring_result.get(k) for k in SUBSCORE_FIELDS} if structured else {}
     if details.get("capped_by"):
         reason = f"{reason} [capped at {score}: {details['capped_by']}]"
-    model = scoring_result.get("model")
-    status = _record_score(job, score, reason, telegram_token, telegram_chat_id, db_path, min_notify_score, model)
+    model, rubric = scoring_result.get("model"), scoring_result.get("rubric")
+    status = _record_score(job, score, reason, telegram_token, telegram_chat_id, db_path, min_notify_score, model, rubric)
     return {
         "score": score,
         "reason": reason,
         "status": status,
         "details": details,
         "model": model,
+        "rubric": rubric,
     }
 
 
@@ -122,8 +123,9 @@ def _record_score(
     db_path: str,
     min_notify_score: int,
     model: Optional[str] = None,
+    rubric: Optional[str] = None,
 ) -> str:
-    """Alert if the score clears the threshold, persist score/status/model, return the status."""
+    """Alert if the score clears the threshold, persist score/status/model/rubric, return the status."""
     status = "scored"
     if score >= min_notify_score:
         if send_telegram_notification(telegram_token, telegram_chat_id, job=job, score=score, reason=reason):
@@ -135,6 +137,7 @@ def _record_score(
         score_reason=reason,
         db_path=db_path,
         model=model,
+        rubric=rubric,
     )
     return status
 
@@ -184,6 +187,7 @@ def score_and_process_batch(
                             "quota_exhausted": quota_exhausted})
             continue
         status = _record_score(job, r["score"], r["reason"], telegram_token, telegram_chat_id, db_path, min_notify_score,
-                               r.get("model"))
-        results.append({"score": r["score"], "reason": r["reason"], "status": status, "model": r.get("model")})
+                               r.get("model"), r.get("rubric"))
+        results.append({"score": r["score"], "reason": r["reason"], "status": status, "model": r.get("model"),
+                        "rubric": r.get("rubric")})
     return results

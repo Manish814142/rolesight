@@ -1,3 +1,4 @@
+import hashlib
 import inspect
 import json
 import os
@@ -295,11 +296,26 @@ SCORING_RUBRIC = """SCORING RUBRIC & HARD ANCHORS (strictly enforce):
    AI and machine-learning engineering is such a domain. The candidate has used GenAI/LLM APIs inside backend services and workflows (calling a model, prompting, token cost) but has not built ML or agent systems. Also cap at <= 50 when a REQUIRED qualification demands hands-on experience building or operating any of: agents or LLM pipelines with an orchestration framework (LangChain, LangGraph, LlamaIndex, AutoGen, CrewAI or similar); RAG or semantic search over a vector database (Pinecone, Milvus, FAISS, pgvector or similar); training, fine-tuning or evaluating models; an ML framework (PyTorch, TensorFlow, scikit-learn, Hugging Face); MLOps or LLMOps; NLP or conversational-AI specialisation; or when it asks for years of data-science, ML or AI-engineering experience. Naming a framework only as an example ("agentic workflows using frameworks such as LangGraph") does not hide the requirement behind it: building agents is still required. Only requirements count: items under headings such as "bonus", "bonus round", "preferred", "nice to have", "good to have" or "a plus" never trigger this cap, even when they name LangGraph, vector databases or RAG. Do NOT apply this when those items are only preferred or nice to have, when the posting asks only for familiarity or a basic understanding of LLMs, prompt engineering, RAG, function calling or evals, or when it asks only for general software engineering plus using LLM APIs, prompt engineering or workflow automation: judge such a role like any other backend role (rules 3-6)."""
 
 
+def rubric_id(text: str | None = None) -> str:
+    """Short id (8 hex digits of SHA-256) of the scoring prompt text, default `SCORING_RUBRIC` (T97).
+
+    Stored with every score (`jobs.score_rubric`) so rows scored under older wording can be told apart. It covers the
+    text only: not the code that post-processes an answer, the candidate profile or the resume."""
+    return hashlib.sha256((SCORING_RUBRIC if text is None else text).encode("utf-8")).hexdigest()[:8]
+
+
+def current_rubric_ids() -> set[str]:
+    """The ids of the two prompt texts this checkout sends: the rubric (single and batch scoring) and the opt-in
+    structured instructions. A stored score with any other id (or none) is from older wording."""
+    return {rubric_id(), rubric_id(STRUCTURED_INSTRUCTIONS)}
+
+
 def score_job_with_gemini(job: dict, resume: str, config: dict, raise_on_error: bool = False) -> dict:
     """Score an individual job against a resume using Gemini.
 
     Returns:
-        dict: {"score": <0-100>, "reason": "<one sentence explanation>", "model": <the Gemini model that answered>}
+        dict: {"score": <0-100>, "reason": "<one sentence explanation>", "model": <the Gemini model that answered>,
+        "rubric": <rubric_id() of the prompt text sent>}
         On error, returns fallback: {"score": 0, "reason": "Scoring failed"},
         or re-raises when raise_on_error=True so callers can tell a failure
         apart from a genuine score of 0.
@@ -339,6 +355,7 @@ def score_job_with_gemini(job: dict, resume: str, config: dict, raise_on_error: 
             "score": int(data["score"]),
             "reason": str(data["reason"]),
             "model": model,
+            "rubric": rubric_id(),
         }
     except Exception as e:
         logger.error(f"Gemini scoring error: {e}")
@@ -413,7 +430,7 @@ def score_job_structured_with_gemini(job: dict, resume: str, config: dict) -> di
     """Score one job by extracting facts and sub-scores (see combine_subscores).
 
     Returns {"score", "reason", "capped_by", "stack_fit", "role_fit", "seniority_fit", "location_fit",
-    "min_years" (None if not stated), ..., "model"}. Raises on any failure so the caller can retry the job later.
+    "min_years" (None if not stated), ..., "model", "rubric"}. Raises on any failure so the caller can retry the job later.
     """
     api_key = config.get("gemini_api_key") or os.getenv("GEMINI_API_KEY")
     client, types = _get_genai_client_and_types(api_key)
@@ -445,7 +462,7 @@ def score_job_structured_with_gemini(job: dict, resume: str, config: dict) -> di
         aimed_at_freshers=bool(data["aimed_at_freshers"]),
         reason=str(data["reason"]),
     )
-    return {**facts, **combine_subscores(facts), "model": model}
+    return {**facts, **combine_subscores(facts), "model": model, "rubric": rubric_id(STRUCTURED_INSTRUCTIONS)}
 
 
 BATCH_SCORE_SCHEMA: dict[str, Any] = {
@@ -465,7 +482,7 @@ BATCH_SCORE_SCHEMA: dict[str, Any] = {
 def score_jobs_batch_with_gemini(jobs: list[dict], resume: str, config: dict) -> dict[str, dict]:
     """Score several jobs in ONE Gemini call with a structured JSON schema.
 
-    Each job dict needs a unique "id". Returns {id: {"score", "reason", "model"}} for every id
+    Each job dict needs a unique "id". Returns {id: {"score", "reason", "model", "rubric"}} for every id
     the model answered; ids it skipped are simply absent (callers retry them later).
     Raises if the call fails or the output is not a JSON array.
     """
@@ -511,6 +528,7 @@ def score_jobs_batch_with_gemini(jobs: list[dict], resume: str, config: dict) ->
                 "score": max(0, min(100, int(item["score"]))),
                 "reason": str(item.get("reason", "")),
                 "model": model,
+                "rubric": rubric_id(),
             }
     return out
 

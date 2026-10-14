@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 from urllib.parse import quote
 
-from job_hunt.llm_utils import GEMINI_DEFAULT_MODEL
+from job_hunt.llm_utils import GEMINI_DEFAULT_MODEL, current_rubric_ids
 
 EXPORT_FIELDS: List[str] = [
     "Company",
@@ -59,6 +59,15 @@ def _model_column_needed(jobs: List[Dict[str, Any]]) -> bool:
     return len(models) > 1 or bool(models - {GEMINI_DEFAULT_MODEL})
 
 
+def _rubric_column_needed(jobs: List[Dict[str, Any]]) -> bool:
+    """The "Rubric" column (T97) is written when some score is not from the prompt this checkout sends: an older
+    rubric, or none recorded (a row scored before T97, or by a deprecated provider), provided at least one score does
+    carry an id: until then every row is "unknown" and the column would be empty (T36). Unlike the model, an unknown
+    rubric counts, because those rows are exactly the ones that may predate a rubric change."""
+    rubrics = [j.get("rubric") for j in jobs]
+    return any(rubrics) and any(r not in current_rubric_ids() for r in rubrics)
+
+
 def job_to_export_row(j: Dict[str, Any]) -> Dict[str, Any]:
     """Convert an internal job dictionary to a canonical export CSV row."""
     worth = j.get("worth_applying")
@@ -75,6 +84,7 @@ def job_to_export_row(j: Dict[str, Any]) -> Dict[str, Any]:
         "Scan Date": j.get("scan_date", ""),
         **{col: ("" if j.get(key) is None else j.get(key)) for col, key in OPTIONAL_COLUMNS.items()},
         "Model": j.get("model") or "",
+        "Rubric": j.get("rubric") or "",
     }
 
 
@@ -88,6 +98,7 @@ def job_from_db_row(r: Dict[str, Any], threshold: Optional[int]) -> Dict[str, An
         "posted_at": r.get("posted_at") or "", "scan_date": (r.get("scored_at") or "")[:10],
         "worth_applying": None if threshold is None else int(r["score"]) >= threshold,
         "model": r.get("score_model"),
+        "rubric": r.get("score_rubric"),
         "application": f"{app} {r.get('application_date') or ''}".strip() if app else "",  # `autopilot mark` (T38)
     }
 
@@ -130,6 +141,8 @@ def export_jobs_to_csv(
     extra = [col for col, key in OPTIONAL_COLUMNS.items() if any(j.get(key) not in (None, "") for j in jobs)]
     if _model_column_needed(jobs):
         extra.append("Model")
+    if _rubric_column_needed(jobs):
+        extra.append("Rubric")
     with out_path.open("w", newline="", encoding="utf-8") as fh:
         writer = csv.DictWriter(fh, fieldnames=EXPORT_FIELDS + extra, extrasaction="ignore")
         writer.writeheader()

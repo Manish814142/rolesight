@@ -174,7 +174,7 @@ Measured on the date given. Each one has a task.
   (T64). **Model choice matters** (T70, 82 labelled jobs, two runs each): `gemini-3.1-flash-lite`
   ranks like `gemini-3.5-flash-lite` but scores weak fits ~8 points higher (10 vs 2 false positives at
   `min_score` 70), so a scan that falls back to 3.1 mixes two calibrations; which model scored a job
-  is not recorded yet (T71).
+  is recorded with each score (`score_model`, T71), and so is the id of the rubric text (`score_rubric`, T97).
 - **Score noise:** two runs of 3.5 differ by ~3 points on average. With the T73 rubric no pass/fail
   decision changed between two runs of all 82 labelled jobs; ambiguous postings can still flip, and
   temperature 0 does not help (T60).
