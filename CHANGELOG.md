@@ -9,6 +9,14 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Changed (2026-10-14, T86 follow-up: the last old-prompt rows of `open_matches.csv`; data only, no code)
+- After T86's scan, 18 rows of `open_matches.csv` still carried 2026-10-04 scores. None had a stored description, so they could not be re-scored from the
+  database, and no scan had seen them since. Each was checked at its own ATS endpoint (read-only GETs): 17 are gone (Greenhouse and Workday 404, SmartRecruiters
+  `active: false`, Oracle no requisition, and Workday 403 on 10 jobs while a live job of the same tenant answered 200 to the same request) and now have
+  `closed_at` (a job that is seen again reopens, T33); 1 is live (Kotak, posted 2026-09-28), but its Oracle requisition has no description text in any field, so
+  it was not scored blind: its posted date is stored, and at 16 days it is outside the 7-day window. `open_matches.csv`: 87 → 69 rows, none from 2026-10-04.
+  Checked against the backup `data/jobs.db.bak-2026-10-14-before-T86b`: 18 rows changed (17 `closed_at`, 1 `posted_at`), no score. 0 Gemini calls.
+
 ### Added (2026-10-14, T101: a test for the commit headers; T01 closed)
 - `tests/test_public_release.py` already refused any e-mail address in a published file; it now also refuses a commit whose author or committer address is outside a short list (the
   owner's personal mail, the original author's university, GitHub's web-UI and noreply addresses, the assistant's trailer). Reason: git takes `user.email` from the global config when a clone,
