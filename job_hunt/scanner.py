@@ -12,6 +12,7 @@ from job_hunt.adapters import workday as workday_adapter
 from job_hunt.adapters.base import WINDOW_STOP_REASON, begin_fetch, fetch_incomplete
 from job_hunt.db import (
     DEFAULT_CLOSED_AFTER_MISSED_SCANS,
+    fill_missing_details,
     finish_scan,
     get_job,
     init_db,
@@ -31,6 +32,7 @@ from job_hunt.prefilter import (
     is_too_old,
     location_is_india,
     posted_age_days,
+    posted_date_iso,
     should_evaluate_job,
 )
 from job_hunt.scorer import score_and_process_batch, score_and_process_job
@@ -395,6 +397,9 @@ def run_scan(config: dict, companies: list[dict]) -> None:
                         if prior_status in ("scored", "notified"):
                             logger.debug(f"  Skipping previously scored job: {job.title}")
                             already_scored += 1
+                            if existing and not (existing.get("posted_at") and existing.get("location")):
+                                # Scored before T29 stored them: without a date open_matches.csv keeps the row at any age (T99).
+                                fill_missing_details(j_key, location=job.location, posted_at=posted_date_iso(job.posted_at))
                             continue
 
                         passed, reason = should_evaluate_job(job, cities=cities)

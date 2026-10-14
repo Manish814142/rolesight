@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import re
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from typing import Optional, Tuple
 
 from job_hunt.models import JobPosting
@@ -187,9 +187,21 @@ def posted_age_days(posted_at: str, today: Optional[date] = None) -> Optional[in
     return max(0, (today - posted).days)
 
 
+def posted_date_iso(posted_at: str, today: Optional[date] = None) -> Optional[str]:
+    """The posting date as YYYY-MM-DD, from any adapter's posted_at; None if unknown (T99). Workday's "Posted 3 Days Ago"
+    is relative to the day it is read, so it becomes a date now: stored as text it would age again from the day the row was
+    scored (`current_age_days`)."""
+    today = today or date.today()
+    age = posted_age_days(posted_at, today)
+    return None if age is None else (today - timedelta(days=age)).isoformat()
+
+
 def current_age_days(posted_at: str, seen_on: date, today: Optional[date] = None) -> Optional[int]:
     """Age today of a posting whose `posted_at` was read on `seen_on` (T39). Workday's "Posted 5 Days Ago" was
-    relative to the day it was fetched, so the days since then are added; for a real date this is just its age."""
+    relative to the day it was fetched, so the days since then are added; a real date is just its age today, even when it
+    is later than `seen_on` (a date stored afterwards, T99)."""
+    if not _WORKDAY_POSTED_RE.search((posted_at or "").strip()):
+        return posted_age_days(posted_at, today)
     at_fetch = posted_age_days(posted_at, seen_on)
     if at_fetch is None:
         return None

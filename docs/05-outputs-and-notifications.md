@@ -86,7 +86,9 @@ key), `canonical_hash` (MD5 of title + company + location; fallback key and an i
 `url_hash`, `title`, `company`, `ats`,
 `url`, `score`, `score_reason`, `status`, `discovered_at`, `scored_at`, and (T29) `location`,
 `posted_at` and `description`. Skipped postings keep location and date only; queued ones keep
-the description the scorer saw. Rows from before T29 have these empty. `score_model` (T71) is the
+the description the scorer saw. Rows from before T29 have these empty until a scan fetches the job again: for a row already scored it then fills
+`location` and `posted_at` (as an ISO date; never the description, a score or its model/rubric; T99), which is what lets `open_matches.csv`
+drop the row once the posting is older than the window. A job no longer on its board never gets them (T33 closes it after three missed scans). `score_model` (T71) is the
 Gemini model that produced `score`; it is empty for rows scored before T71 and for the deprecated providers.
 `score_rubric` (T97) is the id of the rubric text that did (`llm_utils.rubric_id()`); it is empty for rows scored before T97
 and for the deprecated providers.

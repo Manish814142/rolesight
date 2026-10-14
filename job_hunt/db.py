@@ -288,6 +288,28 @@ def update_job_details(
         conn.commit()
 
 
+def fill_missing_details(
+    key: str,
+    location: Optional[str] = None,
+    posted_at: Optional[str] = None,
+    db_path: str = DEFAULT_DB_PATH,
+) -> None:
+    """Store a location and a posted date on an existing row (by global_id, else canonical_hash) only where it has none
+    (T99): rows scored before T29 never got them. Never overwrites, and never touches the description (that column is
+    what the scorer saw) or any score column."""
+    init_db(db_path)
+    fields = {"location": location, "posted_at": posted_at}
+    sets = {k: v for k, v in fields.items() if v}
+    if not sets:
+        return
+    assignments = ", ".join(f"{k} = COALESCE(NULLIF({k}, ''), ?)" for k in sets)
+    with connect(db_path) as conn:
+        cur = conn.execute(f"UPDATE jobs SET {assignments} WHERE global_id = ?;", (*sets.values(), key))
+        if cur.rowcount == 0:
+            conn.execute(f"UPDATE jobs SET {assignments} WHERE canonical_hash = ?;", (*sets.values(), key))
+        conn.commit()
+
+
 def update_job_status(
     key: Optional[str] = None,
     status: str = "discovered",

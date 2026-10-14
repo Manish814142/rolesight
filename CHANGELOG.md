@@ -9,6 +9,17 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed (2026-10-14, T99: scored rows with no posted date no longer sit in `open_matches.csv` at any age)
+- Rows scored before T29 (all 145 of 2026-10-04) have no `posted_at`, and a scan skipped them at "Skipping previously scored job", so they never got one;
+  `open_matches.csv` keeps undated jobs, so it listed them whatever the posting's real age. When a scan fetches a job whose stored row is `scored`/`notified`
+  and lacks them, it now stores `location` and `posted_at` (`db.fill_missing_details`: only where empty; never the description, the score, status, reason,
+  model or rubric; no Gemini call). `posted_at` is stored as an ISO date (`prefilter.posted_date_iso`): Workday's "Posted 3 Days Ago" is relative to the day it is read.
+- `current_age_days` now ages a real date from itself (today minus the date). It used to clamp to the day the row was scored and add the days since, which
+  would have aged a date later than the scored date (an ATS that bumps `updated_at`) by too much; relative Workday text is unchanged.
+- Measured on a copy of the production database, the real `run_scan` over the saved fetch of 2026-10-13: 101 of the 145 old-prompt rows (those still on their
+  boards) get a date and location, every scored row is otherwise byte-identical, 0 Gemini calls; the scan's own `open_matches` writer goes 73 → 59 rows (14
+  rows posted more than 7 days ago leave; 19 old-prompt rows stay: 18 are off their boards and undated until T33 closes them, 1 is in the window).
+
 ### Added (2026-10-14, T97: every stored score records which rubric produced it)
 - `jobs.score_rubric` holds `llm_utils.rubric_id()`, 8 hex digits of the SHA-256 of the scoring prompt text (`SCORING_RUBRIC` for single and batch scoring;
   the opt-in structured mode has its own instructions and its own id). Each of the three scoring functions returns the id of the text it sent, the scorer
