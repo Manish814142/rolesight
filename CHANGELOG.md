@@ -9,6 +9,15 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Added (2026-10-14, T101: a test for the commit headers; T01 closed)
+- `tests/test_public_release.py` already refused any e-mail address in a published file; it now also refuses a commit whose author or committer address is outside a short list (the
+  owner's personal mail, the original author's university, GitHub's web-UI and noreply addresses, the assistant's trailer). Reason: git takes `user.email` from the global config when a clone,
+  a CI runner or a new tool has no local one, and this machine's global identity is a work address; the repository's own config overrides it, so today every commit is clean (measured on `main`:
+  616 commits under the personal address, 118 by the original author, 18 by GitHub; the work domain 0 times in author, committer or message). The global config is left alone on purpose: changing
+  it would put the personal address on commits in other repositories. The work address is not written in the test (the file is public): anything outside the list fails.
+- T01 (private backup) is closed: the code is on GitHub (`origin/main` = `main` = `42fa036`, measured with `git ls-remote`). Not in any git remote, by design: `.env`, `config.json`, the resume and
+  `data/jobs.db` (git-ignored; copies only in `data/*.bak-*` on the same disk).
+
 ### Changed (2026-10-14, T100: Developer Advocate roles are rejected by title)
 - Manish's rule, as for "AI / ML Engineer": keep a role only if his skills match it, and he left the reading of his resume to Claude. Developer advocacy / developer relations is a different job
   (talks, articles, community, demos); his resume shows backend engineering and none of that. `advocate`, `advocacy`, `evangelist`, `devrel` and `developer relations` join the title exclude

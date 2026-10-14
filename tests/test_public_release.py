@@ -4,6 +4,7 @@ What these guard: the name is used everywhere a reader or a shell sees it, the o
 stay (MIT requires the notice), nothing still points at the original project's owner as if it were this project's, and no
 personal or company e-mail address sits in a file that goes public.
 """
+import os
 import re
 import subprocess
 import tomllib
@@ -185,3 +186,50 @@ def test_the_doctor_banner_says_rolesight(monkeypatch, capsys, tmp_path):
 def test_no_source_file_names_a_personal_path():
     offenders = [str(f.relative_to(ROOT)) for f in (ROOT / "job_hunt").rglob("*.py") if "/home/user" in f.read_text()]
     assert not offenders, offenders
+
+
+# -- T101: the commit headers, not only the files (a global git identity that is not this repository's) --------------------
+
+# Where commit author / committer addresses may come from: the owner's personal mail, the original author's university (the 68 upstream
+# commits), GitHub's own web-UI committer and its noreply addresses, the assistant's trailer. The work address is not named here on
+# purpose (this file is public): anything outside this list fails, and a new contributor's domain is added here deliberately.
+EXPECTED_COMMIT_DOMAINS = {"gmail.com", "lnmiit.ac.in", "github.com", "users.noreply.github.com", "anthropic.com"}
+
+
+def _commit_domains(repo):
+    done = subprocess.run(["git", "log", "--format=%ae%n%ce"], cwd=repo, capture_output=True, text=True)
+    if done.returncode != 0:
+        return None
+    return {e.rsplit("@", 1)[-1].lower() for e in done.stdout.split() if "@" in e}
+
+
+def test_every_commit_is_authored_and_committed_under_an_expected_address():
+    """git takes `user.email` from the global config when a clone, a CI runner or a new tool has no local one, and this machine's global
+    identity is a work address. The files are scanned (above); this scans the headers of every commit that would be pushed."""
+    domains = _commit_domains(ROOT)
+    if domains is None:
+        pytest.skip("not a git checkout")
+    assert not domains - EXPECTED_COMMIT_DOMAINS, (
+        f"commit headers with an address outside {sorted(EXPECTED_COMMIT_DOMAINS)}: {sorted(domains - EXPECTED_COMMIT_DOMAINS)}. "
+        "Set `git config --local user.email` in this clone before committing; rewriting history is T89's procedure.")
+
+
+def test_the_commit_scan_flags_an_address_outside_the_list(tmp_path):
+    subprocess.run(["git", "init", "-q"], cwd=tmp_path, check=True)
+    (tmp_path / "f").write_text("x")
+    subprocess.run(["git", "add", "f"], cwd=tmp_path, check=True)
+    for name, address in (("ok", "someone@gmail.com"), ("stray", "someone@work.example")):
+        subprocess.run(["git", "-c", f"user.name={name}", "-c", f"user.email={address}", "commit", "-q", "--allow-empty", "-m", name],
+                       cwd=tmp_path, check=True, capture_output=True)
+    assert _commit_domains(tmp_path) == {"gmail.com", "work.example"}
+    assert _commit_domains(tmp_path) - EXPECTED_COMMIT_DOMAINS == {"work.example"}
+
+
+def test_the_commit_scan_reads_the_committer_too(tmp_path):
+    """An author in the list does not clear a commit whose committer (the identity that rebased or applied it) is outside it."""
+    subprocess.run(["git", "init", "-q"], cwd=tmp_path, check=True)
+    env = {**os.environ, "GIT_AUTHOR_NAME": "a", "GIT_AUTHOR_EMAIL": "someone@gmail.com",
+           "GIT_COMMITTER_NAME": "c", "GIT_COMMITTER_EMAIL": "other@elsewhere.example"}
+    subprocess.run(["git", "commit", "-q", "--allow-empty", "-m", "x"], cwd=tmp_path, check=True, capture_output=True, env=env)
+    assert _commit_domains(tmp_path) == {"gmail.com", "elsewhere.example"}
+
