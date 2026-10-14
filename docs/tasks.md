@@ -549,6 +549,7 @@ can run `python scripts/import_json_history.py --apply`. The old `state/*.json` 
 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
+| T103 | Everything personal is configurable: the title filter in `config.json` (plain word lists), an optional rubric file, and `rolesight init --resume FILE` drafts both from a resume (Manish, 2026-10-14: "very easy for anyone to configure and use") | doing · claude · 2026-10-14 | claude | M | — |
 
 T37 and T40 were verified 2026-10-07 (Done log).
 
@@ -604,7 +605,7 @@ Which terms would you add?
 
 ## Inbox
 
-New findings go here with the next free ID (next: **T103**), an evidence tag and the
+New findings go here with the next free ID (next: **T104**), an evidence tag and the
 file:line. Manish or the triaging agent moves each one into a priority table.
 
 | ID | Finding | Evidence | Added by |
