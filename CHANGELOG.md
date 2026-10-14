@@ -9,6 +9,10 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Changed (2026-10-14, backups of the key files are ignored)
+- `.gitignore` ignores `config.json.bak*` and `.env.bak*`: a dated backup of Manish's `config.json` (`config.json.bak-2026-10-14`, holding his key)
+  showed up as untracked, so a careless `git add` could have committed it. Backups now go to `data/backups/` (ignored, folder 700, files 600).
+
 ### Fixed (2026-10-14, T105: key files readable by their owner only)
 - `init` wrote `.env` and `config.json` with the umask: 664 here (group-writable, world-readable), and since T103 `init --resume` can save the
   Gemini key into `.env`. Both are now created with mode 600 from the first byte (`onboarding.write_private`), and saving a typed key

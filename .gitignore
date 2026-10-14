@@ -56,4 +56,5 @@ scratchpad/
 # Your scoring rubric and the backups `rolesight init --resume` keeps (T103)
 rubric.md
 rubric.md.bak
-config.json.bak
+config.json.bak*
+.env.bak*

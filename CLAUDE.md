@@ -107,9 +107,12 @@ since those would have been on the pages read, and for no older or undated job.
 | `companies.json` | ATS boards to scan (curated; maintained with `discover`) | committed |
 | `resume/YOUR_RESUME.md` | resume text | template committed |
 
-- **Manish's own config.json has no `titles` and no `rubric_file`:** the built-in defaults are his (title lists = the regexes
-  they replaced, 0 of 34,624 titles decided differently; rubric id unchanged). `.env` values that are placeholders or empty
-  never override the shell (`settings.load_env_file`, T103).
+- **Manish's own config.json carries his title filter written out** (`candidate.titles`, since 2026-10-14, equal to
+  `prefilter.DEFAULT_TITLE_*`, the regexes they replaced: 0 of 39,985 jobs decided differently). **A change to his filter goes into
+  his config.json** (and into the defaults + both example configs when it should ship); changing only the defaults no longer
+  reaches him. He has **no `rubric_file`**: his rubric is the built-in one (`llm_utils.DEFAULT_SCORING_RUBRIC`, id `82e017b4`), so
+  measured rubric changes in code reach him. His `.env` overrides (`CANDIDATE_NAME`, `RESUME_PATH`, `TOP_N`) are commented out:
+  config.json decides. `.env` values that are placeholders or empty never override the shell (`settings.load_env_file`, T103).
 - **LLM:** `llm_provider` defaults to `gemini`; model from `gemini_model` / `GEMINI_MODEL`,
   fallback chain `gemini-3.5-flash-lite` → `gemini-3.1-flash-lite` only; a model whose daily quota is gone is skipped until its reset (T64) (free tier: 15 RPM,
   250k TPM, 500 RPD each; `gemini-3.8-flash` has 20 RPD and is never used as a fallback). `anthropic` and `claude_cli` are kept (deprecated) but only stubbed tests exercise them: no real call has been made with either (T63).
