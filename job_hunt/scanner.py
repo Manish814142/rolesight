@@ -34,7 +34,7 @@ from job_hunt.prefilter import (
     should_evaluate_job,
 )
 from job_hunt.scorer import score_and_process_batch, score_and_process_job
-from job_hunt.settings import max_posted_age_of, min_score_of
+from job_hunt.settings import cities_of, max_posted_age_of, min_score_of
 
 logger = get_logger()
 
@@ -348,6 +348,11 @@ def run_scan(config: dict, companies: list[dict]) -> None:
     if max_age is not None:
         logger.info(f"Posted-date filter: last {max_age} day(s) only (jobs without a posted date are kept)")
     too_old = 0
+    cities = cities_of(config)
+    if cities:
+        logger.info(f"City filter: jobs in {', '.join(cities)}, or remote, or in India with no city named (candidate.cities)")
+    else:
+        logger.info("Location filter: all of India, and remote jobs from India")
 
     workers = int(config.get("fetch_workers", DEFAULT_FETCH_WORKERS))
     logger.info(f"Fetching {total} companies with {workers} parallel workers...")
@@ -390,7 +395,7 @@ def run_scan(config: dict, companies: list[dict]) -> None:
                             already_scored += 1
                             continue
 
-                        passed, reason = should_evaluate_job(job)
+                        passed, reason = should_evaluate_job(job, cities=cities)
                         if not passed:
                             logger.debug(f"  Pre-filter skipped: {job.title} ({reason})")
                             prefilter_rejected += 1

@@ -24,3 +24,19 @@ def max_posted_age_of(config: dict) -> int | None:
         return DEFAULT_MAX_POSTED_AGE_DAYS
     value = candidate["max_posted_age_days"]
     return None if value is None else int(value)
+
+
+# Optional (T84): config.json candidate.cities narrows the India location check to these cities. Absent or empty means all of
+# India, which is what Manish uses (2026-10-14). A list, or one comma-separated string.
+def cities_of(config: dict) -> list[str]:
+    candidate = config.get("candidate") or {}
+    value = candidate.get("cities")
+    if not value:
+        return []
+    items = value.split(",") if isinstance(value, str) else list(value)
+    cities: list[str] = []
+    for item in items:
+        name = str(item).strip()
+        if name and name.lower() not in {c.lower() for c in cities}:
+            cities.append(name)
+    return cities

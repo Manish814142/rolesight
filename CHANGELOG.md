@@ -9,6 +9,19 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Changed (2026-10-14, T84 and T96: more of what reaches Gemini, on Manish's answers)
+- **T84, the location check is on the country.** Manish applies to all of India, so `location_is_india` now also accepts any Indian state or union territory and some 150
+  more cities (Coimbatore, Indore, Nagpur, Bhubaneswar, Lucknow, Kochi, ... `LOCATION_INDIA_MORE_PATTERN`), not only 11 cities and the word "india"; upper-case `IND`
+  counts too. Left out on purpose: names that are also places elsewhere (Salem, Bilaspur, Punjab). **New, optional: `candidate.cities`** (a list such as `["Pune", "Hyderabad"]`, or
+  `"Delhi NCR"` for Delhi, Noida, Gurugram, Ghaziabad, Faridabad): with it, a job in an Indian city or state that is not one of them is rejected, unless it is remote or
+  names no city; Bangalore = Bengaluru and the like match. Empty or absent = all of India (the default, and Manish's). The scan logs which it uses; `check_filter.py --cities`
+  shows it for one job.
+- **T96 (T69 g), generic engineer titles reach Gemini.** A title that is only "Engineer" with a seniority or level ("Senior Engineer", "Engineer II", "Associate Engineer") or has
+  "software" and "engineer" in any order ("Engineer III, Software", "Sr Software Application Engineer") continues to Gemini, which judges the description; companies name roles
+  differently. Exclude words still win ("Lead Engineer"); "Data Engineer", "Mechanical Engineer" and the like still need an include word.
+- **Measured** with the old filter (from git) and the new one on the fetch of 2026-10-13 (39,985 jobs): jobs passing 1,847 → 2,209 (+362: 335 from titles, 27 from places, 1 from both); none stopped
+  passing; **52 of the 362 are posted within 7 days or undated**, i.e. about 52 more scoring calls a week. `scripts/measure_generic_titles.py` now reports what the title rule still drops.
+
 ### Fixed (2026-10-14, review of T92 and T95: a secret cut in half)
 - `doctor`'s Telegram check and `send_telegram` cut a failed response's text to 100 / 200 characters and then masked the token; the REST fallback of `doctor`'s
   Gemini check did the same with the key (120 characters). A secret that straddled the cut no longer matched, so its first part was printed. Each now masks the

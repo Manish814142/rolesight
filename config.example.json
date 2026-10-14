@@ -18,7 +18,8 @@
     "relocation_note": "",
     "min_score": 70,
     "top_n": 5,
-    "max_posted_age_days": 7
+    "max_posted_age_days": 7,
+    "cities": []
   },
   "fetch_workers": 8,
   "gemini_scoring_mode": "single"

@@ -20,6 +20,16 @@ TITLE_INCLUDE_PATTERN = re.compile(
     re.IGNORECASE,
 )
 
+# Generic engineer titles (T96, T69 g; Manish 2026-10-14): companies name roles differently, and "Senior Engineer", "Engineer II" or
+# "Engineer III, Software" can be a backend job, so a title that is only "Engineer" with a seniority or level, or that has "software"
+# and "engineer" in any order, goes to Gemini, which judges the description. "Data Engineer", "Mechanical Engineer" and the like
+# name a different role and still need an include word. The exclude words are checked first, so "Lead Engineer" stays out.
+# Measured (fetch of 2026-10-13): 44 + 5 jobs posted in the last 7 days, most of them hardware or support roles that score low.
+TITLE_GENERIC_ENGINEER_PATTERN = re.compile(
+    r"^\s*(?:(?:senior|sr\.?|associate)\s+)?engineer\b|\bsoftware\b.*\bengineer\b",
+    re.IGNORECASE,
+)
+
 # '.net' and 'c#' start/end with non-word chars, where \b does not apply,
 # so they get their own boundary handling.
 # "Senior"/"Sr." are deliberately NOT excluded: at Indian companies they often mean 3-6 YOE,
@@ -50,11 +60,8 @@ TITLE_EXCLUDE_PATTERN = re.compile(
     re.IGNORECASE,
 )
 
-LOCATION_INDIA_PATTERN = re.compile(
-    r"\b(bengaluru|bangalore|pune|gurugram|gurgaon|hyderabad|noida|mumbai|chennai|delhi|ncr"
-    r"|kolkata|india)\b",
-    re.IGNORECASE,
-)
+_INDIA_CITIES_CORE = r"bengaluru|bangalore|pune|gurugram|gurgaon|hyderabad|noida|mumbai|chennai|delhi|ncr|kolkata"
+LOCATION_INDIA_PATTERN = re.compile(rf"\b({_INDIA_CITIES_CORE}|india)\b", re.IGNORECASE)
 
 # SmartRecruiters appends a lowercase ISO country code ("Jaipur, RJ, in"). Deliberately
 # case-sensitive: uppercase ", IN" is the US state code for Indiana ("Indianapolis, IN").
@@ -90,18 +97,60 @@ _LOCATION_FILLER_PATTERN = re.compile(
     re.IGNORECASE,
 )
 
-# Indian places LOCATION_INDIA_PATTERN lacks (states, union territories, cities): never a "named non-India place".
-# Used only for the rule above, so it changes nothing for jobs the flag did not carry (T84 asks whether the main
-# India check should know them too).
-LOCATION_INDIA_MORE_PATTERN = re.compile(
-    r"\b(karnataka|maharashtra|telangana|tamil\s+nadu|haryana|uttar\s+pradesh|rajasthan|gujarat|kerala|west\s+bengal"
+# The rest of India (T84): states and union territories, and the cities boards write without "India" or a state after
+# them. With LOCATION_INDIA_PATTERN this makes the check one on the country: Manish applies to all of India (2026-10-14).
+# Left out on purpose: names that are also places elsewhere (Salem, Bilaspur, Punjab).
+_INDIA_PLACES_MORE = (
+    r"karnataka|maharashtra|telangana|tamil\s+nadu|haryana|uttar\s+pradesh|rajasthan|gujarat|kerala|west\s+bengal"
     r"|andhra\s+pradesh|odisha|orissa|madhya\s+pradesh|bihar|jharkhand|chhattisgarh|assam|goa|uttarakhand|himachal"
+    r"|jammu|kashmir|ladakh|sikkim|manipur|meghalaya|mizoram|nagaland|tripura|arunachal|andaman"
     r"|chandigarh|puducherry|pondicherry|ahmedabad|jaipur|kochi|cochin|coimbatore|indore|trivandrum|thiruvananthapuram"
-    r"|bhubaneswar|lucknow|nagpur|vadodara|surat|mysuru|mysore|mangaluru|mangalore|visakhapatnam|vizag|mohali|kanpur"
-    r"|patna|ranchi|bhopal|vijayawada|faridabad|ghaziabad|navi\s+mumbai|thane|bharat"
-    r"|ind)\b",   # India's ISO code: "IND - Remote", "IN - Remote - IND" (review of T77)
+    r"|bhubaneswar|lucknow|nagpur|vadodara|baroda|surat|mysuru|mysore|mangaluru|mangalore|visakhapatnam|vizag|mohali"
+    r"|kanpur|patna|ranchi|bhopal|vijayawada|faridabad|ghaziabad|navi\s+mumbai|greater\s+noida|thane"
+    r"|jamshedpur|hubballi|hubli|dharwad|belagavi|belgaum|dehradun|guwahati|ludhiana|amritsar|jalandhar|srinagar"
+    r"|madurai|tiruchirappalli|trichy|vellore|tirupati|warangal|guntur|nellore|rajkot|nashik|aurangabad|solapur"
+    r"|kolhapur|pimpri|chinchwad|raipur|jabalpur|gwalior|jodhpur|udaipur|agra|varanasi|meerut|prayagraj|allahabad"
+    r"|gandhinagar|sonipat|panipat|kozhikode|calicut|thrissur|kollam|cuttack|rourkela|durgapur|siliguri|gangtok"
+    r"|imphal|shillong|aizawl|kohima|agartala|itanagar|panaji|shimla|haridwar|bhilai|manipal|udupi|tumakuru|hosur|erode"
+)
+LOCATION_INDIA_MORE_PATTERN = re.compile(
+    rf"\b({_INDIA_PLACES_MORE}|bharat)\b"
+    r"|(?-i:\bIND\b)",   # India's ISO code, upper case only: "IND - Remote", "IN - Remote - IND" (review of T77)
     re.IGNORECASE,
 )
+# Named Indian places, without the country words: whether a location names a city or state at all (the city filter below).
+_INDIAN_PLACE_PATTERN = re.compile(rf"\b({_INDIA_CITIES_CORE}|{_INDIA_PLACES_MORE})\b", re.IGNORECASE)
+
+# The usual alternative names of one city or area, lower case. A chosen city matches a location holding any name of its group.
+_CITY_GROUPS = [
+    {"bengaluru", "bangalore", "bengalooru"}, {"gurugram", "gurgaon"}, {"mumbai", "bombay"}, {"kolkata", "calcutta"},
+    {"chennai", "madras"}, {"kochi", "cochin"}, {"thiruvananthapuram", "trivandrum"}, {"mysuru", "mysore"},
+    {"mangaluru", "mangalore"}, {"visakhapatnam", "vizag"}, {"puducherry", "pondicherry"}, {"vadodara", "baroda"},
+    {"hubballi", "hubli"}, {"belagavi", "belgaum"}, {"prayagraj", "allahabad"}, {"kozhikode", "calicut"},
+    {"tiruchirappalli", "trichy"},
+]
+_NCR = {"delhi", "new delhi", "ncr", "noida", "greater noida", "gurugram", "gurgaon", "ghaziabad", "faridabad"}
+_AREA_GROUPS = {"delhi ncr": _NCR, "ncr": _NCR, "national capital region": _NCR}
+
+
+def _city_terms(city: str) -> set:
+    key = re.sub(r"\s+", " ", city.strip().lower())
+    if key in _AREA_GROUPS:
+        return _AREA_GROUPS[key]
+    for group in _CITY_GROUPS:
+        if key in group:
+            return group
+    return {key}
+
+
+def city_matches(location: str, cities) -> bool:
+    """True when the location text holds any of the chosen cities (whole words, any case, usual alternative names)."""
+    text = (location or "").lower()
+    for city in cities or []:
+        for term in _city_terms(str(city)) if str(city).strip() else ():
+            if re.search(r"(?<!\w)" + r"\s+".join(map(re.escape, term.split())) + r"(?!\w)", text):
+                return True
+    return False
 
 
 def named_place(location: str) -> str:
@@ -159,8 +208,10 @@ def is_too_old(posted_at: str, max_age_days: Optional[int], today: Optional[date
 
 
 def location_is_india(location: str) -> bool:
-    """True when the location text names an Indian city/country (or SmartRecruiters' lowercase ', in')."""
-    return bool(LOCATION_INDIA_PATTERN.search(location or "") or LOCATION_INDIA_COUNTRY_CODE.search(location or ""))
+    """True when the location text names India, an Indian city or state (or SmartRecruiters' lowercase ', in')."""
+    text = location or ""
+    return bool(LOCATION_INDIA_PATTERN.search(text) or LOCATION_INDIA_MORE_PATTERN.search(text)
+                or LOCATION_INDIA_COUNTRY_CODE.search(text))
 
 
 def _title_rejection(title: str) -> str:
@@ -168,7 +219,7 @@ def _title_rejection(title: str) -> str:
     m_exclude = TITLE_EXCLUDE_PATTERN.search(title)
     if m_exclude:
         return f"Title matched exclude pattern: '{m_exclude.group(0)}'"
-    if not TITLE_INCLUDE_PATTERN.search(title):
+    if not (TITLE_INCLUDE_PATTERN.search(title) or TITLE_GENERIC_ENGINEER_PATTERN.search(title)):
         return "Title did not match include pattern"
     return ""
 
@@ -179,8 +230,11 @@ def title_is_candidate(title: str) -> bool:
     return not _title_rejection(title or "")
 
 
-def should_evaluate_job(job: JobPosting) -> Tuple[bool, str]:
+def should_evaluate_job(job: JobPosting, cities=None) -> Tuple[bool, str]:
     """Evaluate whether a job posting matches candidate criteria.
+
+    `cities` (config.json candidate.cities, T84) narrows India to those cities: a job in an Indian city or state that is not one
+    of them is rejected, unless it is remote or names no city (just "India"). None or empty means all of India.
 
     Returns:
         (True, "passed") if the job passes all criteria.
@@ -196,7 +250,13 @@ def should_evaluate_job(job: JobPosting) -> Tuple[bool, str]:
 
     # 3. Location: India anywhere in the string wins; otherwise another region
     #    excludes; otherwise accept explicit worldwide/global or plain remote.
+    chosen = [c.strip() for c in (cities or []) if str(c).strip()]
+    if chosen and city_matches(location, chosen):
+        return True, "passed"            # a chosen city counts as India even where the lists above do not know it
     if location_is_india(location):
+        remote = job.is_remote or bool(REMOTE_PATTERN.search(location))
+        if chosen and not remote and _INDIAN_PLACE_PATTERN.search(location):
+            return False, f"Location '{location[:80]}' is in India but not in your cities ({', '.join(chosen)})"
         return True, "passed"
 
     m_region = LOCATION_EXCLUDE_PATTERN.search(location)

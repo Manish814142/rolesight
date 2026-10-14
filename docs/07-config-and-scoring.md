@@ -80,13 +80,24 @@ They are applied in this order:
    - `AI engineer` (also `Gen AI`, `Generative AI`, `Agentic AI`, `Applied AI`, `LLM engineer`) and `Forward Deployed
      Engineer` (T74, Manish 2026-10-10). These reach Gemini, whose rubric then rejects the ones that need heavy AI (see below).
 
+   - **Generic engineer titles** (T96, Manish 2026-10-14): a title that is only `Engineer` with a seniority or level
+     (`Engineer`, `Senior Engineer`, `Sr. Engineer`, `Associate Engineer`, `Engineer II`, `Engineer III, Software`), or has
+     `software` and `engineer` in any order (`Sr Software Application Engineer`). Companies name roles differently, so Gemini
+     judges the description. `Data Engineer`, `Mechanical Engineer`, `Cloud Engineer` and the like still need an include word.
+     Measured on 2026-10-13: 49 more jobs a week reach Gemini, most of them hardware or support roles that score low.
+
    Not yet included: Adobe's "Computer Scientist" titles (T11). Also, "developer" lets
    CRM roles such as "Salesforce Developer" through (T12).
 3. **Location.**
-   - An Indian city (Bengaluru/Bangalore, Pune, Gurugram/Gurgaon, Hyderabad, Noida,
-     Mumbai, Chennai, Delhi, NCR, Kolkata), the word `india`, or a lowercase trailing
-     `, in` country code (SmartRecruiters) → **pass**, even when US cities are listed too.
-     An uppercase `, IN` is Indiana and doesn't count.
+   - **India as a country** (T84, Manish 2026-10-14: he applies to all of India): the word `india` or `IND`, any Indian state or
+     union territory, any of the main cities (Bengaluru/Bangalore, Pune, Gurugram/Gurgaon, Hyderabad, Noida, Mumbai, Chennai, Delhi,
+     NCR, Kolkata) or some 150 more (Coimbatore, Indore, Nagpur, Bhubaneswar, Lucknow, Kochi, …), or a lowercase trailing
+     `, in` country code (SmartRecruiters) → **pass**, even when US cities are listed too. An uppercase `, IN` is Indiana and
+     doesn't count. (`LOCATION_INDIA_PATTERN` and `LOCATION_INDIA_MORE_PATTERN` in `prefilter.py`.)
+   - **Optional city filter** (`candidate.cities`, e.g. `["Pune", "Hyderabad"]`; empty = all of India). A job in an Indian city
+     or state that is not one of them is rejected, unless it is remote or names no city (just "India"). Usual alternative names
+     match (Bangalore = Bengaluru, Gurgaon = Gurugram), and `"Delhi NCR"` means Delhi, New Delhi, Noida, Greater Noida, Gurugram,
+     Ghaziabad and Faridabad. A chosen city the lists do not know still counts as India.
    - Otherwise, a non-India region (`US`, `UK`, `Canada`, `Germany`, `Europe`, `EMEA`,
      `LATAM`, `San Francisco`, `New York`, `Austin`, `Seattle`, `London`, `Berlin`, or
      `, CA|NY|TX|WA|IL|MA`) → **reject**.
@@ -95,7 +106,7 @@ They are applied in this order:
      "Remote", "Hybrid", "Remote Work, More…" and Workday's "3 Locations" / "Location Negotiable" pass; "Paris",
      "Singapore", "Remote - Poland" or "Remote, ie" are rejected (the board flags those offices as remote, but they are not
      workable from India). A place is any word left after removing words like remote, hybrid, APAC and the placeholders; an
-     Indian state or city that the main list lacks (Karnataka, Kochi, Coimbatore, …) is never a "non-India place".
+     Indian state or city is never a "non-India place".
    - Otherwise → **reject**.
 4. **Posted date** (`max_posted_age_days`, default 7, or `--posted-within N`). A job whose
    posted date is known and older than N days is rejected (saved as `skipped`). Jobs

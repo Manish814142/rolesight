@@ -96,6 +96,7 @@ uses the default. A name that is not in the tables below is ignored without any 
 | `candidate.min_score` | 70 | The score (0–100) that counts as a match: "Worth Applying = Yes", Telegram alerts and the end-of-scan list. It does not change what gets scored |
 | `candidate.top_n` | 5 | How many matches the end-of-scan list in the log shows |
 | `candidate.max_posted_age_days` | 7 | Only jobs posted in the last N days are scored. `null` switches the window off. Jobs with no posted date are always kept |
+| `candidate.cities` | `[]` | Leave empty to look at **all of India** (and remote jobs from India). To look only at some cities, list them: `["Pune", "Hyderabad", "Delhi NCR"]`. Usual alternative names match (Bangalore = Bengaluru, Gurgaon = Gurugram); remote jobs and jobs that name no city (just "India") are always kept |
 | `llm_provider` | `gemini` | Leave as `gemini` |
 | `gemini_api_key` | — | Your key; usually put in `.env` instead (`GEMINI_API_KEY`) |
 | `gemini_model` | `gemini-3.5-flash-lite` | Which Gemini model scores. Don't change without a reason: scores differ between models |
@@ -150,8 +151,10 @@ Open `job_hunt/prefilter.py`. The word lists are the text between quotes, separa
 | Name | What it decides | Edit it to… |
 |---|---|---|
 | `TITLE_INCLUDE_PATTERN` | A title must contain **at least one** of these words to continue | add a role you want, e.g. `\|data\s*engineer` |
+| `TITLE_GENERIC_ENGINEER_PATTERN` | Titles that say nothing about the job: only "Engineer" with a seniority or level ("Senior Engineer", "Engineer II"), or "software" and "engineer" in any order. These also continue, and Gemini judges the description | narrow it if too many hardware or support roles reach Gemini |
 | `TITLE_EXCLUDE_PATTERN` | A title with **any** of these words is rejected (checked first) | remove a word you want to see (`java`); add one you never want |
-| `LOCATION_INDIA_PATTERN` | Places that count as "in India": a job in one of them passes the location check, even if other countries are listed too | add a city |
+| `LOCATION_INDIA_PATTERN` | The word `india` and the main cities: a job in one of them passes the location check, even if other countries are listed too | add a city |
+| `LOCATION_INDIA_MORE_PATTERN` | The rest of India: states, union territories and some 150 more cities, so "Coimbatore" or "Telangana" alone is enough | add a place you see rejected |
 | `LOCATION_EXCLUDE_PATTERN` | Regions that count as "not workable from India", e.g. a remote job tied to the US | add a country or city to reject |
 
 The order: the exclude words are checked first, then the include words, then the location. A job that the board
@@ -172,9 +175,12 @@ space"; copy the style of the words next to the one you add.
 | Data Engineer | Pune, India | rejected |
 | Backend Engineer | Berlin, Germany | rejected |
 | Account Executive | Mumbai, India | rejected |
+| Backend Engineer | Coimbatore | kept |
+| Senior Engineer | Pune, India | kept |
+| Mechanical Engineer | Pune, India | rejected |
 
-(`Data Engineer` is rejected because no include word matches it. `Java Developer` is rejected by the exclude
-list.) These rows are checked against the real filter by a test, so they cannot drift from the code.
+(`Data Engineer` and `Mechanical Engineer` are rejected because no include word matches them. `Java Developer` is rejected by the exclude
+list. `Backend Engineer` in `Coimbatore` is kept because any Indian city or state counts as India, not only the main cities (T84). `Senior Engineer` is kept because a title that is only "Engineer" with a seniority or level ("Engineer II"), or "software" and "engineer" in any order, goes to Gemini to be judged by the description (T96).) These rows are checked against the real filter by a test, so they cannot drift from the code.
 
 ### Change a word, then check it
 
