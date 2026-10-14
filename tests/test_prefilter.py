@@ -490,6 +490,36 @@ def test_ai_and_forward_deployed_engineer_titles_pass(title):
 
 
 @pytest.mark.parametrize("title", [
+    "Developer Advocate",
+    "Senior Developer Advocate (APIs)",
+    "Developer Advocate, Developer Solutions and Engineering Team",
+    "Developer Advocacy Engineer",
+    "Technical Evangelist, Cloud Platform",
+    "Senior Software Engineer and Evangelist",
+    "DevRel Engineer II",
+    "Senior Software Engineer, DevRel",
+    "Software Engineer, Developer Relations",
+    "Developer Relations Engineer",
+])
+def test_developer_advocacy_roles_are_rejected_because_the_work_is_not_his(title):
+    """T100, Manish 2026-10-14: keep a role only if his skills match it. Advocacy / developer relations is talks, articles, community
+    and demos; his resume is backend engineering. Measured on the 2026-10-13 fetch: three passing titles (Amazon, Autodesk, Salesforce),
+    Gemini scored them 35, 82 and 25; the labelled set already calls "Senior Developer Advocate" a `no`."""
+    assert not should_evaluate_job(_india(title))[0], title
+
+
+@pytest.mark.parametrize("title", [
+    "Developer Experience Engineer",
+    "Software Engineer, Developer Tools",
+    "Backend Engineer, Developer Platform",
+    "Software Engineer - API Platform",
+    "Backend Developer, Developer Portal",
+])
+def test_developer_platform_engineering_titles_still_pass(title):
+    assert should_evaluate_job(_india(title))[0], title
+
+
+@pytest.mark.parametrize("title", [
     "Backend Engineer - Embedded Finance",
     "Software Engineer, Embedded Payments",
     "Senior Software Engineer, Embedded Banking",

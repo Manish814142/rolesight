@@ -68,7 +68,8 @@ They are applied in this order:
    - Other stacks: `frontend`, `react`, `angular`, `vue`, `ios`, `android`, `flutter`,
      `java`, `golang`, `.net`, `c#`. (`python` was on this list until T62: Manish allowed it on 2026-10-10,
      so "Python Developer" and "Backend Engineer (Python)" now reach Gemini.)
-   - Other roles: `qa`, `quality`, `test`/`tester`/`testing`, `intern`/`internship`, `devops`, `sre`.
+   - Other roles: `qa`, `quality`, `test`/`tester`/`testing`, `intern`/`internship`, `devops`, `sre`, and (T100) `advocate`, `advocacy`,
+     `evangelist`, `devrel`, `developer relations`: developer advocacy is talks, articles and community work, not engineering.
 
    "Senior" / "Sr." are **not** excluded. At Indian companies they often mean 3–6 years,
    so Gemini judges them (227 India jobs had been blocked by that word alone).

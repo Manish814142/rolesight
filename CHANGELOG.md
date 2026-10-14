@@ -9,6 +9,15 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Changed (2026-10-14, T100: Developer Advocate roles are rejected by title)
+- Manish's rule, as for "AI / ML Engineer": keep a role only if his skills match it, and he left the reading of his resume to Claude. Developer advocacy / developer relations is a different job
+  (talks, articles, community, demos); his resume shows backend engineering and none of that. `advocate`, `advocacy`, `evangelist`, `devrel` and `developer relations` join the title exclude
+  list (`prefilter.TITLE_EXCLUDE_PATTERN`). Autodesk's "Senior Developer Advocate (APIs)" had scored 82 on the first scan with the T79 rubric (its own reason: "rather than pure backend engineering");
+  Gemini had scored the same kind of role 10, 25 and 35 elsewhere, and the labelled set calls it `no`. Rather than rely on a score that swings, the title is decided before Gemini.
+- Measured on the saved fetch of 2026-10-13 (39,985 jobs): survivors 2,196 → 2,193, exactly the three Developer Advocate titles (Amazon, Autodesk, Salesforce) removed, none added.
+  "Developer Experience Engineer", "Software Engineer, Developer Tools" and "Backend Engineer, Developer Platform" still pass. Rows already scored stay as they are: Autodesk's 82 stays in
+  the database and in `open_matches.csv` until the posting leaves the 7-day window or the job closes.
+
 ### Fixed (2026-10-14, review of T96, T97 and T86)
 - **`quality` joins `qa` and `test…` in the title exclude list.** T96's "software … engineer" rule let quality-engineering titles through, and the first scan
   scored KLA's "Software Quality Engineer" 75 (its own reason: "quality engineering and test automation"). On the fetch of 2026-10-13 the word removes 13
