@@ -2,6 +2,7 @@
 import importlib.util
 import re
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -73,7 +74,7 @@ def test_the_script_names_the_checkouts_own_id_and_the_database_counts(tmp_path)
     init_db(db)
     save_job(_job(1), db_path=db)
     update_job_status(job_key(_job(1)), "scored", 80, "r", db_path=db, rubric=llm_utils.rubric_id())
-    out = subprocess.run(["python", str(ROOT / "scripts" / "rubric_ids.py"), "--db", db], cwd=ROOT, capture_output=True,
+    out = subprocess.run([sys.executable, str(ROOT / "scripts" / "rubric_ids.py"), "--db", db], cwd=ROOT, capture_output=True,
                          text=True, check=True).stdout
     assert f"This checkout: {llm_utils.rubric_id()}" in out
     assert f"{llm_utils.rubric_id()}  1 scored" in out and "(current)" in out
