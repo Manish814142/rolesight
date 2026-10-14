@@ -23,7 +23,12 @@ from job_hunt.db import (
     update_job_details,
     update_job_status,
 )
-from job_hunt.llm_utils import STRUCTURED_INSTRUCTIONS, chat_with_llm, rubric_id
+from job_hunt.llm_utils import (
+    MAX_DESCRIPTION_CHARS,
+    STRUCTURED_INSTRUCTIONS,
+    chat_with_llm,
+    rubric_id,
+)
 from job_hunt.log import get_logger
 from job_hunt.models import job_key
 from job_hunt.notifier import is_telegram_configured, send_telegram
@@ -197,7 +202,7 @@ def score_batch(jobs: list[dict], resume: str, config: dict) -> Optional[list[di
     jobs_text = "\n\n".join(
         f"JOB {i + 1}:\nCompany: {j['company']} | Location: {j['location']}\n"
         f"Title: {j['title']}\nURL: {j['url']}\n"
-        f"Content:\n{j.get('content', j.get('snippet', ''))[:1500]}"
+        f"Content:\n{j.get('content', j.get('snippet', ''))[:MAX_DESCRIPTION_CHARS]}"
         for i, j in enumerate(jobs)
     )
 
@@ -206,7 +211,7 @@ def score_batch(jobs: list[dict], resume: str, config: dict) -> Optional[list[di
 
     prompt = SCORE_PROMPT.format(
         candidate_profile=candidate_profile,
-        resume_summary=resume[:2500],
+        resume_summary=resume,
         jobs_text=jobs_text,
         min_score=min_score,
     )

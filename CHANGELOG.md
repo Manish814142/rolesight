@@ -18,6 +18,16 @@ reconstructed from git history.
   and is inside the posted window; any other row set back to `discovered` is never scored again and drops out of `open_matches.csv` and `export` (T86: 3 of
   145 qualified). The bulk `UPDATE` it printed would have reset 459 rows of today's database.
 
+### Changed (2026-10-14, T69: the low-priority review notes, a, b, c and f; d and e left, see the board)
+- (a) Structured and batch scoring read `gemini_temperature` like the single-job path (they hard-coded 0.1; the default is unchanged).
+- (b) The deprecated non-Gemini scorer (`scanner.score_batch`) sends the whole resume and each description up to `MAX_DESCRIPTION_CHARS` (20,000), as the Gemini path has since
+  T13; it cut them at 2,500 and 1,500 characters. No real call has been made with these providers (T63): the test checks the prompt that reaches the (stubbed) model.
+- (c) The title word `embedded` no longer rejects "Embedded Finance / Payments / Banking / Insurance / Lending" (fintech products, not firmware). Measured on the saved
+  fetch of 2026-10-13 (39,985 jobs): 151 titles contain the word, none of this kind for an engineer, and the survivors are the same 2,209 before and after.
+- (f) Structured scoring caps a stack mismatch at 50 in code, as rubric rule 4 does since T73 (the code said 60). Opt-in mode only.
+- Decided, no code: "AI / ML Engineer" (with a slash), "ML Engineer" and the like stay rejected (Manish, 2026-10-14: ML engineering is not his area; his resume shows GenAI used through APIs inside
+  Node.js services and no model-building work). The tests that pin the rejection now list the slash form too.
+
 ### Fixed (2026-10-14, T82: the unexplained test failure explained)
 - `tests/test_export_from_db.py::test_worth_applying_uses_the_scans_min_score_when_there_is_a_config` failed once in six full runs (2026-10-11). Cause, now shown:
   the test helper `_export` read "the newest CSV" by `st_mtime_ns`, the test runs two exports into one directory a few milliseconds apart, and file

@@ -348,3 +348,23 @@ def test_scoring_temperature_defaults_to_0_1_and_is_configurable(monkeypatch):
     llm_utils.score_job_with_gemini({"title": "t"}, "r", {"gemini_api_key": "k"})
     llm_utils.score_job_with_gemini({"title": "t"}, "r", {"gemini_api_key": "k", "gemini_temperature": 0})
     assert [c["temperature"] for c in captured] == [0.1, 0.0]
+
+
+STRUCTURED_REPLY = ('{"stack_fit": 80, "role_fit": 80, "seniority_fit": 80, "location_fit": 80, "min_years": 3, '
+                    '"accepts_candidate_stack": true, "onsite_outside_india": false, "aimed_at_freshers": false, "reason": "ok"}')
+
+
+def test_structured_and_batch_scoring_honour_gemini_temperature_too(monkeypatch):
+    """T69(a): only the single-job path read `gemini_temperature` (T60); the other two hard-coded 0.1."""
+    captured = []
+    cfg_cls = lambda **kw: captured.append(kw) or MagicMock()  # noqa: E731
+    for reply, call in (
+        (STRUCTURED_REPLY, lambda cfg: llm_utils.score_job_structured_with_gemini({"title": "t"}, "r", cfg)),
+        ('[{"job_id": "0", "score": 70, "reason": "ok"}]', lambda cfg: llm_utils.score_jobs_batch_with_gemini([{"id": "0", "title": "t"}], "r", cfg)),
+    ):
+        client = _capturing_client(reply)
+        monkeypatch.setattr(llm_utils, "_get_genai_client_and_types",
+                            lambda api_key, client=client: (client, types.SimpleNamespace(GenerateContentConfig=cfg_cls)))
+        call({"gemini_api_key": "k"})
+        call({"gemini_api_key": "k", "gemini_temperature": 0.3})
+    assert [c["temperature"] for c in captured] == [0.1, 0.3, 0.1, 0.3]

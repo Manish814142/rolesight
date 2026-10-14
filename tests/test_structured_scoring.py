@@ -39,12 +39,18 @@ def test_different_sub_scores_break_what_used_to_be_a_tie():
     ({"role_fit": 20}, 40),
     ({"min_years": 7}, 50),
     ({"aimed_at_freshers": True}, 50),
-    ({"accepts_candidate_stack": False}, 60),
+    ({"accepts_candidate_stack": False}, 50),
 ])
 def test_caps_are_applied_in_code(override, cap):
     out = combine_subscores(facts(**override))
     assert out["score"] <= cap
     assert out["capped_by"]
+
+
+def test_a_stack_mismatch_caps_at_50_like_the_rubric():
+    """T69(f): rule 4 of the rubric caps at 50 (T73); the structured mode's code said 60."""
+    out = combine_subscores(facts(accepts_candidate_stack=False))
+    assert out["score"] == 50 and "stack" in out["capped_by"]
 
 
 def test_the_lowest_cap_wins_and_it_is_reported():

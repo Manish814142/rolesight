@@ -3,6 +3,7 @@
 Only `chat_with_llm` is stubbed; the prompt parsing, run_scan and the SQLite rows are real.
 """
 import json
+from pathlib import Path
 
 import pytest
 
@@ -98,6 +99,22 @@ def test_item_without_a_score_is_not_stored_as_zero(legacy_scan):
     set_reply(json.dumps([{"job_number": 1, "title": "x", "worth_applying": False, "reason": "?"}]))
     run()
     assert get_job("greenhouse:acme:1")["status"] == "discovered"
+
+
+def test_the_deprecated_scorer_sends_the_whole_resume_and_the_description_like_the_gemini_path(legacy_scan, monkeypatch):
+    """T69(b): it cut the resume at 2,500 characters and each description at 1,500, which dropped requirements the Gemini
+    path has seen since T13. The same runaway bound as Gemini's (llm_utils.MAX_DESCRIPTION_CHARS) still applies."""
+    from job_hunt.llm_utils import MAX_DESCRIPTION_CHARS
+    run, calls, set_reply = legacy_scan
+    (Path("resume.md")).write_text("Backend engineer. " + "x" * 3000 + " RESUME-END-MARKER")
+    long_job = _posting(1)
+    long_job.description_text = "y" * 5000 + " DESCRIPTION-END-MARKER " + "z" * MAX_DESCRIPTION_CHARS + " PAST-THE-BOUND"
+    monkeypatch.setattr(scanner, "fetch_company_jobs", lambda c: [long_job])
+    set_reply("[]")
+    run()
+    prompt = calls[0]
+    assert "RESUME-END-MARKER" in prompt and "DESCRIPTION-END-MARKER" in prompt
+    assert "PAST-THE-BOUND" not in prompt
 
 
 def test_only_worth_applying_jobs_reach_the_csv(legacy_scan):

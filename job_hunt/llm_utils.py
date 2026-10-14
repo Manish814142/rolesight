@@ -402,7 +402,7 @@ def combine_subscores(f: dict) -> dict:
     if f.get("aimed_at_freshers"):
         caps.append((50, "aimed at freshers"))
     if not f.get("accepts_candidate_stack", True):
-        caps.append((60, "every accepted stack is outside the candidate's"))
+        caps.append((50, "every accepted stack is outside the candidate's"))   # rubric rule 4 (T73); the code said 60 (T69 f)
     capped_by = ""
     for cap, why in sorted(caps):
         if score > cap:
@@ -444,8 +444,8 @@ def score_job_structured_with_gemini(job: dict, resume: str, config: dict) -> di
         f"Location: {job.get('location', '')}\n"
         f"Description:\n{_description(job)}\n"
     )
-    cfg = types.GenerateContentConfig(temperature=0.1, response_mime_type="application/json",
-                                      response_json_schema=STRUCTURED_SCHEMA)
+    cfg = types.GenerateContentConfig(temperature=float(config.get("gemini_temperature", 0.1)),
+                                      response_mime_type="application/json", response_json_schema=STRUCTURED_SCHEMA)
     raw, model = _generate_with_model(client, prompt, cfg, _gemini_models(config))
     data = json.loads(raw)
     if not isinstance(data, dict):
@@ -508,7 +508,7 @@ def score_jobs_batch_with_gemini(jobs: list[dict], resume: str, config: dict) ->
         f"{SCORING_RUBRIC}\n"
     )
     cfg = types.GenerateContentConfig(
-        temperature=0.1,
+        temperature=float(config.get("gemini_temperature", 0.1)),
         response_mime_type="application/json",
         response_json_schema=BATCH_SCORE_SCHEMA,
     )

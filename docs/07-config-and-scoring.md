@@ -16,6 +16,7 @@ looks, so a value put there was ignored; T80). The step-by-step version of this 
 | `gemini_model` | `gemini-3.5-flash-lite` | Primary scoring model; the fallback is `gemini-3.1-flash-lite` |
 | `gemini_scoring_mode` | `single` | `batch` scores several jobs per call. Faster, but measured to inflate scores ([02](02-providers.md#batch-mode-opt-in-not-recommended)) |
 | `gemini_batch_size` | `10` | Jobs per call in batch mode |
+| `gemini_temperature` | `0.1` | Sampling temperature of every Gemini scoring call: single, batch and structured (T60 measured that 0 does not remove the score noise; T69 a made the last two read it) |
 | `fetch_workers` | `8` | Companies fetched in parallel; also used for description fetching |
 | `scoring_mode` | `holistic` | `holistic`: one score from the prompt with the rubric. `structured`: the model reports sub-scores and facts, code applies the caps and computes the score; the CSV gets Stack/Role/Seniority/Location fit, Min years and Capped by columns (T41). Not the default: calibration was worse on the labelled set (see CHANGELOG 2026-10-06) |
 | `max_jobs_to_score_per_run` | 400 | Score at most this many jobs per run, newest first; the rest stay `discovered` for the next scan. `0` = no cap (T04) |

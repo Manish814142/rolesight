@@ -490,6 +490,32 @@ def test_ai_and_forward_deployed_engineer_titles_pass(title):
 
 
 @pytest.mark.parametrize("title", [
+    "Backend Engineer - Embedded Finance",
+    "Software Engineer, Embedded Payments",
+    "Senior Software Engineer, Embedded Banking",
+    "Backend Developer (Embedded Insurance)",
+    "Software Engineer - Embedded Lending",
+])
+def test_embedded_finance_is_a_fintech_product_not_embedded_systems(title):
+    """T69(c): the T61 word `embedded` rejected these. Measured on the 2026-10-13 fetch: no engineer title of this kind
+    existed (one "Manager, Embedded Finance Operations", which the manager word rejects anyway), so this is preventive."""
+    assert should_evaluate_job(_india(title))[0], title
+
+
+@pytest.mark.parametrize("title", [
+    "Embedded Software Engineer",
+    "Embedded Engineer",
+    "Software Engineer, Embedded Linux",
+    "Embedded Finance Platform and Embedded Firmware Engineer",     # a second hit still rejects
+    "Backend Engineer - Embedded",
+    "Embedded Payments Terminal Firmware Engineer",                 # `firmware` rejects it whatever follows
+    "Manager, Embedded Finance Operations",                         # not an engineer title: manager
+])
+def test_embedded_systems_titles_stay_rejected(title):
+    assert not should_evaluate_job(_india(title))[0], title
+
+
+@pytest.mark.parametrize("title", [
     "Staff AI Engineer",
     "Principal AI Engineer",
     "Lead AI Engineer",
@@ -499,6 +525,10 @@ def test_ai_and_forward_deployed_engineer_titles_pass(title):
     "Forward Deployed Engineering Manager",
     "Machine Learning Engineer",            # not asked for: only AI / LLM / Forward Deployed Engineer titles
     "AI/ML Engineer",
+    "AI / ML Engineer",                    # Manish, 2026-10-14: ML engineering is not his area (backend, Node.js); his resume has GenAI APIs, no ML work
+    "Senior AI / ML Engineer",
+    "ML Engineer",
+    "Applied Scientist",
     "Data Scientist",
     "AI Research Scientist",
     "Mail Engineer",                        # 'ai' inside a word
