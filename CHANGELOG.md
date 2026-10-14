@@ -9,6 +9,15 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Changed (2026-10-14, CI: Dependabot's two pull requests)
+- CI uses `actions/checkout@v7`, `actions/setup-python@v7` and `gitleaks/gitleaks-action@v3` (Dependabot #2; its CI run passed on all three Pythons and
+  gitleaks v3 scanned: "1 commits scanned … no leaks found").
+- The Codecov upload step is removed: it never uploaded. On every run, v5 and v7 alike, the Codecov CLI logged `Upload queued for processing failed: {"message":"Token
+  required - not valid tokenless upload"}` (the repository has no `CODECOV_TOKEN`), and `fail_ci_if_error: false` kept the step green. The 85% coverage gate
+  is pytest's own (`fail_under` in `pyproject.toml`) and still runs on every Python. Adding it back needs a Codecov account and the token as a repository secret.
+- Not taken: `mcp` 2.x (Dependabot #1, closed). With `mcp` 2.3.0 mypy fails on all three Pythons: `mcp.server.fastmcp` no longer exports `FastMCP`, and
+  `ToolAnnotations` takes `read_only_hint` instead of `readOnlyHint`. `mcp>=1.9,<2` stays; porting the MCP server is T98.
+
 ### Changed (2026-10-14, T79: rule 1 never caps a role in an Indian city)
 - Rule 1 of the scoring rubric (the ≤ 30 cap for on-site work outside India) sometimes capped an on-site role in an Indian city other than Bengaluru:
   Notion's Forward Deployed Engineer in Hyderabad (`ai65`, labelled `apply`) scored ≤ 30 in 5 of 20 runs, the reasons citing the candidate's Bengaluru
