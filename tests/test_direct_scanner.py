@@ -32,11 +32,20 @@ def direct_scan_env(tmp_path, monkeypatch):
 
 
 def _scan_csv():
-    """The scan's own output (T34: there is no state/last_scan.json any more): the newest CSV's rows, or [] if none."""
+    """The scan's own output (T34: there is no state/last_scan.json any more): the newest CSV's rows, or [] if none.
+    Newest by name (jobs_DATE, jobs_DATE_1, jobs_DATE_2, ...), not by mtime: files written a millisecond apart can tie (T82)."""
     import csv
     from pathlib import Path
-    files = sorted(Path("output").glob("jobs_*.csv"), key=lambda f: f.stat().st_mtime_ns)
-    return list(csv.DictReader(files[-1].open(encoding="utf-8"))) if files else []
+
+    def order(f):
+        _, day, *counter = f.stem.split("_")
+        return day, int(counter[0]) if counter else 0
+
+    files = sorted(Path("output").glob("jobs_*.csv"), key=order)
+    if not files:
+        return []
+    with files[-1].open(newline="", encoding="utf-8") as fh:
+        return list(csv.DictReader(fh))
 
 
 @patch("job_hunt.scanner.fetch_company_jobs")
@@ -252,3 +261,15 @@ def test_posted_within_filter_keeps_fresh_and_undated_jobs(mock_single, mock_fet
     rec = get_job(canonical_hash(old.title, old.company, old.location), db_path=db_path)
     assert rec["status"] == "skipped"            # re-evaluated if the window is widened later
     assert {r["Posted"] for r in _scan_csv()} == {fresh.posted_at, ""}
+
+
+def test_scan_csv_helper_picks_the_highest_numbered_file_even_when_mtimes_tie(tmp_path, monkeypatch):
+    """T82: the scanner never overwrites (jobs_DATE.csv, jobs_DATE_1.csv, ...); equal mtimes must not decide which one is read."""
+    import os
+    from pathlib import Path
+    monkeypatch.chdir(tmp_path)
+    Path("output").mkdir()
+    for name, marker in (("jobs_2026-10-14.csv", "first"), ("jobs_2026-10-14_1.csv", "second"), ("jobs_2026-10-14_2.csv", "third")):
+        Path("output", name).write_text(f"Company\n{marker}\n")
+        os.utime(Path("output", name), ns=(1_700_000_000_000_000_000,) * 2)
+    assert _scan_csv() == [{"Company": "third"}]

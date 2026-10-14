@@ -1,6 +1,7 @@
 """T32: `autopilot export` reads data/jobs.db, not state/last_scan.json / job_history.json (no network)."""
 import csv
 import json
+import os
 import sqlite3
 import sys
 from datetime import datetime, timedelta, timezone
@@ -58,9 +59,11 @@ def history(tmp_path, monkeypatch):
 
 def _export(monkeypatch, *args):
     monkeypatch.setattr(sys, "argv", ["autopilot", "export", *args])
+    before = set(Path("output").glob("*.csv"))
     cli.main()
-    newest = max(Path("output").glob("*.csv"), key=lambda p: p.stat().st_mtime_ns)
-    return list(csv.DictReader(newest.open(encoding="utf-8")))
+    (written,) = set(Path("output").glob("*.csv")) - before    # the file this call wrote: not "the newest by mtime" (T82)
+    with written.open(newline="", encoding="utf-8") as fh:
+        return list(csv.DictReader(fh))
 
 
 def test_export_min_70_days_7_matches_the_equivalent_sql_query(history, monkeypatch):
@@ -93,6 +96,20 @@ def test_worth_applying_uses_the_scans_min_score_when_there_is_a_config(history,
     monkeypatch.delenv("MIN_SCORE", raising=False)
     rows = {r["Application URL"]: r["Worth Applying"] for r in _export(monkeypatch, "--days", "7")}
     assert rows["https://x.example/2"] == "Yes" and rows["https://x.example/3"] == "No"
+
+
+def test_the_helper_reads_the_file_just_written_even_when_both_files_have_the_same_mtime(history, monkeypatch):
+    """T82: two exports a few milliseconds apart can land in one filesystem timestamp tick (1 ms on ext4 here, measured), and
+    "the newest file" was then whichever the directory listed first: the first export's, with every Worth Applying blank."""
+    original = cli.export_jobs_to_csv
+
+    def tied(*args, **kwargs):
+        path = original(*args, **kwargs)
+        os.utime(path, ns=(1_700_000_000_000_000_000,) * 2)
+        return path
+
+    monkeypatch.setattr(cli, "export_jobs_to_csv", tied)
+    test_worth_applying_uses_the_scans_min_score_when_there_is_a_config(history, monkeypatch)
 
 
 def test_export_without_a_database_says_so_and_creates_nothing(tmp_path, monkeypatch):

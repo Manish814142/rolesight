@@ -18,6 +18,15 @@ reconstructed from git history.
   and is inside the posted window; any other row set back to `discovered` is never scored again and drops out of `open_matches.csv` and `export` (T86: 3 of
   145 qualified). The bulk `UPDATE` it printed would have reset 459 rows of today's database.
 
+### Fixed (2026-10-14, T82: the unexplained test failure explained)
+- `tests/test_export_from_db.py::test_worth_applying_uses_the_scans_min_score_when_there_is_a_config` failed once in six full runs (2026-10-11). Cause, now shown:
+  the test helper `_export` read "the newest CSV" by `st_mtime_ns`, the test runs two exports into one directory a few milliseconds apart, and file
+  timestamps here have 1 ms resolution (measured: 4,764 of 4,999 back-to-back writes tie). On a tie `max()` returns the first file the directory lists, which
+  can be the first export's (every Worth Applying blank), so the second assertion failed. Measured: the two CSVs are 1 to 3 ms apart (150 runs, 0 ties
+  observed, so the real rate is low); forcing a tie with `os.utime` reproduces the failure on demand. The helper now reads the file the call itself wrote
+  (set difference), and `tests/test_direct_scanner.py::_scan_csv` (same pattern) picks the highest-numbered `jobs_DATE[_N].csv` by name. Two regression tests force a tie.
+  Product code is unchanged.
+
 ### Done (2026-10-14, T86: the old-prompt scores)
 - Manish said "yes you can re-score" for the 145 rows scored on 2026-10-04 (older prompt). A scan can re-score only a job it fetches, that passes today's pre-filter and
   is inside the 7-day window, so resetting all 145 would have re-scored 3 and left 142 as `discovered` for good; only those 3 were reset (Autodesk, State Street,
