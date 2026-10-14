@@ -93,7 +93,7 @@ They are applied in this order:
      union territory, any of the main cities (Bengaluru/Bangalore, Pune, Gurugram/Gurgaon, Hyderabad, Noida, Mumbai, Chennai, Delhi,
      NCR, Kolkata) or some 150 more (Coimbatore, Indore, Nagpur, Bhubaneswar, Lucknow, Kochi, …), or a lowercase trailing
      `, in` country code (SmartRecruiters) → **pass**, even when US cities are listed too. An uppercase `, IN` is Indiana and
-     doesn't count. (`LOCATION_INDIA_PATTERN` and `LOCATION_INDIA_MORE_PATTERN` in `prefilter.py`.)
+     doesn't count. (`LOCATION_INDIA_PATTERN` and `LOCATION_INDIA_MORE_PATTERN` in `prefilter.py`.) Known limit: the lists have no country context, so a foreign place with an Indian name ("Kochi, Japan") also counts as India; such a job still has to pass the title rule, and the fetch of 2026-10-13 had none that did.
    - **Optional city filter** (`candidate.cities`, e.g. `["Pune", "Hyderabad"]`; empty = all of India). A job in an Indian city
      or state that is not one of them is rejected, unless it is remote or names no city (just "India"). Usual alternative names
      match (Bangalore = Bengaluru, Gurgaon = Gurugram), and `"Delhi NCR"` means Delhi, New Delhi, Noida, Greater Noida, Gurugram,
