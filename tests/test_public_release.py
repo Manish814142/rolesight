@@ -152,7 +152,8 @@ def test_the_mcp_server_reports_its_name_and_a_working_install_hint(monkeypatch)
     server = importlib.import_module("job_hunt.mcp_server")
     assert server.mcp.name == "rolesight"
     monkeypatch.delitem(sys.modules, "job_hunt.mcp_server")
-    monkeypatch.setitem(sys.modules, "mcp.server.fastmcp", None)          # the module is "not installed"
+    for module in ("mcp.server.mcpserver", "mcp.server.fastmcp"):          # mcp 2.x / mcp 1.x: "not installed"
+        monkeypatch.setitem(sys.modules, module, None)
     with pytest.raises(ImportError) as err:
         importlib.import_module("job_hunt.mcp_server")
     assert "pip install -e '.[mcp]'" in str(err.value)

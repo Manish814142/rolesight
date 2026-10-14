@@ -4,7 +4,7 @@ google-genai>=2.28.0   # default LLM provider (Gemini); tested with 2.28.0, olde
 pyyaml>=6.0            # discover / harvest (company list tools); tested with 6.0.3
 
 # Optional: MCP server (`autopilot mcp`)
-# mcp>=1.9,<2
+# mcp>=1.9,<3
 
 # Optional: llm_provider "anthropic" (drafting and the non-Gemini scorer)
 # anthropic>=0.30.0

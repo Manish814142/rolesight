@@ -18,6 +18,18 @@ reconstructed from git history.
   and is inside the posted window; any other row set back to `discovered` is never scored again and drops out of `open_matches.csv` and `export` (T86: 3 of
   145 qualified). The bulk `UPDATE` it printed would have reset 459 rows of today's database.
 
+### Fixed (2026-10-14, T98: the MCP server runs on `mcp` 1.x and 2.x, and a tool that cannot run now answers)
+- `mcp` 2.x renamed `FastMCP` to `MCPServer` (`mcp.server.mcpserver`) and made `ToolAnnotations` snake_case; Dependabot's PR #1 (closed) failed mypy on it. `job_hunt/mcp_server.py`
+  now loads whichever class the installed SDK has and builds the hints from the camelCase names, which both generations accept. `pyproject.toml` allows `mcp>=1.9,<3`
+  (the extra and `dev`). The existing test only called the tool functions; the new `tests/test_mcp_real_client.py` starts `python -m job_hunt.mcp_server` and talks to it with the
+  SDK's own stdio client: the server's name, the three tools and their hints, a successful `export_jobs` against a database, and the three tools failing.
+- That test found a bug that predates the port: a tool that ended in `sys.exit("reason")` (no `config.json`, no `companies.json`, no scan history: the CLI helpers all do) made the server
+  neither answer nor fail, so the client waited for ever (reproduced on `mcp` 1.30: the call hit the test's 60 s timeout). `tools.py` now turns the exit into a `ToolError` carrying the
+  reason, and the MCP layer re-raises it as the SDK's own `ToolError`, the only exception whose message 2.x shows a client; the call returns `isError` with "config.json not found." etc.
+- Measured: the same new and existing tests pass under `mcp` 1.30.0 (the project's venv; 1157 tests, ruff, mypy clean) and under `mcp` 2.3.0 in a scratch venv (1156 passed, 1 skipped: `anthropic`
+  not installed there; ruff and mypy clean). Four deliberate breakages were each caught under 2.3.0 (a fifth, snake_case hint keys, is equivalent there and caught under 1.30).
+  Not run: a real MCP host such as Claude Code connecting to it. After this is on GitHub, `@dependabot unignore mcp` would let the `<3` bound be proposed again.
+
 ### Changed (2026-10-14, T69: the low-priority review notes, a, b, c and f; d and e left, see the board)
 - (a) Structured and batch scoring read `gemini_temperature` like the single-job path (they hard-coded 0.1; the default is unchanged).
 - (b) The deprecated non-Gemini scorer (`scanner.score_batch`) sends the whole resume and each description up to `MAX_DESCRIPTION_CHARS` (20,000), as the Gemini path has since
