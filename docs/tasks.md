@@ -276,7 +276,7 @@ at 400 jobs; T02 (7 days) and T05 (70) are decided and verified.
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
 | T06 | Check that Telegram works | manish | — | XS | — |
-| T07 | Schedule `run_daily.sh` with a systemd user timer | manish | — | S | T02, T03, T04, T05 |
+| T07 | Schedule `run_daily.sh` with a systemd user timer (`install.sh --with-recheck` also adds T28's monthly companies.json check; nothing installed yet) | manish | — | S | T02, T03, T04, T05 |
 
 T03 and T04 were verified 2026-10-07, T64 on 2026-10-08, T02 and T05 on 2026-10-10, T08 on 2026-10-11, T09 on 2026-10-13 (Done log).
 
@@ -446,7 +446,6 @@ T23 was verified 2026-10-07 (Done log); nothing open.
 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
-| T28 | Monthly `discover --recheck` that only reports | manish (script verified; the timer is installed with T07) | claude | S | T07 |
 
 T65 was verified 2026-10-08, T26 on 2026-10-10 (Done log).
 
@@ -485,6 +484,7 @@ The first real run left `verified_companies.json` in the repo root; fixed in 5b9
 gitignored `data/recheck/`). The other half ("the timer is listed") needs the install, so T28 waits with T07 (status `manish`). The recheck unit got
 the same network wait as the scan (T07's review notes).
 
+**Closed 2026-10-14 (claude; Manish: "develop the functionality and test it, currently don't schedule it").** The functionality already existed and was verified on 2026-10-10 (above); it was re-run for real today on all 224 boards: `scripts/monthly_recheck.sh` exit 0 in 3 min 4 s, `224 -> 222 companies (2 changed)`, `diff.2026-10-14.txt` written under the git-ignored `data/recheck/`; SHA-256 of `companies.json`, `job_hunt/data/companies.json` and `scripts/company_seeds.txt` identical before and after, `git status` empty. The two boards it reports are really empty: Confluent (`ashby/confluent`) and Fi Money (`lever/epifi`) answer HTTP 200 with 0 postings (raw API and the project's own adapter, checked by hand after the run), so this is not a transient drop. They are **not removed**: applying a recheck is Manish's call (`cp data/recheck/companies.2026-10-14.json companies.json && cp companies.json job_hunt/data/companies.json`, then the usual `discover` test run). `tests/test_monthly_recheck.py` and `tests/test_systemd_units.py` pass (22 tests). **Not scheduled, on his instruction:** no `job-hunt-scan` or `job-hunt-recheck` unit exists on the machine (`~/.config/systemd/user`, `systemctl --user list-timers`). The timer half of the original done-when is T07's install step: `scripts/systemd/install.sh --with-recheck` adds the monthly timer (1st, 10:00) next to the daily scan.
 ---
 
 ## P4 — One source of truth (SQLite)
@@ -719,6 +719,7 @@ and CHANGELOG (inferred), and their numbers from CHANGELOG unless marked measure
 | T100 | Developer Advocate / advocacy / evangelist / DevRel / developer relations titles are rejected before Gemini (Manish, 2026-10-14: keep a role only if his skills match it) | abbe274 | Reviewer: the filter at `3eda7e1` against the new one on the 2026-10-13 fetch: survivors 2,196 → 2,193, lost exactly Amazon "Developer Advocate, Developer Solutions and Engineering Team", Autodesk "Senior Developer Advocate (APIs)", Salesforce "Developer Advocate", gained 0; their stored scores 35, 82, 25 (and Neo4j's 10 of 2026-10-04), as cited; `check_filter.py`: the Autodesk title REJECTED, "Backend Engineer, Developer Platform" KEPT; gates with `mcp` 1.30 (1,173 passed) and 2.3.0 (1,172 + 1 skipped), ruff and mypy clean. Autodesk's 82 stays in the database and in `open_matches.csv` until the posting ages out (scored rows are final) | verified · claude · 2026-10-14 |
 | T101 | A test fails on any commit author or committer domain outside an allowlist (the work domain is not named in the public file) | 87a2975 | Reviewer: `git log --format='%ae%n%ce'` over the history → only `gmail.com` (622), `lnmiit.ac.in` (118, the original author), `github.com` (18): the test passes and every commit of this session is inside the list; the two tests with throw-away repositories show it flags an outside author and an outside committer. Gates with `mcp` 1.30 (1,176 passed) and 2.3.0 (1,175 + 1 skipped). **Limits, for the record:** CI's checkout is shallow (depth 1), so on GitHub it sees only the newest commit; its real use is the local run before a push. An outside contributor with another domain would fail it until the domain is added, as its comment says | verified · claude · 2026-10-14 |
 | T01 | Code backed up off this disk: the repository is public on GitHub (done differently from the private remote the task named) | — (pushed 2026-10-13/14; head `42fa036`) | `git ls-remote origin main` → `42fa036…`; `git rev-parse HEAD` → `42fa036…`; `git rev-list --count origin/main..main` → 0 (measured 2026-10-14, after the reviewer's push; CI on that commit: success). Not covered, stated plainly: `.env`, `config.json`, the resume and `data/jobs.db` are on no remote | verified · claude · 2026-10-14 (Manish delegated the call) |
+| T28 | Monthly `discover --recheck` that only reports (functionality; the timer is not installed, by Manish's instruction) | d534a57, 141ed13, 5b9fe20 | Reviewer 2026-10-10: real `scripts/monthly_recheck.sh` in a clean worktree, `224 -> 224 (0 changed)`, 132 s, checksums unchanged. Re-run 2026-10-14: exit 0, 3 min 4 s, `224 -> 222 (2 changed)`: Confluent and Fi Money, both empty on their boards (HTTP 200, 0 postings), `companies.json` and its packaged copy byte-identical before and after, `git status` empty; 22 tests pass. The monthly timer is T07's install step (`install.sh --with-recheck`) | verified · claude · 2026-10-14 |
 | — | Commit the working tree; tree clean | d773438 … bfe74de | 355 tests pass, ruff and mypy clean (measured 2026-10-04) | pre-board |
 | — | Location filter: Delhi / NCR / Kolkata and case-sensitive `, in` | d773438 | "Indianapolis, IN" still rejected (unit test) | pre-board |
 | — | Full resume in the scoring prompts | d773438 | previously first 2,500 of ~4,000 chars | pre-board |
