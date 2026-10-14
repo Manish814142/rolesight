@@ -46,3 +46,13 @@ def test_a_config_edited_after_init_is_what_the_scan_uses(tmp_path, monkeypatch)
             os.environ.pop(name, None)
         got = main.load_config()["candidate"]
     assert (got["name"], got["resume_path"], got["top_n"], got["min_score"]) == ("Asha Rao", "resume/asha.md", 9, 65)
+
+
+def test_the_env_example_at_the_repository_root_is_the_template_init_writes():
+    """T102: the root `.env.example` (what a visitor to the repository sees and copies) had drifted from the packaged template:
+    it still offered TinyFish and OpenRouter keys, which nothing reads since T42, and carried the live CANDIDATE_NAME / MIN_SCORE=60
+    lines T81 removed from the packaged copy. One text, two places, like the example config (tests/test_example_config_persona.py)."""
+    root_copy = (ROOT / ".env.example").read_text()
+    assert root_copy == TEMPLATE.read_text()
+    for removed in ("TINYFISH", "OPENROUTER"):
+        assert removed not in root_copy, removed

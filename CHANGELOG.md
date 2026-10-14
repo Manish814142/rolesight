@@ -9,6 +9,16 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed (2026-10-14, T102: the last TinyFish and OpenRouter traces in the templates)
+- Manish: "if TinyFish is not used in our project and not important, you can remove it." Nothing in `job_hunt/`, the packaging files, the scripts or the CI uses it (`grep -ri tinyfish` finds one comment in `main.py` saying it
+  was removed in T42). What was left: the **root `.env.example`** (the file a visitor to the repository copies) still offered a `TINYFISH_API_KEY` and `OPENROUTER_*` block that nothing reads, and had drifted from the template
+  `autopilot init` writes: it also carried live `CANDIDATE_NAME`, `RESUME_PATH`, `MIN_SCORE=60` and `TOP_N` lines, the trap T81 had removed from the packaged copy (an active line there silently beats `config.json`). It is now
+  byte-identical to `job_hunt/data/env_example`, and a test keeps it so.
+- Kept on purpose: the migration notes in the README, SETUP, `docs/01-install.md`, ARCHITECTURE and CLAUDE.md ("TinyFish and OpenRouter were removed"), the tests that prove their variables no longer reach the config, and the test
+  fixtures that load an old `config.json` with a `tinyfish_api_key` (an upgrader's file must still load).
+- His local, git-ignored `config.json` lost its dead `tinyfish_api_key` entry (parsed before and after: every other key identical; `load_config()` still works); his `.env` has had no TinyFish line since 2026-10-13. The key itself can
+  only be revoked in his TinyFish account, which this project cannot reach; it was never in git (history holds only upstream's `sk-tinyfish-your-…` placeholders).
+
 ### Changed (2026-10-14, T86 follow-up: the last old-prompt rows of `open_matches.csv`; data only, no code)
 - After T86's scan, 18 rows of `open_matches.csv` still carried 2026-10-04 scores. None had a stored description, so they could not be re-scored from the
   database, and no scan had seen them since. Each was checked at its own ATS endpoint (read-only GETs): 17 are gone (Greenhouse and Workday 404, SmartRecruiters
