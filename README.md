@@ -9,10 +9,11 @@ company boards hiring in India, drops the ones that obviously don't fit, has Goo
 the rest against your resume, and writes the matches to a CSV, best first.
 
 The defaults are one profile's: 3 years of experience in Node.js, backend and distributed systems,
-looking in India or for genuinely remote roles. That profile is the worked example. The
-[user guide](docs/00-user-guide.md) lists the few files and settings to change for yours (candidate
-profile, title and location rules, resume), and the company list is a starting point so you don't
-begin from scratch.
+looking in India or for genuinely remote roles. That profile is the worked example.
+`rolesight init --resume your_cv.pdf` drafts yours from your resume in one step: your profile, which job
+titles to score and the scoring rubric, all written to files you can read and edit (`config.json`,
+`rubric.md`). The [user guide](docs/00-user-guide.md) explains every setting, and the company list is a
+starting point so you don't begin from scratch.
 
 > 🔒 **Drafts only — it never applies.** Nothing in this project submits an application
 > or fills in a form. It finds and ranks jobs; you decide and apply yourself.
@@ -148,23 +149,26 @@ Full walkthrough: [docs/01-install.md](docs/01-install.md).
 python3 -m venv .venv && source .venv/bin/activate
 pip install -e '.[dev]'                 # google-genai (Gemini) is a core dependency
 
-# 2. Configure
-cp config.example.json config.json      # edit the candidate profile (see docs/07)
-cp job_hunt/data/env_example .env       # set GEMINI_API_KEY (free: aistudio.google.com/apikey)
-cp resume/YOUR_RESUME.md resume/me.md   # replace with your resume; set candidate.resume_path
+# 2. Set up from your resume (.pdf, .md or .txt). It asks for your free Gemini key
+#    (aistudio.google.com/apikey), then writes config.json (your profile, the job titles to score),
+#    rubric.md (how a job is scored against you) and, for a PDF, resume/<name>.md. Read them: it is a draft.
+rolesight init --resume ~/Downloads/my_cv.pdf
 
-# 3. Check the environment
-autopilot doctor
+# 3. Check
+rolesight check-filter "Senior Backend Engineer" "Bengaluru, India"   # KEPT or REJECTED, and why
+rolesight doctor
 
-# 4. First scan: limit it to recent jobs to stay inside Gemini's free daily quota
-autopilot scan --posted-within 7
+# 4. First scans: a few companies, then all of them (recent jobs only, to stay inside the free daily quota)
+rolesight scan --limit 5
+rolesight scan --posted-within 7
 
 # 5. Read the results
 ls output/                              # jobs_YYYY-MM-DD.csv, best score first
 ```
 
-In this repo `companies.json` (224 boards) is already in place. `autopilot init`, for a pip install in an
-empty directory, copies the same curated list.
+`rolesight` and `autopilot` are the same command. In this repo `companies.json` (224 boards) is already in place;
+`rolesight init` skips files that exist, and in an empty directory it copies the same curated list. Without
+`--resume`, `init` writes the default settings and you edit them yourself ([the guide](docs/00-user-guide.md)).
 
 ---
 
@@ -176,6 +180,8 @@ All commands run from the repo root (they read `config.json`, `companies.json` a
 
 | Command | What it does | Needs keys? |
 |---|---|---|
+| `autopilot init [--resume FILE] [--yes]` | Creates the settings files; `--resume` drafts your profile, title filter and `rubric.md` from your resume (3 Gemini calls for a PDF, 2 otherwise); `--yes` replaces existing candidate settings (`.bak` copies kept) | Gemini for `--resume` |
+| `autopilot check-filter TITLE [LOCATION] [--remote]` | KEPT or REJECTED with the reason, using your `config.json` filter | none |
 | `autopilot scan` | Full scan: fetch → filter → score → CSV | Gemini |
 | `autopilot scan --limit 5` | Only the first 5 companies in `companies.json` | Gemini |
 | `autopilot scan --posted-within 3` | One run with a 3-day window (`all` = none). The default window is `max_posted_age_days`, 7; undated jobs are kept | Gemini |
@@ -194,20 +200,22 @@ All commands run from the repo root (they read `config.json`, `companies.json` a
 
 ## Configuration
 
-Two local, gitignored files:
+Three local, gitignored files:
 
 | File | Holds |
 |---|---|
-| `config.json` | Candidate profile (`name`, `resume_path`, `profile`, `seeking`, `not_suitable`, `min_score`, `top_n`, `max_posted_age_days`), `llm_provider`, `gemini_model`, optional `telegram`, `fetch_workers`, `gemini_scoring_mode` |
+| `config.json` | Candidate profile (`name`, `resume_path`, `profile`, `seeking`, `not_suitable`, `min_score`, `top_n`, `max_posted_age_days`, `cities`), the title filter (`titles`: `include`, `exclude`, `exceptions`, `generic_engineer_titles`), `rubric_file`, `llm_provider`, `gemini_model`, optional `telegram`, `fetch_workers`, `gemini_scoring_mode` |
+| `rubric.md` | The scoring rubric: eight rules with score caps, with your years and stack (`candidate.rubric_file`; without it the built-in rubric is used) |
 | `.env` | API keys (`GEMINI_API_KEY`, optional `TELEGRAM_TOKEN` / `TELEGRAM_CHAT_ID`), plus overrides such as `MIN_SCORE`, `RESUME_PATH`, `GEMINI_MODEL` |
 
-A value in `.env` overrides `config.json`, unless it is a template placeholder
-(`YOUR_…`, `…_here`). It also overrides variables already exported in your shell.
+A value in `.env` overrides `config.json` and variables exported in your shell, unless it is a template
+placeholder (`YOUR_…`, `…_here`) or empty: then the shell's value counts.
 The full reference is in [docs/07-config-and-scoring.md](docs/07-config-and-scoring.md).
 
-The **pre-filter rules are hardcoded** in `job_hunt/prefilter.py` on purpose: they are tuned to one
-profile, so edit them for yours ([the guide](docs/00-user-guide.md) lists the patterns).
-`python scripts/check_filter.py "Java Developer" "Pune, India"` shows what the filter does with one job.
+The **title filter** is plain word lists in `config.json` (`candidate.titles`; spaces and hyphens inside an
+entry are optional, so `back end` also matches "Back-End"); without them the defaults apply, tuned to the
+example profile. The **location rules** are India's and live in `job_hunt/prefilter.py`; `candidate.cities`
+narrows them. `rolesight check-filter "Java Developer" "Pune, India"` shows what the filter does with one job.
 
 ---
 
@@ -260,7 +268,8 @@ Zoho Recruit, …) can't be reached. See [docs/04](docs/04-companies-and-scannin
 job_hunt/
   adapters/         one fetcher per ATS + detect_ats(), fetch_company_jobs(), enrich_job()
   scanner.py        run_scan(): the whole pipeline
-  prefilter.py      title / location / posted-date rules (personal, hardcoded)
+  prefilter.py      title rules (config.json candidate.titles, defaults built in), India location and posted-date rules
+  onboarding.py     `init` (templates; --resume drafts the settings) and `check-filter`
   scorer.py         Gemini scoring per job, DB status updates, per-job Telegram alert
   llm_utils.py      LLM providers (gemini default; anthropic, claude_cli)
   db.py, models.py  SQLite seen-job store; JobPosting + dedupe hash

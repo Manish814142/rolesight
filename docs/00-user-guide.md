@@ -12,18 +12,20 @@ spreadsheet (CSV), best first. It **never applies** to anything; you do that you
 
 | I want to… | Change this | Where |
 |---|---|---|
+| Set everything up from my resume in one step | `rolesight init --resume my_cv.pdf` | [3](#3-set-up-your-files) |
 | Use my own resume | the resume file and `candidate.resume_path` | [3](#3-set-up-your-files) |
 | Say who I am, what I want and what I never want | `candidate.profile`, `candidate.seeking`, `candidate.not_suitable` | [4](#4-the-settings-file-configjson) |
 | See fewer or more matches | `candidate.min_score` | [4](#4-the-settings-file-configjson) |
 | Look only at newer jobs | `candidate.max_posted_age_days` | [4](#4-the-settings-file-configjson) |
-| Allow or block job titles (Java, Data Engineer, …) | the title words in `job_hunt/prefilter.py` | [5](#5-which-jobs-reach-gemini-the-word-lists) |
+| Allow or block job titles (Java, Data Engineer, …) | `candidate.titles` in `config.json` | [5](#5-which-jobs-reach-gemini-the-word-lists) |
+| Change how a job is scored against me (years, stack) | `rubric.md` (`candidate.rubric_file`) | [5](#the-scoring-rubric-rubricmd) |
 | Allow or block places | the location words in `job_hunt/prefilter.py` | [5](#5-which-jobs-reach-gemini-the-word-lists) |
 | Scan more companies | `autopilot discover --add` | [6](#6-add-companies) |
 | Get alerts on Telegram | `TELEGRAM_TOKEN`, `TELEGRAM_CHAT_ID` | [4](#4-the-settings-file-configjson) |
 | Run it every day by itself | `scripts/systemd/install.sh` | [8](#8-run-it-every-day) |
 
-If you only do one thing: put your resume in, write the three profile sentences, add your Gemini key.
-Everything else has a working default.
+If you only do one thing: add your Gemini key and run `rolesight init --resume` with your resume. It writes
+everything that is personal for you to read and change. Everything else has a working default.
 
 ## 2. Install
 
@@ -40,8 +42,9 @@ pip install -e .
 autopilot --help         # prints the list of commands
 ```
 
-- **Use `pip install -e .` (with `-e`).** The `-e` makes the installed program read the files in this folder,
-  so the edits in section 5 take effect. A plain `pip install .` copies the code and your edits would do nothing.
+- **Use `pip install -e .` (with `-e`).** The `-e` makes the installed program read the code in this folder, so an
+  edit to the place rules in `job_hunt/prefilter.py` (section 5) takes effect. Your settings in `config.json` and
+  `rubric.md` work either way.
 - If `python3 --version` prints 3.10 or lower, pip stops with `requires a different Python: 3.10.12 not in '>=3.11'`.
   Use a newer interpreter for the `venv` line, e.g. `python3.11 -m venv .venv`.
 - `pip install -e .` takes about half a minute (measured: 32 s).
@@ -50,20 +53,32 @@ autopilot --help         # prints the list of commands
 ## 3. Set up your files
 
 ```bash
-autopilot init
+rolesight init                                   # the files, with defaults
+rolesight init --resume ~/Downloads/my_cv.pdf    # your settings, drafted from your resume
 ```
 
-`autopilot init` creates whatever is missing and skips what already exists: `config.json` (your settings),
-`.env` (your keys), `resume/YOUR_RESUME.md` (a template) and the company list `companies.json`.
-All of them stay on your computer; `config.json`, `.env` and your resume are kept out of git.
+(`rolesight` and `autopilot` are the same program.) `rolesight init` creates whatever is missing and skips what
+already exists: `config.json` (your settings), `.env` (your key), `rubric.md` (how a job is scored against you),
+`resume/YOUR_RESUME.md` (a template) and the company list `companies.json`. All of them stay on your computer;
+`config.json`, `.env`, `rubric.md` and your resume are kept out of git.
 
-1. **Your key.** Open `.env` and replace `your_gemini_api_key_here` with your key:
-   `GEMINI_API_KEY="…"`.
-2. **Your resume.** Copy the template and replace its text with your resume, as plain text or Markdown:
-   `cp resume/YOUR_RESUME.md resume/my_resume.md`. Then set `candidate.resume_path` in `config.json` to
-   `resume/my_resume.md`. The **whole file** is sent to Gemini with every job (see [PRIVACY.md](../PRIVACY.md)).
-3. **Your profile.** Edit the settings in section 4.
-4. **Check it:** `autopilot doctor`. Each line starts with `PASS`, `WARN` or `FAIL`. A `WARN` for Telegram is
+1. **Your key.** Get a free Gemini key at [aistudio.google.com/apikey](https://aistudio.google.com/apikey). Run
+   `rolesight init --resume …` in a terminal and it asks for the key and saves it to `.env`; or open `.env` and
+   replace `your_gemini_api_key_here` yourself: `GEMINI_API_KEY="…"`.
+2. **Your resume and your settings: `rolesight init --resume FILE`.** `FILE` is your resume as `.pdf`, `.md` or
+   `.txt` (from Word: *File → Save as → PDF*). One Gemini call reads it and writes:
+   - into `config.json`: your name, the three profile sentences (section 4), the title words (section 5), the
+     resume path, and `rubric_file`;
+   - `rubric.md`: the scoring rubric rewritten with your years, stack and skills;
+   - for a PDF, `resume/<name>.md`: the text of your resume (the scan sends this text with every job, so check it).
+
+   It prints what it wrote. **It is a draft:** read the candidate part of `config.json` and `rubric.md`, and change
+   anything that is not you. Run it again later with `--yes` to replace the candidate settings (the old ones are
+   kept as `config.json.bak` and `rubric.md.bak`).
+   Without `--resume`, set the resume yourself: copy `resume/YOUR_RESUME.md` to `resume/my_resume.md`, replace its
+   text, and set `candidate.resume_path` to it. The **whole file** is sent to Gemini with every job (see
+   [PRIVACY.md](../PRIVACY.md)).
+3. **Check it:** `rolesight doctor`. Each line starts with `PASS`, `WARN` or `FAIL`. A `WARN` for Telegram is
    fine. A `FAIL` on one job-board host can be a one-off timeout (it happened once on Lever in the test run
    for this guide): run `doctor` again before worrying.
 
@@ -96,6 +111,8 @@ uses the default. A name that is not in the tables below is ignored without any 
 | `candidate.min_score` | 70 | The score (0–100) that counts as a match: "Worth Applying = Yes", Telegram alerts and the end-of-scan list. It does not change what gets scored |
 | `candidate.top_n` | 5 | How many matches the end-of-scan list in the log shows |
 | `candidate.max_posted_age_days` | 7 | Only jobs posted in the last N days are scored. `null` switches the window off. Jobs with no posted date are always kept |
+| `candidate.titles` | the default word lists | Which job titles are scored at all: `include`, `exclude`, `exceptions`, `generic_engineer_titles`. Section 5 |
+| `candidate.rubric_file` | built-in rubric | The file with your scoring rubric, e.g. `"rubric.md"`. Without this line the built-in rubric is used. See [the scoring rubric](#the-scoring-rubric-rubricmd) |
 | `candidate.cities` | `[]` | Leave empty to look at **all of India** (and remote jobs from India). To look only at some cities, list them: `["Pune", "Hyderabad", "Delhi NCR"]`. Usual alternative names match (Bangalore = Bengaluru, Gurgaon = Gurugram); remote jobs and jobs that name no city (just "India") are always kept |
 | `llm_provider` | `gemini` | Leave as `gemini` |
 | `gemini_api_key` | — | Your key; usually put in `.env` instead (`GEMINI_API_KEY`) |
@@ -139,20 +156,45 @@ counts as "not filled in".
 
 ## 5. Which jobs reach Gemini: the word lists
 
-Before any job is scored, a free local filter in **`job_hunt/prefilter.py`** drops what obviously doesn't fit.
-It saves Gemini calls (each costs time and a share of the free daily quota). A job the filter rejects is never
-scored, so a wrong word here hides jobs from you. The lists are tuned for one person (a 3-year backend
-engineer in India), so a different person should read them once.
+Before any job is scored, a free local filter drops what obviously doesn't fit. It saves Gemini calls (each costs
+time and a share of the free daily quota). A job the filter rejects is never scored, so a wrong word here hides
+jobs from you. Read the lists once, whoever drafted them.
 
-Open `job_hunt/prefilter.py`. The word lists are the text between quotes, separated by `|`.
+### Job titles: `candidate.titles` in `config.json`
+
+```json
+"titles": {
+  "include": ["back end", "software engineer", "developer", "node", "nodejs", "node.js"],
+  "exclude": ["lead", "principal", "manager", "java", "qa", "intern"],
+  "exceptions": ["technical staff"],
+  "generic_engineer_titles": true
+}
+```
+
+| Key | What it decides |
+|---|---|
+| `include` | A title must contain **at least one** of these to be scored |
+| `exclude` | A title with **any** of these is rejected, checked first: seniority levels you don't want, roles you don't do, languages you don't use |
+| `exceptions` | Phrases that don't count as excluded although they contain an excluded word: `"technical staff"` keeps "Member of Technical Staff" although `staff` is excluded |
+| `generic_engineer_titles` | `true` also scores titles that say nothing about the job: only "Engineer" with a seniority or level ("Senior Engineer", "Engineer II"), or "software" and "engineer" in any order. Gemini judges them by the description |
+
+How an entry matches: as **whole words, in any case** (`java` matches "Senior JAVA Developer" but not
+"JavaScript"). **Spaces and hyphens inside an entry are optional**: `back end` also matches "Back-End" and
+"backend". List variants separately (`node`, `nodejs`, `node.js`). Use words and `. + # / & -` only; `.net`,
+`c#` and `c++` work as written. Without a `titles` block the defaults are used: the example config has them in
+full (`config.example.json`), 31 include and 91 exclude entries written for a 3-year backend engineer. A `titles`
+block is taken as written: a list you leave out is empty. If an include entry contains an excluded word, so that
+it can never pass, the scan says so at its start (`Title filter: include entry … can never pass`).
+
+### Places: `job_hunt/prefilter.py`
+
+The location rules are for jobs **in India** (the company list is built for India) and live in the code. To look
+only at some cities, use `candidate.cities` (section 4) instead of editing them.
 
 ### Pre-filter patterns
 
 | Name | What it decides | Edit it to… |
 |---|---|---|
-| `TITLE_INCLUDE_PATTERN` | A title must contain **at least one** of these words to continue | add a role you want, e.g. `\|data\s*engineer` |
-| `TITLE_GENERIC_ENGINEER_PATTERN` | Titles that say nothing about the job: only "Engineer" with a seniority or level ("Senior Engineer", "Engineer II"), or "software" and "engineer" in any order. These also continue, and Gemini judges the description | narrow it if too many hardware or support roles reach Gemini |
-| `TITLE_EXCLUDE_PATTERN` | A title with **any** of these words is rejected (checked first) | remove a word you want to see (`java`); add one you never want |
 | `LOCATION_INDIA_PATTERN` | The word `india` and the main cities: a job in one of them passes the location check, even if other countries are listed too | add a city |
 | `LOCATION_INDIA_MORE_PATTERN` | The rest of India: states, union territories and some 150 more cities, so "Coimbatore" or "Telangana" alone is enough | add a place you see rejected |
 | `LOCATION_EXCLUDE_PATTERN` | Regions that count as "not workable from India", e.g. a remote job tied to the US | add a country or city to reject |
@@ -160,9 +202,8 @@ Open `job_hunt/prefilter.py`. The word lists are the text between quotes, separa
 The order: the exclude words are checked first, then the include words, then the location. A job that the board
 flags as "remote" passes the location check only if its location names no place: "Remote" passes, "Singapore" or
 "Remote - Poland" is rejected (some boards flag their foreign offices as remote). Words that are not places ("Full
-time", "Contract", "IST", "Office") and India's code `IND` keep the job. "Senior" is not
-excluded on purpose (in India it often means 3–6 years). `\b` means "word boundary" and `\s*` means "optional
-space"; copy the style of the words next to the one you add.
+time", "Contract", "IST", "Office") and India's code `IND` keep the job. "Senior" is not excluded by default on
+purpose (in India it often means 3–6 years).
 
 ### What the filter does with these
 
@@ -184,35 +225,47 @@ list. `Backend Engineer` in `Coimbatore` is kept because any Indian city or stat
 
 ### Change a word, then check it
 
-1. Make a copy of `job_hunt/prefilter.py` if you want a way back (or use `git diff` / `git checkout
-   job_hunt/prefilter.py`).
-2. Edit one word. To **remove** a word from a list, delete the word and one `|`. To **add** one, type `|word`
-   before the closing quote of the list.
-3. Save, then ask the filter about a job, without running a scan:
+1. Open `config.json` and change one entry of `candidate.titles` (keep the quotes and commas). A copy of the file
+   is your way back.
+2. Ask the filter about a job, without running a scan:
 
 ```bash
-python scripts/check_filter.py "Java Developer" "Bengaluru, India"
+rolesight check-filter "Java Developer" "Bengaluru, India"
 ```
 
-It prints `KEPT` (the job would be scored) or `REJECTED — <the filter's reason>`. Add `--remote` if the job
-board flags the job as remote.
+It prints `KEPT` (the job would be scored) or `REJECTED — <the filter's reason>`, using your `config.json`
+(titles and cities). Add `--remote` if the board flags the job as remote. (`python scripts/check_filter.py …` is
+the same.)
 
-Worked example (run in a fresh copy for this guide): `Java Developer` / `Bengaluru, India` printed
-`REJECTED — Title matched exclude pattern: 'Java'`. After deleting `|java` from `TITLE_EXCLUDE_PATTERN`, it
-printed `KEPT`. After adding `|data\s*engineer` to `TITLE_INCLUDE_PATTERN`, `Data Engineer` / `Pune, India` also
-printed `KEPT`. Undoing the edits restored `REJECTED`.
+Worked example (run in a fresh directory for this guide, with the default lists): `Java Developer` /
+`Bengaluru, India` printed `REJECTED — Title matched exclude pattern: 'Java'`. After deleting `"java"` from
+`exclude`, it printed `KEPT`. After adding `"data engineer"` to `include`, `Data Engineer` / `Pune, India` also
+printed `KEPT`. Putting the two entries back restored `REJECTED`.
 
 A changed filter applies to jobs seen before as well: a job the old filter rejected is checked again by the
 next scan. A job already scored keeps its score.
 
-### The scoring text is also tuned to one person
+### The scoring rubric: `rubric.md`
 
-Whatever passes the filter, Gemini scores with a fixed rubric in `job_hunt/llm_utils.py`
-(`SCORING_RUBRIC`). It contains one person's facts: "about 3.3 years of experience" and "Node.js, TypeScript,
-Python", plus caps for stack mismatch and for AI/ML requirements. If you are not that person, edit those
-sentences to your own stack and years, then check the effect with `python scripts/score_golden_set.py` on jobs
-you label yourself (about 150 Gemini calls). The rubric's behaviour was measured only for the person it was
-written for.
+Whatever passes the filter, Gemini scores with a rubric: eight rules with score caps (for example "the role needs
+far more years than you have: at most 50"). The built-in rubric was written and measured for one person (about
+3.3 years of experience, Node.js, TypeScript and Python, India). `rolesight init` writes it to `rubric.md`, and
+`rolesight init --resume` rewrites its facts for you: your years and the seniority bands that follow, your stack
+and the languages outside it, the domains you have or lack. The eight rule headings and their caps stay as they
+are; if Gemini changed them, `init` keeps the built-in text and says so.
+
+Edit `rubric.md` like any text: change a fact that is wrong about you, keep the rule headings. `candidate.rubric_file`
+in `config.json` names the file; delete that line to go back to the built-in rubric. The first lines of a scan
+show which rubric is in force (`Scoring rubric: <id>`, `Rubric text: rubric.md`). Scores stored under an older
+rubric keep their score; `python scripts/rubric_ids.py` shows which rubric scored how many jobs.
+
+How good is a draft? Measured once, on the only person with labelled jobs (the example profile, 2026-10-14): settings
+drafted by `init --resume` from his resume found the same 12 of 14 jobs he would apply to at 70, ranked his 82 labelled
+jobs a little worse than his hand-tuned settings (AUC 0.931, against 0.955 and 0.953 the same day) and passed one more
+job he would not apply to. Its title words kept every job his kept, plus roles in languages his resume lists
+but his own lists exclude: only he knows he doesn't want those jobs. **A resume does not say what you would rather not do; add that
+yourself** (`exclude`, `not_suitable`). If scores look wrong, read the **Reason** column of a small scan and fix the
+sentence in `rubric.md` that caused it.
 
 ## 6. Add companies
 

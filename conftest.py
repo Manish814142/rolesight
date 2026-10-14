@@ -75,6 +75,18 @@ def fresh_daily_quota_state():
 
 
 @pytest.fixture(autouse=True)
+def default_title_rules_and_rubric():
+    """A scan configures the title filter and the rubric from config.json (T103) for the whole process; every test starts
+    from the defaults and cannot leave its own behind."""
+    from job_hunt import llm_utils, prefilter
+    prefilter.use_title_rules(prefilter.TitleRules())
+    llm_utils.use_rubric(llm_utils.DEFAULT_SCORING_RUBRIC)
+    yield
+    prefilter.use_title_rules(prefilter.TitleRules())
+    llm_utils.use_rubric(llm_utils.DEFAULT_SCORING_RUBRIC)
+
+
+@pytest.fixture(autouse=True)
 def no_enrich_network(monkeypatch):
     """run_scan fetches full descriptions for survivors (adapters.enrich_job = HTTP).
 

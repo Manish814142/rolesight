@@ -12,7 +12,6 @@ from __future__ import annotations
 import argparse
 import collections
 import json
-import re
 import sys
 from pathlib import Path
 from typing import Any, Dict, List
@@ -21,18 +20,18 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from job_hunt.models import JobPosting  # noqa: E402
 from job_hunt.prefilter import (  # noqa: E402
-    TITLE_EXCLUDE_PATTERN,
-    TITLE_INCLUDE_PATTERN,
     location_is_india,
     posted_age_days,
     should_evaluate_job,
+    title_exclusions,
+    title_included,
 )
 
 WATCH = ("java", "golang", "react", "reactjs", "angular", "angularjs", "vue", "frontend", "front-end")
 
 
 def _blockers(title: str) -> set:
-    return {re.sub(r"\s+", " ", m.group(0).lower().strip()) for m in TITLE_EXCLUDE_PATTERN.finditer(title)}
+    return title_exclusions(title)
 
 
 def survivors(rows: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
@@ -46,7 +45,7 @@ def exclusion_costs(rows: List[Dict[str, Any]]) -> Dict[str, Dict[str, int]]:
     """word -> {"only": jobs blocked only by that word, "recent": of those, posted <= 30 days ago}."""
     only: Dict[str, List[Dict[str, Any]]] = collections.defaultdict(list)
     for r in rows:
-        if not (location_is_india(r.get("location", "")) and TITLE_INCLUDE_PATTERN.search(r["title"])):
+        if not (location_is_india(r.get("location", "")) and title_included(r["title"])):
             continue
         b = _blockers(r["title"])
         if len(b) == 1 and next(iter(b)) in WATCH:

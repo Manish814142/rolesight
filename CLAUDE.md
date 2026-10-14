@@ -15,6 +15,8 @@ agents. Follow its Working loop (claim → implement → review queue) or its Ve
 ## Key commands
 
 ```bash
+autopilot init [--resume CV.pdf] [--yes]   # templates; --resume drafts candidate.*, candidate.titles and rubric.md from a resume (T103)
+autopilot check-filter "Java Developer" "Pune, India"   # KEPT/REJECTED with config.json's title filter and cities (T80, T103)
 autopilot scan              # full scan of companies.json (alias: python -m job_hunt scan)
 autopilot scan --limit 5    # only the first 5 companies
 autopilot scan --posted-within 3   # window for this run (default: candidate.max_posted_age_days, 7; `all` = none; undated jobs kept)
@@ -51,7 +53,8 @@ Tests must make **no network calls** — stub `send_telegram`, adapters, and Gem
    (PCSX search, 10/page, retried on HTTP 429); Amazon is `{"ats": "amazon"}`.
 3. Dedupe by `(ats, global_id)` (the ATS's own job id) in `data/jobs.db`; `canonical_hash` is the
    fallback for rows without an id.
-4. `prefilter.should_evaluate_job` — word-bounded title include/exclude + location regex; then
+4. `prefilter.should_evaluate_job` — title include/exclude word lists (`config.json` `candidate.titles`, else `prefilter.DEFAULT_TITLE_*`;
+   `prefilter.configure_titles` at scan start, T103) + India location regex; then
    `prefilter.is_too_old` (`candidate.max_posted_age_days`, default 7 — T02; `--posted-within N|all` overrides). The window also
    reaches the adapters: no Workday detail call for an older job, and newest-first lists (Oracle HCM, Eightfold, SmartRecruiters) stop paging.
 5. Enrich: `adapters.enrich_job` fetches the full description for survivors whose ATS list API
@@ -98,11 +101,15 @@ since those would have been on the pages read, and for no older or undated job.
 
 | File | Controls | Git |
 |---|---|---|
-| `config.json` | candidate profile, `llm_provider`, `gemini_model`, telegram | ignored |
+| `config.json` | candidate profile, title filter (`candidate.titles`), `rubric_file`, `llm_provider`, `gemini_model`, telegram | ignored |
+| `rubric.md` | the person's scoring rubric when `candidate.rubric_file` names it (else `llm_utils.DEFAULT_SCORING_RUBRIC`, Manish's) | ignored |
 | `.env` | API keys; overrides config.json unless value is a placeholder (`YOUR_…`, `…_here`) | ignored |
 | `companies.json` | ATS boards to scan (curated; maintained with `discover`) | committed |
 | `resume/YOUR_RESUME.md` | resume text | template committed |
 
+- **Manish's own config.json has no `titles` and no `rubric_file`:** the built-in defaults are his (title lists = the regexes
+  they replaced, 0 of 34,624 titles decided differently; rubric id unchanged). `.env` values that are placeholders or empty
+  never override the shell (`settings.load_env_file`, T103).
 - **LLM:** `llm_provider` defaults to `gemini`; model from `gemini_model` / `GEMINI_MODEL`,
   fallback chain `gemini-3.5-flash-lite` → `gemini-3.1-flash-lite` only; a model whose daily quota is gone is skipped until its reset (T64) (free tier: 15 RPM,
   250k TPM, 500 RPD each; `gemini-3.8-flash` has 20 RPD and is never used as a fallback). `anthropic` and `claude_cli` are kept (deprecated) but only stubbed tests exercise them: no real call has been made with either (T63).
@@ -148,7 +155,8 @@ job_hunt/
   adapters/       direct ATS fetchers + detect_ats / fetch_company_jobs / ENRICHERS + enrich_job
   models.py       JobPosting, job_key (global_id, else canonical_hash), url_hash
   db.py           SQLite: init_db, get_job, save_job, update_job_status
-  prefilter.py    title/location regexes (personal, hardcoded)
+  prefilter.py    title rules (TitleRules: config.json candidate.titles or the defaults), India location regexes
+  onboarding.py   `init` (+ --resume drafting with Gemini) and `check-filter`
   scorer.py       Gemini scoring + DB status + optional Telegram alert
   scanner.py      run_scan orchestration
   llm_utils.py    provider dispatch (gemini default; anthropic, claude_cli)

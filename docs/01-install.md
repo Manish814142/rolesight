@@ -41,55 +41,41 @@ Check that it worked:
 autopilot --help        # prints the command list
 ```
 
-## 2. Configure
+## 2. Configure from your resume (one command)
 
 ```bash
-cp config.example.json config.json
-cp job_hunt/data/env_example .env
+rolesight init --resume ~/Downloads/my_cv.pdf      # .pdf, .md or .txt
 ```
 
-Both files are gitignored. Never commit them.
+It creates the settings files (`config.json`, `.env`, `rubric.md`, `resume/`), asks for your free Gemini key if
+`.env` has none ([aistudio.google.com/apikey](https://aistudio.google.com/apikey); saved to `.env`), and then drafts,
+with 2 Gemini calls (3 for a PDF):
 
-**`.env`** holds the keys:
+- in `config.json`: your name, `profile`, `seeking`, `not_suitable`, the title filter (`titles`) and `resume_path`;
+- `rubric.md`: the scoring rubric with your years (counted from the dates of your jobs) and your stack;
+- for a PDF, `resume/<name>.md`: your resume as text, which the scan sends with every job. Check it.
+
+It prints what it wrote, including the years and the jobs they were counted from. **It is a draft:** read the
+candidate part of `config.json` and `rubric.md`, and change what is not you: a resume does not say which jobs you
+would rather not take (a Java developer who wants Node.js roles must add `java` to `exclude` by hand). Run it again
+with `--yes` to replace the candidate settings; the previous files are kept as `.bak`. `config.json`, `.env`,
+`rubric.md` and `resume/*.md` (except the template) are gitignored: never commit them.
+
+### Or configure by hand
+
+`rolesight init` without `--resume` writes the defaults (the example profile: a 3-year Node.js backend engineer).
+Put your key in `.env` (`GEMINI_API_KEY="…"`), copy `resume/YOUR_RESUME.md` to `resume/<your-name>.md`, replace its
+text and point `candidate.resume_path` at it, then edit the candidate part of `config.json` and the facts in
+`rubric.md`. Every key is documented in [07](07-config-and-scoring.md) and, step by step, in the
+[user guide](00-user-guide.md). The whole resume file is sent to Gemini with each job ([PRIVACY.md](../PRIVACY.md)).
+
+## 3. Check what the filter keeps
 
 ```bash
-GEMINI_API_KEY=your-key
-# optional
-# TELEGRAM_TOKEN=...
-# TELEGRAM_CHAT_ID=...
+rolesight check-filter "Senior Backend Engineer" "Bengaluru, India"
 ```
 
-**`config.json`** holds the candidate profile. Gemini reads these fields with every job, so
-write them for the person you're searching for:
-
-```json
-{
-  "llm_provider": "gemini",
-  "gemini_model": "gemini-3.5-flash-lite",
-  "candidate": {
-    "name": "<your name>",
-    "resume_path": "resume/<your-name>.md",
-    "profile": "<years> YOE <role>. Stack: <your main skills>",
-    "seeking": "<role types, cities, remote policy>",
-    "not_suitable": "<roles you never want to see>",
-    "min_score": 70,
-    "top_n": 5
-  }
-}
-```
-
-The example config holds only fields the pipeline reads. Every key is documented in
-[07](07-config-and-scoring.md).
-
-## 3. Add your resume
-
-```bash
-cp resume/YOUR_RESUME.md resume/<your-name>.md     # then replace the contents
-```
-
-Point `candidate.resume_path` at it. Every `resume/*.md` file except the template is
-gitignored, so your real resume stays out of git. The whole file is sent to Gemini with
-each job ([PRIVACY.md](../PRIVACY.md)).
+`KEPT` means a job with that title and place would be scored; `REJECTED — …` says why not.
 
 ## 4. Check the environment
 

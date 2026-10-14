@@ -26,13 +26,17 @@ from job_hunt.db import (
 from job_hunt.llm_utils import (
     MAX_DESCRIPTION_CHARS,
     STRUCTURED_INSTRUCTIONS,
+    RubricError,
     chat_with_llm,
+    configure_rubric,
     rubric_id,
 )
 from job_hunt.log import get_logger
 from job_hunt.models import job_key
 from job_hunt.notifier import is_telegram_configured, send_telegram
 from job_hunt.prefilter import (
+    TitleRulesError,
+    configure_titles,
     current_age_days,
     is_too_old,
     location_is_india,
@@ -323,8 +327,20 @@ def run_scan(config: dict, companies: list[dict]) -> None:
         "claude_cli": config.get("claude_cli_model") or "claude default",
     }
     logger.info(f"LLM provider: {provider} | Model: {model_by_provider.get(provider, 'default')}")
+    # The person's own title filter and rubric (T103), before any thread reads them; a config error stops here, before the fetch.
+    try:
+        titles = configure_titles(config)
+        rubric_source = configure_rubric(config)
+    except (TitleRulesError, RubricError) as e:
+        raise SystemExit(f"config.json: {e}") from None
+    titles_from = "config.json candidate.titles" if (config.get("candidate") or {}).get("titles") is not None else "the defaults"
+    logger.info(f"Title filter: {titles_from} ({len(titles.include)} include, {len(titles.exclude)} exclude"
+                f"{', generic engineer titles on' if titles.generic_engineer_titles else ''})")
+    for warning in titles.warnings():
+        logger.warning(f"Title filter: {warning}")
     if provider == "gemini":   # the other providers score with their own prompt, not this rubric (T97)
         logger.info(f"Scoring rubric: {rubric_id(STRUCTURED_INSTRUCTIONS if config.get('scoring_mode') == 'structured' else None)}")
+        logger.info(f"Rubric text: {rubric_source}")
 
     resume_path = Path(config.get("candidate", {}).get("resume_path", "resume/YOUR_RESUME.md"))
     resume = resume_path.read_text()

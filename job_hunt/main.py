@@ -2,6 +2,8 @@
 """
 Usage:
   autopilot init              — set up working directory (first-time pip install setup)
+  autopilot init --resume CV.pdf  — also draft your profile, title filter and rubric.md from your resume (Gemini)
+  autopilot check-filter "Java Developer" "Pune, India"  — would this job be scored? (your config.json filter)
   autopilot doctor            — run environment and network sanity checks
   autopilot validate          — probe and prune 404/403 ATS boards from companies.json
   autopilot harvest           — probe all ATS engines and rebuild companies.json
@@ -24,9 +26,7 @@ import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-from dotenv import load_dotenv
-
-from job_hunt.settings import min_score_of
+from job_hunt.settings import load_env_file, min_score_of
 
 _PLACEHOLDERS = {
     "YOUR_ANTHROPIC_API_KEY", "your_anthropic_api_key_here",
@@ -51,7 +51,7 @@ def _use_env(val: str | None) -> bool:
 
 
 def load_config() -> dict:
-    load_dotenv(dotenv_path=Path(".env"), override=True)
+    load_env_file(".env")
     p = Path("config.json")
     if not p.exists():
         sys.exit("config.json not found.\nRun 'autopilot init' to set up your working directory.")
@@ -121,33 +121,20 @@ def load_companies() -> list:
     return json.loads(p.read_text())
 
 
-def init_project() -> None:
-    import importlib.resources as pkg_resources
+def init_project(resume: str | None = None, yes: bool = False) -> None:
+    """Templates into the working directory; with `resume`, the person's settings drafted from it (T103, job_hunt.onboarding)."""
+    from job_hunt.onboarding import init_project as _init
+    _init(resume=resume, yes=yes)
 
-    cwd = Path.cwd()
-    data_pkg = pkg_resources.files("job_hunt.data")
 
-    def _copy(src_name: str, dest: Path, label: str) -> None:
-        if dest.exists():
-            print(f"  {dest.name} already exists, skipping")
-        else:
-            dest.write_text(data_pkg.joinpath(src_name).read_text(encoding="utf-8"), encoding="utf-8")
-            print(f"✓ {label}")
-
-    _copy("companies.json", cwd / "companies.json", "companies.json created (200+ companies with a live job board, mostly hiring in India)")
-    _copy("config.example.json", cwd / "config.json", "config.json created — fill in your API keys and profile")
-    _copy("env_example", cwd / ".env", ".env created — fill in your API keys")
-
-    resume_dir = cwd / "resume"
-    resume_dir.mkdir(exist_ok=True)
-    _copy("resume_template.md", resume_dir / "YOUR_RESUME.md", "resume/YOUR_RESUME.md created — replace with your resume")
-
-    (cwd / "output").mkdir(exist_ok=True)
-
-    print("\nNext:")
-    print("  1. Edit config.json — set your name, profile, and API keys")
-    print("  2. Replace resume/YOUR_RESUME.md with your actual resume")
-    print("  3. Run: autopilot scan")
+def _use_rubric_of_config_file() -> None:
+    """export marks scores from another rubric (T97 column): "the current rubric" is the person's rubric_file (T103)."""
+    from job_hunt.llm_utils import RubricError, configure_rubric
+    from job_hunt.onboarding import optional_config
+    try:
+        configure_rubric(optional_config())
+    except RubricError as e:
+        print(f"Note: {e} The Rubric column compares with the built-in rubric.", file=sys.stderr)
 
 
 from job_hunt.exporter import export_jobs_to_csv, job_from_db_row, job_to_export_row  # noqa: E402
@@ -224,7 +211,14 @@ def main() -> None:
     cmd = sys.argv[1].lower()
 
     if cmd == "init":
-        init_project()
+        from job_hunt.onboarding import parse_init_args
+        init_project(**parse_init_args(sys.argv[2:]))
+        return
+
+    # check-filter: KEPT or REJECTED for one title, with the config.json filter — local, no key (T80, T103)
+    if cmd == "check-filter":
+        from job_hunt.onboarding import check_filter_command
+        check_filter_command(sys.argv[2:])
         return
 
     # mcp starts the stdio server; it loads config lazily per tool call, so it
@@ -255,6 +249,8 @@ def main() -> None:
     # discover verifies company names against public ATS boards — no API keys needed
     if cmd == "discover":
         from job_hunt.discovery import main as discover_main
+        from job_hunt.onboarding import configure_titles_or_exit, optional_config
+        configure_titles_or_exit(optional_config())      # "has a job that passes the filter" uses the person's filter (T103)
         discover_main(sys.argv[2:])
         return
 
@@ -267,6 +263,7 @@ def main() -> None:
     # export reads local scan state only — no API keys needed, so skip load_config()
     if cmd == "export":
         min_score, days = _parse_export_args(sys.argv)
+        _use_rubric_of_config_file()
         export_jobs(min_score=min_score, days=days)
         return
 
@@ -311,7 +308,7 @@ def main() -> None:
     else:
         sys.exit(
             f"Unknown command: {cmd}\n"
-            "Use: init | doctor | validate | harvest | discover | scan | draft | export | mark | mcp"
+            "Use: init | check-filter | doctor | validate | harvest | discover | scan | draft | export | mark | mcp"
         )
 
 

@@ -7,6 +7,7 @@ import subprocess
 import time
 import warnings
 from datetime import datetime, timedelta
+from pathlib import Path
 from typing import Any
 
 from job_hunt.log import get_logger
@@ -294,6 +295,43 @@ SCORING_RUBRIC = """SCORING RUBRIC & HARD ANCHORS (strictly enforce):
 8. Missing Required Domain or Tool Cap (score <= 50):
    If a REQUIRED qualification (basic/minimum qualification, must-have, mandatory) is a specific industry background, platform or tool that the candidate's resume does not show and that the role depends on (for example years in the video-games industry, embedded/firmware, SAP, mainframe, a hardware or EDA toolchain), cap at <= 50: the candidate does not apply to postings whose requirements he cannot meet. Examples ("such as", "e.g."), preferred or nice-to-have items, and generic requirements (years of software development, system design, distributed systems, cloud, SQL, CI/CD, testing) never trigger this.
    AI and machine-learning engineering is such a domain. The candidate has used GenAI/LLM APIs inside backend services and workflows (calling a model, prompting, token cost) but has not built ML or agent systems. Also cap at <= 50 when a REQUIRED qualification demands hands-on experience building or operating any of: agents or LLM pipelines with an orchestration framework (LangChain, LangGraph, LlamaIndex, AutoGen, CrewAI or similar); RAG or semantic search over a vector database (Pinecone, Milvus, FAISS, pgvector or similar); training, fine-tuning or evaluating models; an ML framework (PyTorch, TensorFlow, scikit-learn, Hugging Face); MLOps or LLMOps; NLP or conversational-AI specialisation; or when it asks for years of data-science, ML or AI-engineering experience. Naming a framework only as an example ("agentic workflows using frameworks such as LangGraph") does not hide the requirement behind it: building agents is still required. Only requirements count: items under headings such as "bonus", "bonus round", "preferred", "nice to have", "good to have" or "a plus" never trigger this cap, even when they name LangGraph, vector databases or RAG. Do NOT apply this when those items are only preferred or nice to have, when the posting asks only for familiarity or a basic understanding of LLMs, prompt engineering, RAG, function calling or evals, or when it asks only for general software engineering plus using LLM APIs, prompt engineering or workflow automation: judge such a role like any other backend role (rules 3-6)."""
+
+
+# The rubric written for Manish (rules 3-5 and 8 describe his experience and stack). candidate.rubric_file replaces it with a
+# person's own text (T103: `rolesight init --resume` drafts one from a resume); without that line this one is used.
+DEFAULT_SCORING_RUBRIC = SCORING_RUBRIC
+
+
+class RubricError(ValueError):
+    """candidate.rubric_file cannot be used; the message says what to fix."""
+
+
+def rubric_text_of(config: dict) -> tuple[str, str]:
+    """(rubric text, where it came from): candidate.rubric_file, read relative to the working directory, or the built-in one."""
+    path = ((config.get("candidate") or {}).get("rubric_file") or "").strip()
+    if not path:
+        return DEFAULT_SCORING_RUBRIC, "built-in"
+    file = Path(path)
+    if not file.is_file():
+        raise RubricError(f"candidate.rubric_file is '{path}', but there is no such file. Run `rolesight init` to write one, "
+                          "or delete the rubric_file line to use the built-in rubric.")
+    text = file.read_text(encoding="utf-8").strip()
+    if not text:
+        raise RubricError(f"candidate.rubric_file '{path}' is empty")
+    return text, path
+
+
+def use_rubric(text: str) -> None:
+    """Make `text` the rubric every scoring call of this process sends (the prompt reads SCORING_RUBRIC at call time)."""
+    global SCORING_RUBRIC
+    SCORING_RUBRIC = text
+
+
+def configure_rubric(config: dict) -> str:
+    """Read candidate.rubric_file (raises RubricError with a message), make it the active rubric, return where it came from."""
+    text, source = rubric_text_of(config)
+    use_rubric(text)
+    return source
 
 
 def rubric_id(text: str | None = None) -> str:

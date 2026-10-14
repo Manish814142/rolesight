@@ -1,6 +1,25 @@
 """Defaults that more than one module reads, so the value lives in one place."""
 from __future__ import annotations
 
+import os
+from pathlib import Path
+
+
+def is_placeholder(value: str | None) -> bool:
+    """A template value such as `your_gemini_api_key_here` or `YOUR_…`, or nothing: "not filled in"."""
+    v = (value or "").strip()
+    return not v or v.startswith("YOUR_") or v.endswith("_HERE") or v.endswith("_here")
+
+
+def load_env_file(path: str | Path = ".env") -> None:
+    """The .env values into os.environ, over the shell's, as load_dotenv(override=True) did, except a placeholder or empty
+    value, which never replaces a real one (T103: the template .env written by `init` hid a key exported in the shell, so
+    `init --resume` and every scan saw "your_gemini_api_key_here")."""
+    from dotenv import dotenv_values
+    for key, value in dotenv_values(Path(path)).items():
+        if not is_placeholder(value):
+            os.environ[key] = str(value)
+
 # Score that counts as a match (Worth Applying, Telegram alerts, the digest, open_matches.csv). Manish chose 70 on
 # 2026-10-10 (T05). On the 82 labelled jobs rubric v7 (T73, before T74's AI clause) passes no `no` job at 60 or at 70
 # (2 runs); 70 drops at most one `maybe`. (The 92% vs 83% precision gap was the pre-T73 rubric's.) config.json's candidate.min_score

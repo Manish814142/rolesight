@@ -9,11 +9,11 @@ from pathlib import Path
 from typing import Any, Dict, Optional, Tuple
 
 import requests
-from dotenv import load_dotenv
 
 from job_hunt.adapters.base import DEFAULT_HEADERS
 from job_hunt.db import connect, init_db
 from job_hunt.log import redact
+from job_hunt.settings import load_env_file
 
 # Filter known benign SDK advisory from google-genai
 warnings.filterwarnings("ignore", message=".*automatic function calling.*")
@@ -206,7 +206,7 @@ def check_ats_egress() -> Dict[str, Tuple[bool, str]]:
 
 def run_doctor(db_path: str = "data/jobs.db", env_path: str = ".env") -> bool:
     """Execute all diagnostic checks and output a clean pass/fail checklist to the terminal."""
-    load_dotenv(dotenv_path=Path(env_path), override=True)
+    load_env_file(env_path)
 
     print("==================================================")
     print("            ROLESIGHT DOCTOR DIAGNOSTICS          ")

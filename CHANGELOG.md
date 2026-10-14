@@ -9,6 +9,41 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Added (2026-10-14, T103: everything personal is configurable; `init --resume` drafts it from a resume)
+- **The title filter is word lists in `config.json`** (`candidate.titles`: `include`, `exclude`, `exceptions`, `generic_engineer_titles`),
+  no longer regexes in `job_hunt/prefilter.py`. An entry matches as whole words in any case; spaces and hyphens inside it are optional
+  ("back end" also matches "Back-End" and "backend"); `.net`, `c#`, `c++` work as written; `exceptions` lift an excluded word inside a
+  phrase ("technical staff", "embedded finance"). Without a `titles` block the defaults apply: Manish's, written as lists that make
+  **the same decision as the old regexes on all 34,624 distinct titles** of the 2026-10-13 fetch and the production database and on all
+  39,985 jobs of the fetch (2,193 kept before and after; one reason text differs: "Oracle-ERP Tester" is now rejected for `Oracle-ERP`,
+  before for `Tester`). A frozen copy of the old regexes is the reference in `tests/test_title_rules.py`. A broken block (unknown key,
+  empty include, odd characters) stops the scan before the fetch with a message; an include entry an exclude word always blocks is
+  logged. `discover` and `check-filter` use the same filter.
+- **The scoring rubric can be a file** (`candidate.rubric_file`, e.g. `rubric.md`). Without it the built-in rubric is used, so Manish's
+  rubric id is unchanged (`82e017b4`). `rolesight init` writes the built-in text to `rubric.md` (same id) and the example config names it.
+  The scan logs `Rubric text: rubric.md | built-in` next to `Scoring rubric: <id>`; `export` compares with the configured rubric.
+- **`rolesight init --resume FILE` (.pdf, .md, .txt) drafts a person's settings**: for a PDF, Gemini first turns it into
+  `resume/<name>.md`; one call drafts name, profile, seeking, not_suitable, the title lists (starting from the defaults) and the jobs with
+  their dates; the **years of experience are counted in code** from those dates (overlaps once, internships at their length,
+  "present" = this month); a second call rewrites the rubric's facts for those years and that stack, and the eight rule headings and
+  caps must come back word for word, else the built-in rubric is kept with a note. It asks for the Gemini key on a terminal (saved to
+  `.env`), never prints it, asks before replacing personal settings (`--yes`; `.bak` copies), and prints what it wrote, the years and the
+  jobs they came from. `rolesight check-filter TITLE [LOCATION]` replaces `python scripts/check_filter.py` (which still works).
+- **Measured with real Gemini on Manish's resumes (2026-10-14):** found by those runs and fixed before the commit: the model guessed the
+  experience wrong without today's date (1.5 and 5 years for a 3.3-year resume), so the date is in the prompt and the years are now
+  counted in code (3.3 from his resume's dates); a rubric returned inside JSON lost its line breaks, so it is a separate plain-text call;
+  a bare `engineer` include word is dropped (it would pass nearly every title). Drafted from his current resume, the title lists keep all
+  2,193 jobs his keep plus 199 (roles in languages his resume lists but his own lists exclude); on his 82 labelled jobs the drafted settings rank a
+  little below his hand-tuned ones (AUC 0.931 vs 0.955 / 0.953 the same day, `apply` at 70 12/14 both, one more false positive). A real
+  `rolesight scan --limit 3` in a fresh directory with those settings: 2,384 fetched, 48 scored, `Title filter: config.json` and
+  `Rubric text: rubric.md` in the log.
+
+### Fixed (2026-10-14, found by T103's real run: a key exported in the shell)
+- `.env` was loaded with `load_dotenv(override=True)`, so the template's `GEMINI_API_KEY="your_gemini_api_key_here"` replaced a real key
+  exported in the shell: `init --resume` said "No Gemini API key" and a scan would have sent the placeholder. `settings.load_env_file` now
+  puts the `.env` values into the environment over the shell's, except a placeholder or an empty value (`main.load_config`, `doctor`,
+  `init`). Tests: the shell key reaches `load_config` and `init` next to a template `.env`; a real `.env` value still wins.
+
 ### Fixed (2026-10-14, T102: the last TinyFish and OpenRouter traces in the templates)
 - Manish: "if TinyFish is not used in our project and not important, you can remove it." Nothing in `job_hunt/`, the packaging files, the scripts or the CI uses it (`grep -ri tinyfish` finds one comment in `main.py` saying it
   was removed in T42). What was left: the **root `.env.example`** (the file a visitor to the repository copies) still offered a `TINYFISH_API_KEY` and `OPENROUTER_*` block that nothing reads, and had drifted from the template

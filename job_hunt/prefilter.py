@@ -2,69 +2,222 @@
 from __future__ import annotations
 
 import re
+from dataclasses import dataclass
 from datetime import date, datetime, timedelta, timezone
 from typing import Optional, Tuple
 
 from job_hunt.models import JobPosting
 
-# Word-bounded so e.g. 'java' does not hit "JavaScript", 'test' does not hit
-# "Latest"/"Contest", 'intern' does not hit "Internal", 'india' does not hit "Indianapolis".
+# ── Title rules (T103) ─────────────────────────────────────────────────────────────────────────────────────────────────
+# What a job title must and must not contain, as plain words and phrases: config.json candidate.titles, or these defaults
+# (Manish's). An entry matches as whole words in any case, so 'java' does not hit "JavaScript", 'test' does not hit
+# "Latest" and 'intern' does not hit "Internal". Spaces and hyphens inside an entry are optional: "back end" also matches
+# "Back-End" and "backend". Variants are separate entries ("node", "nodejs", "node.js"). An entry that starts or ends with a
+# symbol keeps it: ".net" also matches "ASP.NET", "c#" and "c++" need the symbol. The defaults replaced hand-written regexes
+# and make the same decision on all 34,624 distinct titles of the 2026-10-13 fetch and the production database (2026-10-14).
+
+# A title must contain one of these (or be a generic engineer title, below).
 # Product startups often title backend roles "Product/Platform/Infrastructure Engineer".
-TITLE_INCLUDE_PATTERN = re.compile(
-    r"\b(back[\s-]?end|node(\.?js)?|sde\d*|software\s*engineer|software\s+dev(elopment)?\s+engineer"
-    r"|member\s+of\s+technical\s+staff|mts|computer\s+scientist|developer|full[\s-]*stack"
-    r"|api|distributed(\s*systems)?|platform\s*engineer|product\s*engineer"
-    r"|infrastructure\s*engineer|systems\s*engineer"
-    # AI / Forward Deployed Engineer titles (T74, Manish 2026-10-10): the scoring rubric rejects the ones that need heavy AI.
-    r"|(gen(erative)?[\s-]*ai|agentic[\s-]+ai|applied[\s-]+ai|ai|llm)[\s-]+engineer|forward[\s-]*deployed[\s-]+engineer)\b",
-    re.IGNORECASE,
+# AI / Forward Deployed Engineer titles (T74, Manish 2026-10-10): the scoring rubric rejects the ones that need heavy AI.
+DEFAULT_TITLE_INCLUDE: Tuple[str, ...] = (
+    "back end", "node", "nodejs", "node.js", "sde", "sde1", "sde2", "sde3", "sde4", "sde5", "software engineer",
+    "software dev engineer", "software development engineer", "member of technical staff", "mts", "computer scientist",
+    "developer", "full stack", "api", "distributed", "platform engineer", "product engineer", "infrastructure engineer",
+    "systems engineer", "gen ai engineer", "generative ai engineer", "agentic ai engineer", "applied ai engineer", "ai engineer",
+    "llm engineer", "forward deployed engineer",
 )
 
-# Generic engineer titles (T96, T69 g; Manish 2026-10-14): companies name roles differently, and "Senior Engineer", "Engineer II" or
-# "Engineer III, Software" can be a backend job, so a title that is only "Engineer" with a seniority or level, or that has "software"
-# and "engineer" in any order, goes to Gemini, which judges the description. "Data Engineer", "Mechanical Engineer" and the like
-# name a different role and still need an include word. The exclude words are checked first, so "Lead Engineer" stays out.
-# Measured (fetch of 2026-10-13): 44 + 5 jobs posted in the last 7 days, most of them hardware or support roles that score low.
+# A title containing one of these is rejected; checked before the include list.
+# "Senior"/"Sr." are deliberately NOT excluded: at Indian companies they often mean 3-6 YOE, so Gemini judges them against the
+# resume (2026-10-04: 227 India jobs were blocked by that word alone). Staff/Principal/Lead/Manager stay excluded, except
+# "Member of Technical Staff" (MTS), a standard mid-level engineer title (see the exceptions).
+# "python" is not excluded (T62, Manish 2026-10-10): his resume lists it, 33 India titles named it and 9 of 32 scored 80+ when
+# read in full. "java" and "golang" stay excluded.
+# "quality" sits with qa/test (review of T96, 2026-10-14): the generic-engineer rule let "Software Quality Engineer" through,
+# scored 75 on its first scan; on the 2026-10-13 fetch all 13 passing titles with the word were QA, test automation or
+# construction quality.
+# Developer advocacy / relations / evangelism (T100, Manish 2026-10-14: keep a role only if his skills match it).
+# CRM / ERP / BI / RPA platform roles (T12) are configuration and integration work on someone else's product, not backend
+# engineering: 82 of 1,191 survivors were scored for nothing. Matched on the title only, never the company, so "Software
+# Engineer" at Salesforce or ServiceNow still passes. "crm" alone is left to the scorer: it is also a product domain at SaaS
+# companies.
+# Languages and domains outside the target stack (T61): 56 of 1,191 survivors named one of these.
+DEFAULT_TITLE_EXCLUDE: Tuple[str, ...] = (
+    "lead", "principal", "staff", "manager", "director", "architect", "front end", "react", "reactjs", "react.js", "angular",
+    "angularjs", "vue", "vuejs", "vue.js", "ios", "android", "flutter", "qa", "quality", "test", "tester", "testers", "testing",
+    "intern", "interns", "internship", "devops", "sre", "java", "golang", "advocate", "advocacy", "evangelist", "devrel",
+    "developer relations", ".net", "c#",
+    "salesforce", "apex", "servicenow", "dynamics", "dynamics 365", "d365", "sap", "abap", "netsuite", "peoplesoft", "coupa",
+    "workday", "cpq", "zuora", "mulesoft", "boomi", "informatica", "tableau", "bi", "rpa", "uipath", "reltio", "lims", "mainframe",
+    "cobol", "sharepoint", "siebel", "pega", "agentforce", "oracle ebs", "oracle fusion", "oracle hcm", "oracle erp", "oracle cpq",
+    "oracle apps", "oracle cloud", "power bi", "power platform", "power apps", "power automate", "blue prism", "marketing cloud",
+    "c++", "embedded", "firmware", "kernel", "gpu", "cuda", "fpga", "verilog", "rust", "ruby", "php",
+)
+
+# Phrases that do not count as excluded although they contain an excluded word: they are taken out of the title before the
+# exclude check. "Embedded Finance" is a fintech product, not embedded systems (T69 c).
+DEFAULT_TITLE_EXCEPTIONS: Tuple[str, ...] = (
+    "technical staff", "embedded finance", "embedded payment", "embedded payments", "embedded banking", "embedded insurance",
+    "embedded lending",
+)
+
+# Generic engineer titles (T96, T69 g; Manish 2026-10-14): companies name roles differently, and "Senior Engineer", "Engineer II"
+# or "Engineer III, Software" can be a backend job, so a title that is only "Engineer" with a seniority or level, or that has
+# "software" and "engineer" in any order, goes to Gemini, which judges the description. "Data Engineer", "Mechanical Engineer"
+# and the like name a different role and still need an include entry. The exclude words are checked first, so "Lead Engineer"
+# stays out. Measured (fetch of 2026-10-13): 44 + 5 jobs posted in the last 7 days, most of them hardware or support roles that
+# score low. Switched by candidate.titles.generic_engineer_titles.
 TITLE_GENERIC_ENGINEER_PATTERN = re.compile(
     r"^\s*(?:(?:senior|sr\.?|associate)\s+)?engineer\b|\bsoftware\b.*\bengineer\b",
     re.IGNORECASE,
 )
 
-# '.net' and 'c#' start/end with non-word chars, where \b does not apply,
-# so they get their own boundary handling.
-# "Senior"/"Sr." are deliberately NOT excluded: at Indian companies they often mean 3-6 YOE,
-# so Gemini judges them against the resume (2026-10-04: 227 India jobs were blocked by
-# that word alone). Staff/Principal/Lead/Manager stay excluded, except "Member of Technical
-# Staff" (MTS), a standard mid-level engineer title.
-# "python" is not excluded (T62, Manish 2026-10-10): his resume lists it, 33 India titles named it and 9 of 32
-# scored 80+ when read in full. "java" and "golang" stay excluded.
-# CRM / ERP / BI / RPA platform roles (T12) are configuration and integration work on someone
-# else's product, not backend engineering: 82 of 1,191 survivors were scored for nothing. Matched on
-# the title only, never the company, so "Software Engineer" at Salesforce or ServiceNow still passes.
-# "crm" alone is left to the scorer: it is also a product domain at SaaS companies.
-_PLATFORM_ROLE_WORDS = (
-    r"salesforce|apex|servicenow|dynamics(\s*365)?|d365|sap|abap|netsuite|peoplesoft|coupa|workday"
-    r"|cpq|zuora|mulesoft|boomi|informatica|tableau|bi|rpa|uipath|reltio|lims|mainframe|cobol"
-    r"|sharepoint|siebel|pega|agentforce"
-)
-# "quality" sits with qa/test (review of T96, 2026-10-14): T96's "software ... engineer" rule let "Software Quality Engineer"
-# through, scored 75 on its first scan; on the 2026-10-13 fetch all 13 passing titles with the word were QA, test
-# automation or construction quality.
-# Developer advocacy / relations / evangelism (T100, Manish 2026-10-14: keep a role only if his skills match it): talks, articles,
-# community and demos, nothing his resume shows. On the 2026-10-13 fetch three titles passed (Amazon, Autodesk, Salesforce) and
-# Gemini scored them 35, 82 and 25.
-TITLE_EXCLUDE_PATTERN = re.compile(
-    r"\b(lead|principal|(?<!technical\s)staff|manager|director|architect|front[\s-]?end"
-    r"|react(\.?js)?|angular(js)?|vue(\.?js)?|ios|android|flutter|qa|quality|test(er|ers|ing)?"
-    r"|intern(s|ship)?|devops|sre|java|golang|advocate|advocacy|evangelist|devrel)\b"
-    r"|\.net\b|\bc#(?!\w)|\bdeveloper\s+relations\b"
-    rf"|\b({_PLATFORM_ROLE_WORDS})\b"
-    r"|\boracle\s+(ebs|fusion|hcm|erp|cpq|apps|cloud)\b|\bpower\s*(bi|platform|apps|automate)\b"
-    r"|\bblue\s*prism\b|\bmarketing\s+cloud\b"
-    # Languages and domains outside the target stack (T61): 56 of 1,191 survivors named one of these.
-    r"|(?<![\w+])c\+\+|\b(embedded(?!\s+(?:finance|payments?|banking|insurance|lending)\b)|firmware|kernel|gpu|cuda|fpga|verilog|rust|ruby|php)\b",
-    re.IGNORECASE,
-)
+_TITLE_KEYS = ("include", "exclude", "exceptions", "generic_engineer_titles")
+_TERM_CHARS = re.compile(r"^[\w .+#/&'-]+$")
+MAX_TITLE_TERM_LENGTH = 60
+
+
+class TitleRulesError(ValueError):
+    """config.json candidate.titles cannot be used; the message says what to fix."""
+
+
+def _term_pattern(entry: str) -> str:
+    """The regex of one entry: its words joined by optional spaces/hyphens, whole-word at an edge that is a letter or digit."""
+    words = [w for w in re.split(r"[\s-]+", entry.strip().lower()) if w]
+    body = r"[\s-]*".join(re.escape(w) for w in words)
+    left = r"\b" if re.match(r"\w", words[0]) else ""
+    right = r"\b" if re.search(r"\w$", words[-1]) else r"(?!\w)"
+    return left + body + right
+
+
+def _alternation(entries: Tuple[str, ...]) -> Optional[re.Pattern]:
+    """One regex for a list; longer entries first, so the reason names "Dynamics 365" rather than "Dynamics"."""
+    if not entries:
+        return None
+    ordered = sorted(dict.fromkeys(e.lower() for e in entries), key=len, reverse=True)
+    return re.compile("|".join(_term_pattern(e) for e in ordered), re.IGNORECASE)
+
+
+def _terms(block: dict, key: str) -> Tuple[str, ...]:
+    value = block.get(key, [])
+    items = value.split(",") if isinstance(value, str) else value
+    if not isinstance(items, (list, tuple)):
+        raise TitleRulesError(f"candidate.titles.{key} must be a list of words, e.g. [\"backend\", \"api\"]")
+    out: list[str] = []
+    bad: list[str] = []
+    for item in items:
+        if not isinstance(item, str):
+            raise TitleRulesError(f"candidate.titles.{key}: every entry must be text, got {item!r}")
+        term = item.strip()
+        if not term:
+            continue
+        if len(term) > MAX_TITLE_TERM_LENGTH:
+            raise TitleRulesError(f"candidate.titles.{key}: '{term[:30]}...' is longer than {MAX_TITLE_TERM_LENGTH} characters")
+        if not _TERM_CHARS.match(term):
+            bad.append(term)
+        elif term.lower() not in (t.lower() for t in out):
+            out.append(term)
+    if bad:
+        raise TitleRulesError(f"candidate.titles.{key}: use words, spaces and . + # / & - only: {', '.join(bad)}")
+    return tuple(out)
+
+
+@dataclass(frozen=True)
+class TitleRules:
+    """The title part of the pre-filter. The defaults are Manish's; config.json candidate.titles replaces them (T103)."""
+    include: Tuple[str, ...] = DEFAULT_TITLE_INCLUDE
+    exclude: Tuple[str, ...] = DEFAULT_TITLE_EXCLUDE
+    exceptions: Tuple[str, ...] = DEFAULT_TITLE_EXCEPTIONS
+    generic_engineer_titles: bool = True
+
+    @classmethod
+    def from_config(cls, config: dict) -> "TitleRules":
+        """candidate.titles as written: no block means the defaults; in a block, a list left out is empty (what you write is
+        what the scan uses)."""
+        block = (config.get("candidate") or {}).get("titles")
+        if block is None:
+            return cls()
+        if not isinstance(block, dict):
+            raise TitleRulesError('candidate.titles must be an object: {"include": [...], "exclude": [...]}')
+        unknown = sorted(set(block) - set(_TITLE_KEYS))
+        if unknown:
+            raise TitleRulesError(f"candidate.titles: unknown key {', '.join(unknown)} (allowed: {', '.join(_TITLE_KEYS)})")
+        rules = cls(include=_terms(block, "include"), exclude=_terms(block, "exclude"), exceptions=_terms(block, "exceptions"),
+                    generic_engineer_titles=bool(block.get("generic_engineer_titles", False)))
+        if not rules.include and not rules.generic_engineer_titles:
+            raise TitleRulesError("candidate.titles.include is empty, so no title would pass: add the roles you want, "
+                                  'e.g. "include": ["backend", "software engineer"]')
+        return rules
+
+    def warnings(self) -> list[str]:
+        """Include entries that can never pass because an exclude word is part of them."""
+        compiled = _CompiledTitleRules(self)
+        out = []
+        for term in self.include:
+            hit = compiled.exclusion(term)
+            if hit:
+                out.append(f"include entry '{term}' can never pass: it contains the excluded '{hit}'")
+        return out
+
+
+class _CompiledTitleRules:
+    def __init__(self, rules: TitleRules) -> None:
+        self.rules = rules
+        self.include = _alternation(rules.include)
+        self.exclude = _alternation(rules.exclude)
+        self.exceptions = _alternation(rules.exceptions)
+
+    def _without_exceptions(self, title: str) -> str:
+        return self.exceptions.sub(" ", title) if self.exceptions else title
+
+    def exclusion(self, title: str) -> str:
+        """The excluded text the title contains, or ""."""
+        if not self.exclude:
+            return ""
+        m = self.exclude.search(self._without_exceptions(title))
+        return m.group(0) if m else ""
+
+    def exclusions(self, title: str) -> set:
+        if not self.exclude:
+            return set()
+        return {re.sub(r"\s+", " ", m.group(0).lower().strip()) for m in self.exclude.finditer(self._without_exceptions(title))}
+
+    def included(self, title: str) -> bool:
+        if self.include and self.include.search(title):
+            return True
+        return self.rules.generic_engineer_titles and bool(TITLE_GENERIC_ENGINEER_PATTERN.search(title))
+
+
+_ACTIVE_TITLES = _CompiledTitleRules(TitleRules())
+
+
+def use_title_rules(rules: TitleRules) -> None:
+    """Make `rules` the title filter of this process: the scan, discover and the adapters (Workday's detail calls) read it.
+    Set before the fetch threads start."""
+    global _ACTIVE_TITLES
+    _ACTIVE_TITLES = _CompiledTitleRules(rules)
+
+
+def configure_titles(config: dict) -> TitleRules:
+    """Read candidate.titles (raises TitleRulesError with a message) and make it the active filter."""
+    rules = TitleRules.from_config(config)
+    use_title_rules(rules)
+    return rules
+
+
+def active_title_rules() -> TitleRules:
+    return _ACTIVE_TITLES.rules
+
+
+def title_exclusions(title: str) -> set:
+    """Every excluded word or phrase the title contains (lower case): what scripts/measure_prefilter.py counts."""
+    return _ACTIVE_TITLES.exclusions(title or "")
+
+
+def title_included(title: str) -> bool:
+    """True when the title has an include entry (or is a generic engineer title with the switch on); exclusions not checked."""
+    return _ACTIVE_TITLES.included(title or "")
+
 
 _INDIA_CITIES_CORE = r"bengaluru|bangalore|pune|gurugram|gurgaon|hyderabad|noida|mumbai|chennai|delhi|ncr|kolkata"
 LOCATION_INDIA_PATTERN = re.compile(rf"\b({_INDIA_CITIES_CORE}|india)\b", re.IGNORECASE)
@@ -234,10 +387,10 @@ def location_is_india(location: str) -> bool:
 
 def _title_rejection(title: str) -> str:
     """Why the title alone rejects a job, or "" when it can pass (location is checked after this)."""
-    m_exclude = TITLE_EXCLUDE_PATTERN.search(title)
-    if m_exclude:
-        return f"Title matched exclude pattern: '{m_exclude.group(0)}'"
-    if not (TITLE_INCLUDE_PATTERN.search(title) or TITLE_GENERIC_ENGINEER_PATTERN.search(title)):
+    excluded = _ACTIVE_TITLES.exclusion(title)
+    if excluded:
+        return f"Title matched exclude pattern: '{excluded}'"
+    if not _ACTIVE_TITLES.included(title):
         return "Title did not match include pattern"
     return ""
 

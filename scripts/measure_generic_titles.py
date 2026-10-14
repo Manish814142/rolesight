@@ -25,9 +25,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from job_hunt.models import JobPosting  # noqa: E402
 from job_hunt.prefilter import (  # noqa: E402
-    TITLE_EXCLUDE_PATTERN,
     posted_age_days,
     should_evaluate_job,
+    title_exclusions,
     title_is_candidate,
 )
 
@@ -42,7 +42,7 @@ def _job(row: Dict[str, Any], title: str) -> JobPosting:
 def kind(row: Dict[str, Any]) -> str | None:
     """"qualified" or "other" for a job dropped only for lacking an include word in an India location; None otherwise."""
     title = row["title"]
-    if title_is_candidate(title) or TITLE_EXCLUDE_PATTERN.search(title):
+    if title_is_candidate(title) or title_exclusions(title):
         return None
     if not should_evaluate_job(_job(row, "Backend Engineer"))[0]:      # the real location rules, with a title that passes
         return None

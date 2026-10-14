@@ -273,3 +273,20 @@ def test_scan_csv_helper_picks_the_highest_numbered_file_even_when_mtimes_tie(tm
         Path("output", name).write_text(f"Company\n{marker}\n")
         os.utime(Path("output", name), ns=(1_700_000_000_000_000_000,) * 2)
     assert _scan_csv() == [{"Company": "third"}]
+
+
+@patch("job_hunt.scanner.fetch_company_jobs")
+@patch("job_hunt.scanner.score_and_process_job")
+def test_the_scan_uses_the_title_filter_of_config_json(mock_single, mock_fetch, direct_scan_env):
+    """T103: another person's candidate.titles decide which titles are scored; the defaults would do the opposite here."""
+    cfg, db_path = direct_scan_env
+    cfg.pop("gemini_scoring_mode")
+    cfg["candidate"]["titles"] = {"include": ["java developer"], "exclude": ["intern"]}
+    java, backend = _backend_job("java"), _backend_job("backend")
+    java.title, backend.title = "Senior Java Developer", "Backend Engineer"
+    mock_fetch.return_value = [java, backend]
+    mock_single.side_effect = lambda **kw: {"score": 70, "reason": "ok", "status": "scored"}
+
+    scanner.run_scan(cfg, [{"name": "Acme", "ats": "greenhouse", "slug": "acme"}])
+
+    assert [c.kwargs["job"].title for c in mock_single.call_args_list] == ["Senior Java Developer"]

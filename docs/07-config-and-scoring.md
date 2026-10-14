@@ -37,6 +37,8 @@ looks, so a value put there was ignored; T80). The step-by-step version of this 
 | `top_n` | `5` | How many matches the digest and the log summary show |
 | `max_posted_age_days` | `7` | Score only jobs posted in the last N days (T02: Manish asked for a window; 7 is Claude's choice until he confirms it). `null` switches the window off; `--posted-within N` / `all` overrides it for one run. Jobs with no posted date are never filtered |
 | `relocation_note` | — | Added to cover-letter drafts |
+| `titles` | the defaults below | The title part of the pre-filter: `include`, `exclude`, `exceptions` (word lists) and `generic_engineer_titles` (true/false), T103. No block = the defaults; in a block, a list left out is empty. An unknown key, an empty `include` or an entry with other characters than words and `. + # / & -` stops the scan with a message |
+| `rubric_file` | — (built-in rubric) | A text file with the scoring rubric, read relative to the working directory, e.g. `"rubric.md"` (T103). `init` writes the built-in one there; `init --resume` rewrites its facts for the person. Without the key the built-in rubric is used |
 
 ### `.env` overrides
 
@@ -52,15 +54,18 @@ using on its first lines (`Min score: … | Top N: …`, `LLM provider: … | Mo
 
 ---
 
-## The pre-filter (`job_hunt/prefilter.py`)
+## The pre-filter (titles: `config.json` `candidate.titles`; places: `job_hunt/prefilter.py`)
 
-Local, free and deterministic. The rules are **hardcoded for one profile** (Node.js /
-backend, about 3 YOE, India or remote). That's deliberate: the defaults are one profile's, and
-[00-user-guide](00-user-guide.md) says what to change for yours. The
-patterns are case-insensitive and word-bounded, so `java` doesn't match "JavaScript",
-`test` doesn't match "Latest", and `intern` doesn't match "Internal".
+Local, free and deterministic. The **title rules** are word lists in `config.json` (`candidate.titles`, T103); without
+them, the **defaults** below apply, written for one profile (Node.js / backend, about 3 YOE, India or remote).
+`rolesight init --resume` drafts a person's own lists from their resume, starting from these. An entry matches as
+whole words in any case, so `java` doesn't match "JavaScript", `test` doesn't match "Latest", and `intern` doesn't
+match "Internal"; spaces and hyphens inside an entry are optional (`back end` also matches "Back-End" and
+"backend"). The defaults replaced hand-written regexes and make the same decision on all 34,624 distinct titles of
+the 2026-10-13 fetch and the production database (measured 2026-10-14). The **location rules** (India) stay in
+`job_hunt/prefilter.py`.
 
-They are applied in this order:
+They are applied in this order (the default lists):
 
 1. **Title exclude.** If any of these words appears, the job is rejected:
    - Seniority: `lead`, `principal`, `staff` (but not "Member of Technical *Staff*"),
@@ -141,7 +146,8 @@ One Gemini call per job. The prompt contains:
   with the full text left every score the same or lower. The average change was 15 points
   on Greenhouse, 26 on SmartRecruiters and 6.7 on Workday, against 3.3 points of
   run-to-run noise (CHANGELOG 2026-10-04).
-- **rubric anchors** (`llm_utils.SCORING_RUBRIC`, T48): cap 30 for onsite work or work
+- **rubric anchors** (`llm_utils.SCORING_RUBRIC`, T48; replaced by `candidate.rubric_file` when set, T103; what follows is
+  the built-in rubric): cap 30 for onsite work or work
   authorisation outside India; cap 40 for roles in your `not_suitable` list or platform
   administration of Salesforce, Coupa, SAP or ServiceNow (judged by the work, not the employer's
   name); cap 50 for roles that need 6+ years; cap 50 for roles aimed at freshers or asking 0-1
