@@ -102,10 +102,14 @@ def test_the_secret_scan_ignores_only_the_verbatim_job_postings():
     assert not any(re.fullmatch(p, f) for p in paths for f in (".env", "config.json", "job_hunt/llm_utils.py", "scripts/score_golden_set.py"))
     # Our own notes quote that phrase (CHANGELOG, the board, this file), which trips the same rule: allow that one string only.
     regexes = config["allowlist"]["regexes"]
-    assert len(regexes) == 1 and re.search(regexes[0], "middleware/integration")
+    assert len(regexes) == 2 and re.search(regexes[0], "middleware/integration")
+    # The second: the two fake test keys that history holds written out (T92, T103); tests now build them at run time.
+    fake = "AIza" + "-test-" + "key" + "-0123456789"
+    assert re.search(regexes[1], fake) and re.search(regexes[1], fake + "abcdef")
     # Built at run time: written out, key-shaped strings would trip the very scan this test is about.
-    not_allowed = ("AIza" + "Sy" + "A1b2C3d4E5f6G7h8I9j0K1l2M3n4O5p6Q", "sk-" + "ant-api03-" + "abcdefghijklmnop", "ghp" + "_" + "a1B2" * 9)
-    assert not any(re.search(regexes[0], secret) for secret in not_allowed)
+    not_allowed = ("AIza" + "Sy" + "A1b2C3d4E5f6G7h8I9j0K1l2M3n4O5p6Q", "sk-" + "ant-api03-" + "abcdefghijklmnop", "ghp" + "_" + "a1B2" * 9,
+                   fake + "X", "AIza" + "-typed-" + "key" + "-0123456789")
+    assert not any(re.search(r, secret) for r in regexes for secret in not_allowed)
 
 
 # -- Manish's answers of 2026-10-13: no PyPI, keep the golden sets with a notice, publish at Manish814142/rolesight -----

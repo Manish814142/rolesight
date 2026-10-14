@@ -6,4 +6,7 @@ useDefault = true
 [allowlist]
 description = "Verbatim public job postings used as labelled test data; a phrase such as 'APIs, middleware/integration' trips generic-api-key."
 paths = ['''scripts/golden_set(_ai)?\.csv''']
-regexes = ['''^middleware/integration$''']   # the phrase quoted in our notes about that false positive
+regexes = [
+  '''^middleware/integration$''',              # the phrase quoted in our notes about that false positive
+  '''^AIza-test-key-0123456789(abcdef)?$''',  # two fake test keys written out in history (60a30c0 T92, aa5fe53 T103); tests now build them at run time
+]

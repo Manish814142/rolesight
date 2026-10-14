@@ -9,6 +9,12 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed (2026-10-14, CI's secret scan: two fake test keys)
+- The first push of T103 failed CI's gitleaks job: `generic-api-key` on a fake key written out in `tests/test_onboarding.py`. Run locally over the whole
+  history (gitleaks 8.24.3, CI's version, checksum verified), it also found an older one, `tests/test_doctor.py` (T92); neither is a real key (my
+  pre-push scan checks real key formats). The tests now build their fake keys at run time, as `tests/test_public_release.py` already asked, and
+  `.gitleaks.toml` allows exactly those two strings, which history keeps: full history 383 commits → no leaks; the change itself → no leaks.
+
 ### Added (2026-10-14, T103: everything personal is configurable; `init --resume` drafts it from a resume)
 - **The title filter is word lists in `config.json`** (`candidate.titles`: `include`, `exclude`, `exceptions`, `generic_engineer_titles`),
   no longer regexes in `job_hunt/prefilter.py`. An entry matches as whole words in any case; spaces and hyphens inside it are optional

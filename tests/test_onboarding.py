@@ -14,6 +14,7 @@ from job_hunt.llm_utils import DEFAULT_SCORING_RUBRIC, RubricError, rubric_id
 from job_hunt.prefilter import TitleRules
 
 ROOT = Path(__file__).resolve().parent.parent
+FAKE_KEY = "AIza" + "-test-key-0123456789"     # built at run time: written out, gitleaks reads it as a key
 RESUME = "# Asha Rao\nJava backend developer, 6 years. Spring Boot, Kafka, PostgreSQL, AWS. Pune.\n" + "Built payment services. " * 20
 
 
@@ -52,7 +53,7 @@ def workdir(tmp_path, monkeypatch):
     return tmp_path
 
 
-def _init_with(workdir, monkeypatch, fake, resume_name="asha.md", yes=False, key="AIza-test-key-0123456789"):
+def _init_with(workdir, monkeypatch, fake, resume_name="asha.md", yes=False, key=FAKE_KEY):
     if key:
         monkeypatch.setenv("GEMINI_API_KEY", key)
     resume = workdir / resume_name
@@ -115,7 +116,7 @@ def test_init_resume_writes_the_drafted_settings_where_the_scan_reads_them(workd
     assert rules.exceptions == prefilter.DEFAULT_TITLE_EXCEPTIONS
     assert llm_utils.configure_rubric(config) == "rubric.md" and "~6 years" in llm_utils.SCORING_RUBRIC
     out = capsys.readouterr().out
-    assert "Asha Rao" in out and "rolesight check-filter" in out and "AIza-test-key" not in out
+    assert "Asha Rao" in out and "rolesight check-filter" in out and "-test-key-" not in out
     assert [c[3] is onboarding.DRAFT_SCHEMA for c in fake.calls] == [True, False]      # settings, then the rubric
     rubric_prompt = fake.calls[1][2][0]
     years = onboarding.years_of_experience(_draft()["jobs"], __import__("datetime").date.today())
@@ -178,9 +179,9 @@ def test_without_a_key_init_says_where_to_put_it_and_calls_nothing(workdir, monk
 def test_the_key_typed_on_a_terminal_is_saved_to_env(workdir, monkeypatch):
     onboarding._scaffold(workdir)
     monkeypatch.setattr(onboarding.sys.stdin, "isatty", lambda: True, raising=False)
-    monkeypatch.setattr(onboarding.getpass, "getpass", lambda prompt: "AIza-typed-key-0123456789")
-    assert onboarding._api_key(workdir) == "AIza-typed-key-0123456789"
-    assert 'GEMINI_API_KEY="AIza-typed-key-0123456789"' in (workdir / ".env").read_text()
+    monkeypatch.setattr(onboarding.getpass, "getpass", lambda prompt: "AIza" + "-typed-key-0123456789")
+    assert onboarding._api_key(workdir) == "AIza" + "-typed-key-0123456789"
+    assert 'GEMINI_API_KEY="' + "AIza" + '-typed-key-0123456789"' in (workdir / ".env").read_text()
 
 
 def test_a_resume_of_another_format_is_refused(workdir):
@@ -227,21 +228,21 @@ def test_a_scan_with_a_broken_titles_block_stops_before_fetching(monkeypatch, tm
 
 def test_a_placeholder_in_env_does_not_hide_a_key_exported_in_the_shell(workdir, monkeypatch):
     onboarding._scaffold(workdir)                              # writes .env with GEMINI_API_KEY="your_gemini_api_key_here"
-    monkeypatch.setenv("GEMINI_API_KEY", "AIza-shell-key-0123456789")
-    assert onboarding._api_key(workdir) == "AIza-shell-key-0123456789"
+    monkeypatch.setenv("GEMINI_API_KEY", "AIza" + "-shell-key-0123456789")
+    assert onboarding._api_key(workdir) == "AIza" + "-shell-key-0123456789"
 
 
 def test_a_scan_reads_the_shell_key_when_env_has_only_the_placeholder(workdir, monkeypatch):
     onboarding._scaffold(workdir)
-    monkeypatch.setenv("GEMINI_API_KEY", "AIza-shell-key-0123456789")
-    assert main.load_config()["gemini_api_key"] == "AIza-shell-key-0123456789"
+    monkeypatch.setenv("GEMINI_API_KEY", "AIza" + "-shell-key-0123456789")
+    assert main.load_config()["gemini_api_key"] == "AIza" + "-shell-key-0123456789"
 
 
 def test_a_real_value_in_env_still_beats_the_shell(workdir, monkeypatch):
     onboarding._scaffold(workdir)
-    (workdir / ".env").write_text('GEMINI_API_KEY="AIza-env-file-key-0123456789"\n')
-    monkeypatch.setenv("GEMINI_API_KEY", "AIza-shell-key-0123456789")
-    assert main.load_config()["gemini_api_key"] == "AIza-env-file-key-0123456789"
+    (workdir / ".env").write_text('GEMINI_API_KEY="' + "AIza" + '-env-file-key-0123456789"\n')
+    monkeypatch.setenv("GEMINI_API_KEY", "AIza" + "-shell-key-0123456789")
+    assert main.load_config()["gemini_api_key"] == "AIza" + "-env-file-key-0123456789"
 
 
 def test_a_bare_engineer_include_word_is_dropped(workdir, monkeypatch, capsys):
