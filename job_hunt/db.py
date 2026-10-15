@@ -8,7 +8,7 @@ from datetime import date, datetime, timezone
 from typing import Any, Dict, Iterator, List, Optional
 
 from job_hunt.models import JobPosting, canonical_hash, url_hash
-from job_hunt.prefilter import current_age_days
+from job_hunt.prefilter import current_age_days, local_date_of
 
 DEFAULT_DB_PATH = "data/jobs.db"
 
@@ -453,10 +453,7 @@ def _unseen_inside_window(conn: sqlite3.Connection, ats: str, company: str, now:
     rows = conn.execute("SELECT id, posted_at, first_seen FROM jobs WHERE ats = ? AND company = ? AND closed_at IS NULL "
                         "AND (last_seen IS NULL OR last_seen < ?);", (ats, company, now))
     for row_id, posted_at, first_seen in rows.fetchall():
-        try:
-            seen_on = date.fromisoformat((first_seen or "")[:10])
-        except ValueError:
-            seen_on = today
+        seen_on = local_date_of(first_seen or "") or today          # the local day it was seen (T110)
         age = current_age_days(posted_at or "", seen_on, today)
         if age is not None and age <= window_days - WINDOW_STOP_MARGIN_DAYS:
             ids.append(row_id)

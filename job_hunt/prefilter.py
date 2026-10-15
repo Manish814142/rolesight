@@ -357,6 +357,20 @@ def posted_age_days(posted_at: str, today: Optional[date] = None) -> Optional[in
     return max(0, (today - posted).days)
 
 
+def local_date_of(value: str) -> Optional[date]:
+    """The local calendar day of a stored timestamp, or None (T110). first_seen / scored_at are UTC ISO timestamps; between
+    00:00 and 05:30 IST their UTC date is the day before India's, the day every age is counted in (`date.today()`).
+    A bare date ("2026-10-14") is that day."""
+    v = (value or "").strip()
+    if not v:
+        return None
+    try:
+        moment = datetime.fromisoformat(v)
+    except ValueError:
+        return None
+    return moment.astimezone().date() if moment.tzinfo else moment.date()
+
+
 def posted_date_iso(posted_at: str, today: Optional[date] = None) -> Optional[str]:
     """The posting date as YYYY-MM-DD, from any adapter's posted_at; None if unknown (T99). Workday's "Posted 3 Days Ago"
     is relative to the day it is read, so it becomes a date now: stored as text it would age again from the day the row was

@@ -39,6 +39,7 @@ from job_hunt.prefilter import (
     configure_titles,
     current_age_days,
     is_too_old,
+    local_date_of,
     location_is_india,
     posted_age_days,
     posted_date_iso,
@@ -294,11 +295,7 @@ def _write_open_matches(min_score: int, max_age: Optional[int]) -> int:
     today = date.today()
     jobs = []
     for r in open_match_rows(min_score):
-        seen = (r.get("scored_at") or r.get("discovered_at") or "")[:10]
-        try:
-            seen_on = date.fromisoformat(seen)
-        except ValueError:
-            seen_on = today
+        seen_on = local_date_of(r.get("scored_at") or r.get("discovered_at") or "") or today   # the local day (T110)
         age = current_age_days(r.get("posted_at") or "", seen_on, today)
         if max_age is not None and age is not None and age > max_age:
             continue

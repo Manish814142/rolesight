@@ -37,7 +37,7 @@ import re
 import sys
 import unicodedata
 from concurrent.futures import ThreadPoolExecutor
-from datetime import date, datetime, timezone
+from datetime import date, datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 from urllib.parse import urljoin
@@ -233,7 +233,7 @@ def name_matches(seed_name: str, board_name: str) -> bool:
 
 def newest_age_days(jobs: List[JobPosting], now: Optional[datetime] = None) -> Optional[int]:
     """Days since the most recent parseable posted_at (ISO dates); None if none parse."""
-    today = (now or datetime.now(timezone.utc)).date()
+    today = now.astimezone().date() if now else date.today()     # local days, as every other age (T110)
     dates: List[date] = []
     for j in jobs:
         try:

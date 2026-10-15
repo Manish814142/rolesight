@@ -9,6 +9,16 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed (2026-10-15, T110: every age is counted in local days)
+- Found by jobnotify-7f's review of T109: the same UTC date in two more places. `discovery.newest_age_days` took "today" from UTC (measured
+  by the reviewer: a posting 181 days old counted 180 and its board was accepted), and the day a job was first seen or scored was the UTC
+  date of its stored timestamp (`first_seen[:10]`, `scored_at[:10]`). That day matters for Workday's relative "Posted N Days Ago": a job read
+  at 05:16 IST was dated from the day before, so `open_matches.csv` dropped it a day early. `prefilter.local_date_of` gives the local day of
+  a stored timestamp; `db._unseen_inside_window`, `scanner._write_open_matches` and `discovery.newest_age_days` use it or `date.today()`.
+  Tests pin `TZ=Asia/Kolkata` and 2026-10-14 23:46 UTC (05:16 IST the next day): 4 red before, green after; putting back each old line fails
+  them. Left as they are, on purpose: the export cutoff (UTC against UTC timestamps), the CSV file name's date (a label, UTC), and posting
+  timestamps turned into a UTC date by the adapters (the board's own ±1 day; every age is computed from it the same way).
+
 ### Fixed (2026-10-15, T109: the window-miss rule used UTC's date)
 - `db._unseen_inside_window` (T78: a board whose fetch stopped at the posted-date window counts a miss only for jobs inside the window, with a
   day of margin) took today's date in UTC, while the window itself (`prefilter.is_too_old`) and every other age use the local date. From 00:00
