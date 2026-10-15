@@ -16,7 +16,7 @@ reconstructed from git history.
   at 05:16 IST was dated from the day before, so `open_matches.csv` dropped it a day early. `prefilter.local_date_of` gives the local day of
   a stored timestamp; `db._unseen_inside_window`, `scanner._write_open_matches` and `discovery.newest_age_days` use it or `date.today()`.
   Tests pin `TZ=Asia/Kolkata` and 2026-10-14 23:46 UTC (05:16 IST the next day): 4 red before, green after; putting back each old line fails
-  them. Left as they are, on purpose: the export cutoff (UTC against UTC timestamps), the CSV file name's date (a label, UTC), and posting
+  them. Left as they are, on purpose: the export cutoff (UTC against UTC timestamps), the CSV's `Scan Date` column (a label, UTC's date; the file name's date is the local one), and posting
   timestamps turned into a UTC date by the adapters (the board's own ±1 day; every age is computed from it the same way).
 
 ### Fixed (2026-10-15, T109: the window-miss rule used UTC's date)
