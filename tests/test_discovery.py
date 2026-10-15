@@ -83,11 +83,11 @@ def test_accept_board_rejects_stale_boards():
 
 
 def test_newest_age_days_parses_adapter_dates():
-    from datetime import datetime, timezone
+    from datetime import datetime
 
     from job_hunt.discovery import newest_age_days
     from job_hunt.models import JobPosting
-    now = datetime(2026, 10, 4, tzinfo=timezone.utc)
+    now = datetime(2026, 10, 4)         # naive = the local 2026-10-04 in any zone; a UTC moment would be the 3rd in the Americas (T110)
     jobs = [JobPosting("", "x", "c", "t", "l", False, "", posted_at=p)
             for p in ("2015-04-06T10:00:00.000Z", "2026-09-24T08:00:00-04:00", "Posted 26 Days Ago", "")]
     assert newest_age_days(jobs, now=now) == 10

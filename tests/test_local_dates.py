@@ -14,8 +14,10 @@ MORNING_UTC = "2026-10-14T23:46:00+00:00"          # 05:16 IST on 2026-10-15, wh
 
 @pytest.fixture
 def india(monkeypatch):
-    monkeypatch.setenv("TZ", "Asia/Kolkata")
+    # The POSIX form needs no tz database: with "Asia/Kolkata" a slim container (none installed) silently falls back to UTC.
+    monkeypatch.setenv("TZ", "IST-5:30")
     time.tzset()
+    assert time.localtime(0).tm_gmtoff == 19800            # a wrong zone must not fail the tests below for the wrong reason
     yield
     monkeypatch.undo()
     time.tzset()
