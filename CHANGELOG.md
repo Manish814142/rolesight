@@ -24,7 +24,7 @@ reconstructed from git history.
   postings, none in India); they were dropped: **1,589 boards**. The other three it flags are the existing Confluent, Fi Money and Cloudflare, left for Manish as before.
 - The harvest tool carries on when the Internet Archive does not answer for one query (it did for `oracle-us2` after 4 tries): the others are kept, the failed one is named on
   stderr, the exit code is 3.
-- Not done: the Oracle sites whose page title names nobody and whose host has no named sibling (about 460 of 2,092 URLs); they would need another source of the name.
+- Not done: of the 1,892 distinct Oracle sites 1,585 became seeds; the rest have a page title that names nobody and no named sibling on their host (or are test instances or on a host already listed). They would need another source of the name.
 
 ### Fixed (2026-10-16, T114: an HTTP 429 is asked again, not read as an empty board)
 - **Measured cause.** Workable (behind Cloudflare) refuses about half the requests of a sustained burst: 457 of 1,500, 713 of 1,200 and 374 of 700 in three bursts at 20
