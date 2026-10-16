@@ -22,6 +22,11 @@ reconstructed from git history.
   IHG, Citco, DP World, Aster DM Healthcare, American Express, Akamai, Hilton, Icertis, Daimler Truck, DTCC … **1,488 → 1,592 boards** (Oracle HCM entries 4 → 108). The recheck run on the
   result flagged three of T111's additions that had lost their one India posting by then (Loopio: Toronto only; International SOS Government Medical Services: US and Iraq; Ryansg: three
   postings, none in India); they were dropped: **1,589 boards**. The other three it flags are the existing Confluent, Fi Money and Cloudflare, left for Manish as before.
+- Review fix: one name per host was the host's most common title, but `discover` keeps the host's busiest site, which can belong to another
+  employer. The review read each kept site's own title: 96 of 104 matched; renamed in both copies: ADI → **Resideo** (the site is Resideo's, its
+  descriptions say "Join Resideo's…"), Lutech → **McDermott** (McDermott's site, Chennai engineering roles), Tumi → **Samsonite**, First Solar (US) → First Solar,
+  Intertek UK → Intertek, Novotech China → Novotech. Legrand and NMIMS (SVKM's site) were kept. Jobs are stored by host and requisition id, so a name
+  changes only the Company shown in the CSV, the LinkedIn column and drafts.
 - The harvest tool carries on when the Internet Archive does not answer for one query (it did for `oracle-us2` after 4 tries): the others are kept, the failed one is named on
   stderr, the exit code is 3.
 - Not done: of the 1,892 distinct Oracle sites 1,585 became seeds; the rest have a page title that names nobody and no named sibling on their host (or are test instances or on a host already listed). They would need another source of the name.

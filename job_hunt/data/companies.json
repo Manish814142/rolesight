@@ -5117,7 +5117,7 @@
     "headcount": "Unknown"
   },
   {
-    "name": "ADI",
+    "name": "Resideo",
     "ats": "oracle_hcm",
     "host": "ehtl.fa.us6.oraclecloud.com",
     "site": "CX",
@@ -5327,7 +5327,7 @@
     "headcount": "10,001+ employees"
   },
   {
-    "name": "First Solar (US)",
+    "name": "First Solar",
     "ats": "oracle_hcm",
     "host": "fa-esbv-saasfaprod1.fa.ocs.oraclecloud.com",
     "site": "CX_2001",
@@ -5474,7 +5474,7 @@
     "headcount": "Unknown"
   },
   {
-    "name": "Intertek UK",
+    "name": "Intertek",
     "ats": "oracle_hcm",
     "host": "hcog.fa.em2.oraclecloud.com",
     "site": "CX_2001",
@@ -5523,7 +5523,7 @@
     "headcount": "Unknown"
   },
   {
-    "name": "Lutech",
+    "name": "McDermott",
     "ats": "oracle_hcm",
     "host": "edsv.fa.us2.oraclecloud.com",
     "site": "CX_1",
@@ -5607,7 +5607,7 @@
     "headcount": "Unknown"
   },
   {
-    "name": "Novotech China",
+    "name": "Novotech",
     "ats": "oracle_hcm",
     "host": "fa-euzi-saasfaprod1.fa.ocs.oraclecloud.com",
     "site": "CX_1",
@@ -5775,7 +5775,7 @@
     "headcount": "Unknown"
   },
   {
-    "name": "Tumi",
+    "name": "Samsonite",
     "ats": "oracle_hcm",
     "host": "ekkf.fa.em2.oraclecloud.com",
     "site": "CX",
