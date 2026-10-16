@@ -9,6 +9,19 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed (2026-10-16, T115: "NCR" in a Philippine location is Metro Manila, not Delhi)
+- Found by the review of T111. `NCR` was in the list of Indian cities, so `Makati City, NCR, ph` (SmartRecruiters writes the country as a lower-case code)
+  counted as India: Philippine jobs passed the location filter, and `discover` admitted boards whose only "India" jobs were in Metro Manila. `NCR` is now no
+  evidence of Delhi when the same location names the Philippines (`ph`, Philippines, Manila and its cities, `prefilter.without_philippine_ncr`); any other
+  Indian term in the location still counts ("Makati, NCR, ph; Pune, India" stays India). `discover` has its own location check and uses the same rule.
+- Measured: on the saved fetch of 2026-10-13 (39,985 jobs) 3 locations change, all Philippine, and 0 pre-filter decisions; on a fresh fetch of all 1,514 boards (164,053 jobs)
+  396 locations change, all Philippine NCR ones and none Indian, and 10 jobs that passed the title and location filter (and would have reached Gemini) no longer do.
+- Removed from `companies.json` (Manish, 2026-10-16: "fix the filter and drop the 21"): the 21 boards admitted only on Metro Manila jobs (AireSpring, Arch Global Services
+  (Philippines), Canyon GBS, Dashlabs.ai, Deep Blue Company, Delivery Hero, Fredley Group of Companies, Growthdesk, Ikano-Retail, Keywords Studios, Lendi Group, Much Prosperity
+  Trading International, Okos Smart Homes, PETA Asia, Pilmico Foods, Pronto Marketing, Santen, Simplesat, Talent, Wrist, Questronix) and two more of T111's additions that the
+  recheck found without a job in India or without any job (Appfire, Herewith Caregivers). **1,514 → 1,491 boards.** The 224 originals are untouched; the four existing
+  entries the recheck also flags (Confluent, Fi Money, Cloudflare, Northern Trust) stay, as before, until Manish decides.
+
 ### Added (2026-10-16, T111: `companies.json` grows from 224 to 1,514 boards)
 - **Manish asked for as many companies as possible** ("more options to apply to different types of company"). `scripts/harvest_board_urls.py` lists the
   job-board root pages the Internet Archive has seen (Greenhouse, Lever, Ashby, SmartRecruiters, Workable, Recruitee, Personio boards and Workday

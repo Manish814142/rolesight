@@ -1371,12 +1371,6 @@
     "headcount": "Unknown"
   },
   {
-    "name": "Appfire",
-    "ats": "greenhouse",
-    "slug": "appfire",
-    "headcount": "Unknown"
-  },
-  {
     "name": "Appian Corporation",
     "ats": "greenhouse",
     "slug": "appian",
@@ -2533,12 +2527,6 @@
     "name": "Hear.com IN",
     "ats": "greenhouse",
     "slug": "hearcomin",
-    "headcount": "Unknown"
-  },
-  {
-    "name": "Herewith Caregivers",
-    "ats": "greenhouse",
-    "slug": "herewithgmbh",
     "headcount": "Unknown"
   },
   {
@@ -5450,12 +5438,6 @@
     "headcount": "Unknown"
   },
   {
-    "name": "AireSpring",
-    "ats": "smartrecruiters",
-    "slug": "AireSpring1",
-    "headcount": "Unknown"
-  },
-  {
     "name": "Allegis Global Solutions",
     "ats": "smartrecruiters",
     "slug": "AllegisGlobalSolutions",
@@ -5489,12 +5471,6 @@
     "name": "Applus IDIADA",
     "ats": "smartrecruiters",
     "slug": "ApplusIDIADA1",
-    "headcount": "Unknown"
-  },
-  {
-    "name": "Arch Global Services (Philippines) Inc.",
-    "ats": "smartrecruiters",
-    "slug": "ArchGlobalServicesPhilippinesInc",
     "headcount": "Unknown"
   },
   {
@@ -5618,12 +5594,6 @@
     "headcount": "Unknown"
   },
   {
-    "name": "Canyon GBS",
-    "ats": "smartrecruiters",
-    "slug": "CanyonGBS",
-    "headcount": "Unknown"
-  },
-  {
     "name": "Carousell Group",
     "ats": "smartrecruiters",
     "slug": "CarousellGroup",
@@ -5702,27 +5672,9 @@
     "headcount": "Unknown"
   },
   {
-    "name": "Dashlabs.ai",
-    "ats": "smartrecruiters",
-    "slug": "Dashlabsai",
-    "headcount": "Unknown"
-  },
-  {
     "name": "DataKrew Pvt. Ltd.",
     "ats": "smartrecruiters",
     "slug": "datakrewpvtltd",
-    "headcount": "Unknown"
-  },
-  {
-    "name": "Deep Blue Company",
-    "ats": "smartrecruiters",
-    "slug": "deepbluecompany",
-    "headcount": "Unknown"
-  },
-  {
-    "name": "Delivery Hero",
-    "ats": "smartrecruiters",
-    "slug": "DeliveryHero",
     "headcount": "Unknown"
   },
   {
@@ -5798,12 +5750,6 @@
     "headcount": "Unknown"
   },
   {
-    "name": "Fredley Group of Companies",
-    "ats": "smartrecruiters",
-    "slug": "FredleyGroupOfCompanies",
-    "headcount": "Unknown"
-  },
-  {
     "name": "Freshworks",
     "ats": "smartrecruiters",
     "slug": "freshworks",
@@ -5846,12 +5792,6 @@
     "headcount": "Unknown"
   },
   {
-    "name": "Growthdesk",
-    "ats": "smartrecruiters",
-    "slug": "Growthdesk",
-    "headcount": "Unknown"
-  },
-  {
     "name": "H&M Group",
     "ats": "smartrecruiters",
     "slug": "HMGroup",
@@ -5891,12 +5831,6 @@
     "name": "IFS",
     "ats": "smartrecruiters",
     "slug": "IFS1",
-    "headcount": "Unknown"
-  },
-  {
-    "name": "Ikano-Retail",
-    "ats": "smartrecruiters",
-    "slug": "IkanoRetail",
     "headcount": "Unknown"
   },
   {
@@ -5997,12 +5931,6 @@
     "headcount": "Unknown"
   },
   {
-    "name": "Keywords Studios",
-    "ats": "smartrecruiters",
-    "slug": "keywordsstudios",
-    "headcount": "Unknown"
-  },
-  {
     "name": "Kiabi",
     "ats": "smartrecruiters",
     "slug": "KIABI",
@@ -6025,12 +5953,6 @@
     "name": "lastminute.com",
     "ats": "smartrecruiters",
     "slug": "lastminutecom",
-    "headcount": "Unknown"
-  },
-  {
-    "name": "Lendi Group",
-    "ats": "smartrecruiters",
-    "slug": "LendiGroup1",
     "headcount": "Unknown"
   },
   {
@@ -6136,12 +6058,6 @@
     "headcount": "Unknown"
   },
   {
-    "name": "Much Prosperity Trading International Inc.",
-    "ats": "smartrecruiters",
-    "slug": "MuchProsperityTradingInternationalInc",
-    "headcount": "Unknown"
-  },
-  {
     "name": "Nagarro",
     "ats": "smartrecruiters",
     "slug": "Nagarro1",
@@ -6172,12 +6088,6 @@
     "headcount": "Unknown"
   },
   {
-    "name": "Okos Smart Homes",
-    "ats": "smartrecruiters",
-    "slug": "OkosSmartHomes",
-    "headcount": "Unknown"
-  },
-  {
     "name": "Oteemo, Inc",
     "ats": "smartrecruiters",
     "slug": "OteemoInc",
@@ -6190,12 +6100,6 @@
     "headcount": "Unknown"
   },
   {
-    "name": "PETA Asia",
-    "ats": "smartrecruiters",
-    "slug": "PETAAsia",
-    "headcount": "Unknown"
-  },
-  {
     "name": "PetroBot Technologies Pvt Ltd",
     "ats": "smartrecruiters",
     "slug": "PetroBotTechnologiesPvtLtd",
@@ -6205,12 +6109,6 @@
     "name": "Petsfolio",
     "ats": "smartrecruiters",
     "slug": "Petsfolio2",
-    "headcount": "Unknown"
-  },
-  {
-    "name": "Pilmico Foods Corporation",
-    "ats": "smartrecruiters",
-    "slug": "PilmicoFoodsCorporation",
     "headcount": "Unknown"
   },
   {
@@ -6229,12 +6127,6 @@
     "name": "Prometteur Solutions Pvt. Ltd.",
     "ats": "smartrecruiters",
     "slug": "PrometteurSolutionsPvtLtd",
-    "headcount": "Unknown"
-  },
-  {
-    "name": "Pronto Marketing",
-    "ats": "smartrecruiters",
-    "slug": "ProntoMarketing",
     "headcount": "Unknown"
   },
   {
@@ -6328,12 +6220,6 @@
     "headcount": "Unknown"
   },
   {
-    "name": "Santen",
-    "ats": "smartrecruiters",
-    "slug": "Santen",
-    "headcount": "Unknown"
-  },
-  {
     "name": "SBServiceNow",
     "ats": "smartrecruiters",
     "slug": "SBServiceNow",
@@ -6391,12 +6277,6 @@
     "name": "Silvaco",
     "ats": "smartrecruiters",
     "slug": "Silvaco1",
-    "headcount": "Unknown"
-  },
-  {
-    "name": "Simplesat",
-    "ats": "smartrecruiters",
-    "slug": "Simplesat",
     "headcount": "Unknown"
   },
   {
@@ -6475,12 +6355,6 @@
     "name": "T-Systems ICT India Pvt. Ltd.",
     "ats": "smartrecruiters",
     "slug": "T-SystemsICTIndiaPvtLtd1",
-    "headcount": "Unknown"
-  },
-  {
-    "name": "Talent",
-    "ats": "smartrecruiters",
-    "slug": "Talent3",
     "headcount": "Unknown"
   },
   {
@@ -6631,12 +6505,6 @@
     "name": "WNS Global Services",
     "ats": "smartrecruiters",
     "slug": "WNSGlobalServices144",
-    "headcount": "Unknown"
-  },
-  {
-    "name": "Wrist",
-    "ats": "smartrecruiters",
-    "slug": "Wrist",
     "headcount": "Unknown"
   },
   {
@@ -7117,12 +6985,6 @@
     "name": "Proximity Labs",
     "ats": "workable",
     "slug": "prox-works",
-    "headcount": "Unknown"
-  },
-  {
-    "name": "Questronix Corporation",
-    "ats": "workable",
-    "slug": "questronix-corporation-2",
     "headcount": "Unknown"
   },
   {
