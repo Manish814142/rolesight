@@ -9,6 +9,23 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Added (2026-10-17, T112: 104 Oracle HCM employers, found by the page title)
+- Manish ("if these are open issues then fix them"). Oracle HCM candidate sites are written `cbcz.fa.us2.oraclecloud.com`: the host is a customer code, so T111 left the
+  archive's 2,092 Oracle site URLs (1,892 distinct sites) out. The employer's name is in the title of the site's own page (`<title>Hilton</title>`; the REST fields
+  `LegalEmployer`, `BusinessUnit` and `Organization` were empty on all 34 sites sampled). `scripts/harvest_board_urls.py` now has a query per Oracle data centre
+  (`oracle-us2` … `oracle-ocs`, `oracle-fa`; the whole `oraclecloud.com` domain times out), reads each site's page, and cleans the title (`clean_site_title`: "Hoya Global Career
+  Site" → "Hoya", "Careers | BXP" → "BXP", "Career Site(Servify)" → "Servify", JSON escapes and entities decoded; error pages, "Candidate Experience site", bare industry words such as
+  "Aerospace" and a few non-English phrases give no name, and a site with no name is not a seed). On Oracle the host is the employer: every site of a host gets the host's most
+  common title, a host already in `companies.json` is skipped, test and development instances (`…-dev12`, `…-test-saasfaprod1`) are skipped, and `discover` keeps the host's
+  busiest site. About 1,630 of the 2,092 URLs (78 %) gave a name by their own page title (measured on the last two runs: 1,634 and the final one); 1,585 seeds on 902 hosts; **148 sites on 104
+  employers passed** (live, at least one India job, a recent posting): Quess, Tata Capital, Fortis, Adani, Havells, KPMG Global Services, Essar, eClerx, Honeywell, Zensar, Nokia,
+  IHG, Citco, DP World, Aster DM Healthcare, American Express, Akamai, Hilton, Icertis, Daimler Truck, DTCC … **1,488 → 1,592 boards** (Oracle HCM entries 4 → 108). The recheck run on the
+  result flagged three of T111's additions that had lost their one India posting by then (Loopio: Toronto only; International SOS Government Medical Services: US and Iraq; Ryansg: three
+  postings, none in India); they were dropped: **1,589 boards**. The other three it flags are the existing Confluent, Fi Money and Cloudflare, left for Manish as before.
+- The harvest tool carries on when the Internet Archive does not answer for one query (it did for `oracle-us2` after 4 tries): the others are kept, the failed one is named on
+  stderr, the exit code is 3.
+- Not done: the Oracle sites whose page title names nobody and whose host has no named sibling (about 460 of 2,092 URLs); they would need another source of the name.
+
 ### Fixed (2026-10-16, T114: an HTTP 429 is asked again, not read as an empty board)
 - **Measured cause.** Workable (behind Cloudflare) refuses about half the requests of a sustained burst: 457 of 1,500, 713 of 1,200 and 374 of 700 in three bursts at 20
   parallel (it started after about 800 requests), with an HTML body and `Retry-After: 0`, and recovers in about ten seconds (a single probe was refused at 4 s and 8 s, accepted at 12 s).

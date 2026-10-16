@@ -593,12 +593,6 @@
     "headcount": "Unknown"
   },
   {
-    "name": "Loopio",
-    "ats": "ashby",
-    "slug": "loopio",
-    "headcount": "Unknown"
-  },
-  {
     "name": "Lumilens",
     "ats": "ashby",
     "slug": "lumilens",
@@ -5109,6 +5103,223 @@
     "headcount": "Unknown"
   },
   {
+    "name": "ACI Worldwide",
+    "ats": "oracle_hcm",
+    "host": "ebwg.fa.us2.oraclecloud.com",
+    "site": "CX",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Adani",
+    "ats": "oracle_hcm",
+    "host": "eibd.fa.em2.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "ADI",
+    "ats": "oracle_hcm",
+    "host": "ehtl.fa.us6.oraclecloud.com",
+    "site": "CX",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Akamai",
+    "ats": "oracle_hcm",
+    "host": "fa-extu-saasfaprod1.fa.ocs.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "American Express",
+    "ats": "oracle_hcm",
+    "host": "egug.fa.us2.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "APLL",
+    "ats": "oracle_hcm",
+    "host": "hcut.fa.ap2.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Apollo Hospitals",
+    "ats": "oracle_hcm",
+    "host": "cgs.fa.ap2.oraclecloud.com",
+    "site": "CX_2",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Apps Associates",
+    "ats": "oracle_hcm",
+    "host": "ebdt.fa.us2.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Apraava",
+    "ats": "oracle_hcm",
+    "host": "iaarcp.fa.ocs.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Argano",
+    "ats": "oracle_hcm",
+    "host": "fa-eyau-saasfaprod1.fa.ocs.oraclecloud.com",
+    "site": "Argano-Careers",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Aster DM Healthcare",
+    "ats": "oracle_hcm",
+    "host": "hcdtgccprod-iayeqy.fa.ocs.oraclecloud.com",
+    "site": "CX",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Avient",
+    "ats": "oracle_hcm",
+    "host": "fa-eqzh-saasfaprod1.fa.ocs.oraclecloud.com",
+    "site": "Avient",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Bristlecone",
+    "ats": "oracle_hcm",
+    "host": "iaagiz.fa.ocs.oraclecloud.com",
+    "site": "bristlecone-careers",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Calderys",
+    "ats": "oracle_hcm",
+    "host": "egmk.fa.us6.oraclecloud.com",
+    "site": "CX",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Computershare",
+    "ats": "oracle_hcm",
+    "host": "fa-evdq-saasfaprod1.fa.ocs.oraclecloud.com",
+    "site": "CX_2001",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Conduent",
+    "ats": "oracle_hcm",
+    "host": "egua.fa.us2.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "CSB",
+    "ats": "oracle_hcm",
+    "host": "iaamcp.fa.ocs.oraclecloud.com",
+    "site": "CSB",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Cummins",
+    "ats": "oracle_hcm",
+    "host": "fa-espx-saasfaprod1.fa.ocs.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Cyncly",
+    "ats": "oracle_hcm",
+    "host": "fa-ewdg-saasfaprod1.fa.ocs.oraclecloud.com",
+    "site": "CynclyJobs",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Cytel",
+    "ats": "oracle_hcm",
+    "host": "iblyjb.fa.ocs.oraclecloud.com",
+    "site": "cytel",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "D.B. Group",
+    "ats": "oracle_hcm",
+    "host": "fa-eozc-saasfaprod1.fa.ocs.oraclecloud.com",
+    "site": "CX_1001",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Daimler Truck",
+    "ats": "oracle_hcm",
+    "host": "fa-exdu-saasfaprod1.fa.ocs.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Dalmia Bharat Group",
+    "ats": "oracle_hcm",
+    "host": "fa-ekwr-saasfaprod1.fa.ocs.oraclecloud.com",
+    "site": "CX_1001",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "DAMAC",
+    "ats": "oracle_hcm",
+    "host": "ejwe.fa.em2.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Datavail",
+    "ats": "oracle_hcm",
+    "host": "eifn.fa.us6.oraclecloud.com",
+    "site": "CX_1001",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Diebold Nixdorf",
+    "ats": "oracle_hcm",
+    "host": "eeug.fa.us6.oraclecloud.com",
+    "site": "CX",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "DNV",
+    "ats": "oracle_hcm",
+    "host": "ecyq.fa.em2.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "DP World",
+    "ats": "oracle_hcm",
+    "host": "ehpv.fa.em2.oraclecloud.com",
+    "site": "CX",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "DTCC",
+    "ats": "oracle_hcm",
+    "host": "ebxr.fa.us2.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "eClerx",
+    "ats": "oracle_hcm",
+    "host": "fa-ewji-saasfaprod1.fa.ocs.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Essar",
+    "ats": "oracle_hcm",
+    "host": "ekjy.fa.em2.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
     "name": "EXL",
     "ats": "oracle_hcm",
     "host": "fa-ewjt-saasfaprod1.fa.ocs.oraclecloud.com",
@@ -5116,9 +5327,177 @@
     "headcount": "10,001+ employees"
   },
   {
+    "name": "First Solar (US)",
+    "ats": "oracle_hcm",
+    "host": "fa-esbv-saasfaprod1.fa.ocs.oraclecloud.com",
+    "site": "CX_2001",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Flashnet",
+    "ats": "oracle_hcm",
+    "host": "hdga.fa.em3.oraclecloud.com",
+    "site": "Flashnet",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Fortis",
+    "ats": "oracle_hcm",
+    "host": "fa-ermg-saasfaprod1.fa.ocs.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Fortive",
+    "ats": "oracle_hcm",
+    "host": "ejta.fa.us6.oraclecloud.com",
+    "site": "CX_2001",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Garrett Advancing Motion",
+    "ats": "oracle_hcm",
+    "host": "ehth.fa.em2.oraclecloud.com",
+    "site": "CX",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "GEDU",
+    "ats": "oracle_hcm",
+    "host": "geduglobal-iabmbn.fa.ocs.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Golden Goose",
+    "ats": "oracle_hcm",
+    "host": "iaagmj.fa.ocs.oraclecloud.com",
+    "site": "GG",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "GP Strategies",
+    "ats": "oracle_hcm",
+    "host": "eetz.fa.us6.oraclecloud.com",
+    "site": "CX_2001",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Hapag-Lloyd",
+    "ats": "oracle_hcm",
+    "host": "fa-etuy-saasfaeuraprod1.fa.ocs.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Havells",
+    "ats": "oracle_hcm",
+    "host": "iabgcp.fa.ocs.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "HEXAWARE",
+    "ats": "oracle_hcm",
+    "host": "fa-etqo-saasfaprod1.fa.ocs.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Hilton",
+    "ats": "oracle_hcm",
+    "host": "efet.fa.us2.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Honeywell",
+    "ats": "oracle_hcm",
+    "host": "ibqbjb.fa.ocs.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "IBS",
+    "ats": "oracle_hcm",
+    "host": "fa-etbm-saasfaprod1.fa.ocs.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Icertis",
+    "ats": "oracle_hcm",
+    "host": "iaaviz.fa.ocs.oraclecloud.com",
+    "site": "Jobs-at-Icertis",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "ICU Med",
+    "ats": "oracle_hcm",
+    "host": "eduu.fa.us2.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "IHG",
+    "ats": "oracle_hcm",
+    "host": "fa-evax-saasfaprod1.fa.ocs.oraclecloud.com",
+    "site": "CX_1001",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "IIMB",
+    "ats": "oracle_hcm",
+    "host": "fa-erno-saasfaprod1.fa.ocs.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "IKS Health",
+    "ats": "oracle_hcm",
+    "host": "eiyi.fa.ap1.oraclecloud.com",
+    "site": "CX",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Infiniti Retail Ltd",
+    "ats": "oracle_hcm",
+    "host": "fa-eryk-saasfaprod1.fa.ocs.oraclecloud.com",
+    "site": "CX_1001",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Infoblox",
+    "ats": "oracle_hcm",
+    "host": "efpv.fa.us6.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Intertek UK",
+    "ats": "oracle_hcm",
+    "host": "hcog.fa.em2.oraclecloud.com",
+    "site": "CX_2001",
+    "headcount": "Unknown"
+  },
+  {
     "name": "JPMorgan Chase",
     "ats": "oracle_hcm",
     "host": "jpmc.fa.oraclecloud.com",
+    "site": "CX_1001",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Jubilant Corporate",
+    "ats": "oracle_hcm",
+    "host": "fa-exph-saasfaprod1.fa.ocs.oraclecloud.com",
+    "site": "jubilant",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "KLDiscovery",
+    "ats": "oracle_hcm",
+    "host": "ekug.fa.us6.oraclecloud.com",
     "site": "CX_1001",
     "headcount": "Unknown"
   },
@@ -5130,9 +5509,352 @@
     "headcount": "10,001+ employees"
   },
   {
+    "name": "KPMG Global Services",
+    "ats": "oracle_hcm",
+    "host": "ejgk.fa.em2.oraclecloud.com",
+    "site": "CX_3",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Legrand",
+    "ats": "oracle_hcm",
+    "host": "iadugs.fa.ocs.oraclecloud.com",
+    "site": "CX_1001",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Lutech",
+    "ats": "oracle_hcm",
+    "host": "edsv.fa.us2.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Malomatia",
+    "ats": "oracle_hcm",
+    "host": "fa-eyhb-saasfaprod1.fa.ocs.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Mashreq",
+    "ats": "oracle_hcm",
+    "host": "hcld.fa.em2.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Mouser",
+    "ats": "oracle_hcm",
+    "host": "eabw.fa.us2.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "MUFG Pension & Market Services",
+    "ats": "oracle_hcm",
+    "host": "hcmn.fa.ap1.oraclecloud.com",
+    "site": "CX_1001",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "NAMI",
+    "ats": "oracle_hcm",
+    "host": "fa-eqgo-saasfaprod1.fa.ocs.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
     "name": "National Instruments",
     "ats": "oracle_hcm",
     "host": "hdjq.fa.us2.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Nayara",
+    "ats": "oracle_hcm",
+    "host": "fa-escq-saasfaprod1.fa.ocs.oraclecloud.com",
+    "site": "CX_1001",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Newmark",
+    "ats": "oracle_hcm",
+    "host": "hdow.fa.us6.oraclecloud.com",
+    "site": "CX_1001",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "NMIMS",
+    "ats": "oracle_hcm",
+    "host": "fa-elxu-saasfaprod1.fa.ocs.oraclecloud.com",
+    "site": "CX_1008",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Nokia",
+    "ats": "oracle_hcm",
+    "host": "fa-evmr-saasfaprod1.fa.ocs.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "NOV",
+    "ats": "oracle_hcm",
+    "host": "egay.fa.us6.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Novotech China",
+    "ats": "oracle_hcm",
+    "host": "fa-euzi-saasfaprod1.fa.ocs.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "NRI",
+    "ats": "oracle_hcm",
+    "host": "edtq.fa.ap1.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Oceaneering",
+    "ats": "oracle_hcm",
+    "host": "ebfr.fa.us2.oraclecloud.com",
+    "site": "jobs",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Onity",
+    "ats": "oracle_hcm",
+    "host": "ebhz.fa.us2.oraclecloud.com",
+    "site": "Ocwen",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Orion",
+    "ats": "oracle_hcm",
+    "host": "fa-esaq-saasfaprod1.fa.ocs.oraclecloud.com",
+    "site": "OrionCareers",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Pearson",
+    "ats": "oracle_hcm",
+    "host": "hccz.fa.em3.oraclecloud.com",
+    "site": "CX_2",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Perficient",
+    "ats": "oracle_hcm",
+    "host": "fa-etqd-saasfaprod1.fa.ocs.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Phoenix",
+    "ats": "oracle_hcm",
+    "host": "egeg.fa.em3.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Photon",
+    "ats": "oracle_hcm",
+    "host": "fa-ertb-saasfaprod1.fa.ocs.oraclecloud.com",
+    "site": "CX_2",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Quess",
+    "ats": "oracle_hcm",
+    "host": "fa-eumz-saasfaprod1.fa.ocs.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Ralliant",
+    "ats": "oracle_hcm",
+    "host": "ibwujb.fa.ocs.oraclecloud.com",
+    "site": "CX_1001",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "SBIC",
+    "ats": "oracle_hcm",
+    "host": "edox.fa.ap1.oraclecloud.com",
+    "site": "CX_3001",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Servify",
+    "ats": "oracle_hcm",
+    "host": "fa-evql-saasfaprod1.fa.ocs.oraclecloud.com",
+    "site": "CX_1001",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Sinch",
+    "ats": "oracle_hcm",
+    "host": "iaings.fa.ocs.oraclecloud.com",
+    "site": "SinchCareer",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Startek®",
+    "ats": "oracle_hcm",
+    "host": "fa-evuf-saasfaprod1.fa.ocs.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "T.EN",
+    "ats": "oracle_hcm",
+    "host": "hcxg.fa.em2.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Tata Capital",
+    "ats": "oracle_hcm",
+    "host": "eofh.fa.em2.oraclecloud.com",
+    "site": "CX",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Tata Steel Downstream Products Limited",
+    "ats": "oracle_hcm",
+    "host": "fa-euzu-saasfaprod1.fa.ocs.oraclecloud.com",
+    "site": "CX_1001",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Tata Teleservices",
+    "ats": "oracle_hcm",
+    "host": "fa-evmm-saasfaprod1.fa.ocs.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Tejas Networks",
+    "ats": "oracle_hcm",
+    "host": "iablcp.fa.ocs.oraclecloud.com",
+    "site": "TejasNetworks",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Texas Instruments",
+    "ats": "oracle_hcm",
+    "host": "edbz.fa.us2.oraclecloud.com",
+    "site": "CX",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "The Citco Group Limited",
+    "ats": "oracle_hcm",
+    "host": "fa-euxc-saasfaprod1.fa.ocs.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "The Hackett Group",
+    "ats": "oracle_hcm",
+    "host": "eeih.fa.us2.oraclecloud.com",
+    "site": "CX_6",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "TriNet",
+    "ats": "oracle_hcm",
+    "host": "fa-etgw-saasfaprod1.fa.ocs.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Tumi",
+    "ats": "oracle_hcm",
+    "host": "ekkf.fa.em2.oraclecloud.com",
+    "site": "CX",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "UnitedLex",
+    "ats": "oracle_hcm",
+    "host": "ekkk.fa.us6.oraclecloud.com",
+    "site": "CX",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "USGI",
+    "ats": "oracle_hcm",
+    "host": "usgi-iacoiz.fa.ocs.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Varun Beverages Limited (VBL)",
+    "ats": "oracle_hcm",
+    "host": "rjcorphcm-iacbiz.fa.ocs.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Verint",
+    "ats": "oracle_hcm",
+    "host": "fa-epcb-saasfaprod1.fa.ocs.oraclecloud.com",
+    "site": "CX",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Verisk",
+    "ats": "oracle_hcm",
+    "host": "fa-ewmy-saasfaprod1.fa.ocs.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Vertiv",
+    "ats": "oracle_hcm",
+    "host": "egup.fa.us2.oraclecloud.com",
+    "site": "CX",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Vikram Solar",
+    "ats": "oracle_hcm",
+    "host": "iabqiz.fa.ocs.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Weatherford",
+    "ats": "oracle_hcm",
+    "host": "fa-exmi-saasfaprod1.fa.ocs.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Yum!",
+    "ats": "oracle_hcm",
+    "host": "eczd.fa.us2.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Zamil Industrial",
+    "ats": "oracle_hcm",
+    "host": "elzx.fa.em2.oraclecloud.com",
+    "site": "CX_2001",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Zensar",
+    "ats": "oracle_hcm",
+    "host": "fa-etvl-saasfaprod1.fa.ocs.oraclecloud.com",
     "site": "CX_1",
     "headcount": "Unknown"
   },
@@ -5873,12 +6595,6 @@
     "name": "IntegriChain",
     "ats": "smartrecruiters",
     "slug": "IntegriChain1",
-    "headcount": "Unknown"
-  },
-  {
-    "name": "International SOS Government Medical Services",
-    "ats": "smartrecruiters",
-    "slug": "InternationalSOSGovernmentMedicalServices",
     "headcount": "Unknown"
   },
   {
@@ -9019,14 +9735,6 @@
     "tenant": "rsm",
     "dc": "wd1",
     "site": "RSMCareers",
-    "headcount": "Unknown"
-  },
-  {
-    "name": "Ryansg",
-    "ats": "workday",
-    "tenant": "ryansg",
-    "dc": "wd5",
-    "site": "Ryan_Specialty_Career_Site",
     "headcount": "Unknown"
   },
   {
