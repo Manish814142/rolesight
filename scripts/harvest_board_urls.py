@@ -14,10 +14,13 @@ Most boards are dead or have no India job (about 3 in 100 pass `discover`, measu
 chunks and read the report. Network: the archive and, in `discover`, each board's public job API. No keys.
 """
 import argparse
+import html
 import json
 import re
 import sys
 import time
+from collections import Counter
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -29,12 +32,14 @@ from job_hunt.adapters import detect_ats  # noqa: E402
 from job_hunt.discovery import ATS_PROBES, _board_ident  # noqa: E402
 
 CDX = "https://web.archive.org/cdx/search/cdx"
-TRIES = 3
+TRIES = 4
 
 
 def _query(name: str, url: str, match: str, regex: str) -> Dict[str, str]:
     return {"name": name, "url": url, "matchType": match, "regex": regex}
 
+
+_ORACLE_SITE = r"https?://[^/]+\.oraclecloud\.com/hcmUI/CandidateExperience/[^/]+/sites/[^/?#]+/?$"
 
 # Root pages only (nothing after the company), so each board appears once however many job pages the archive holds.
 ARCHIVE_QUERIES: Dict[str, Dict[str, str]] = {q["name"]: q for q in [
@@ -49,6 +54,11 @@ ARCHIVE_QUERIES: Dict[str, Dict[str, str]] = {q["name"]: q for q in [
     _query("personio", "jobs.personio.de", "domain", r"https?://[^./]+\.jobs\.personio\.de/?$"),
     _query("workday", "myworkdayjobs.com", "domain",
            r"https?://[^./]+\.wd[0-9]+\.myworkdayjobs\.com/([a-z]{2}-[A-Za-z]{2}/)?[^/?#]+/?$"),
+    # Oracle HCM (T112): one query per data centre, because the whole oraclecloud.com domain times out. The host is a customer
+    # code (`cbcz.fa.us2.oraclecloud.com`); the employer's name comes from the site's page title (fetch_site_names).
+    *[_query(f"oracle-{pod}", f"fa.{pod}.oraclecloud.com", "domain", _ORACLE_SITE)
+      for pod in ("us2", "us6", "em2", "em3", "em4", "em5", "em8", "ap1", "ap2", "ap3", "sa1", "ocs")],
+    _query("oracle-fa", "fa.oraclecloud.com", "domain", _ORACLE_SITE),
 ]}
 
 _SLUG_OK = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_-]{1,59}$")      # no dot, percent, dollar or star: files and template placeholders
@@ -58,6 +68,8 @@ _NOT_A_SITE = {"wday", "assets", "static", "login", "api", "en-us", "undefined",
 _NOT_A_BOARD = _NOT_A_SITE | {"embed", "jobs", "careers", "career", "api", "static", "assets", "login", "search", "undefined", "null", "company",
                 "test", "demo", "example", "www", "app", "apply", "wday", "en-us", "boards", "job", "v1", "oauth", "signin",
                 "logout", "health", "status", "widget", "embedded"}
+# A customer's test, development or staging instance is a copy of its production site under another host (`...-dev12`, `...-test-saasfaprod1`).
+_TEST_INSTANCE = re.compile(r"(^|-)(dev|test|stage|stg|uat|sandbox|demo|train|training|preprod|pre-prod|poc|sit|qa)\d*(-|$)", re.IGNORECASE)
 _BOARD_URL = {"greenhouse": "https://boards.greenhouse.io/{}", "lever": "https://jobs.lever.co/{}",
               "ashby": "https://jobs.ashbyhq.com/{}", "smartrecruiters": "https://jobs.smartrecruiters.com/{}",
               "workable": "https://apply.workable.com/{}", "recruitee": "https://{}.recruitee.com",
@@ -92,6 +104,10 @@ def _usable(ats: str, ident: str) -> Optional[Tuple[str, str]]:
         ok = (re.fullmatch(r"[a-z0-9-]+", tenant) and re.fullmatch(r"wd\d+", dc) and _SLUG_OK.match(site)
               and site.lower() not in _NOT_A_SITE)
         return (ats, ident.lower()) if ok else None
+    if ats == "oracle_hcm":
+        host, _, site = ident.rpartition(":")
+        good = bool(host and re.fullmatch(r"[A-Za-z0-9_-]{1,60}", site) and not _TEST_INSTANCE.search(host.split(".")[0]))
+        return (ats, ident.lower()) if good else None
     if ats not in ATS_PROBES:
         return None
     if not _SLUG_OK.match(ident) or ident.lower() in _NOT_A_BOARD or _ID.match(ident.lower()) or ident.isdigit():
@@ -99,22 +115,116 @@ def _usable(ats: str, ident: str) -> Optional[Tuple[str, str]]:
     return ats, ident.lower()
 
 
-def board_seeds(urls: List[str], existing: List[Dict[str, Any]]) -> List[str]:
+_TITLE_ERROR = re.compile(r"not\s+found|unavailable|outage|maintenance|\berror\b|forbidden|denied|suspen|sign\s*in|log\s*in", re.IGNORECASE)
+_TITLE_GENERIC = {"", "careers", "career", "career site", "jobs", "job search", "home", "external", "website", "welcome",
+                  "oracle recruiting cloud", "oracle cloud", "recruiting", "recruitment", "opportunities", "employment",
+                  "job opportunities", "job openings", "open positions", "careers center", "career center", "join us", "work with us",
+                  "employment opportunities", "current opportunities", "current openings", "vacancies", "careers home",
+                  "hr", "human resources", "americas", "emea", "apac", "latam", "global", "international", "worldwide",
+                  # an industry or a business unit, not an employer ("Aerospace" was Honeywell's aerospace unit, 2026-10-17)
+                  "aerospace", "defense", "defence", "healthcare", "banking", "finance", "logistics", "energy", "retail", "technology",
+                  "manufacturing", "insurance", "automotive", "pharma", "education", "hospitality"}
+_TITLE_NOT_ENGLISH_GENERIC = re.compile("\u5019\u9009\u4eba|\u5019\u9078\u4eba|\u5019\u88dc\u8005|\u5e94\u8058|\u61c9\u8058")      # "candidate", "applicant" in Chinese and Japanese
+_TITLE_SEPARATOR = re.compile(r"\s+[|\u2013\u2014-]\s+|\s*\|\s*")
+_TITLE_LEADING = re.compile(
+    r"^(?:(?:careers?|jobs?|work|join|welcome\s+to)\s+(?:at|with|for)\s+|careers?\s*@\s*"
+    r"|sua\s+carreira\s+na\s+|opportunit\u00e9s\s+au\s+sein\s+(?:du|de\s+la|de|des)\s+(?:groupe\s+)?"      # Portuguese, French
+    r"|site\s+carri\u00e8re(?:\s+externe)?\s+)", re.IGNORECASE)
+_TITLE_GENERIC_THEN_NAME = re.compile(r"^(?:career\s+site|careers?|jobs?)\s*\((.+)\)$", re.IGNORECASE)      # "Career Site(Servify)"
+_TITLE_TRAILING = re.compile(
+    r"[\s\-\u2013\u2014|:,]*\b(?:(?:global|external|internal)\s+)?"
+    r"(?:careers?(?:\s+(?:site|portal|page|website|opportunities))?|jobs?(?:\s+(?:site|portal|board|opportunities))?"
+    r"|recruit(?:ment|ing)(?:\s+team)?|talent\s+acquisition|candidate\s+experience(?:\s+site)?|web\s*site)\s*$", re.IGNORECASE)
+
+
+def clean_site_title(raw: Optional[str]) -> str:
+    """The employer's name from the <title> of an Oracle candidate site, or "" when the title names none ("Page not found",
+    "Candidate Experience site", "Careers"). "Hoya Global Career Site" -> "Hoya"; JSON escapes and entities are decoded."""
+    if not raw:
+        return ""
+    t = html.unescape(raw)
+    t = re.sub(r"\\u([0-9a-fA-F]{4})", lambda m: chr(int(m.group(1), 16)), t).replace("\\'", "'").replace('\\"', '"')
+    t = " ".join(t.split())
+    if _TITLE_ERROR.search(t) or _TITLE_NOT_ENGLISH_GENERIC.search(t):
+        return ""
+    for part in _TITLE_SEPARATOR.split(t):                # "Careers | BXP", "Meezan Bank - Careers | Job Opportunities": the first part that names someone
+        name = _strip_generic(part)
+        if name:
+            return name
+    return ""
+
+
+def _strip_generic(part: str) -> str:
+    part = part.strip()
+    wrapped = _TITLE_GENERIC_THEN_NAME.match(part)
+    t = _TITLE_LEADING.sub("", wrapped.group(1).strip() if wrapped else part)
+    previous = None
+    while previous != t:                                  # "Acme Global Career Site" loses both suffixes in turn
+        previous = t
+        t = _TITLE_TRAILING.sub("", t).strip(" -\u2013\u2014|:,")
+    if t.lower() in _TITLE_GENERIC or t.lower().startswith("candidate experience"):
+        return ""
+    return t
+
+
+_ORACLE_URL = re.compile(r"https?://([^/]+\.oraclecloud\.com)/hcmUI/CandidateExperience/([^/]+)/sites/([^/?#]+)")
+_TITLE_TAG = re.compile(r"<title>(.*?)</title>", re.IGNORECASE | re.DOTALL)
+
+
+def fetch_site_names(urls: List[str], session: Any = None, workers: int = 8) -> Dict[str, str]:
+    """{"host:site": employer name} for the Oracle candidate sites in `urls` whose page title names an employer (T112)."""
+    session = session or requests
+
+    def one(url: str) -> Tuple[str, str]:
+        m = _ORACLE_URL.match(url)
+        if not m:
+            return "", ""
+        try:
+            resp = session.get(f"https://{m.group(1)}/hcmUI/CandidateExperience/{m.group(2)}/sites/{m.group(3)}",
+                               headers={"User-Agent": "Mozilla/5.0"}, timeout=25)
+            if resp.status_code != 200:
+                return "", ""
+            tag = _TITLE_TAG.search(resp.text)
+            return f"{m.group(1)}:{m.group(3)}", clean_site_title(tag.group(1) if tag else "")
+        except Exception:
+            return "", ""
+    with ThreadPoolExecutor(max_workers=max(1, workers)) as ex:
+        return {ident: name for ident, name in ex.map(one, urls) if ident and name}
+
+
+def board_seeds(urls: List[str], existing: List[Dict[str, Any]], names: Optional[Dict[str, str]] = None) -> List[str]:
     """`discover` seed lines for the boards in `urls` that are not already in `existing` (companies.json entries)."""
     have = {(c.get("ats", ""), _board_ident(c).lower()) for c in existing}
+    # On Oracle HCM the host is the employer and its sites are its career sites: a host already listed is not added again.
+    have_oracle_hosts = {str(c.get("host", "")).lower() for c in existing if c.get("ats") == "oracle_hcm"}
     found: Dict[Tuple[str, str], Tuple[str, str]] = {}
     for url in urls:
         detected = detect_ats(url) if url.startswith("http") else None
         if not detected:
             continue
         key = _usable(*detected)
-        if key is None or key in have:
+        if key is None or key in have or (key[0] == "oracle_hcm" and key[1].rpartition(":")[0] in have_oracle_hosts):
             continue
         # one board written in two cases is one board; keep the spelling with capitals (a Workday site, a SmartRecruiters id)
         if key not in found or (detected[1] != detected[1].lower() and found[key][1] == found[key][1].lower()):
             found[key] = detected
+    # One name per Oracle host: the title most of its sites have (then the shorter, then the alphabetical one), so "DP World"
+    # and "We One" sites of one host are one employer and a site whose own title names nobody still gets its host's name.
+    titles: Dict[str, List[str]] = {}
+    for ats, ident in found.values():
+        if ats == "oracle_hcm":
+            title = (names or {}).get(ident) or (names or {}).get(ident.lower())
+            if title:
+                titles.setdefault(ident.rpartition(":")[0].lower(), []).append(title)
+    host_name = {host: sorted(Counter(ts).items(), key=lambda kv: (-kv[1], len(kv[0]), kv[0]))[0][0] for host, ts in titles.items()}
     lines = []
     for ats, ident in found.values():
+        if ats == "oracle_hcm":
+            host, _, site = ident.rpartition(":")
+            if host.lower() in host_name:                  # no employer name, no seed
+                label = host_name[host.lower()].replace("|", "/")      # `|` separates the fields of a seed line
+                lines.append(f"{label} | https://{host}/hcmUI/CandidateExperience/en/sites/{site} | exact")
+            continue
         if ats == "workday":
             tenant, dc, site = ident.split(":")
             lines.append(f"{pretty(tenant)} | https://{tenant}.{dc}.myworkdayjobs.com/{site} | exact")   # exact: one seed per site
@@ -137,13 +247,26 @@ def main(argv: Optional[List[str]] = None) -> int:
     path = Path(args.companies)
     existing = json.loads(path.read_text(encoding="utf-8")) if path.exists() else []
     urls: List[str] = []
+    failed: List[str] = []
     for name in names:
-        got = fetch_urls(ARCHIVE_QUERIES[name])
+        try:
+            got = fetch_urls(ARCHIVE_QUERIES[name])
+        except RuntimeError as e:            # the archive is flaky: one query that never answers must not lose the others
+            print(f"  {name}: {e}", file=sys.stderr)
+            failed.append(name)
+            continue
         print(f"  {name}: {len(got)} url(s)")
         urls += got
-    lines = board_seeds(urls, existing)
+    oracle_urls = [u for u in urls if "oraclecloud.com/hcmUI" in u]
+    site_names = fetch_site_names(oracle_urls) if oracle_urls else {}
+    if oracle_urls:
+        print(f"  oracle: {len(site_names)} of {len(oracle_urls)} site(s) name an employer")
+    lines = board_seeds(urls, existing, site_names)
     Path(args.out).write_text("\n".join(lines) + ("\n" if lines else ""), encoding="utf-8")
     print(f"{len(lines)} seed(s) -> {args.out}")
+    if failed:
+        print(f"the archive did not answer for: {', '.join(failed)}; run again with --hosts {','.join(failed)}", file=sys.stderr)
+        return 3
     return 0
 
 
