@@ -285,6 +285,10 @@ autopilot discover --add "Figma, Some Company" --report report.csv --out verifie
   its own career site that is not on a supported system (Zerodha was the test case) cannot be scanned.
   A name that is already in the list is `verified` and nothing new is added.
 - Back up `companies.json` first (`cp companies.json companies.backup.json`).
+- **To add hundreds at once**, use the archive harvest instead of typing names: `python scripts/harvest_board_urls.py --out seeds.txt`,
+  then `autopilot discover --seeds seeds.txt --report r.csv --out v.json --merge companies.json --no-recheck --workers 20`
+  (about 1 board per 0.15 s; read `r.csv`). The harvest lists boards by their web address, so it finds companies whose name you
+  would not think to type. Run Workable and Recruitee with `--workers 3`: they refuse many parallel requests.
 
 ## 7. Run a scan and read the result
 

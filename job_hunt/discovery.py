@@ -499,17 +499,50 @@ def reverify_existing(entries: List[Dict[str, Any]], workers: int = 12) -> Tuple
     Identity is trusted (these were curated), so only liveness, India presence,
     staleness and the known-bad list are re-tested.
     """
-    def check(c: Dict[str, Any]) -> Dict[str, Any]:
+    def check_one(c: Dict[str, Any]) -> Dict[str, Any]:
         if c.get("ats") == "workday":
             return evaluate_workday(c["name"], c["tenant"], c["dc"], c["site"])
         if c.get("ats") in ("oracle_hcm", "amazon", "eightfold", "phenom"):
             return evaluate_entry(c["name"], {k: v for k, v in c.items() if k not in ("name", "headcount")})
         return evaluate_board(c["name"], c["ats"], c["slug"], from_url=True)
 
+    def check(c: Dict[str, Any]) -> Dict[str, Any]:
+        # A board that makes our fetch raise is not known to be dead: keep it and say so, never crash the monthly check (T111).
+        row = _or_error(check_one, c["name"], c.get("ats", ""), _board_ident(c), c)
+        if str(row.get("verdict", "")).startswith("error"):
+            row["accepted"] = True
+        return row
+
+    # The entries are sorted by ATS, so 12 workers would hit one host with a dozen requests at once; Workable and Recruitee
+    # answer that with HTTP 429, which the adapters read as an empty board (T111: 34 of 86 Workable boards "dead").
+    order = _spread_by_ats(entries)
     with ThreadPoolExecutor(max_workers=workers) as ex:
-        rows = list(ex.map(check, entries))
+        done = list(ex.map(check, [entries[i] for i in order]))
+    rows: List[Dict[str, Any]] = [{} for _ in entries]
+    for i, r in zip(order, done):
+        rows[i] = r
+    # An empty answer may be a rate limit: ask once more, two at a time. A real answer ("no India jobs") is final.
+    again = [i for i, r in enumerate(rows) if not r["accepted"] and r["verdict"].startswith("no open jobs")]
+    if again:
+        with ThreadPoolExecutor(max_workers=2) as ex:
+            for i, r in zip(again, ex.map(check, [entries[i] for i in again])):
+                rows[i] = r
     kept = [c for c, r in zip(entries, rows) if r["accepted"]]
     return kept, rows
+
+
+def _spread_by_ats(entries: List[Dict[str, Any]]) -> List[int]:
+    """Indices of `entries` in an order where neighbours rarely share an ATS (round-robin over the ATS groups)."""
+    groups: Dict[str, List[int]] = {}
+    for i, c in enumerate(entries):
+        groups.setdefault(c.get("ats", ""), []).append(i)
+    queues = list(groups.values())
+    order: List[int] = []
+    while any(queues):
+        for q in queues:
+            if q:
+                order.append(q.pop(0))
+    return order
 
 
 def recheck_companies(entries: List[Dict[str, Any]]) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:

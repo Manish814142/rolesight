@@ -756,3 +756,89 @@ def test_workers_also_limits_how_many_boards_are_verified_at_once(monkeypatch):
     disc.discover(seeds, workers=2)
 
     assert state["max"] <= 2
+
+
+# ── T111: the recheck must not read a rate limit as a dead board ──────────────
+
+def test_the_recheck_spreads_entries_so_neighbours_rarely_share_an_ats():
+    entries = [{"ats": "workable", "slug": f"w{i}"} for i in range(4)] + [{"ats": "lever", "slug": "l0"}, {"ats": "ashby", "slug": "a0"}]
+    order = disc._spread_by_ats(entries)
+    assert sorted(order) == list(range(6))                                           # every entry once
+    assert [entries[i]["ats"] for i in order[:3]] == ["workable", "lever", "ashby"]  # one of each before the second workable
+
+
+def test_reverify_gives_an_empty_answer_a_second_gentle_look_before_dropping_an_entry(monkeypatch):
+    calls = []
+
+    def fake_eval(name, ats, slug, from_url=False):
+        calls.append(slug)
+        first = calls.count(slug) == 1
+        verdict = {"flaky": "no open jobs" if first else "verified", "dead": "no open jobs", "noindia": "no India jobs"}.get(slug, "verified")
+        return {"seed": name, "accepted": verdict == "verified", "verdict": verdict, "ats": ats, "board": slug}
+    monkeypatch.setattr(disc, "evaluate_board", fake_eval)
+    entries = [{"name": n, "ats": "workable", "slug": n} for n in ("flaky", "dead", "noindia", "fine")]
+
+    kept, rows = disc.reverify_existing(entries, workers=2)
+
+    assert [c["name"] for c in kept] == ["flaky", "fine"]                            # flaky passed on the second look
+    assert [r["verdict"] for r in rows] == ["verified", "no open jobs", "no India jobs", "verified"]   # rows stay in entry order
+    assert calls.count("flaky") == 2 and calls.count("dead") == 2                    # an empty answer is asked twice
+    assert calls.count("noindia") == 1 and calls.count("fine") == 1                  # a real answer is not
+
+
+def test_reverify_second_look_uses_two_workers_at_most(monkeypatch):
+    import threading
+    import time
+    lock = threading.Lock()
+    state = {"seen": set(), "now": 0, "max": 0, "second_looks": 0}
+
+    def fake_eval(name, ats, slug, from_url=False):
+        with lock:
+            second = slug in state["seen"]
+            state["seen"].add(slug)
+            if second:
+                state["second_looks"] += 1
+                state["now"] += 1
+                state["max"] = max(state["max"], state["now"])
+        time.sleep(0.03)
+        if second:
+            with lock:
+                state["now"] -= 1
+        return {"seed": name, "accepted": False, "verdict": "no open jobs", "ats": ats, "board": slug}
+    monkeypatch.setattr(disc, "evaluate_board", fake_eval)
+
+    disc.reverify_existing([{"name": f"b{i}", "ats": "workable", "slug": f"b{i}"} for i in range(10)], workers=8)
+
+    assert state["second_looks"] == 10               # every empty answer was asked again ...
+    assert state["max"] <= 2                         # ... gently, whatever --workers the first pass used
+
+
+def test_reverify_submits_entries_spread_across_ats_not_in_sorted_order(monkeypatch):
+    order = []
+
+    def fake_eval(name, ats, slug, from_url=False):
+        order.append(slug)
+        return {"seed": name, "accepted": True, "verdict": "verified", "ats": ats, "board": slug}
+    monkeypatch.setattr(disc, "evaluate_board", fake_eval)
+    entries = [{"name": s, "ats": a, "slug": s} for a, s in      # as companies.json is sorted: the three Workable boards together
+               [("workable", "w0"), ("workable", "w1"), ("workable", "w2"), ("lever", "l0"), ("ashby", "a0")]]
+
+    disc.reverify_existing(entries, workers=1)                  # one worker: the call order is the submission order
+
+    assert order == ["w0", "l0", "a0", "w1", "w2"]
+
+
+def test_reverify_keeps_an_entry_whose_check_raises_and_says_so(monkeypatch):
+    """A board that makes our fetch raise is not known to be dead; the monthly check must neither crash nor delete it."""
+    def fake_eval(name, ats, slug, from_url=False):
+        if slug == "odd":
+            raise AttributeError("'NoneType' object has no attribute 'strip'")
+        return {"seed": name, "accepted": slug != "gone", "verdict": "verified" if slug != "gone" else "no India jobs",
+                "ats": ats, "board": slug}
+    monkeypatch.setattr(disc, "evaluate_board", fake_eval)
+    entries = [{"name": n, "ats": "greenhouse", "slug": n} for n in ("odd", "gone", "fine")]
+
+    kept, rows = disc.reverify_existing(entries, workers=2)
+
+    assert [c["name"] for c in kept] == ["odd", "fine"]
+    assert rows[0]["verdict"].startswith("error") and "AttributeError" in rows[0]["verdict"] and rows[0]["accepted"] is True
