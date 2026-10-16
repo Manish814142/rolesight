@@ -4,7 +4,13 @@ from __future__ import annotations
 import logging
 from typing import Any, Dict, List
 
-from job_hunt.adapters.base import DEFAULT_HEADERS, http_get, strip_html
+from job_hunt.adapters.base import (
+    DEFAULT_HEADERS,
+    RATE_LIMIT_PAUSES,
+    http_get,
+    mark_incomplete,
+    strip_html,
+)
 from job_hunt.models import JobPosting
 
 logger = logging.getLogger(__name__)
@@ -19,8 +25,13 @@ def fetch_workable(slug: str) -> List[JobPosting]:
 
     try:
         resp = http_get(url, headers=DEFAULT_HEADERS, timeout=15)
-        if resp.status_code in (404, 429):
-            logger.debug("Workable fetch returned %s for %s", resp.status_code, slug)
+        if resp.status_code == 404:
+            logger.debug("Workable board not found for %s (HTTP 404)", slug)
+            return []
+        if resp.status_code == 429:         # still refused after the pauses of http_get (T114): say so, by name
+            logger.warning("Workable board %s answered HTTP 429 (rate limited) after %d tries: its jobs are missing from this fetch",
+                           slug, 1 + len(RATE_LIMIT_PAUSES))
+            mark_incomplete("HTTP 429 from Workable (rate limited)")
             return []
         resp.raise_for_status()
         data: Dict[str, Any] = resp.json()

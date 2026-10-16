@@ -9,6 +9,17 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed (2026-10-16, T114: an HTTP 429 is asked again, not read as an empty board)
+- **Measured cause.** Workable (behind Cloudflare) refuses about half the requests of a sustained burst: 457 of 1,500, 713 of 1,200 and 374 of 700 in three bursts at 20
+  parallel (it started after about 800 requests), with an HTML body and `Retry-After: 0`, and recovers in about ten seconds (a single probe was refused at 4 s and 8 s, accepted at 12 s).
+  No 429 at up to 20 parallel for the 103 Workable and 39 Recruitee boards of the list (one request each), so a scan's 8 workers rarely hit it; a bulk `discover` run does. Recruitee's 429s
+  were seen in that run's log. The Workable adapter returned an empty list on a 429 at debug level, so a scan lost the board's jobs without a word, and `discover`'s probe counted
+  such boards dead (13 of 100 sampled "no live board" verdicts were alive).
+- `adapters.base`: every request (`http_get`, `http_post`) that is answered with 429 is asked again after 2, 5 and 12 s; the server's `Retry-After` is only a floor for the pause (its
+  `0` would ask again at once), capped at 30 s; the last 429 is returned as it is. `retry_429=False` opts out (Eightfold keeps its own, longer retry). `harvester._probe` does the same.
+  Workable, still refused after that, now warns by name and marks the fetch incomplete (`HTTP 429 from Workable`); a 404 stays quiet.
+- Real A/B on 60 Workable boards that all have jobs, fetched at 20 parallel right after a burst had put Workable into 429: **old behaviour 43 of 60 returned jobs (17 lost), new 60 of 60** (29 s).
+
 ### Fixed (2026-10-16, T113: the Workday light check, found by the review of T111)
 - `discover`'s Workday check (used for new Workday seeds and by the monthly `--recheck`) read the first 20 results of the `India` search and counted the ones whose
   location text names India. Workday writes "2 Locations" for a posting with several, and the real adapter resolves those with a detail call (T23); the light check did not.

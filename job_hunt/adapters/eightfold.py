@@ -47,11 +47,11 @@ BOARD_BUDGET_SECONDS = 600.0
 def _get(url: str, params: Dict[str, Any]) -> requests.Response:
     """GET that pauses and retries on HTTP 429; any other response (or the last 429) is returned as is."""
     for delay in RETRY_DELAYS:
-        resp = http_get(url, headers=DEFAULT_HEADERS, params=params, timeout=20)
+        resp = http_get(url, headers=DEFAULT_HEADERS, params=params, timeout=20, retry_429=False)
         if resp.status_code != 429:
             return resp
         time.sleep(delay)
-    return http_get(url, headers=DEFAULT_HEADERS, params=params, timeout=20)
+    return http_get(url, headers=DEFAULT_HEADERS, params=params, timeout=20, retry_429=False)
 
 
 def _posted(epoch: Any) -> str:

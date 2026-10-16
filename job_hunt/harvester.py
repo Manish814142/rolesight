@@ -24,7 +24,7 @@ from typing import Any, Dict, List, Optional, Set, Tuple, Union
 import requests
 import yaml
 
-from job_hunt.adapters.base import DEFAULT_HEADERS
+from job_hunt.adapters.base import DEFAULT_HEADERS, with_rate_limit_retries
 from job_hunt.company_builder import load_linkedin_cache, match_headcount
 from job_hunt.validator import KNOWN_CORRECTIONS
 
@@ -152,9 +152,9 @@ def _probe(
 ) -> Tuple[bool, Union[int, str]]:
     try:
         if method == "POST":
-            resp = requests.post(url, json=body, headers=DEFAULT_HEADERS, timeout=timeout)
+            resp = with_rate_limit_retries(lambda: requests.post(url, json=body, headers=DEFAULT_HEADERS, timeout=timeout))
         else:
-            resp = requests.get(url, headers=DEFAULT_HEADERS, timeout=timeout)
+            resp = with_rate_limit_retries(lambda: requests.get(url, headers=DEFAULT_HEADERS, timeout=timeout))
         has_jobs = _has_jobs(ats, resp)
         status_info: Union[int, str] = (
             resp.status_code

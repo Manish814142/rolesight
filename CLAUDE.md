@@ -146,8 +146,8 @@ check only that board (no slug guessing on the other ATSs) and name the company 
 keeps every site of a Workday tenant and lets the one with most India jobs win. Run it on chunks of one ATS:
 `autopilot discover --seeds /tmp/seeds.txt --report /tmp/r.csv --out /tmp/v.json --merge companies.json --no-recheck --workers 20`.
 About 3 boards in 100 pass (live, ≥1 India job, a posting ≤180 days old); one board that makes the fetch raise is an `error` row, not the
-end of the run. **Workable and Recruitee answer HTTP 429 to many parallel requests and the adapters read that as an empty board**, so run
-them with `--workers 3` (measured 2026-10-16: at 20 workers, 13 of 100 sampled Workable "no live board" verdicts, and 19 of 100 Recruitee, were alive when probed one at a time). Oracle HCM sites are in the archive too, but the
+end of the run. **Workable refuses about half the requests of a sustained burst with HTTP 429** (measured 2026-10-16: about 800 requests at 20 a second; Recruitee's were seen in a bulk run's log). Every request now waits and asks again after a 429 (T114),
+but a bulk run of Workable or Recruitee boards should still use `--workers 3` (at 20 workers, before the retry existed, 13 of 100 sampled Workable "no live board" verdicts, and 19 of 100 Recruitee, were alive when probed one at a time). Oracle HCM sites are in the archive too, but the
 host is a customer code (`cbcz.fa.us2…`), not a company name, so they are not harvested.
 
 **`companies.json` is curated — do not blindly overwrite it with `autopilot harvest`.**

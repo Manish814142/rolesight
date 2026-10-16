@@ -56,11 +56,46 @@ class DeadlineExceeded(Exception):
     """An HTTP response was still downloading when its total deadline passed."""
 
 
-def _request(method: str, url: str, deadline: float, **kwargs: Any) -> requests.Response:
+# HTTP 429 means "too many requests, wait". Measured 2026-10-16 (T114): Workable (Cloudflare) refuses about half the requests of a
+# sustained burst (about 800 at 20 a second), with an HTML body and `Retry-After: 0`, and recovers in about ten seconds; Recruitee
+# does the same. A 429 is asked again after these pauses (seconds). The server's Retry-After is only a floor for the pause (its
+# "0" would ask again at once), capped. The last 429 is returned as it is.
+RATE_LIMIT_PAUSES = (2.0, 5.0, 12.0)
+RETRY_AFTER_CAP = 30.0
+
+
+def _rate_limit_pause(resp: Any, scheduled: float) -> float:
+    header = (getattr(resp, "headers", None) or {}).get("Retry-After")
+    try:
+        asked = float(header) if header is not None else 0.0
+    except ValueError:
+        return scheduled                      # an HTTP date or words: the scheduled pause
+    return max(scheduled, min(asked, RETRY_AFTER_CAP))
+
+
+def with_rate_limit_retries(send: Any) -> Any:
+    """Call `send()` (one HTTP request); while it answers 429, pause and call it again, up to len(RATE_LIMIT_PAUSES) times."""
+    resp = send()
+    for scheduled in RATE_LIMIT_PAUSES:
+        if getattr(resp, "status_code", None) != 429:
+            break
+        try:
+            resp.close()
+        except Exception:
+            pass
+        time.sleep(_rate_limit_pause(resp, scheduled))
+        resp = send()
+    return resp
+
+
+def _request(method: str, url: str, deadline: float, retry_429: bool = True, **kwargs: Any) -> requests.Response:
     kwargs.setdefault("timeout", 15)
     start = time.monotonic()
     send = requests.get if method == "GET" else requests.post
-    resp = send(url, stream=True, **kwargs)
+
+    def once() -> requests.Response:
+        return send(url, stream=True, **kwargs)
+    resp = with_rate_limit_retries(once) if retry_429 else once()
     try:
         chunks = []
         for chunk in resp.iter_content(chunk_size=65536):
