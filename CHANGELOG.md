@@ -9,6 +9,17 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed (2026-10-16, T113: the Workday light check, found by the review of T111)
+- `discover`'s Workday check (used for new Workday seeds and by the monthly `--recheck`) read the first 20 results of the `India` search and counted the ones whose
+  location text names India. Workday writes "2 Locations" for a posting with several, and the real adapter resolves those with a detail call (T23); the light check did not.
+  Northern Trust's search has 99 hits, but its first 20 read "2 Locations" ×3, "Chicago, IL", "Luxembourg"…, so the recheck called it "no India jobs" and would have
+  removed it. When the first page shows no India job, the check now resolves up to 8 such postings with the adapter's own detail call and stops at the first India one
+  (`adapters.workday.is_multi_location`, `fetch_detail_locations`, `WORKDAY_DETAIL_CALLS`). Northern Trust now passes (1 India job found).
+- **Workday maintenance no longer looks like dead boards.** While a data centre is in maintenance Workday redirects every request to `community.workday.com/maintenance-page`.
+  The adapter knows (T76); the light check read the HTML as "no open jobs", and a monthly recheck run in such a window would have removed every Workday tenant on that
+  data centre (seen live on 2026-10-16: `wd102` was in maintenance, Hotstar, Minor, Piramal and Vena answered with the page). It is now an `error` row: a new seed is not accepted
+  on it, an existing entry is kept and flagged.
+
 ### Changed (2026-10-16, T116: three job aggregators leave `companies.json`)
 - Manish ("drop the 3 aggregators"): Jobs for Humanity (SmartRecruiters, 2,000 postings on every fetch, 12 pass the title and location filter, several "only for women" or
   "only for persons with disability"), Jobs for Lebanon (1,401, none pass) and Eram Talent (Workable, 1,272, none pass) repost other employers' jobs under their own name,

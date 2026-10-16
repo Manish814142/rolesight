@@ -842,3 +842,100 @@ def test_reverify_keeps_an_entry_whose_check_raises_and_says_so(monkeypatch):
 
     assert [c["name"] for c in kept] == ["odd", "fine"]
     assert rows[0]["verdict"].startswith("error") and "AttributeError" in rows[0]["verdict"] and rows[0]["accepted"] is True
+
+
+# ── T113: the Workday light check resolves "N Locations" ─────────────────────────────────────────────────────────
+
+def _wd_item(title, location, path):
+    return {"title": title, "locationsText": location, "externalPath": path}
+
+
+@patch("requests.post")
+def test_workday_check_resolves_multi_location_postings_when_the_first_page_shows_no_india_job(mock_post, monkeypatch):
+    """Northern Trust's India search has 99 hits but its first 20 read "2 Locations", "Chicago, IL", "Luxembourg": the real adapter
+    resolves the placeholders with a detail call, the light check did not and flagged the board "no India jobs" (T113)."""
+    mock_post.return_value = _resp(payload={"jobPostings": [
+        _wd_item("Engineer", "2 Locations", "/job/a"), _wd_item("Analyst", "Chicago, IL", "/job/b"),
+        _wd_item("Developer", "3 Locations", "/job/c"), _wd_item("Manager", "Location Negotiable", "/job/d")]})
+    asked = []
+
+    def fake_detail(cxs_base, external_path):
+        asked.append((cxs_base, external_path))
+        return {"/job/a": "Chicago, IL; Luxembourg", "/job/c": "London; Pune, India", "/job/d": "Austin"}[external_path]
+    monkeypatch.setattr(disc, "fetch_detail_locations", fake_detail)
+
+    row = disc.evaluate_workday("Northern Trust", "ntrs", "wd1", "northerntrust")
+
+    assert row["accepted"] is True and row["india_jobs"] == 1
+    assert [p for _, p in asked] == ["/job/a", "/job/c"]                      # stops at the first India job; "Chicago, IL" is not asked
+    assert asked[0][0] == "https://ntrs.wd1.myworkdayjobs.com/wday/cxs/ntrs/northerntrust"
+    assert row["prefilter_pass"] == 1                                          # the resolved location is what the filter sees: only "Developer" is in India
+
+
+@patch("requests.post")
+def test_workday_check_asks_for_at_most_eight_postings_and_then_says_no_india_jobs(mock_post, monkeypatch):
+    mock_post.return_value = _resp(payload={"jobPostings": [_wd_item("Engineer", "2 Locations", f"/job/{i}") for i in range(20)]})
+    asked = []
+    monkeypatch.setattr(disc, "fetch_detail_locations", lambda base, path: asked.append(path) or "Chicago, IL; Luxembourg")
+
+    row = disc.evaluate_workday("Acme", "acme", "wd1", "External")
+
+    assert len(asked) == 8
+    assert row["accepted"] is False and row["verdict"] == "no India jobs"
+
+
+@patch("requests.post")
+def test_workday_check_makes_no_detail_call_when_the_first_page_already_shows_an_india_job(mock_post, monkeypatch):
+    mock_post.return_value = _resp(payload={"jobPostings": [_wd_item("Engineer", "Pune, India", "/job/1"),
+                                                            _wd_item("Developer", "2 Locations", "/job/2")]})
+    monkeypatch.setattr(disc, "fetch_detail_locations", lambda base, path: pytest.fail("a detail call was made"))
+    assert disc.evaluate_workday("Acme", "acme", "wd1", "External")["accepted"] is True
+
+
+@patch("requests.post")
+def test_workday_check_survives_failed_detail_calls_and_postings_without_a_path(mock_post, monkeypatch):
+    mock_post.return_value = _resp(payload={"jobPostings": [{"title": "Engineer", "locationsText": "2 Locations"},
+                                                            _wd_item("Developer", "3 Locations", "/job/2")]})
+    monkeypatch.setattr(disc, "fetch_detail_locations", lambda base, path: "")        # the adapter's answer when the call fails
+    row = disc.evaluate_workday("Acme", "acme", "wd1", "External")
+    assert row["accepted"] is False and row["india_jobs"] == 0
+
+
+def _maintenance_response():
+    """What Workday answers while a data centre is in maintenance: a 303 to community.workday.com, an HTML page, no JSON."""
+    r = MagicMock()
+    r.status_code = 200
+    r.url = "https://community.workday.com/maintenance-page"
+    r.history = [MagicMock(status_code=303)]
+    r.headers = {"Content-Type": "text/html; charset=UTF-8"}
+    r.json.side_effect = ValueError("Expecting value: line 1 column 1 (char 0)")
+    return r
+
+
+@patch("requests.post")
+def test_workday_check_calls_a_maintenance_redirect_an_error_not_an_empty_board(mock_post):
+    """wd102 was in maintenance on 2026-10-16: the light check read the HTML as 'no open jobs' for Hotstar, Minor, Piramal and Vena."""
+    mock_post.return_value = _maintenance_response()
+    row = disc.evaluate_workday("Hotstar", "jiostar", "wd102", "JioStar")
+    assert row["accepted"] is False
+    assert row["verdict"].startswith("error") and "community.workday.com/maintenance-page" in row["verdict"]
+    assert "no open jobs" not in row["verdict"]
+
+
+@patch("requests.post")
+def test_the_recheck_keeps_a_workday_entry_while_its_data_centre_is_in_maintenance(mock_post):
+    mock_post.return_value = _maintenance_response()
+    entries = [{"name": "Hotstar", "ats": "workday", "tenant": "jiostar", "dc": "wd102", "site": "JioStar"}]
+    kept, rows = disc.reverify_existing(entries, workers=1)
+    assert [c["name"] for c in kept] == ["Hotstar"] and rows[0]["verdict"].startswith("error")
+
+
+@patch("requests.post")
+def test_workday_check_still_reads_a_redirect_that_ends_in_json(mock_post):
+    """A tenant moved to another data centre answers with a redirect and then JSON: read as before (the adapter does the same)."""
+    r = _resp(payload={"jobPostings": [{"title": "Software Engineer", "locationsText": "Pune, India"}]})
+    r.url = "https://acme.wd5.myworkdayjobs.com/wday/cxs/acme/External/jobs"
+    r.history = [MagicMock(status_code=301)]
+    r.headers = {"Content-Type": "application/json"}
+    mock_post.return_value = r
+    assert disc.evaluate_workday("Acme", "acme", "wd1", "External")["accepted"] is True

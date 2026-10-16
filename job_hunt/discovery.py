@@ -46,7 +46,12 @@ import requests
 
 from job_hunt.adapters import detect_ats, fetch_company_jobs
 from job_hunt.adapters.base import DEFAULT_HEADERS
-from job_hunt.adapters.workday import item_location
+from job_hunt.adapters.workday import (
+    fetch_detail_locations,
+    is_multi_location,
+    item_location,
+    redirected_away,
+)
 from job_hunt.company_builder import CORPORATE_SUFFIX_RE, load_linkedin_cache, match_headcount
 from job_hunt.harvester import ATS_PROBES, _probe, default_linkedin_cache
 from job_hunt.models import JobPosting
@@ -70,6 +75,9 @@ KNOWN_BAD_BOARDS = {
 # A board whose newest posting is older than this is treated as abandoned. Seen in the
 # wild: SmartRecruiters boards answering 200 with 1-2 postings from 2015-2020.
 MAX_NEWEST_AGE_DAYS = 180
+
+# How many "N Locations" postings the Workday light check resolves, at most, when the first page shows no India job (T113).
+WORKDAY_DETAIL_CALLS = 8
 
 REPORT_FIELDS = [
     "seed", "verdict", "ats", "board", "jobs", "india_jobs", "prefilter_pass", "newest_age_days",
@@ -376,13 +384,21 @@ def evaluate_entry(seed_name: str, entry: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def evaluate_workday(seed_name: str, tenant: str, dc: str, site: str) -> Dict[str, Any]:
-    """Light check: first page of the India search (the adapter itself paginates to 100)."""
-    url = f"https://{tenant}.{dc}.myworkdayjobs.com/wday/cxs/{tenant}/{site}/jobs"
+    """Light check: first page of the India search (the adapter itself paginates to 100). When that page shows no India
+    job, a few "N Locations" postings are resolved with the detail call, as the adapter does (T113: Northern Trust's
+    search has 99 hits but its first 20 read "2 Locations", "Chicago, IL", "Luxembourg")."""
+    cxs_base = f"https://{tenant}.{dc}.myworkdayjobs.com/wday/cxs/{tenant}/{site}"
+    url = f"{cxs_base}/jobs"
     row: Dict[str, Any] = {"seed": seed_name, "ats": "workday", "board": f"{tenant}.{dc}/{site}",
                            "identity": "curated tenant", "sample_titles": ""}
     try:
         r = requests.post(url, json={"appliedFacets": {}, "limit": 20, "offset": 0, "searchText": "India"},
                           headers=DEFAULT_HEADERS, timeout=15)
+        away = redirected_away(r, f"{tenant}.{dc}.myworkdayjobs.com")
+        if away:        # Workday's maintenance page: the board is not dead, it cannot be read right now (T113)
+            row.update({"verdict": f"error: Workday answered with a redirect to {away}, not with jobs (maintenance?)",
+                        "accepted": False, "jobs": 0, "india_jobs": 0, "prefilter_pass": 0})
+            return row
         posts = r.json().get("jobPostings", []) if r.status_code == 200 else []
         status = f"HTTP {r.status_code}"
     except Exception as e:
@@ -390,6 +406,17 @@ def evaluate_workday(seed_name: str, tenant: str, dc: str, site: str) -> Dict[st
     jobs = [JobPosting("", "workday", seed_name, p.get("title", ""), item_location(p), False, "")
             for p in posts]
     india = sum(1 for j in jobs if _is_india(j.location))
+    if not india:
+        asked = 0
+        for p, job in zip(posts, jobs):
+            if asked >= WORKDAY_DETAIL_CALLS:
+                break
+            if p.get("externalPath") and is_multi_location(job.location):
+                asked += 1
+                job.location = fetch_detail_locations(cxs_base, p["externalPath"]) or job.location
+                if _is_india(job.location):
+                    india = 1
+                    break
     passing = [j for j in jobs if should_evaluate_job(j)[0]]
     ok, verdict = accept_board("workday", f"{tenant}:{dc}:{site}", len(jobs), india, True)
     row.update({"verdict": verdict if posts else f"{verdict} ({status})", "accepted": ok, "jobs": len(jobs),

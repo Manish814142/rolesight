@@ -249,3 +249,23 @@ def test_title_check_agrees_with_the_prefilter():
         job = JobPosting(global_id="x", ats="workday", company="c", title=t, location="Bengaluru, India",
                          is_remote=False, url="u")
         assert title_is_candidate(t) == should_evaluate_job(job)[0], t
+
+
+# ── T113: helpers the discovery check shares with the Workday adapter ─────────────────────────────────────────────
+
+def test_workday_is_multi_location_knows_the_list_placeholders_and_nothing_else():
+    from job_hunt.adapters.workday import is_multi_location
+    assert all(is_multi_location(x) for x in ("2 Locations", "5 Locations", "1 Location", "Location Negotiable", " 3 locations "))
+    assert not any(is_multi_location(x) for x in ("Pune, India", "Chicago, IL", "", "Remote", "Not specified", None))
+
+
+@patch("requests.get")
+def test_workday_fetch_detail_locations_joins_the_posting_locations_and_is_empty_on_failure(mock_get):
+    from job_hunt.adapters.workday import fetch_detail_locations
+    mock_get.return_value = _resp({"jobPostingInfo": {"location": "Pune, India", "additionalLocations": ["Chicago, IL"], "jobDescription": "<p>x</p>"}})
+    assert fetch_detail_locations("https://t.wd1.myworkdayjobs.com/wday/cxs/t/s", "/job/a") == "Pune, India; Chicago, IL"
+    assert mock_get.call_args[0][0] == "https://t.wd1.myworkdayjobs.com/wday/cxs/t/s/job/a"
+    mock_get.return_value = _resp({}, status=500)
+    assert fetch_detail_locations("https://t.wd1.myworkdayjobs.com/wday/cxs/t/s", "/job/a") == ""
+    mock_get.side_effect = RuntimeError("boom")
+    assert fetch_detail_locations("https://t.wd1.myworkdayjobs.com/wday/cxs/t/s", "/job/a") == ""

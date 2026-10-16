@@ -62,6 +62,11 @@ def _redirected_away(resp: Any, base_domain: str) -> str:
     return url if host and host != base_domain else ""
 
 
+def redirected_away(resp: Any, base_domain: str) -> str:
+    """Public name of `_redirected_away` for the discovery check (T113): the maintenance page's URL, else ""."""
+    return _redirected_away(resp, base_domain)
+
+
 def _report_redirect(tenant: str, site: str, url: str) -> str:
     """Log the redirect (once as a warning per process) and return the reason for mark_incomplete."""
     global _maintenance_reported
@@ -123,6 +128,16 @@ def _fetch_detail(cxs_base: str, external_path: str) -> Tuple[str, str]:
         return "", ""
     locs = [info.get("location") or ""] + list(info.get("additionalLocations") or [])
     return "; ".join(loc for loc in locs if loc), strip_html(info.get("jobDescription", ""))
+
+
+def is_multi_location(location: str) -> bool:
+    """True for the list API's placeholders ("5 Locations", "Location Negotiable") that stand in for the real locations."""
+    return bool(_MULTI_LOCATION_RE.match((location or "").strip()))
+
+
+def fetch_detail_locations(cxs_base: str, external_path: str) -> str:
+    """The real location(s) of one posting from its detail call, joined by "; ", or "" when the call fails (T113)."""
+    return _fetch_detail(cxs_base, external_path)[0]
 
 
 def fetch_description(job: JobPosting) -> str:
