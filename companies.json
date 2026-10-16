@@ -5913,18 +5913,6 @@
     "headcount": "Unknown"
   },
   {
-    "name": "Jobs for Humanity",
-    "ats": "smartrecruiters",
-    "slug": "JobsForHumanity",
-    "headcount": "Unknown"
-  },
-  {
-    "name": "Jobs for Lebanon",
-    "ats": "smartrecruiters",
-    "slug": "JobsForLebanon",
-    "headcount": "Unknown"
-  },
-  {
     "name": "Keenfinity",
     "ats": "smartrecruiters",
     "slug": "Keenfinity",
@@ -6823,12 +6811,6 @@
     "name": "Enfinity Global",
     "ats": "workable",
     "slug": "enfinity-global-2",
-    "headcount": "Unknown"
-  },
-  {
-    "name": "Eram Talent",
-    "ats": "workable",
-    "slug": "eramtalent-1",
     "headcount": "Unknown"
   },
   {

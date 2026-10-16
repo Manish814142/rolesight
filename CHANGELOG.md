@@ -9,6 +9,12 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Changed (2026-10-16, T116: three job aggregators leave `companies.json`)
+- Manish ("drop the 3 aggregators"): Jobs for Humanity (SmartRecruiters, 2,000 postings on every fetch, 12 pass the title and location filter, several "only for women" or
+  "only for persons with disability"), Jobs for Lebanon (1,401, none pass) and Eram Talent (Workable, 1,272, none pass) repost other employers' jobs under their own name,
+  so the CSV's Company column and the LinkedIn link name the agency. Measured again before removing: 2,000 / 12, 1,401 / 0, 1,272 / 0. **1,491 → 1,488 boards.** The smaller
+  recruiters stay (GenZS Recruitment solutions, Ezrecruiting, InstaTalent Recruit LLP). All three were T111 additions; the 224 originals are untouched.
+
 ### Fixed (2026-10-16, T115: "NCR" in a Philippine location is Metro Manila, not Delhi)
 - Found by the review of T111. `NCR` was in the list of Indian cities, so `Makati City, NCR, ph` (SmartRecruiters writes the country as a lower-case code)
   counted as India: Philippine jobs passed the location filter, and `discover` admitted boards whose only "India" jobs were in Metro Manila. `NCR` is now no

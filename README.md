@@ -69,7 +69,7 @@ the company's own job page.
 | Area | What you get |
 |---|---|
 | **Direct ATS APIs** | Adapters for Greenhouse (US and EU), Lever, Ashby, SmartRecruiters, Workday, Oracle HCM, Eightfold, Phenom, Amazon Jobs, Workable, Recruitee and Personio. Parallel fetching (8 workers) with a hard time limit on every request, so one slow board can't stall a scan. |
-| **Company list** | `companies.json`: 1,491 boards, each checked to be live and to have India jobs. The first 224 were curated by hand and matched to the right employer by name; the other 1,267 were taken from the job boards' own web addresses (`scripts/harvest_board_urls.py`, T111). `autopilot discover` adds companies from a pasted list in any format and applies the same checks. |
+| **Company list** | `companies.json`: 1,488 boards, each checked to be live and to have India jobs. The first 224 were curated by hand and matched to the right employer by name; the other 1,264 were taken from the job boards' own web addresses (`scripts/harvest_board_urls.py`, T111). `autopilot discover` adds companies from a pasted list in any format and applies the same checks. |
 | **Local pre-filter** | Word-bounded title rules (backend / Node.js / SDE / software engineer in, plus generic "Senior Engineer" titles; staff / lead / manager / other stacks out), location rules (all of India or remote from India, or only the cities you list in `candidate.cities`), and an optional "posted within N days" window. |
 | **Full descriptions** | For Workday, SmartRecruiters, Oracle HCM and Eightfold, whose list APIs carry little or no description, the full text is fetched for survivors only, just before scoring. |
 | **Resume-aware scoring** | Gemini reads the whole resume, the candidate profile and the whole job description. It returns a score and one sentence explaining it. One job per call, by design: batching measurably inflated scores. |
@@ -84,7 +84,7 @@ the company's own job page.
 
 ```mermaid
 flowchart TD
-    C["companies.json<br/>1,491 boards"] --> F["Fetch<br/>public ATS APIs, 8 in parallel"]
+    C["companies.json<br/>1,488 boards"] --> F["Fetch<br/>public ATS APIs, 8 in parallel"]
     F --> D{"Seen before?<br/>data/jobs.db"}
     D -- "already scored" --> X["skip"]
     D -- "new, or not scored yet" --> P{"Pre-filter<br/>title · location · posted date"}
@@ -169,7 +169,7 @@ rolesight scan --posted-within 7
 ls output/                              # jobs_YYYY-MM-DD.csv, best score first
 ```
 
-`rolesight` and `autopilot` are the same command. In this repo `companies.json` (1,491 boards) is already in place;
+`rolesight` and `autopilot` are the same command. In this repo `companies.json` (1,488 boards) is already in place;
 `rolesight init` skips files that exist, and in an empty directory it copies the same curated list. Without
 `--resume`, `init` writes the default settings and you edit them yourself ([the guide](docs/00-user-guide.md)).
 
