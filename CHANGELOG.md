@@ -30,8 +30,8 @@ reconstructed from git history.
 
 ### Fixed (2026-10-16, T111: found by growing the list sevenfold)
 - **The monthly recheck (`discover --recheck`, T28) read rate limits as dead boards.** `companies.json` is sorted by ATS, so 12 workers sent Workable 12 requests
-  at once; it answers HTTP 429 and the adapter reads that as an empty board: 34 of the 86 Workable boards were reported "no open jobs" and would have been
-  removed. Entries now go out round-robin over the ATSs, a "no open jobs" answer is asked again two at a time before an entry is dropped, and a board whose
+  at once; 34 of the 86 Workable boards were reported "no open jobs" and would have been removed. The likely cause is HTTP 429, which the adapter reads as an
+  empty board (not seen in that run; 8 of 8 sampled boards returned jobs when fetched alone, and after the change no Workable board is flagged). Entries now go out round-robin over the ATSs, a "no open jobs" answer is asked again two at a time before an entry is dropped, and a board whose
   check raises is kept and flagged (`error`) instead of ending the check. On the 1,515-entry list: 42 changes before, 5 after. The five left: Confluent and Fi Money (empty on their
   boards since 2026-10-14), Cloudflare (436 jobs, none in India) and Northern Trust (a false alarm: its Workday search has 99 hits but the light check reads
   20 and cannot resolve "2 Locations" postings, Inbox T113) are existing entries and Manish's call, so they stay; ABBYY (5 jobs, none in India) was new and was dropped.
