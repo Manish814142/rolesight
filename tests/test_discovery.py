@@ -623,3 +623,136 @@ def test_discover_reads_the_linkedin_cache_only_when_configured(monkeypatch):
     monkeypatch.setenv("ROLESIGHT_LINKEDIN_CACHE", "/data/li.json")
     disc.discover(seeds, workers=1)
     assert seen == ["", "/data/li.json"]
+
+
+# ── T111: harvested boards ("Name | board URL | exact") ───────────────────────
+
+def test_parse_seeds_reads_exact_board_lines_and_keeps_two_boards_of_one_name():
+    seeds = parse_seeds("Acme | https://boards.greenhouse.io/acme | exact\nAcme | https://jobs.lever.co/acme | exact\n")
+    assert [bool(s.get("exact")) for s in seeds] == [True, True]      # a plain name is deduped; two exact boards are two seeds
+    assert [s["url"] for s in seeds] == ["https://boards.greenhouse.io/acme", "https://jobs.lever.co/acme"]
+
+
+def test_an_exact_seed_probes_only_its_own_board_a_plain_one_also_guesses_the_name():
+    exact, plain = parse_seeds("Acme Corp | https://boards.greenhouse.io/acme-corp | exact\n"
+                               "Acme Corp 2 | https://boards.greenhouse.io/acme-corp\n")
+    assert disc._probe_pairs(exact) == [("greenhouse", "acme-corp", True)]
+    assert len(disc._probe_pairs(plain)) > 10                          # from the URL, then every slug guess on every ATS
+
+
+def test_discover_checks_exact_seeds_at_their_own_board_and_names_them_from_the_board(monkeypatch):
+    probed = []
+    monkeypatch.setattr(disc, "_probe", lambda method, url, body, ats=None: probed.append(url) or (True, 200))
+    monkeypatch.setattr(disc, "_board_name", lambda ats, slug: "\u200e Acme  Corporation\u200f " if (ats, slug) == ("greenhouse", "acme-corp") else None)
+    monkeypatch.setattr(disc, "load_linkedin_cache", lambda path: ({}, {}))
+    monkeypatch.setattr(disc, "evaluate_board", lambda name, ats, slug, from_url=False: {
+        "seed": name, "accepted": True, "verdict": "verified", "ats": ats, "board": slug, "jobs": 5, "india_jobs": 2,
+        "prefilter_pass": 1, "identity": "slug from company careers URL"})
+    seeds = parse_seeds("Acme Corp | https://boards.greenhouse.io/acme-corp | exact\n"
+                        "Acme Corp | https://jobs.lever.co/acme-corp | exact\n"
+                        "Zed | https://jobs.ashbyhq.com/zed | exact\n")
+
+    verified, rows = disc.discover(seeds, workers=2)
+
+    assert len(probed) == 3                                            # one probe per seed, no slug guessing
+    by_board = {(v["ats"], v["slug"]): v["name"] for v in verified}
+    assert by_board == {("greenhouse", "acme-corp"): "Acme Corporation",   # the board's own name when it publishes one, spaces and invisible marks tidied
+                        ("lever", "acme-corp"): "Acme Corp",               # otherwise the seed's
+                        ("ashby", "zed"): "Zed"}
+    assert len(rows) == 3                                              # each seed reports its own board only
+
+
+def test_parse_seeds_keeps_every_exact_workday_site_of_a_tenant():
+    seeds = parse_seeds("Acme | https://acme.wd1.myworkdayjobs.com/Careers | exact\nAcme | https://acme.wd1.myworkdayjobs.com/Campus | exact\n"
+                        "Acme | https://acme.wd1.myworkdayjobs.com/Other\n")
+    assert [s["workday"]["site"] for s in seeds] == ["Careers", "Campus", "Other"]   # a plain Acme line is its own seed, as before
+
+
+def test_discover_puts_the_workday_site_with_most_india_jobs_first_so_the_merge_keeps_it(monkeypatch):
+    india = {"Careers": 3, "Campus": 9, "Empty": 0}
+    monkeypatch.setattr(disc, "load_linkedin_cache", lambda path: ({}, {}))
+    monkeypatch.setattr(disc, "evaluate_workday", lambda name, tenant, dc, site: {
+        "seed": name, "accepted": india[site] > 0, "verdict": "verified", "ats": "workday", "board": f"{tenant}.{dc}/{site}",
+        "jobs": 20, "india_jobs": india[site], "prefilter_pass": 0,
+        "entry": {"name": name, "ats": "workday", "tenant": tenant, "dc": dc, "site": site}})
+    seeds = parse_seeds("".join(f"Acme | https://acme.wd1.myworkdayjobs.com/{s} | exact\n" for s in india))
+
+    verified, rows = disc.discover(seeds, workers=2)
+
+    assert [v["site"] for v in verified] == ["Campus", "Careers"]                    # busiest first; the empty site is not verified
+    assert [r["board"].split("/")[1] for r in rows] == ["Careers", "Campus", "Empty"]   # the report keeps the seed order
+    assert [c["site"] for c in merge_companies([], verified)] == ["Campus"]          # one entry per company
+
+
+def test_discover_survives_a_board_that_makes_the_fetch_raise_and_reports_it(monkeypatch):
+    """T111: one odd board (a null field in its jobs) used to end a 30-minute run; now it is one 'error' row."""
+    monkeypatch.setattr(disc, "_probe", lambda method, url, body, ats=None: (True, 200))
+    monkeypatch.setattr(disc, "load_linkedin_cache", lambda path: ({}, {}))
+    monkeypatch.setattr(disc, "_board_name", lambda ats, slug: None)
+
+    def fake_eval(name, ats, slug, from_url=False):
+        if slug == "bad":
+            raise AttributeError("'NoneType' object has no attribute 'strip'")
+        return {"seed": name, "accepted": True, "verdict": "verified", "ats": ats, "board": slug, "jobs": 5, "india_jobs": 2,
+                "prefilter_pass": 1, "identity": "slug from company careers URL"}
+    monkeypatch.setattr(disc, "evaluate_board", fake_eval)
+
+    def fake_workday(name, tenant, dc, site):
+        if tenant == "boom":
+            raise ValueError("bad payload")
+        return {"seed": name, "accepted": True, "verdict": "verified", "ats": "workday", "board": tenant, "india_jobs": 1,
+                "entry": {"name": name, "ats": "workday", "tenant": tenant, "dc": dc, "site": site}}
+    monkeypatch.setattr(disc, "evaluate_workday", fake_workday)
+    seeds = parse_seeds("Bad | https://boards.greenhouse.io/bad | exact\nGood | https://boards.greenhouse.io/good | exact\n"
+                        "Boom | https://boom.wd1.myworkdayjobs.com/Site | exact\nFine | https://fine.wd1.myworkdayjobs.com/Site | exact\n")
+
+    verified, rows = disc.discover(seeds, workers=2)
+
+    assert sorted(v["name"] for v in verified) == ["Fine", "Good"]
+    errors = {r["seed"]: r["verdict"] for r in rows if r["verdict"].startswith("error")}
+    assert set(errors) == {"Bad", "Boom"}
+    assert "AttributeError" in errors["Bad"] and "ValueError" in errors["Boom"]
+
+
+def test_discover_survives_an_eightfold_or_phenom_site_that_makes_the_fetch_raise(monkeypatch):
+    monkeypatch.setattr(disc, "load_linkedin_cache", lambda path: ({}, {}))
+
+    def fake_fetch(company):
+        if "boom" in company.get("host", ""):
+            raise KeyError("positions")
+        return [_jp(posted=date.today().isoformat(), location="Bengaluru, India")]
+    monkeypatch.setattr(disc, "fetch_company_jobs", fake_fetch)
+    seeds = parse_seeds("Fine EF | eightfold | fine.eightfold.ai | fine.com\nBoom EF | eightfold | boom.eightfold.ai | boom.com\n"
+                        "Boom Phenom | phenom | boom.example.com | en_in\n")
+
+    verified, rows = disc.discover(seeds, workers=2)
+
+    assert [v["name"] for v in verified] == ["Fine EF"]
+    errors = {r["seed"]: r["verdict"] for r in rows if r["verdict"].startswith("error")}
+    assert set(errors) == {"Boom EF", "Boom Phenom"} and "KeyError" in errors["Boom EF"]
+
+
+def test_workers_also_limits_how_many_boards_are_verified_at_once(monkeypatch):
+    """T111: Workable and Recruitee answer HTTP 429 to 12 parallel fetches and the adapters read that as an empty board, so a
+    gentle run (--workers 2) has to be gentle in the verification phase too, not only in the probe phase."""
+    import threading
+    import time
+    monkeypatch.setattr(disc, "_probe", lambda method, url, body, ats=None: (True, 200))
+    monkeypatch.setattr(disc, "_board_name", lambda ats, slug: None)
+    monkeypatch.setattr(disc, "load_linkedin_cache", lambda path: ({}, {}))
+    lock, state = threading.Lock(), {"now": 0, "max": 0}
+
+    def fake_eval(name, ats, slug, from_url=False):
+        with lock:
+            state["now"] += 1
+            state["max"] = max(state["max"], state["now"])
+        time.sleep(0.05)
+        with lock:
+            state["now"] -= 1
+        return {"seed": name, "accepted": False, "verdict": "no India jobs", "ats": ats, "board": slug}
+    monkeypatch.setattr(disc, "evaluate_board", fake_eval)
+    seeds = parse_seeds("".join(f"B{i} | https://jobs.lever.co/b{i} | exact\n" for i in range(12)))
+
+    disc.discover(seeds, workers=2)
+
+    assert state["max"] <= 2

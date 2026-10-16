@@ -34,9 +34,9 @@ def fetch_greenhouse(slug: str, eu: bool = False) -> List[JobPosting]:
     jobs: List[JobPosting] = []
     for item in data.get("jobs", []):
         job_id = str(item.get("id", ""))
-        title = item.get("title", "").strip()
-        loc_data = item.get("location", {})
-        location = loc_data.get("name", "").strip() if isinstance(loc_data, dict) else str(loc_data)
+        title = (item.get("title") or "").strip()       # a board can send null for any of these (T111)
+        loc_data = item.get("location") or {}
+        location = (loc_data.get("name") or "").strip() if isinstance(loc_data, dict) else str(loc_data)
 
         # Check if remote in location or offices
         is_remote = "remote" in location.lower() or "remote" in title.lower()

@@ -192,7 +192,10 @@ def parse_seeds(text: str) -> List[Dict[str, Any]]:
         is_workday = len(parts) >= 5 and parts[1].lower() == "workday"
         is_eightfold = len(parts) >= 4 and parts[1].lower() == "eightfold"
         is_phenom = len(parts) >= 4 and parts[1].lower() == "phenom"
-        key = (name.lower(), "workday" if is_workday else "eightfold" if is_eightfold else "phenom" if is_phenom else "")
+        # "Name | board URL | exact" (T111): a harvested board. Its name is only a label, so two boards may share one.
+        exact = len(parts) >= 3 and parts[2].lower() == "exact" and not (is_workday or is_eightfold or is_phenom)
+        key = (name.lower(), "workday" if is_workday else "eightfold" if is_eightfold else "phenom" if is_phenom else "",
+               parts[1].lower() if exact else "")
         if not name or key in seen:
             continue
         seen.add(key)
@@ -213,6 +216,8 @@ def parse_seeds(text: str) -> List[Dict[str, Any]]:
                 seed["oracle_hcm"] = {"host": host, "site": site}
             else:
                 seed["url"] = parts[1]
+                if exact:
+                    seed["exact"] = True
         seeds.append(seed)
     return seeds
 
@@ -397,6 +402,8 @@ def _probe_pairs(seed: Dict[str, Any]) -> List[Tuple[str, str, bool]]:
     detected = detect_ats(seed.get("url", "")) if seed.get("url") else None
     if detected and detected[0] in ATS_PROBES:
         pairs.append((detected[0], detected[1], True))
+    if seed.get("exact"):
+        return pairs                      # the URL names the board; guessing the name on every ATS would only add noise and load
     for slug in slug_candidates(seed["name"]):
         for ats in ATS_PROBES:
             if (ats, slug, True) not in pairs:
@@ -411,6 +418,22 @@ def _probe_one(args: Tuple[Dict[str, Any], str, str, bool]) -> Optional[Tuple[Di
     return (seed, ats, slug, from_url) if ok else None
 
 
+def _tidy_name(name: str) -> str:
+    """A board's own name without the stray spaces and invisible marks boards carry ("Deliveroo ", "\u200eConnectWise")."""
+    return " ".join("".join(ch for ch in name if unicodedata.category(ch) != "Cf").split())
+
+
+def _or_error(fn: Any, seed_name: str, ats: str, board: str, *args: Any, **kwargs: Any) -> Dict[str, Any]:
+    """Run one board check; if it raises (a payload with a null field, say), return a rejected report row instead of ending
+    the whole run (T111: a harvested board did exactly that, 8 minutes into a Greenhouse run)."""
+    try:
+        return fn(*args, **kwargs)
+    except Exception as e:
+        logger.warning("checking %s/%s for %s failed: %s", ats, board, seed_name, e)
+        return {"seed": seed_name, "verdict": f"error: {type(e).__name__}: {str(e)[:80]}", "accepted": False, "ats": ats,
+                "board": board}
+
+
 def discover(seeds: List[Dict[str, Any]], workers: int = 40) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
     """Return (verified companies.json entries, report rows for every seed)."""
     board_seeds = [s for s in seeds if not {"workday", "oracle_hcm", "eightfold", "phenom"} & s.keys()]
@@ -421,8 +444,8 @@ def discover(seeds: List[Dict[str, Any]], workers: int = 40) -> Tuple[List[Dict[
     print(f"  {len(hits)} live board(s) found")
 
     print("Phase 2/3 — verifying live boards (jobs, identity, India presence)...")
-    with ThreadPoolExecutor(max_workers=12) as ex:
-        evaluated = list(ex.map(lambda h: evaluate_board(h[0]["name"], h[1], h[2], h[3]), hits))
+    with ThreadPoolExecutor(max_workers=max(1, min(12, workers))) as ex:     # --workers bounds this phase too (T111)
+        evaluated = list(ex.map(lambda h: _or_error(evaluate_board, h[0]["name"], h[1], h[2], h[0]["name"], h[1], h[2], h[3]), hits))
 
     wd_seeds = [s for s in seeds if "workday" in s]
     oracle_seeds = [s for s in seeds if "oracle_hcm" in s]
@@ -431,12 +454,11 @@ def discover(seeds: List[Dict[str, Any]], workers: int = 40) -> Tuple[List[Dict[
     print(f"Phase 3/3 — checking {len(wd_seeds)} Workday tenants, {len(oracle_seeds)} Oracle HCM sites, "
           f"{len(eightfold_seeds)} Eightfold sites and {len(phenom_seeds)} Phenom sites...")
     with ThreadPoolExecutor(max_workers=8) as ex:
-        wd_rows = list(ex.map(lambda s: evaluate_workday(s["name"], **s["workday"]), wd_seeds))
-        wd_rows += list(ex.map(lambda s: evaluate_entry(s["name"], {"ats": "oracle_hcm", **s["oracle_hcm"]}),
-                               oracle_seeds))
-        wd_rows += list(ex.map(lambda s: evaluate_entry(s["name"], {"ats": "eightfold", **s["eightfold"]}),
-                               eightfold_seeds))
-        wd_rows += list(ex.map(lambda s: evaluate_entry(s["name"], {"ats": "phenom", **s["phenom"]}), phenom_seeds))
+        wd_rows = list(ex.map(lambda s: _or_error(evaluate_workday, s["name"], "workday", s["workday"]["tenant"],
+                                                  s["name"], **s["workday"]), wd_seeds))
+        for ats, group in (("oracle_hcm", oracle_seeds), ("eightfold", eightfold_seeds), ("phenom", phenom_seeds)):
+            wd_rows += list(ex.map(lambda s, a=ats: _or_error(evaluate_entry, s["name"], a, str(s[a].get("host", "")), s["name"],
+                                                              {"ats": a, **s[a]}), group))
 
     company_cache, slug_cache = load_linkedin_cache(default_linkedin_cache())
     verified: List[Dict[str, Any]] = []
@@ -446,21 +468,28 @@ def discover(seeds: List[Dict[str, Any]], workers: int = 40) -> Tuple[List[Dict[
         by_seed.setdefault(r["seed"], []).append(r)
     for seed in board_seeds:
         cands = by_seed.get(seed["name"], [])
+        if seed.get("exact"):             # rows are grouped by name, which exact seeds may share: keep this seed's own board
+            own = detect_ats(seed["url"])
+            cands = [r for r in cands if own and (r["ats"], r["board"]) == tuple(own)]
         rows.extend(cands)
         good = [r for r in cands if r["accepted"]]
         if not cands:
             rows.append({"seed": seed["name"], "verdict": "no live board on supported ATSs", "accepted": False})
         if good:
             best = max(good, key=lambda r: (r["identity"].startswith("slug from"), r["india_jobs"], r["prefilter_pass"]))
+            name = display_name(seed["name"])
+            if seed.get("exact"):         # the board's own name where the ATS publishes one, else the label we gave it
+                name = _tidy_name(_board_name(best["ats"], best["board"]) or name)
             verified.append({
-                "name": display_name(seed["name"]), "ats": best["ats"], "slug": best["board"],
+                "name": name, "ats": best["ats"], "slug": best["board"],
                 "headcount": match_headcount(seed["name"], best["board"], company_cache, slug_cache),
             })
-    for r in wd_rows:
-        rows.append(r)
-        if r["accepted"]:
-            ident = r["entry"].get("tenant") or r["entry"].get("host", "").split(".")[0]
-            verified.append({**r["entry"], "headcount": match_headcount(r["seed"], ident, company_cache, slug_cache)})
+    rows.extend(wd_rows)
+    # A tenant may have several sites (Careers, Campus, ...) and merge_companies keeps one entry per company, the first it
+    # meets: put the site with the most India jobs first (a stable sort, so ties keep the seed order). T111.
+    for r in sorted((r for r in wd_rows if r["accepted"]), key=lambda r: -(r.get("india_jobs") or 0)):
+        ident = r["entry"].get("tenant") or r["entry"].get("host", "").split(".")[0]
+        verified.append({**r["entry"], "headcount": match_headcount(r["seed"], ident, company_cache, slug_cache)})
     return verified, rows
 
 

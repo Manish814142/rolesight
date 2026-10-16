@@ -358,3 +358,21 @@ def test_greenhouse_posted_at_prefers_first_published(mock_get):
         "first_published": "2026-09-03T13:30:34-04:00", "updated_at": "2026-09-25T16:45:00-04:00"}]}
     mock_get.return_value = mock_resp
     assert fetch_greenhouse("stripe")[0].posted_at == "2026-09-03T13:30:34-04:00"
+
+
+@patch("requests.get")
+def test_greenhouse_board_with_null_fields_does_not_crash_the_fetch(mock_get):
+    """T111: a harvested board had `"location": {"name": null}`; `.strip()` on None killed a whole discovery run."""
+    mock_resp = MagicMock()
+    mock_resp.json.return_value = {"jobs": [
+        {"id": 1, "title": "Backend Engineer", "location": {"name": None}, "content": None, "updated_at": "2026-10-01T00:00:00Z"},
+        {"id": 2, "title": None, "location": None, "content": "<p>x</p>"},
+        {"id": 3, "title": "Platform Engineer", "location": {"name": "Pune, India"}, "content": ""},
+    ]}
+    mock_resp.raise_for_status.return_value = None
+    mock_get.return_value = mock_resp
+
+    jobs = fetch_greenhouse("acme")
+
+    assert [j.title for j in jobs] == ["Backend Engineer", "", "Platform Engineer"]
+    assert [j.location for j in jobs] == ["Not specified", "Not specified", "Pune, India"]
