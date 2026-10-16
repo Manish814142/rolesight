@@ -271,7 +271,7 @@ sentence in `rubric.md` that caused it.
 
 ## 6. Add companies
 
-`companies.json` lists the career boards that get scanned (about 220 companies). Do not edit it by hand:
+`companies.json` lists the career boards that get scanned (about 1,500 companies). Do not edit it by hand:
 the `discover` command checks that a board is live, really belongs to the company and has jobs in India.
 
 ```bash
@@ -280,7 +280,7 @@ autopilot discover --add "Figma, Some Company" --report report.csv --out verifie
 
 - Names can be pasted in any format. `--add-file paste.txt` reads a file instead.
 - `--merge companies.json` adds the verified ones to the list and re-checks every existing entry, so it takes
-  **about 3 minutes** (measured: 3 m 21 s for 2 names against 224 boards).
+  **about 3 minutes for 224 boards** (measured: 3 m 21 s for 2 names) and **about 5½ minutes for about 1,500 boards** (measured 2026-10-16: 5 m 19 s for the recheck of 1,515 entries).
 - Read `report.csv`: the `verdict` column says `verified` or `no live board on supported ATSs`. A company with
   its own career site that is not on a supported system (Zerodha was the test case) cannot be scanned.
   A name that is already in the list is `verified` and nothing new is added.

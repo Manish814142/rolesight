@@ -9,6 +9,34 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Added (2026-10-16, T111: `companies.json` grows from 224 to 1,514 boards)
+- **Manish asked for as many companies as possible** ("more options to apply to different types of company"). `scripts/harvest_board_urls.py` lists the
+  job-board root pages the Internet Archive has seen (Greenhouse, Lever, Ashby, SmartRecruiters, Workable, Recruitee, Personio boards and Workday
+  sites; 51,456 boards) and Common Crawl's 2026 crawls added 2,657 more that the archive lacked, written as `Name | board URL | exact` seed lines.
+  `discover` checked all 54,113 (live, at least one India job, a posting no older than 180 days): **1,290 passed and were added** (greenhouse 504,
+  workday 303 (221 new), smartrecruiters 207, ashby 192, lever 151, workable 105, recruitee 39, personio 3; the 224 originals are unchanged).
+  511 of the new companies (40 %) have a role passing the title and location filter today, and their boards hold 14,285 India jobs (measured
+  with `discover`'s report; Workday counts the first page only). Recent Common Crawl boards passed at 11 % against 3 % for the archive's old ones.
+- `discover`: an `exact` seed probes only its own board (no slug guessing on every other ATS: 37 requests per board saved) and takes the company
+  name from the board where the ATS publishes one (spaces and invisible marks tidied); every site of a Workday tenant is checked and the one with most
+  India jobs kept; one board that makes the fetch raise is an `error` row, not the end of a 30-minute run; `--workers` now also bounds the
+  verification phase (Workable and Recruitee answer HTTP 429 to many parallel requests and the adapters read that as an empty board: at 20 workers 13 of 100
+  sampled Workable "no live board" verdicts and 19 of 100 Recruitee were alive when probed one at a time; a second pass at 3 workers found 17 and 28 more).
+- Not added, by choice: Oracle HCM sites (about 2,090 in the archive; the host is a customer code such as `cbcz.fa.us2.oraclecloud.com`, so there is no
+  company name to show), Greenhouse EU and Lever EU boards.
+- Measured cost of the bigger list (the scanner's own `run_scan` on a copy of the database, Gemini stubbed, 7-day window, 2026-10-16): 224 boards: 34,325 jobs
+  fetched, 18,084 in India, 63 to score, fetch 5.3 min, scan 6.1 min. **1,514 boards: 133,412 fetched, 32,621 in India, 320 to score (about 22 min of Gemini
+  calls at 4.2 s), fetch 9.5 min, scan 16.6 min without scoring.** The 320 are the 7-day backlog of the first scan; a day later only the new postings are scored.
+
+### Fixed (2026-10-16, T111: found by growing the list sevenfold)
+- **The monthly recheck (`discover --recheck`, T28) read rate limits as dead boards.** `companies.json` is sorted by ATS, so 12 workers sent Workable 12 requests
+  at once; it answers HTTP 429 and the adapter reads that as an empty board: 34 of the 86 Workable boards were reported "no open jobs" and would have been
+  removed. Entries now go out round-robin over the ATSs, a "no open jobs" answer is asked again two at a time before an entry is dropped, and a board whose
+  check raises is kept and flagged (`error`) instead of ending the check. On the 1,515-entry list: 42 changes before, 5 after. The five left: Confluent and Fi Money (empty on their
+  boards since 2026-10-14), Cloudflare (436 jobs, none in India) and Northern Trust (a false alarm: its Workday search has 99 hits but the light check reads
+  20 and cannot resolve "2 Locations" postings, Inbox T113) are existing entries and Manish's call, so they stay; ABBYY (5 jobs, none in India) was new and was dropped.
+- The Greenhouse adapter raised on a board whose job has `"location": {"name": null}` (or a null title): `discover` died 8 minutes into a run. It reads null as empty.
+
 ### Fixed (2026-10-15, T110: every age is counted in local days)
 - Found by jobnotify-7f's review of T109: the same UTC date in two more places. `discovery.newest_age_days` took "today" from UTC (measured
   by the reviewer: a posting 181 days old counted 180 and its board was accepted), and the day a job was first seen or scored was the UTC
