@@ -403,9 +403,22 @@ def is_too_old(posted_at: str, max_age_days: Optional[int], today: Optional[date
     return age is not None and age > max_age_days
 
 
+# "NCR" is also Metro Manila's abbreviation (the Philippines' National Capital Region; SmartRecruiters writes "Makati City, NCR, ph").
+# It is no evidence of Delhi when the same location names the Philippines (T115). Any other Indian term in the location still counts.
+_PHILIPPINES_PATTERN = re.compile(
+    r"\b(ph|philippines|manila|makati|quezon|taguig|pasig|mandaluyong|pasay|paranaque|muntinlupa|caloocan|marikina)\b", re.IGNORECASE)
+_NCR_WORD = re.compile(r"\bncr\b", re.IGNORECASE)
+
+
+def without_philippine_ncr(location: str) -> str:
+    """The location text with the word NCR taken out when the text also names the Philippines, else unchanged."""
+    text = location or ""
+    return _NCR_WORD.sub(" ", text) if _PHILIPPINES_PATTERN.search(text) else text
+
+
 def location_is_india(location: str) -> bool:
     """True when the location text names India, an Indian city or state (or SmartRecruiters' lowercase ', in')."""
-    text = location or ""
+    text = without_philippine_ncr(location)
     return bool(LOCATION_INDIA_PATTERN.search(text) or LOCATION_INDIA_MORE_PATTERN.search(text)
                 or LOCATION_INDIA_COUNTRY_CODE.search(text))
 

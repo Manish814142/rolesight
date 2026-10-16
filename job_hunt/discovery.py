@@ -54,6 +54,7 @@ from job_hunt.prefilter import (
     LOCATION_INDIA_COUNTRY_CODE,
     LOCATION_INDIA_PATTERN,
     should_evaluate_job,
+    without_philippine_ncr,
 )
 
 logger = logging.getLogger(__name__)
@@ -301,7 +302,8 @@ def _board_ident(c: Dict[str, Any]) -> str:
 
 
 def _is_india(location: str) -> bool:
-    return bool(LOCATION_INDIA_PATTERN.search(location or "") or LOCATION_INDIA_COUNTRY_CODE.search(location or ""))
+    text = without_philippine_ncr(location)     # "Makati City, NCR, ph" is Manila, not Delhi (T115)
+    return bool(LOCATION_INDIA_PATTERN.search(text) or LOCATION_INDIA_COUNTRY_CODE.search(text))
 
 
 # ── network checks ────────────────────────────────────────────────────────────
