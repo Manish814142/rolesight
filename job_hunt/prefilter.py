@@ -315,7 +315,7 @@ def _city_terms(city: str) -> set:
 
 def city_matches(location: str, cities) -> bool:
     """True when the location text holds any of the chosen cities (whole words, any case, usual alternative names)."""
-    text = (location or "").lower()
+    text = without_philippine_ncr(location).lower()
     for city in cities or []:
         for term in _city_terms(str(city)) if str(city).strip() else ():
             if re.search(r"(?<!\w)" + r"\s+".join(map(re.escape, term.split())) + r"(?!\w)", text):

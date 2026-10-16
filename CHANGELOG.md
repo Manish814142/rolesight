@@ -22,6 +22,9 @@ reconstructed from git history.
   Indian term in the location still counts ("Makati, NCR, ph; Pune, India" stays India). `discover` has its own location check and uses the same rule.
 - Measured: on the saved fetch of 2026-10-13 (39,985 jobs) 3 locations change, all Philippine, and 0 pre-filter decisions; on a fresh fetch of all 1,514 boards (164,053 jobs)
   396 locations change, all Philippine NCR ones and none Indian, and 10 jobs that passed the title and location filter (and would have reached Gemini) no longer do.
+- Review fix: someone who chooses Delhi NCR (or NCR) in `candidate.cities` still got Metro Manila jobs, because the chosen-city check runs before the India
+  check; `city_matches` now applies the same rule. On a fresh fetch of the 1,514 boards (167,608 jobs) with `cities: ["Delhi NCR"]`: 10 Manila jobs passed
+  before this fix, 0 after; with no cities chosen (the default) no decision changes.
 - Removed from `companies.json` (Manish, 2026-10-16: "fix the filter and drop the 21"): the 21 boards admitted only on Metro Manila jobs (AireSpring, Arch Global Services
   (Philippines), Canyon GBS, Dashlabs.ai, Deep Blue Company, Delivery Hero, Fredley Group of Companies, Growthdesk, Ikano-Retail, Keywords Studios, Lendi Group, Much Prosperity
   Trading International, Okos Smart Homes, PETA Asia, Pilmico Foods, Pronto Marketing, Santen, Simplesat, Talent, Wrist, Questronix) and two more of T111's additions that the

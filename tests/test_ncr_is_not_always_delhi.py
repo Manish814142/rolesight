@@ -8,7 +8,7 @@ import pytest
 
 import job_hunt.discovery as disc
 from job_hunt.models import JobPosting
-from job_hunt.prefilter import location_is_india, should_evaluate_job
+from job_hunt.prefilter import city_matches, location_is_india, should_evaluate_job
 
 
 def _job(location, title="Backend Engineer"):
@@ -48,3 +48,15 @@ def test_a_location_that_names_both_a_philippine_office_and_an_indian_one_is_ind
 def test_the_title_filter_is_untouched_by_the_location_rule():
     assert not should_evaluate_job(_job("Delhi NCR", title="Java Developer"))[0]
     assert should_evaluate_job(_job("Delhi NCR"))[0]
+
+
+@pytest.mark.parametrize("cities, indian", [
+    (["Delhi NCR"], "Gurugram, Haryana, India"), (["NCR"], "Noida, NCR, India"), (["Delhi NCR"], "Delhi NCR"),
+])
+def test_a_chosen_delhi_ncr_city_does_not_take_metro_manila(cities, indian):
+    # candidate.cities is checked before location_is_india, so the Philippine rule has to hold there too
+    for manila in ("Makati City, NCR, ph", "Manila, NCR, Philippines"):
+        assert not city_matches(manila, cities), (manila, cities)
+        assert not should_evaluate_job(_job(manila), cities)[0], (manila, cities)
+    assert city_matches(indian, cities)
+    assert should_evaluate_job(_job(indian), cities)[0]
