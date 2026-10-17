@@ -2,6 +2,7 @@ python-dotenv>=1.0.0
 requests>=2.31.0
 google-genai>=2.28.0   # default LLM provider (Gemini); tested with 2.28.0, older versions untested
 pyyaml>=6.0            # discover / harvest (company list tools); tested with 6.0.3
+openpyxl>=3.1          # the formatted Excel report beside each CSV (T128); tested with 3.1.5
 
 # Optional: MCP server (`autopilot mcp`)
 # mcp>=1.9,<3

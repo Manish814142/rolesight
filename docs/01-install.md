@@ -123,7 +123,8 @@ For a quick trial first, `autopilot scan --limit 5` scans only the first 5 compa
 
 ## 6. Read the results
 
-Open the newest `output/jobs_*.csv` in a spreadsheet. Rows are sorted best score first.
+Open the newest `output/jobs_*.xlsx` (the Excel copy of the CSV beside it) in a spreadsheet. Rows are sorted best score first,
+the Score is the first column, and every column has a filter.
 Read the **Reason** column before trusting a score. Apply through the
 **Application URL**, which is the company's own posting.
 

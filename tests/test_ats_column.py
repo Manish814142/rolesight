@@ -28,9 +28,9 @@ def test_a_row_carries_the_ats_as_stored():
 
 
 def test_the_column_sits_next_to_the_company_in_every_csv(tmp_path):
-    assert EXPORT_FIELDS[:2] == ["Company", "ATS"]
+    assert EXPORT_FIELDS[1:3] == ["Company", "ATS"]                      # Score comes first since T128
     path = export_jobs_to_csv([{"company": "A", "ats": "lever", "title": "Backend Engineer"}], base_name="x", out_dir=tmp_path)
-    assert list(_read(path)[0])[:2] == ["Company", "ATS"]
+    assert list(_read(path)[0])[1:3] == ["Company", "ATS"]
 
 
 def test_a_database_row_keeps_its_ats_and_a_missing_one_is_blank():

@@ -39,7 +39,7 @@ flowchart TD
     SCORE -- error --> DISC["stays discovered<br/>(retried next scan)"]
     SCORE -- ok --> SCORED["status = scored (+score, reason)"]
     SCORED -- "score ≥ min_score & Telegram HTTP 200" --> NOTIFIED["status = notified"]
-    SCORED --> OUT["sorted best-first →<br/>output/jobs_YYYY-MM-DD[_N].csv · Telegram digest<br/>(scores live in data/jobs.db)"]
+    SCORED --> OUT["sorted best-first →<br/>output/jobs_YYYY-MM-DD[_N].csv + .xlsx · Telegram digest<br/>(scores live in data/jobs.db)"]
 ```
 
 A company whose `careers_url` names a known ATS is detected automatically; one with no
@@ -61,7 +61,8 @@ TinyFish careers-page path was removed (T42).
 | [`scanner.py`](job_hunt/scanner.py) | `run_scan()`: parallel fetch (`fetch_workers`) → per-job dedupe / pre-filter / age → enrich → score → state files, CSV, digest. Also `score_jobs`, the batch prompt used by the non-Gemini providers. |
 | [`scorer.py`](job_hunt/scorer.py) | `score_and_process_job` (single, default) / `score_and_process_batch` (opt-in): Gemini call, 4.2 s pacing, DB status update, per-job Telegram alert. A failure returns `score=None` and leaves the row `discovered`. |
 | [`llm_utils.py`](job_hunt/llm_utils.py) | `score_job_with_gemini` / `score_jobs_batch_with_gemini` (JSON output, model fallback `gemini-3.5-flash-lite` → `gemini-3.1-flash-lite`, one retry per model on 429/503/quota; a model whose daily quota is gone is skipped until its reset, T64); `chat_with_llm` provider dispatch for drafting (`gemini`, `anthropic`, `claude_cli`; `openrouter` was removed). |
-| [`exporter.py`](job_hunt/exporter.py) | CSV writer: 11 columns, never overwrites (`jobs_DATE.csv`, `jobs_DATE_1.csv`, …). |
+| [`exporter.py`](job_hunt/exporter.py) | CSV writer: 11 columns in reading order (Score first), never overwrites (`jobs_DATE.csv`, `jobs_DATE_1.csv`, …). |
+| [`xlsx_report.py`](job_hunt/xlsx_report.py) | The formatted Excel copy written beside each CSV (T128): frozen header, filter, coloured Score, wrapped text, links. Built from the CSV; a failure only logs a warning. |
 | [`notifier.py`](job_hunt/notifier.py) | `send_telegram`, `is_telegram_configured` (empty or placeholder ⇒ off), `format_job_alert` (with the headcount badge). |
 | [`discovery.py`](job_hunt/discovery.py) | `autopilot discover`: seeds / `--add-file` / `--add` → slug candidates → probe ATSs and curated Workday tenants → accept only if live, the right employer, ≥1 India job and the newest posting ≤180 days; `--merge`, `--recheck`, `--census`, `--emit-seeds`. `KNOWN_BAD_BOARDS` is never accepted. |
 | [`harvester.py`](job_hunt/harvester.py), [`validator.py`](job_hunt/validator.py), [`company_builder.py`](job_hunt/company_builder.py) | Older list builders. `validate` **rewrites `companies.json` in place**; `harvest` writes there by default but refuses to overwrite an existing file without `--force` (T43). Use `discover`. `company_builder.match_headcount` is still used by `discover` for the badge. |

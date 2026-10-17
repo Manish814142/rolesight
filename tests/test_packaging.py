@@ -28,13 +28,13 @@ def test_gemini_client_is_a_core_dependency_everywhere():
 
 def test_requirements_only_name_what_the_code_imports():
     names = _requirement_names("requirements.txt")
-    assert "openpyxl" not in names           # nothing in job_hunt/ imports it
+    assert "openpyxl" in names               # job_hunt/xlsx_report.py imports it (T128)
     assert {"python-dotenv", "requests", "google-genai"} <= set(names)
 
 
 # Import name -> distribution name. Optional imports (the anthropic provider, the MCP server and its pydantic
 # models) are installed by extras and imported lazily; everything else must be a core dependency.
-_DISTRIBUTION = {"dotenv": "python-dotenv", "google": "google-genai", "requests": "requests", "yaml": "pyyaml"}
+_DISTRIBUTION = {"dotenv": "python-dotenv", "google": "google-genai", "openpyxl": "openpyxl", "requests": "requests", "yaml": "pyyaml"}
 _OPTIONAL_IMPORTS = {"anthropic", "mcp", "pydantic"}
 
 

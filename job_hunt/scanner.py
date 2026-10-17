@@ -79,6 +79,7 @@ Set worth_applying=true only if score >= {min_score}.
 Include ALL jobs. Output ONLY the JSON array."""
 
 from job_hunt.exporter import export_jobs_to_csv, job_from_db_row  # noqa: E402
+from job_hunt.xlsx_report import write_xlsx_report  # noqa: E402
 
 
 def _build_candidate_profile(config: dict) -> str:
@@ -286,6 +287,7 @@ def format_telegram_message(top_jobs: list[dict], date_str: str) -> str:
 def _export_to_csv(jobs: list[dict], label: str) -> Path:
     out_path = export_jobs_to_csv(jobs, out_dir="output")
     logger.info(f"Results exported to CSV ({label}): {out_path}")
+    write_xlsx_report(out_path)                 # the formatted Excel copy beside it (T128)
     return out_path
 
 
@@ -324,6 +326,7 @@ def _write_open_matches(min_score: int, max_age: Optional[int], scope: str = DEF
     tmp = OPEN_MATCHES_FILE.with_suffix(".csv.tmp")
     export_jobs_to_csv(jobs, out_path=tmp)
     os.replace(tmp, OPEN_MATCHES_FILE)          # never a half-written file if it is open in a spreadsheet
+    write_xlsx_report(OPEN_MATCHES_FILE)        # and its Excel copy (T128)
     return len(jobs)
 
 

@@ -9,6 +9,22 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Changed + Added (2026-10-17, T128: columns in reading order, and a formatted Excel report beside every CSV)
+- Manish, after opening the sample run: Score was the 8th column, behind two long links. "Worth Applying at the end is okay"; "csv or excel, any format works, you decide"; "what else can we do: formatting, text size, colouring?"
+  The CSV columns are now **Score (%), Company, ATS, Role, Location, Posted, Reason, Application URL, LinkedIn people, Worth Applying, Scan Date** (optional columns, Model and Rubric still follow). `Worth Applying` stays in `open_matches.csv`
+  (always `Yes` there): dropping it would have been a special case across the writer, the tests and the docs for one narrow column. Files written earlier keep the old order; readers that use the header names are not affected.
+- New `job_hunt/xlsx_report.py`: beside **every** CSV (the scan's `jobs_*.csv`, `open_matches.csv`, `autopilot export`) a workbook of the same rows under the same name (`.xlsx`), built from the CSV just written. Header row dark blue, bold and
+  frozen together with Score and Company; a filter on every column; Score a number, **green** from 85 (unless Worth Applying says No) and **amber** when Worth Applying is Yes below that; Role, Location and Reason wrapped with rows sized to
+  their text; Application URL and LinkedIn people are "Open" and "Search" cells that carry the links; widths set; Calibri 11 named on every font; landscape, one page wide, header repeated. Text from a job board is always stored as
+  text (a title starting with `=`, `+`, `-` or `@` is not a formula), control characters are dropped from the report, an address beyond 2,000 characters stays plain text. The report is secondary: a failure (a file open in Excel on Windows,
+  a missing library) logs `Excel report … not written`, removes an older report of that name and the scan goes on; it is written beside its name and moved over it. `openpyxl>=3.1` is now a core dependency (`pyproject.toml`,
+  `requirements.txt`; `test_packaging.py` had asserted it was unused).
+- Seen in a LibreOffice 7.3 render of the first version and fixed: wrapped rows kept one line's height (text drawn over itself), and the header, links and scores came out in a serif font because the fonts had no name.
+  Measured: the final 49-row report and a 735-row one (`autopilot export --days 30` on a copy of the real database, 0.5 s, 22 printed pages, header repeated on page 2) open in LibreOffice and read back with openpyxl. **Not tested:** Excel.
+  This also answers T126 for anyone who opens the `.xlsx`: no import dialog, the letters are right (the CSV is unchanged, UTF-8 without a byte-order mark).
+- 29 new tests (`test_column_order.py`, `test_xlsx_report.py`: unit, real scan, `autopilot export`, a failing save, and LibreOffice converting the `.xlsx` back to CSV when it is installed); 19 mutants each fail a test (an earlier run of the
+  mutation harness reused stale bytecode for four of them and reported them killed by the wrong test; fixed and rerun).
+
 ### Docs (2026-10-17, after the T121–T125 review: testing checklist, test counts, a real 11-company run)
 - `docs/09-testing-checklist.md` still recorded 398 tests (2026-10-04). Now 1,749 passed, coverage 93.34%, ruff and mypy clean (measured on the tree after the reviewer's fixes). Added: `autopilot schedule status` as a keyless smoke test
   (and why `schedule on` is not a test to run on a working machine), the ATS column and the T124 `open_matches.csv` meaning in the "real, small scan" steps, and that `--limit N` takes the first N companies (Amazon alone queued 44

@@ -60,8 +60,8 @@ Check, in order:
 2. Each company logs `Fetched N job(s)` or `No open jobs found`.
 3. `Full descriptions fetched for K of N survivor(s)` appears when Workday,
    SmartRecruiters or Oracle HCM jobs survived.
-4. A new `output/jobs_*.csv`, best first, with Reason filled and the **ATS** column (second) filled on every row (T122).
-5. `output/open_matches.csv` holds only the jobs this scan scored at or above `min_score`, not marked applied; a scan
+4. A new `output/jobs_*.csv`, best first, with the Score in the first column, Reason filled and the **ATS** column (third) filled on every row (T122, T128), and a `jobs_*.xlsx` of the same name beside it: open it and check the frozen header, the filter arrows, the green/amber scores and that Reason is readable (T128).
+5. `output/open_matches.csv` (and `.xlsx`) holds only the jobs this scan scored at or above `min_score`, not marked applied; a scan
    that found nothing new leaves the header and no rows (T124). `"open_matches_scope": "all_open"` in `config.json`
    gives the rolling list of every unmarked match instead.
 6. The DB status counts moved

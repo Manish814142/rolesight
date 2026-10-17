@@ -95,7 +95,7 @@ def test_an_empty_result_still_rewrites_the_file(env):
     for name in "BDEF":
         tracker.mark_job(f"https://x/{name}", "rejected")
     assert env() == []
-    assert Path("output/open_matches.csv").read_text(encoding="utf-8").startswith("Company,")
+    assert Path("output/open_matches.csv").read_text(encoding="utf-8").startswith("Score (%),Company,")
 
 
 def test_age_of_a_stored_posting(tmp_path):

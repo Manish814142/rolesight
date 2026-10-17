@@ -307,20 +307,22 @@ Funnel: fetched 2354 | India 2167 | already scored 0 | pre-filter rejected 2058 
 
 The scan writes `output/jobs_YYYY-MM-DD.csv` (only the jobs scored in that scan, best first; a new file each
 time) and `output/open_matches.csv` (only what **this** scan found: its jobs above `min_score` that you have not
-marked as applied; a scan with nothing new leaves it empty, and yesterday's jobs are in yesterday's file). Open either in a
-spreadsheet. The files are UTF-8 without a byte-order mark: if a place name such as "Karnātaka" shows as "KarnÄ…taka", choose
-**UTF-8** in the spreadsheet's import dialog (measured with LibreOffice 7.3 started headless: its default import garbled 5
-cells of a 49-row file, and with UTF-8 chosen none; Excel was not tested).
+marked as applied; a scan with nothing new leaves it empty, and yesterday's jobs are in yesterday's file). **Each has an
+`.xlsx` beside it with the same name: open that one.** It is the same table made easy to read: the header row and the Score and
+Company columns stay in view when you scroll, every column has a filter (use it on **ATS**), Score is green from 85 and amber
+from your `min_score`, and "Open" in the Application URL column is the link. The `.csv` is the same data for scripts; it is UTF-8
+without a byte-order mark, so if you open it directly and a name such as "Karnātaka" shows as "KarnÄ…taka", choose **UTF-8** in
+the import dialog (measured with LibreOffice 7.3 started headless: its default import garbled 5 cells of a 49-row file, and with
+UTF-8 chosen none; the `.xlsx` has no such problem there; Excel was not tested).
 
 | Column | What to do with it |
 |---|---|
-| Role, Company, Location, Posted | What and where |
-| ATS | The hiring platform the job is on (`greenhouse`, `lever`, `workday`, …). Turn on the spreadsheet's filter for this column to apply only on the platform you prefer |
-| Score (%) | 0–100 from Gemini. Use it to **order your reading**, not as a verdict |
+| Score (%) | 0–100 from Gemini, first because the file is sorted by it. Use it to **order your reading**, not as a verdict |
+| Company, ATS, Role, Location, Posted | Who, which hiring platform (`greenhouse`, `lever`, `workday`, …; turn on the spreadsheet's filter for **ATS** to apply only on the platform you prefer), what and where, and how fresh |
 | Reason | One sentence on why. **Read this before trusting the score** |
-| Worth Applying | `Yes` when the score is at least `candidate.min_score` |
 | Application URL | The company's own page. Apply there |
 | LinkedIn people | A LinkedIn search for people at that company, to find someone for a referral (needs a LinkedIn login) |
+| Worth Applying | `Yes` when the score is at least `candidate.min_score` (always `Yes` in `open_matches`) |
 
 Other commands that read what the last scan saved (none of them needs a key, except `draft`):
 

@@ -56,8 +56,8 @@ Each scan (`autopilot scan`):
 4. **Scores** each survivor with Gemini, from 0 to 100, against the full resume and the
    candidate profile, with a one-sentence reason.
 5. **Remembers** every job in SQLite, so the next scan only scores jobs it hasn't seen.
-6. **Writes** a CSV (`output/jobs_YYYY-MM-DD.csv`), best score first. If Telegram is
-   configured, it also sends alerts.
+6. **Writes** a CSV (`output/jobs_YYYY-MM-DD.csv`) and, beside it, a formatted Excel copy (`.xlsx`: header row
+   frozen with a filter, scores coloured), best score first. If Telegram is configured, it also sends alerts.
 
 What you do with it: open the CSV, read the top rows, apply to the ones that fit through
 the company's own job page.
@@ -167,7 +167,7 @@ rolesight scan --limit 5
 rolesight scan --posted-within 7
 
 # 5. Read the results
-ls output/                              # jobs_YYYY-MM-DD.csv, best score first
+ls output/                              # jobs_YYYY-MM-DD.csv and .xlsx (open the .xlsx), best score first
 ```
 
 `rolesight` and `autopilot` are the same command. In this repo `companies.json` (1,589 boards) is already in place;
@@ -227,8 +227,9 @@ narrows them. `rolesight check-filter "Java Developer" "Pune, India"` shows what
 
 | Path | Contents |
 |---|---|
-| `output/jobs_YYYY-MM-DD.csv` | One file per scan (`_1`, `_2`, … if one already exists). Columns: Company, ATS (the platform to filter on), Role, Location, Posted, Application URL, LinkedIn people, Score (%), Reason, Worth Applying, Scan Date (plus Stack, Stack fit, Role fit, … only when a scorer provides them, Model when a model other than the primary scored some job, and Rubric when a score is not from the current rubric). Best score first. |
-| `output/open_matches.csv` | Rewritten every scan with what **that scan** found: its jobs ≥ `min_score` you haven't marked (`autopilot mark`), inside the posted-date window, best first. `"open_matches_scope": "all_open"` in `config.json` makes it the rolling list of every unmarked match |
+| `output/jobs_YYYY-MM-DD.csv` | One file per scan (`_1`, `_2`, … if one already exists). Columns: Score (%), Company, ATS (the platform to filter on), Role, Location, Posted, Reason, Application URL, LinkedIn people, Worth Applying, Scan Date (plus Stack, Stack fit, Role fit, … only when a scorer provides them, Model when a model other than the primary scored some job, and Rubric when a score is not from the current rubric). Best score first. |
+| `output/jobs_YYYY-MM-DD.xlsx` | The same rows as a formatted Excel workbook, written beside each CSV with the same name (T128): header row frozen with a filter on every column (filter on **ATS**), Score first and coloured (green from 85, amber from your `min_score`), long Reason wrapped, "Open" and "Search" cells that are the links. The CSV stays the file for scripts; the `.xlsx` is the one to read, and it needs no encoding choice. |
+| `output/open_matches.csv` and `.xlsx` | Rewritten every scan with what **that scan** found: its jobs ≥ `min_score` you haven't marked (`autopilot mark`), inside the posted-date window, best first. `"open_matches_scope": "all_open"` in `config.json` makes it the rolling list of every unmarked match |
 | `data/jobs.db` | SQLite seen-job memory: `skipped` → `discovered` → `scored` / `notified` |
 | `state/*.json` | Retired (T34): no longer written or read; `scripts/import_json_history.py` imports what only they hold |
 | `data/autopilot.log` | Full DEBUG log of every run; rotates at 5 MB, 3 older files kept |

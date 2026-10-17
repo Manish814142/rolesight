@@ -3,7 +3,7 @@
 Everything a scan writes, how to read it, and the optional channels on top. All of these
 paths are gitignored.
 
-## The CSV (primary output)
+## The CSV (primary output) and its Excel copy
 
 `output/jobs_YYYY-MM-DD.csv`. One file per scan; if the name is taken, the scan writes
 `_1`, `_2`, … and never overwrites. Rows are **sorted best score first**. Row N of the CSV
@@ -11,17 +11,27 @@ is job N of the last completed scan, which `draft N` and `mark N` look up in `da
 
 | Column | Meaning |
 |---|---|
+| Score (%) | Gemini's 0–100 fit score. First, because the file is sorted by it |
 | Company | `name` from `companies.json` |
 | ATS | The platform the job is posted on, as `companies.json` spells it: `greenhouse`, `lever`, `ashby`, `smartrecruiters`, `workday`, `workable`, `recruitee`, `personio`, `oracle_hcm`, `eightfold`, `phenom` or `amazon`. Filter on it in the spreadsheet to apply on one platform (T122) |
 | Role | Job title as the ATS gives it |
 | Location | Raw location string from the ATS |
 | Posted | `YYYY-MM-DD`, or Workday's relative text ("Posted 5 Days Ago") |
+| Reason | Gemini's one sentence on why it scored that way. **Read this before trusting the number** |
 | Application URL | The company's own posting. Apply there |
 | LinkedIn people | A LinkedIn people search for `<company> software engineer`, to find someone for a referral. Opening it needs you to be logged in to LinkedIn |
-| Score (%) | Gemini's 0–100 fit score |
-| Reason | Gemini's one sentence on why it scored that way. **Read this before trusting the number** |
-| Worth Applying | `Yes` if score ≥ `min_score` |
+| Worth Applying | `Yes` if score ≥ `min_score` (it repeats the score against your threshold, so it is last; in `open_matches.csv` it is always `Yes`) |
 | Scan Date | UTC date of the scan |
+
+The columns are in reading order since T128 (Manish: the score is what he ranks and filters on, and it was the 8th column, behind two long links).
+
+**The Excel copy (T128).** Beside every CSV the scan writes a workbook of the same rows under the same name (`jobs_YYYY-MM-DD.xlsx`, `open_matches.xlsx`; `autopilot export` writes one too). It is built from the CSV just written, so the
+columns, their order and the optional ones below always agree. What it adds: the header row is dark blue, bold and **frozen together with Score and Company**; a **filter** is on every column (filter on ATS, or on Score); Score is a **number**
+(sorts and filters as one), **green** at 85 and above and **amber** from `min_score` up to 84, plain below; Role, Location and Reason **wrap** and the rows are sized to fit; **Application URL** and **LinkedIn people** are cells
+that read "Open" and "Search" and are the links; widths are set; the sheet prints landscape, one page wide, with the header repeated. Text from a job board is always stored as text: a title that starts with `=`, `+`, `-` or `@` is not
+run as a formula. Characters a spreadsheet cannot hold (control characters) are dropped from the report, not from the CSV. The CSV is the primary output: if the report cannot be written (the file is open in Excel on
+Windows, say) the scan logs `Excel report … not written`, removes an older report of that name so it cannot be mistaken for this one, and carries on. It is written with the `openpyxl` library (a core dependency).
+Measured: LibreOffice 7.3 opens it and the letters ("Karnātaka") come out right without an import dialog; Excel was not tested.
 
 A column appears only when some job in the file has a value for it: **Stack** (from the deprecated non-Gemini
 scorer) and, with `scoring_mode: structured`, **Stack fit**, **Role fit**, **Seniority fit**, **Location fit**,
@@ -41,7 +51,7 @@ CSVs and in `data/jobs.db` (`autopilot export --days N`).
 scan (2026-10-04) had 74 rows ≥ 60, 67 ≥ 70 and 38 ≥ 80, and 21 jobs tied at exactly 90
 (before the rubric; ties remain, T41). Treat the number as a ranking hint, not a verdict.
 
-## `output/open_matches.csv` (T39, T124)
+## `output/open_matches.csv` and `.xlsx` (T39, T124)
 
 Rewritten at the end of every scan, whether or not the scan scored anything. **It holds what the scan that just ran
 found: the jobs it scored at or above `min_score`** that you have not marked with `autopilot mark` (any of applied,

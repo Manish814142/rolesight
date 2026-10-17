@@ -129,6 +129,7 @@ def init_project(resume: str | None = None, yes: bool = False) -> None:
 
 
 from job_hunt.exporter import export_jobs_to_csv, job_from_db_row, job_to_export_row  # noqa: E402
+from job_hunt.xlsx_report import write_xlsx_report  # noqa: E402
 
 _job_to_row = job_to_export_row
 
@@ -188,8 +189,9 @@ def export_jobs(min_score: int = 0, days: int = 0) -> None:
     day_suffix = f"_last{days}d" if days else ""
     base_name = f"jobs_{date_str}{day_suffix}"
     out_path = export_jobs_to_csv(filtered, base_name=base_name, out_dir="output")
+    report = write_xlsx_report(out_path)
 
-    print(f"Exported {len(filtered)} jobs ({source_label}) → {out_path}")
+    print(f"Exported {len(filtered)} jobs ({source_label}) → {out_path}" + (f" and {report}" if report else ""))
     if min_score:
         print(f"Filter: score >= {min_score} (skipped {len(jobs) - len(filtered)})")
 

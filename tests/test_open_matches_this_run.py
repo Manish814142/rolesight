@@ -72,7 +72,7 @@ def test_only_the_jobs_this_scan_scored_and_that_pass_min_score_are_listed_best_
 def test_a_scan_that_finds_nothing_new_leaves_the_file_empty_not_full_of_old_jobs(env):
     assert env(new=[_job("N1")], scores={"N1": 90}) == ["N1"]
     assert env() == []                                       # same boards, nothing new: yesterday's job is not shown again
-    assert Path("output/open_matches.csv").read_text(encoding="utf-8").startswith("Company,")
+    assert Path("output/open_matches.csv").read_text(encoding="utf-8").startswith("Score (%),Company,")
 
 
 def test_the_next_scan_replaces_the_list_with_its_own_jobs(env):

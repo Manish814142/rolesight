@@ -69,7 +69,7 @@ Tests must make **no network calls** — stub `send_telegram`, adapters, and Gem
    a model other than the primary scored; T71) and the id of the rubric text (`jobs.score_rubric`, scan log `Scoring rubric:`, CSV `Rubric`
    column when a score is not from the current one; `python scripts/rubric_ids.py [--db data/jobs.db]` decodes the ids; T97).
 7. Per-job Telegram alert (if configured) → results sorted best-first → incremental CSV
-   `output/jobs_YYYY-MM-DD[_N].csv` (never overwrites) and `output/open_matches.csv` (rewritten every run: the jobs *this* scan
+   `output/jobs_YYYY-MM-DD[_N].csv` (never overwrites; each CSV also gets a formatted `.xlsx` beside it, T128) and `output/open_matches.csv` (rewritten every run: the jobs *this* scan
    scored ≥ min_score, not marked applied, inside the posted window; T124. `open_matches_scope: "all_open"` brings back the rolling list
    of every unmarked match, T39); the scan's row in table `scans` is finished,
    digest of the top `top_n`.
@@ -181,7 +181,8 @@ job_hunt/
   scanner.py      run_scan orchestration
   llm_utils.py    provider dispatch (gemini default; anthropic, claude_cli)
   notifier.py     send_telegram, is_telegram_configured, format_job_alert
-  exporter.py     incremental CSV writer
+  exporter.py     incremental CSV writer (columns in reading order, Score first, T128)
+  xlsx_report.py  the formatted .xlsx written beside each CSV, built from it; never stops a scan (T128)
   discovery.py    `discover`: verify/add companies (--add-file), --recheck, --census
   harvester.py    old companies.json builder;  validator.py  board pruning
   company_builder.py  headcount matching + blocklist tiers

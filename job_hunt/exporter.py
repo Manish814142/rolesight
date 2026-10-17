@@ -9,16 +9,18 @@ from urllib.parse import quote
 
 from job_hunt.llm_utils import GEMINI_DEFAULT_MODEL, current_rubric_ids
 
+# In reading order (T128): the score first, the file is sorted by it; the long link columns after the text; Worth Applying, which only
+# repeats the score against min_score, with the date at the end. Optional columns (OPTIONAL_COLUMNS, Model, Rubric) follow.
 EXPORT_FIELDS: List[str] = [
+    "Score (%)",
     "Company",
     "ATS",                  # the platform the job is posted on, as companies.json spells it: a filter column (T122)
     "Role",
     "Location",
     "Posted",
+    "Reason",
     "Application URL",
     "LinkedIn people",
-    "Score (%)",
-    "Reason",
     "Worth Applying",
     "Scan Date",
 ]
