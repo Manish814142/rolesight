@@ -635,7 +635,7 @@ Which terms would you add?
 
 ## Inbox
 
-New findings go here with the next free ID (next: **T131**), an evidence tag and the
+New findings go here with the next free ID (next: **T130**), an evidence tag and the
 file:line. Manish or the triaging agent moves each one into a priority table.
 
 | ID | Finding | Evidence | Added by |
