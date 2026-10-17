@@ -87,6 +87,16 @@ def test_a_job_already_marked_applied_is_not_listed_even_when_this_scan_scored_i
     assert env(new=[already, _job("N1")], scores={"M": 99, "N1": 90}) == ["N1"]
 
 
+@pytest.mark.parametrize("mark", ["interview", "rejected", "offer"])
+def test_any_mark_keeps_a_job_off_the_list_not_only_applied(env, mark):
+    """T124 review: as in the rolling list (`application_status IS NULL`), a job marked interview, rejected or offer is not
+    something to apply to now; a version that hid only "applied" passed every other test."""
+    marked = _job("M")
+    save_job(marked)
+    tracker.mark_job(marked.url, mark)
+    assert env(new=[marked, _job("N1")], scores={"M": 99, "N1": 90}) == ["N1"]
+
+
 def test_an_undated_job_is_kept_like_in_the_scan_itself(env):
     assert env(new=[_job("U", posted="")], scores={"U": 90}) == ["U"]
 
