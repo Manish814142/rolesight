@@ -48,12 +48,20 @@ if [ "$ACTION" = "uninstall" ]; then
     exit 0
 fi
 
+# The clone may sit in a folder whose name has a space, %, $, " or \ ("my repo"). systemd splits a command line at spaces
+# unless the word is quoted and reads % as a specifier (literal: %%) and, in a command line, $ as a variable (literal: $$)
+# (systemd.service(5), systemd.syntax(7)); sed needs \, & and its | delimiter escaped in the replacement.
+REPO_DIR="${REPO//\%/%%}"
+REPO_ARG="${REPO//\\/\\\\}"; REPO_ARG="${REPO_ARG//\"/\\\"}"; REPO_ARG="${REPO_ARG//\%/%%}"; REPO_ARG="${REPO_ARG//\$/\$\$}"
+sed_escape() { printf '%s' "$1" | sed -e 's/[\\&|]/\\&/g'; }
+
 mkdir -p "$UNIT_DIR"
 UNITS="job-hunt-scan"
 [ "$RECHECK" = 1 ] && UNITS="$UNITS job-hunt-recheck"
 for unit in $UNITS; do
     for kind in service timer; do
-        sed -e "s|@REPO@|$REPO|g" -e "s|@AT@|$AT|g" "$SRC/$unit.$kind.in" > "$UNIT_DIR/$unit.$kind"
+        sed -e "s|@REPO_DIR@|$(sed_escape "$REPO_DIR")|g" -e "s|@REPO_ARG@|$(sed_escape "$REPO_ARG")|g" -e "s|@AT@|$AT|g" \
+            "$SRC/$unit.$kind.in" > "$UNIT_DIR/$unit.$kind"
     done
     echo "Wrote $UNIT_DIR/$unit.service and $unit.timer"
 done

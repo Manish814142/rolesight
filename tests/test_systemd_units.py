@@ -28,7 +28,7 @@ def test_install_renders_both_units_with_this_repos_paths(tmp_path):
     service = (_units(tmp_path) / "job-hunt-scan.service").read_text()
     timer = (_units(tmp_path) / "job-hunt-scan.timer").read_text()
     assert f"WorkingDirectory={ROOT}" in service
-    assert f"ExecStart=/usr/bin/env bash {ROOT}/run_daily.sh" in service
+    assert f'ExecStart=/usr/bin/env bash "{ROOT}/run_daily.sh"' in service
     assert "Type=oneshot" in service
     assert "OnCalendar=*-*-* 09:00:00" in timer and "Persistent=true" in timer and "WantedBy=timers.target" in timer
     assert "@" not in service + timer                                  # every placeholder was filled
@@ -84,7 +84,7 @@ def test_the_recheck_timer_is_only_installed_on_request(tmp_path):
     assert _run(tmp_path, "--no-systemctl", "--with-recheck").returncode == 0
     service = (_units(tmp_path) / "job-hunt-recheck.service").read_text()
     timer = (_units(tmp_path) / "job-hunt-recheck.timer").read_text()
-    assert f"ExecStart=/usr/bin/env bash {ROOT}/scripts/monthly_recheck.sh" in service
+    assert f'ExecStart=/usr/bin/env bash "{ROOT}/scripts/monthly_recheck.sh"' in service
     assert f"WorkingDirectory={ROOT}" in service
     assert "OnCalendar=*-*-01 10:00:00" in timer and "Persistent=true" in timer
     assert "@" not in service + timer
@@ -115,7 +115,7 @@ WAIT = ROOT / "scripts" / "systemd" / "wait-online.sh"
 def test_each_service_waits_for_the_network_before_it_starts(tmp_path, flags, unit):
     assert _run(tmp_path, "--no-systemctl", *flags).returncode == 0
     service = (_units(tmp_path) / f"{unit}.service").read_text()
-    assert f"ExecStartPre=/usr/bin/env bash {WAIT}" in service
+    assert f'ExecStartPre=/usr/bin/env bash "{WAIT}"' in service
     assert "network-online.target" not in service.replace("# A user unit cannot order itself after network-online.target", "")
 
 
@@ -141,3 +141,50 @@ def test_wait_online_gives_up_and_says_so_in_the_scan_log(tmp_path):
     assert r.returncode == 1                       # the unit fails, so run_daily.sh never starts offline
     assert "no network" in r.stderr
     assert "Not started: no network" in (tmp_path / "data" / "scan.log").read_text()
+
+
+# ── T121 review: a clone in a folder whose name has a space, % or $ ─────────────────────────────────────────────────────
+
+def _clone_at(tmp_path: Path, name: str) -> Path:
+    repo = tmp_path / name
+    (repo / "scripts").mkdir(parents=True)
+    shutil.copytree(ROOT / "scripts" / "systemd", repo / "scripts" / "systemd")
+    shutil.copy(ROOT / "run_daily.sh", repo / "run_daily.sh")
+    return repo
+
+
+def _render(tmp_path: Path, repo: Path) -> str:
+    env = {**os.environ, "XDG_CONFIG_HOME": str(tmp_path / "xdg"), "HOME": str(tmp_path / "home")}
+    r = subprocess.run(["bash", str(repo / "scripts" / "systemd" / "install.sh"), "--no-systemctl", "--with-recheck"],
+                       capture_output=True, text=True, env=env, cwd=tmp_path)
+    assert r.returncode == 0, r.stderr
+    return (tmp_path / "xdg" / "systemd" / "user" / "job-hunt-scan.service").read_text()
+
+
+def test_a_path_with_a_space_percent_or_dollar_is_quoted_and_escaped_for_systemd(tmp_path):
+    """systemd splits a command line at spaces unless the word is quoted, reads % as a specifier (literal %%) and, in a
+    command line, $ as a variable (literal $$): unquoted, a clone in "my repo" made the timer run `bash .../my`."""
+    repo = _clone_at(tmp_path, 'my 100% $repo')
+    service = _render(tmp_path, repo)
+    escaped = str(repo).replace("%", "%%")
+    assert f"WorkingDirectory={escaped}\n" in service
+    assert f'ExecStart=/usr/bin/env bash "{escaped.replace("$", "$$")}/run_daily.sh"\n' in service
+    assert f'ExecStartPre=/usr/bin/env bash "{escaped.replace("$", "$$")}/scripts/systemd/wait-online.sh"\n' in service
+    recheck = (tmp_path / "xdg" / "systemd" / "user" / "job-hunt-recheck.service").read_text()
+    assert f'ExecStart=/usr/bin/env bash "{escaped.replace("$", "$$")}/scripts/monthly_recheck.sh"\n' in recheck
+
+
+@pytest.mark.skipif(shutil.which("systemd-analyze") is None, reason="systemd-analyze not installed")
+@pytest.mark.parametrize("name", ["my repo", "100% done"])
+def test_systemd_itself_resolves_the_quoted_path_to_the_real_script(tmp_path, name):
+    """The real parser: `verify` checks that a command's first word exists, so a probe unit whose first word is the rendered
+    (quoted, escaped) path proves systemd reads it as the real run_daily.sh. Before the fix it read ".../my"."""
+    repo = _clone_at(tmp_path, name)
+    (repo / "run_daily.sh").chmod(0o755)
+    service = _render(tmp_path, repo)
+    word = next(ln for ln in service.splitlines() if ln.startswith("ExecStart=")).split(" bash ", 1)[1]
+    workdir = next(ln for ln in service.splitlines() if ln.startswith("WorkingDirectory="))
+    probe = tmp_path / "rs-probe.service"
+    probe.write_text(f"[Service]\nType=oneshot\n{workdir}\nExecStart={word}\n")
+    r = subprocess.run(["systemd-analyze", "--user", "verify", str(probe)], capture_output=True, text=True)
+    assert r.returncode == 0, r.stderr + r.stdout

@@ -29,7 +29,8 @@ shift
 case "$1" in
     show-environment) exit "${SHIM_SYSTEMCTL_RC:-0}" ;;
     daemon-reload|list-timers) exit 0 ;;
-    enable) touch "$SHIM_STATE/enabled-$3"; exit 0 ;;
+    enable) if [ -n "$SHIM_ENABLE_FAILS" ]; then echo "Failed to enable unit: Access denied" >&2; exit 1; fi
+            touch "$SHIM_STATE/enabled-$3"; exit 0 ;;
     disable) shift 2; for u in "$@"; do rm -f "$SHIM_STATE/enabled-$u"; done; exit 0 ;;
     is-enabled)
         if [ -e "$SHIM_STATE/enabled-$2" ]; then echo enabled; exit 0; fi
@@ -85,6 +86,7 @@ def system(tmp_path, monkeypatch) -> System:
     monkeypatch.setenv("SHIM_STATE", str(s.state))
     monkeypatch.delenv("SHIM_SYSTEMCTL_RC", raising=False)
     monkeypatch.delenv("SHIM_CRONTAB_DENIED", raising=False)
+    monkeypatch.delenv("SHIM_ENABLE_FAILS", raising=False)
     monkeypatch.setattr(scheduler, "_platform", lambda: "linux")
     # The safety check: the real programs must be shadowed, or this test could change the machine it runs on.
     assert shutil.which("systemctl") == str(s.shims / "systemctl")
@@ -357,3 +359,15 @@ def test_the_scan_unit_allows_a_run_that_scores_a_whole_day_of_both_models():
     text = (ROOT / "scripts" / "systemd" / "job-hunt-scan.service.in").read_text()
     hours = int(re.search(r"^TimeoutStartSec=(\d+)h$", text, re.MULTILINE).group(1))
     assert hours >= 4
+
+
+def test_a_failed_switch_to_systemd_keeps_the_cron_schedule_that_was_there(system, monkeypatch, capsys):
+    """T121 review: `on` removes the other method only after the new one is in place; if the systemd timer cannot be
+    enabled, the person's existing cron schedule must still be there (a mutant that removed cron first survived)."""
+    assert _cli(monkeypatch, capsys, "on", "--method", "cron", "--at", "07:00")[0] == 0
+    before = system.marked()
+    assert len(before) == 1
+    monkeypatch.setenv("SHIM_ENABLE_FAILS", "1")
+    code, out = _cli(monkeypatch, capsys, "on", "--method", "systemd", "--at", "08:00")
+    assert code == 1 and "failed" in out.lower()
+    assert system.marked() == before

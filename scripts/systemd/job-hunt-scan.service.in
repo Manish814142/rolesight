@@ -3,11 +3,11 @@ Description=RoleSight daily job scan (run_daily.sh)
 
 [Service]
 Type=oneshot
-WorkingDirectory=@REPO@
+WorkingDirectory=@REPO_DIR@
 # A user unit cannot order itself after network-online.target (a system unit the user manager does not have),
 # so wait here: a run made up at login (Persistent=true) can start before Wi-Fi is connected.
-ExecStartPre=/usr/bin/env bash @REPO@/scripts/systemd/wait-online.sh
-ExecStart=/usr/bin/env bash @REPO@/run_daily.sh
+ExecStartPre=/usr/bin/env bash "@REPO_ARG@/scripts/systemd/wait-online.sh"
+ExecStart=/usr/bin/env bash "@REPO_ARG@/run_daily.sh"
 # Measured: fetching the 1,589 boards takes ~17 min, scoring 6.1-7.5 s a job; with no cap on the jobs scored (T118) a day scores
 # up to 1,000 (500 on each of the two models), ~2.4 h in the worst case. 4 h leaves room for retries; never let one run forever.
 TimeoutStartSec=4h

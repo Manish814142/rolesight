@@ -33,6 +33,15 @@ reconstructed from git history.
   against a copy of the real `run_daily.sh`; 20 mutants, 1 survived and got its test. Measured on this machine, read-only: `schedule status` → OFF, and the real `systemctl --user` and `crontab -l` agree (no
   `job-hunt-scan` unit, no crontab). **Not run:** the real `systemctl enable` and a real cron daemon (turning either on here was not allowed), anything on macOS or Windows.
 
+### Fixed (2026-10-17, T121 review: a clone in a folder whose name has a space or %)
+- The units `install.sh` writes put the clone's path unquoted into `ExecStart=`/`ExecStartPre=`. systemd splits a command line at spaces
+  unless the word is quoted and reads `%` as a specifier (systemd.service(5), systemd.syntax(7)), so for a clone in `~/my repo` the
+  timer was ON and every run would have started `bash ~/my`: shown with systemd's own parser (`systemd-analyze verify` on a probe
+  unit: `Command …/my is not executable`). The path is now double-quoted with `%` → `%%`, `$` → `$$`, `\` and `"` escaped, and `%`
+  doubled in `WorkingDirectory=`; the same probe now passes for `my repo` and `100% done` (a `$` in the path is handled per the manual,
+  not provable with `verify`). Both the scan and the recheck units. Also a test that a failed switch from cron to systemd keeps the
+  cron line (a mutant that removed cron first survived).
+
 ### Fixed (2026-10-17, T119: the scan unit's timeout)
 - `scripts/systemd/job-hunt-scan.service.in`: `TimeoutStartSec` 3 h → 4 h. With no cap on the jobs scored (T118) a day can score 1,000 jobs (500 per model): measured 6.1–7.5 s a job, so ~125 min of scoring plus ~17 min to fetch
   the 1,589 boards, ~2.4 h in the worst case; 3 h left little room for retries. The comment in the unit no longer says "30-40 minutes".
