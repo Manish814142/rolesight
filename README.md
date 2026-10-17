@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue)](https://www.python.org/)
 
-**An AI job radar.** Every day it pulls open roles straight from the public job APIs of 224
+**An AI job radar.** Every day it pulls open roles straight from the public job APIs of 1,589
 company boards hiring in India, drops the ones that obviously don't fit, has Google Gemini score
 the rest against your resume, and writes the matches to a CSV, best first.
 
@@ -244,17 +244,19 @@ Details, including what each DB status means: [docs/05-outputs-and-notifications
 
 | ATS | Boards |
 |---|---|
-| Workday | 82 |
-| Greenhouse | 74 |
-| Lever | 23 |
-| Ashby | 20 |
-| SmartRecruiters | 13 |
+| Greenhouse | 502 |
+| Workday | 302 |
+| Ashby | 191 |
+| SmartRecruiters | 184 |
+| Lever | 151 |
+| Oracle HCM | 108 |
+| Workable | 103 |
+| Recruitee | 39 |
 | Eightfold | 4 |
-| Oracle HCM | 4 |
-| Workable | 2 |
+| Personio | 3 |
 | Amazon Jobs | 1 |
 | Phenom | 1 |
-| **Total** | **224** (counted 2026-10-13) |
+| **Total** | **1,589** (counted 2026-10-17) |
 
 To add companies, paste their names into a file in any format and run
 `autopilot discover --add-file paste.txt --report /tmp/r.csv --out /tmp/v.json --merge companies.json`.

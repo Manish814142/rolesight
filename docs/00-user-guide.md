@@ -351,8 +351,10 @@ autopilot schedule status            # is it on, at what time, when is the next 
 autopilot schedule off               # back to no schedule
 ```
 
-On Linux this is a systemd **user** timer (it catches up a run missed while the computer was off); where that is not
-available, and on macOS, it is one line in your crontab (a missed run is skipped) that `off` removes again. On Windows
+On Linux this is a systemd **user** timer: it runs while you are logged in, and a run missed while the computer was off is
+made up **at your next login**; where that is not available, and on macOS, it is one line in your crontab (it runs only while
+the computer is on, a missed run is skipped) that `off` removes again. Nothing is lost for good: the scan looks back 7 days
+and never scores a job twice. On Windows
 `on` tells you how to make the task in Task Scheduler. The scheduled scan needs the same `config.json` and keys as
 a scan you start yourself.
 

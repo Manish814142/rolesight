@@ -139,6 +139,7 @@ def test_only_the_schedule_command_can_reach_the_scheduler():
 def test_on_with_systemd_writes_the_units_enables_the_timer_and_leaves_cron_alone(system, monkeypatch, capsys):
     code, out = _cli(monkeypatch, capsys, "on", "--at", "07:30", "--method", "systemd")
     assert code == 0 and "ON" in out and "07:30" in out and "autopilot schedule off" in out
+    assert "next login" in out and "logged in" in out          # T125: the user timer needs the user manager, which starts at login
     assert "OnCalendar=*-*-* 07:30:00" in (system.units / "job-hunt-scan.timer").read_text()
     assert "systemctl --user enable --now job-hunt-scan.timer" in system.calls()
     assert not system.crontab.exists()
@@ -150,6 +151,7 @@ def test_on_with_cron_adds_one_marked_line_and_keeps_every_other_line(system, mo
     system.crontab.write_text("MAILTO=me\n0 5 * * 1 /usr/bin/backup\n")
     code, out = _cli(monkeypatch, capsys, "on", "--at", "08:15", "--method", "cron")
     assert code == 0 and "08:15" in out
+    assert "skipped" in out and "next login" not in out        # T125: cron does not catch up a run missed while the computer was off
     lines = system.cron_lines()
     assert lines[:2] == ["MAILTO=me", "0 5 * * 1 /usr/bin/backup"] and len(lines) == 3
     assert lines[2].startswith("15 8 * * * ") and lines[2].endswith(scheduler.CRON_MARK)

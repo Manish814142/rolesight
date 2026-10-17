@@ -9,6 +9,13 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed (2026-10-17, T125: what happens to a scheduled run when the computer is off, and numbers that were still 224)
+- Manish asked what happens when someone schedules the scan for 06:00 on Ubuntu and the laptop is off then. `schedule on` and the docs said a missed run is "made up when it is back on". More exactly (systemd.timer(5) on this
+  machine: `Persistent=true` triggers the service when the timer is activated if it would have run while the timer was inactive): the **user** timer is activated when the user manager starts, which is **at login**
+  (`Linger=no` here, measured with `loginctl show-user`; `loginctl enable-linger` makes it start at boot). With cron the run is skipped. The command's output and the guides now say so, and that nothing is lost for good (7-day
+  window, jobs already seen are not scored twice). Not tested: a real power-off and login, and a suspended laptop (expected to run on wake; inferred).
+- The README intro and `docs/10` still said 224 boards, and the README's ATS table still showed the first 224 (82 Workday, 74 Greenhouse, …): now 1,589 and the counts of `companies.json` (checked against the file).
+
 ### Changed (2026-10-17, T124: `open_matches.csv` shows what the last scan found, not every job still unmarked)
 - Manish (pasted note): "I don't think anyone marks jobs applied by hand… until the web UI is built, show only the current run's jobs on `open_matches.csv`, not the old ones." The T39 list kept every job ≥ `min_score`
   until `autopilot mark` said otherwise, so with nobody marking it only grew. Now `output/open_matches.csv` holds the jobs **the scan that just ran scored** at or above `min_score`, not marked applied, inside

@@ -22,7 +22,7 @@ India is built into six places:
 | The scoring rubric, rule 1 | Caps a job that needs on-site work outside India at 30 | `job_hunt/llm_utils.py` (`SCORING_RUBRIC`) |
 | `discover` | Accepts a company only when it has at least one job in India | `job_hunt/discovery.py` |
 | The scan's summary line | Counts the jobs "in India" | `job_hunt/scanner.py` |
-| The company list | 224 boards chosen because they hire in India | `companies.json` |
+| The company list | 1,589 boards, each checked to have a job in India | `companies.json` |
 
 A partial workaround exists but is not enough: a city listed in `candidate.cities` counts even when the India lists do
 not know it, so `"cities": ["Dubai"]` lets "Dubai, United Arab Emirates" through the filter (checked with

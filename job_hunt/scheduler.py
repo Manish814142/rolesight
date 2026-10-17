@@ -1,7 +1,8 @@
 """`autopilot schedule on | off | status`: the daily scan, when the person asks for it (T121).
 
 It is OFF by default: nothing in the package turns it on except `schedule on`, and `schedule off` removes what `on` wrote.
-  - Linux: the systemd *user* timer of scripts/systemd (T07), which also makes up a run missed while the computer was off.
+  - Linux: the systemd *user* timer of scripts/systemd (T07). The user manager starts at login (at boot only with
+    `loginctl enable-linger`), and a run missed while it was not running is made up when it starts (Persistent=true).
   - cron is the fallback (Linux without a user manager, and macOS): one line ending in `# rolesight-scan`; every other line
     of the crontab is left exactly as it was. A run missed while the computer is off is skipped.
   - Windows: not built; `on` says how to make the task in Task Scheduler.
@@ -244,8 +245,8 @@ def _time_arg(text: str) -> str:
 
 
 def _describe(entry: Entry) -> str:
-    how = ("systemd user timer; a run missed while the computer was off is made up when it is back on"
-           if entry.method == "systemd" else "cron; a run missed while the computer is off is skipped")
+    how = ("systemd user timer; it runs while you are logged in, and a run missed while the computer was off is made up at your next login"
+           if entry.method == "systemd" else "cron; it runs only while the computer is on, and a missed run is skipped")
     return f"every day at {entry.at} ({how}){'; ' + entry.detail if entry.detail else ''}"
 
 

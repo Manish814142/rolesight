@@ -147,9 +147,15 @@ autopilot schedule status            # ON or OFF, the time, and the next run
 autopilot schedule off               # removes everything `on` wrote
 ```
 
-`on` uses the systemd **user** timer where `systemctl --user` works (Linux; it catches up a run missed while the
-computer was off, `Persistent=true`), and a single marked line in your crontab otherwise (Linux without a user manager,
-macOS; a run missed while the computer is off is skipped). Your other crontab lines are never touched, and turning one
+`on` uses the systemd **user** timer where `systemctl --user` works (Linux), and a single marked line in your crontab
+otherwise (Linux without a user manager, macOS).
+
+**If the computer is off at the scheduled time** (say 06:00): with the systemd timer the scan runs when your user manager
+next starts, which is **when you next log in** (`Persistent=true`; documented in systemd.timer(5)), and it first waits up to
+5 minutes for the network. It does not run at boot before you log in, unless you run `loginctl enable-linger $USER` once.
+With cron the run is **skipped** and the next one is the next day at the scheduled time. Either way nothing is lost for good: the
+posted-date window is 7 days by default, and jobs already seen are never scored twice, so the next scan picks up what was
+posted in between. Only a job that was posted and taken down while the computer was off is missed. Your other crontab lines are never touched, and turning one
 method on removes the other, so a day has one run. `--method systemd|cron` chooses. On Windows `on` explains how to make
 the task in Task Scheduler. It runs `run_daily.sh`, so the log is `data/scan.log`, and it needs the `config.json` and the
 keys a manual scan needs (`on` warns if `config.json` is missing).
