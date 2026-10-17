@@ -98,7 +98,7 @@ Prefer a verifier other than the implementer, or at least a fresh session.
   with `git diff`. Never overwrite it with `autopilot harvest`.
 - **Every push to GitHub carries `companies.json` and `job_hunt/data/companies.json`** (Manish 2026-10-17, so other job seekers get the list; T123).
   Before the push: `git diff --stat origin/main main -- companies.json job_hunt/data/companies.json` lists what goes; after it:
-  `git fetch && git diff --quiet origin/main -- companies.json job_hunt/data/companies.json && echo "GitHub has the current list"`.
+  `git fetch && { git diff --quiet origin/main -- companies.json job_hunt/data/companies.json && echo "GitHub has the current list" || echo "GitHub does NOT have the current list yet"; }`.
   Nothing is pushed until Manish says so (his hold of 2026-10-17 stands until he lifts it).
 - **Tag claims** as *measured* (you ran it; give the number), *inferred* (follows from
   a measurement) or *assumed* (not checked). Never write "verified" for a check you didn't run.
