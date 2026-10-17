@@ -977,3 +977,19 @@ def test_discover_then_merge_names_a_host_after_its_busiest_site_not_after_the_h
                                 for n, s in (("ADI", "CX_2"), ("ADI", "CX_3"), ("Resideo", "CX"))))
     verified, _ = disc.discover(seeds, workers=2)
     assert [c["name"] for c in merge_companies([], verified)] == ["Resideo"]
+
+
+def test_discover_keeps_the_seed_order_on_a_tie_so_the_hosts_main_title_wins(monkeypatch):
+    """T117 review: a host's sites can share their requisitions (7 sites with 23 India jobs each); the harvest writes the site with
+    the host's main title first and discover must keep that order on a tie (a stable sort), not reorder by name."""
+    monkeypatch.setattr(disc, "load_linkedin_cache", lambda path: ({}, {}))
+
+    def fake_entry(name, entry):
+        return {"seed": name, "accepted": True, "verdict": "verified", "ats": "oracle_hcm", "board": f"{entry['host']}:{entry['site']}",
+                "jobs": 23, "india_jobs": 23, "prefilter_pass": 0, "entry": {"name": name, **entry}}
+    monkeypatch.setattr(disc, "evaluate_entry", fake_entry)
+    host = "zeta.fa.em2.oraclecloud.com"
+    seeds = parse_seeds("".join(f"{n} | https://{host}/hcmUI/CandidateExperience/en/sites/{s} | exact\n"
+                                for n, s in (("Zeta Group", "CX"), ("Alpha Unit", "CX_2"), ("Beta Unit", "CX_3"))))
+    verified, _ = disc.discover(seeds, workers=3)
+    assert [c["name"] for c in merge_companies([], verified)] == ["Zeta Group"]
