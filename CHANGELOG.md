@@ -9,6 +9,12 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Added (2026-10-17, T122: an ATS column in the CSV)
+- Manish: "add the source of the ATS in the excel, so a person can filter by the ATS they want to apply on." Every CSV (the scan's `jobs_*.csv`, the rolling `open_matches.csv`, `autopilot export`) has a column **ATS**
+  right after Company, holding the id the board is listed under in `companies.json` and in `data/jobs.db` (`greenhouse`, `lever`, `workday`, `oracle_hcm`, …). It is always written, like Company. Measured on a copy of the real
+  database: `autopilot export --days 30` wrote 735 rows, no blank ATS cell (workday 476, amazon 80, smartrecruiters 53, oracle_hcm 44, greenhouse 33, eightfold 32, ashby 9, lever 4, workable 3, phenom 1).
+  Files written before this change have no such column; the next scan rewrites `open_matches.csv` with it.
+
 ### Fixed (2026-10-17, T117: an Oracle HCM entry is named after the site that is scanned)
 - Found by the review of T112 (jobnotify-fa): the harvest named every site of a host with the title most of the host's sites carry, while `discover` keeps the host's busiest site, which can
   be another employer's: 3 of the 104 entries were named after the wrong employer (ADI for Resideo's site, Lutech for McDermott's, Tumi for Samsonite's) and 3 after another site's region

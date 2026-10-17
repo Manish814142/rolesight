@@ -543,6 +543,7 @@ def run_scan(config: dict, companies: list[dict]) -> None:
                 logger.debug(f"    [{res['score']:3d}] {job.title} @ {job.company} — {res['reason'][:80]}")
                 all_scored_jobs.append({
                     "company": job.company,
+                    "ats": job.ats,
                     "title": job.title,
                     "extracted_title": job.title,
                     "location": job.location,
@@ -561,7 +562,7 @@ def run_scan(config: dict, companies: list[dict]) -> None:
             # Deprecated non-Gemini providers: score_batch puts 10 jobs in one prompt. Every job the model
             # scored is stored (so the next scan does not pay for it again); the rest stay 'discovered'.
             legacy = [
-                {"company": j.company, "title": j.title, "location": j.location,
+                {"company": j.company, "ats": j.ats, "title": j.title, "location": j.location,
                  "url": j.url, "content": j.description_text, "job_key": job_key(j)}
                 for j in pending_direct
             ]

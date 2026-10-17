@@ -89,7 +89,7 @@ def test_export_row_includes_posted_date():
 
 def _gemini_path_job(n: int) -> dict:
     """The dict run_scan builds for a Gemini-scored job: `stack` is "" and nothing sets `region`."""
-    return {"company": f"Acme {n}", "title": "Backend Engineer", "extracted_title": "Backend Engineer",
+    return {"company": f"Acme {n}", "ats": "greenhouse", "title": "Backend Engineer", "extracted_title": "Backend Engineer",
             "location": "Bengaluru, India", "location_remote": "Bengaluru, India", "url": f"https://x.co/{n}",
             "score": 80 + n, "reason": "fits", "stack": "", "worth_applying": True,
             "posted_at": "2026-10-06", "scan_date": "2026-10-06"}

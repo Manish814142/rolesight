@@ -312,6 +312,7 @@ is inside the window). Open either in a spreadsheet.
 | Column | What to do with it |
 |---|---|
 | Role, Company, Location, Posted | What and where |
+| ATS | The hiring platform the job is on (`greenhouse`, `lever`, `workday`, …). Turn on the spreadsheet's filter for this column to apply only on the platform you prefer |
 | Score (%) | 0–100 from Gemini. Use it to **order your reading**, not as a verdict |
 | Reason | One sentence on why. **Read this before trusting the score** |
 | Worth Applying | `Yes` when the score is at least `candidate.min_score` |

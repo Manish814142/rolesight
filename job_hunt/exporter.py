@@ -11,6 +11,7 @@ from job_hunt.llm_utils import GEMINI_DEFAULT_MODEL, current_rubric_ids
 
 EXPORT_FIELDS: List[str] = [
     "Company",
+    "ATS",                  # the platform the job is posted on, as companies.json spells it: a filter column (T122)
     "Role",
     "Location",
     "Posted",
@@ -73,6 +74,7 @@ def job_to_export_row(j: Dict[str, Any]) -> Dict[str, Any]:
     worth = j.get("worth_applying")
     return {
         "Company": j.get("company", ""),
+        "ATS": j.get("ats") or "",
         "Role": j.get("extracted_title") or j.get("title", ""),
         "Location": j.get("location_remote") or j.get("location", ""),
         "Posted": _posted_display(j.get("posted_at", "")),
@@ -93,7 +95,7 @@ def job_from_db_row(r: Dict[str, Any], threshold: Optional[int]) -> Dict[str, An
     (None: unknown, left blank)."""
     app = r.get("application_status")
     return {
-        "company": r.get("company") or "", "title": r.get("title") or "", "location": r.get("location") or "",
+        "company": r.get("company") or "", "ats": r.get("ats") or "", "title": r.get("title") or "", "location": r.get("location") or "",
         "url": r.get("url") or "", "score": r.get("score"), "reason": r.get("score_reason") or "",
         "posted_at": r.get("posted_at") or "", "scan_date": (r.get("scored_at") or "")[:10],
         "worth_applying": None if threshold is None else int(r["score"]) >= threshold,

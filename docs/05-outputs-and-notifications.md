@@ -12,6 +12,7 @@ is job N of the last completed scan, which `draft N` and `mark N` look up in `da
 | Column | Meaning |
 |---|---|
 | Company | `name` from `companies.json` |
+| ATS | The platform the job is posted on, as `companies.json` spells it: `greenhouse`, `lever`, `ashby`, `smartrecruiters`, `workday`, `workable`, `recruitee`, `personio`, `oracle_hcm`, `eightfold`, `phenom` or `amazon`. Filter on it in the spreadsheet to apply on one platform (T122) |
 | Role | Job title as the ATS gives it |
 | Location | Raw location string from the ATS |
 | Posted | `YYYY-MM-DD`, or Workday's relative text ("Posted 5 Days Ago") |
