@@ -38,8 +38,15 @@ def scan(tmp_path, monkeypatch):
     return run
 
 
-def test_default_cap_scores_the_400_newest_of_600_and_leaves_200_discovered(scan):
+def test_there_is_no_cap_by_default_all_600_are_scored(scan):
+    """T118 (Manish 2026-10-17): the default of 400 is gone; the models' daily limits are the limit (tests/test_two_model_day.py)."""
     titles = scan([_job(i) for i in range(600)])          # job i was posted i days ago
+    assert len(titles) == 600
+    assert len(get_jobs_by_status("scored")) == 600 and len(get_jobs_by_status("discovered")) == 0
+
+
+def test_a_cap_asked_for_still_scores_the_newest_of_600_and_leaves_the_rest_discovered(scan):
+    titles = scan([_job(i) for i in range(600)], max_jobs_to_score_per_run=400)
     assert len(titles) == 400
     assert set(titles) == {f"Backend Engineer {i}" for i in range(400)}
     assert len(get_jobs_by_status("scored")) == 400 and len(get_jobs_by_status("discovered")) == 200

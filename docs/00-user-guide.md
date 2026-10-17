@@ -120,7 +120,7 @@ uses the default. A name that is not in the tables below is ignored without any 
 | `gemini_model` | `gemini-3.5-flash-lite` | Which Gemini model scores. Don't change without a reason: scores differ between models |
 | `gemini_scoring_mode` | `single` | `single` scores one job per call (accurate). `batch` is faster but was measured to inflate scores. Leave as `single` |
 | `fetch_workers` | 8 | How many companies are fetched at once. Lower it if your connection struggles |
-| `max_jobs_to_score_per_run` | 400 | Most jobs scored in one run, newest first; the rest wait for the next scan. `0` = no limit. Gemini's free tier allows about 500 calls per model per day |
+| `max_jobs_to_score_per_run` | 0 | Most jobs scored in one run, newest first; the rest wait for the next scan. `0` = no limit (the default since T118): Gemini's own daily limit is the limit, about 500 calls per model per day, and the scan goes on with the second model when the first has used its day |
 | `telegram.token` | — | Telegram alerts, optional. Usually put in `.env` (`TELEGRAM_TOKEN`) |
 | `telegram.chat_id` | — | Telegram alerts, optional. Usually put in `.env` (`TELEGRAM_CHAT_ID`) |
 | `anthropic_api_key` | — | Only if `llm_provider` is `anthropic` (deprecated; never used in real runs). Leave as it is |

@@ -169,9 +169,9 @@ Measured on the date given. Each one has a task.
   about 24 min scoring 226 jobs at ~6.3 s each. A full fetch of 223 companies took 10.0 min on
   2026-10-07; daily scans only score new jobs.
 - **Gemini quota:** 500 calls per model per day, reset at midnight Pacific (Google's docs; measured
-  2026-10-07). A scan scores at most `max_jobs_to_score_per_run` (400), newest first (T04); scoring
-  stops when every model is out of quota (T03); a model out for the day is skipped until the reset
-  (T64). **Model choice matters** (T70, 82 labelled jobs, two runs each): `gemini-3.1-flash-lite`
+  2026-10-07). A scan has no cap on the jobs it scores (T118; `max_jobs_to_score_per_run` is optional), newest first; when the
+  first model has used its day the scan goes on with the second (a model out for the day is skipped until the reset, T64) and
+  scoring stops when every model is out of quota (T03), leaving the rest for the next scan. **Model choice matters** (T70, 82 labelled jobs, two runs each): `gemini-3.1-flash-lite`
   ranks like `gemini-3.5-flash-lite` but scores weak fits ~8 points higher (10 vs 2 false positives at
   `min_score` 70), so a scan that falls back to 3.1 mixes two calibrations; which model scored a job
   is recorded with each score (`score_model`, T71), and so is the id of the rubric text (`score_rubric`, T97).

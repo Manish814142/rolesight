@@ -108,10 +108,12 @@ DEFAULT_GEMINI_BATCH_SIZE = 10
 # The rest stay 'discovered' and are scored on the next scan.
 QUOTA_BREAKER_THRESHOLD = 3
 
-# At most this many jobs are scored per run, newest first (config "max_jobs_to_score_per_run"; 0 = no cap, T04).
-# The free tier allows about 500 calls per model per day, and the rest simply stay 'discovered' for the next
-# scan. Jobs with no known posted date count as newest, so they are never starved.
-DEFAULT_MAX_JOBS_TO_SCORE = 400
+# Optional cap on the jobs scored per run, newest first (config "max_jobs_to_score_per_run"). The default is NO cap (T118,
+# Manish 2026-10-17: 500 calls a day on each of two models): the models' own daily limits are the limit. When the first
+# model has used its day the scan goes on with the second (llm_utils, T64); when both are out it stops (the quota breaker
+# above) and the rest stay 'discovered' for the next scan. Newest first either way; jobs with no known posted date count as
+# newest, so they are never starved. T04 had a default of 400.
+DEFAULT_MAX_JOBS_TO_SCORE = 0
 
 # Companies fetched concurrently (config "fetch_workers"). Fetching is network-bound;
 # DB writes and scoring stay sequential. Each HTTP call has a hard total deadline

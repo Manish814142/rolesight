@@ -9,6 +9,16 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Changed (2026-10-17, T118: no cap on the jobs scored per run)
+- Manish: "there should be no cap, on my account I have 500 per model limit so total 1000 I can run; first 500 on the 3.5 flash lite model, the rest on 3.1 flash lite, so it should
+  switch automatically when it hits the limit." `max_jobs_to_score_per_run` now defaults to **0 (no cap)**; it was 400 (T04). The switch to the second model already existed (T64: a
+  model whose daily quota is gone is skipped until the reset, the next in the chain answers) and the quota breaker (T03) still ends the run when both are out. New
+  `tests/test_two_model_day.py` runs those numbers through the real `run_scan` with a stub client: 700 jobs -> 500 scored by the first model and 200 by the second, with the first
+  asked once after its limit; 1,100 jobs -> 500 + 500 scored, 100 left `discovered` and no more pacing pauses than answers (the stop works). The old test of the default cap now
+  asks for a cap explicitly. Newest first still holds, so if both models run out mid-run the oldest postings are the ones left over.
+- Not measured: a real run against Gemini's quota. The two daily limits and the reset (midnight Pacific, 12:30 IST) are as Google documents and as T64 measured on 2026-10-07; each
+  stored score still names the model that gave it (the CSV's `Model` column shows when it was not the first one), and scores of the two models differ (T70).
+
 ### Added (2026-10-17, T112: 104 Oracle HCM employers, found by the page title)
 - Manish ("if these are open issues then fix them"). Oracle HCM candidate sites are written `cbcz.fa.us2.oraclecloud.com`: the host is a customer code, so T111 left the
   archive's 2,092 Oracle site URLs (1,892 distinct sites) out. The employer's name is in the title of the site's own page (`<title>Hilton</title>`; the REST fields
