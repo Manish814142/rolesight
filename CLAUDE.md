@@ -132,6 +132,10 @@ Matches on a non-declared ATS are tagged `ats_fallback_from`.
 
 After a `discover --merge`, copy `companies.json` to `job_hunt/data/companies.json` (what `autopilot init` ships; a test checks they match).
 
+**Every push to GitHub carries `companies.json` and its copy `job_hunt/data/companies.json`** (Manish, 2026-10-17: so other job seekers get the list). Both are tracked, so a push of `main` includes them;
+a partial push (another branch, a cherry-pick) or an uncommitted list would not. Before: `git diff --stat origin/main main -- companies.json job_hunt/data/companies.json` shows what goes.
+After: `git fetch && git diff --quiet origin/main -- companies.json job_hunt/data/companies.json && echo "GitHub has the current list"`. Whether and when to push is his call; nothing is pushed without his say.
+
 **Adding companies (the company list is the core of this project — reuse this, never rebuild):**
 paste names into a file in any format and run
 `autopilot discover --add-file paste.txt --report /tmp/r.csv --out /tmp/v.json --merge companies.json`
