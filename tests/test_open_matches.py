@@ -1,4 +1,6 @@
-"""T39: every scan rewrites output/open_matches.csv from data/jobs.db (no network)."""
+"""T39: with `open_matches_scope: "all_open"` every scan rewrites output/open_matches.csv from all of data/jobs.db (no network).
+
+Since T124 the default is the jobs the last scan scored (tests/test_open_matches_this_run.py); these tests set the rolling list."""
 import csv
 import sqlite3
 from datetime import date, datetime, timedelta, timezone
@@ -57,7 +59,7 @@ def env(tmp_path, monkeypatch):
         cand = {"resume_path": "resume.md", "min_score": 60}
         if window is not DEFAULT_WINDOW:       # window=None is JSON null: no window (T02: 7 days unless the config says so)
             cand["max_posted_age_days"] = window
-        scanner.run_scan({"candidate": cand, "gemini_api_key": "k", "telegram": {}},
+        scanner.run_scan({"candidate": cand, "gemini_api_key": "k", "telegram": {}, "open_matches_scope": "all_open"},   # T124: the rolling list of T39
                          [{"name": "X", "ats": "greenhouse", "slug": "x"}])
         return [r["Application URL"].rsplit("/", 1)[1] for r in
                 csv.DictReader(Path("output/open_matches.csv").open(encoding="utf-8"))]

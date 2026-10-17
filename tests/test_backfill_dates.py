@@ -42,7 +42,8 @@ def _scan(tmp_path, monkeypatch, fetched):
     client = MagicMock()
     monkeypatch.setattr(scanner, "fetch_company_jobs", lambda c: [fetched])
     monkeypatch.setattr(llm_utils, "_get_genai_client_and_types", lambda api_key=None: (client, MagicMock()))
-    scanner.run_scan({"candidate": {"resume_path": "resume.md", "min_score": 70}, "gemini_api_key": "k", "telegram": {}},
+    scanner.run_scan({"candidate": {"resume_path": "resume.md", "min_score": 70}, "gemini_api_key": "k", "telegram": {},
+                      "open_matches_scope": "all_open"},     # T124: these tests are about the rolling list of T39
                      [{"name": "X", "ats": "greenhouse", "slug": "x"}])
     return client
 

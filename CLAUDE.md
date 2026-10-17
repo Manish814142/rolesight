@@ -69,8 +69,9 @@ Tests must make **no network calls** — stub `send_telegram`, adapters, and Gem
    a model other than the primary scored; T71) and the id of the rubric text (`jobs.score_rubric`, scan log `Scoring rubric:`, CSV `Rubric`
    column when a score is not from the current one; `python scripts/rubric_ids.py [--db data/jobs.db]` decodes the ids; T97).
 7. Per-job Telegram alert (if configured) → results sorted best-first → incremental CSV
-   `output/jobs_YYYY-MM-DD[_N].csv` (never overwrites) and the rolling `output/open_matches.csv` (rewritten every
-   run: ≥ min_score, not marked applied, inside the posted window; T39); the scan's row in table `scans` is finished,
+   `output/jobs_YYYY-MM-DD[_N].csv` (never overwrites) and `output/open_matches.csv` (rewritten every run: the jobs *this* scan
+   scored ≥ min_score, not marked applied, inside the posted window; T124. `open_matches_scope: "all_open"` brings back the rolling list
+   of every unmarked match, T39); the scan's row in table `scans` is finished,
    digest of the top `top_n`.
 
 A company with no `ats` is detected from its `careers_url` when that names a known ATS; otherwise it is skipped

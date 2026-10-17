@@ -20,6 +20,7 @@ looks, so a value put there was ignored; T80). The step-by-step version of this 
 | `fetch_workers` | `8` | Companies fetched in parallel; also used for description fetching |
 | `scoring_mode` | `holistic` | `holistic`: one score from the prompt with the rubric. `structured`: the model reports sub-scores and facts, code applies the caps and computes the score; the CSV gets Stack/Role/Seniority/Location fit, Min years and Capped by columns (T41). Not the default: calibration was worse on the labelled set (see CHANGELOG 2026-10-06) |
 | `max_jobs_to_score_per_run` | 0 | Score at most this many jobs per run, newest first; the rest stay `discovered` for the next scan. `0` = no cap, the default since T118 (Gemini's per-model daily limits are the limit, and the second model takes over when the first has used its day) |
+| `open_matches_scope` | `this_run` | What `output/open_matches.csv` holds. `this_run`: the jobs the scan that just ran scored (T124). `all_open`: every scored job ≥ `min_score` that is not marked and not closed, old ones included (the rolling list of T39). Any other value stops the scan before it fetches |
 | `telegram.token`, `telegram.chat_id` | — | Optional alerts ([05](05-outputs-and-notifications.md#telegram-optional)) |
 | `anthropic_api_key`, `anthropic_model` | — | `llm_provider: anthropic` |
 | `claude_cli_model` | Claude's default | `llm_provider: claude_cli` |

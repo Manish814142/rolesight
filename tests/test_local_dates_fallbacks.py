@@ -43,4 +43,4 @@ def test_open_matches_keeps_a_scored_row_with_no_usable_timestamp(tmp_path, monk
         conn.execute("INSERT INTO jobs (global_id, ats, company, title, url, status, score, score_reason, posted_at, scored_at, "
                      "discovered_at, first_seen) VALUES ('w:3', 'workday', 'Acme', 'Backend Engineer', 'https://acme/3', 'scored', 80, "
                      "'fits', 'Posted 2 Days Ago', 'garbage', '', '')")
-    assert scanner._write_open_matches(70, 7) == 1
+    assert scanner._write_open_matches(70, 7, "all_open") == 1

@@ -41,14 +41,18 @@ CSVs and in `data/jobs.db` (`autopilot export --days N`).
 scan (2026-10-04) had 74 rows ≥ 60, 67 ≥ 70 and 38 ≥ 80, and 21 jobs tied at exactly 90
 (before the rubric; ties remain, T41). Treat the number as a ranking hint, not a verdict.
 
-## `output/open_matches.csv` (T39)
+## `output/open_matches.csv` (T39, T124)
 
-Rewritten at the end of every scan, whether or not the scan scored anything: every job in `data/jobs.db` scored ≥
-`min_score` that you have not marked with `autopilot mark` (any of applied, interview, rejected, offer) and that is
-inside that run's posted-date window (`--posted-within N` / `candidate.max_posted_age_days`; undated jobs are kept,
-and with no window every such job is listed). Best score first, same columns as the per-scan CSV. Workday's
-"Posted 5 Days Ago" is aged from the day it was fetched. The per-scan `jobs_*.csv` files are still written. Closed
-jobs (T33: not returned by their board for `closed_after_missed_scans` scans) are left out.
+Rewritten at the end of every scan, whether or not the scan scored anything. **It holds what the scan that just ran
+found: the jobs it scored at or above `min_score`** that you have not marked with `autopilot mark` (any of applied,
+interview, rejected, offer), inside the posted-date window (`--posted-within N` / `candidate.max_posted_age_days`; undated
+jobs are kept). Best score first, same columns as the per-scan CSV. A scan that finds nothing new leaves the header and no
+rows; yesterday's jobs are not repeated here (T124: nobody marks jobs applied by hand, so the old rolling list only grew).
+They stay in the earlier `jobs_*.csv` files and in `autopilot export --days 7 --min 70`.
+
+To get the rolling list back (every job in `data/jobs.db` scored ≥ `min_score` and not marked, old ones included, closed
+jobs left out; T39), set `"open_matches_scope": "all_open"` in `config.json`. The default is `"this_run"`; any other value
+stops the scan before it fetches anything. Workday's "Posted 5 Days Ago" is aged from the day it was fetched.
 
 ## `autopilot export`
 

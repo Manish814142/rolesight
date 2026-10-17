@@ -306,8 +306,9 @@ Funnel: fetched 2354 | India 2167 | already scored 0 | pre-filter rejected 2058 
 ```
 
 The scan writes `output/jobs_YYYY-MM-DD.csv` (only the jobs scored in that scan, best first; a new file each
-time) and `output/open_matches.csv` (every job above `min_score` that you have not marked as applied and that
-is inside the window). Open either in a spreadsheet.
+time) and `output/open_matches.csv` (only what **this** scan found: its jobs above `min_score` that you have not
+marked as applied; a scan with nothing new leaves it empty, and yesterday's jobs are in yesterday's file). Open either in a
+spreadsheet.
 
 | Column | What to do with it |
 |---|---|

@@ -9,6 +9,13 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Changed (2026-10-17, T124: `open_matches.csv` shows what the last scan found, not every job still unmarked)
+- Manish (pasted note): "I don't think anyone marks jobs applied by hand… until the web UI is built, show only the current run's jobs on `open_matches.csv`, not the old ones." The T39 list kept every job ≥ `min_score`
+  until `autopilot mark` said otherwise, so with nobody marking it only grew. Now `output/open_matches.csv` holds the jobs **the scan that just ran scored** at or above `min_score`, not marked applied, inside
+  the posted-date window (best first, same columns); a scan with nothing new leaves the header and no rows. Nothing is lost: every scored job is in that day's `jobs_*.csv` and in `autopilot export --days N`.
+  `"open_matches_scope": "all_open"` in `config.json` brings the T39 rolling list back; any other value stops the scan before it fetches anything. The 10 tests that pinned the rolling list now set `all_open`;
+  14 new tests; 7 mutants (scope ignored, `min_score` or applied filter dropped, default flipped, scope not validated, config not passed on, empty run falling back to the rolling list) each fail a test.
+
 ### Added (2026-10-17, T121: `autopilot schedule on | off | status`, the daily scan as an opt-in switch)
 - Manish: "if someone wants to schedule it on a daily basis it runs automatically, but don't start it on my laptop; give users the option to turn it on and off, by default it's off." New
   `job_hunt/scheduler.py` and the command `autopilot schedule on [--at HH:MM] [--method auto|systemd|cron]`, `schedule off`, `schedule status`. **Off by default**: no other command or module touches

@@ -38,7 +38,8 @@ def scan(tmp_path, monkeypatch):
                 raise out
             return out() if callable(out) else out
         monkeypatch.setattr(scanner, "fetch_company_jobs", fetch)
-        cfg = {"candidate": {"resume_path": "resume.md", "min_score": 60}, "gemini_api_key": "k", "telegram": {}}
+        cfg = {"candidate": {"resume_path": "resume.md", "min_score": 60}, "gemini_api_key": "k", "telegram": {},
+               "open_matches_scope": "all_open"}      # T124: this file is about the rolling list of T39
         if closed_after is not None:
             cfg["closed_after_missed_scans"] = closed_after
         scanner.run_scan(cfg, [{"name": n, "ats": "greenhouse", "slug": n.lower()} for n in boards])

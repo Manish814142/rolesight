@@ -16,6 +16,7 @@ from job_hunt.db import (
     finish_scan,
     get_job,
     init_db,
+    last_scan_jobs,
     open_match_rows,
     record_sightings,
     save_job,
@@ -290,13 +291,31 @@ def _export_to_csv(jobs: list[dict], label: str) -> Path:
 
 OPEN_MATCHES_FILE = Path("output/open_matches.csv")
 
+# What output/open_matches.csv holds. "this_run" (T124, Manish 2026-10-17: nobody marks a job applied by hand, so the rolling list
+# only grew with old jobs): the jobs the last scan scored. "all_open" (T39): every scored job >= min_score not marked applied.
+OPEN_MATCHES_SCOPES = ("this_run", "all_open")
+DEFAULT_OPEN_MATCHES_SCOPE = "this_run"
 
-def _write_open_matches(min_score: int, max_age: Optional[int]) -> int:
-    """Rewrite output/open_matches.csv (T39): every job scored >= min_score that Manish has not applied to and that is
-    inside this run's posted-date window (undated jobs kept, as in the scan). Returns the number of rows."""
+
+def open_matches_scope_of(config: dict) -> str:
+    """`open_matches_scope` from config.json, default "this_run". Anything else is an error, raised before a scan fetches."""
+    scope = config.get("open_matches_scope", DEFAULT_OPEN_MATCHES_SCOPE)
+    if scope not in OPEN_MATCHES_SCOPES:
+        raise SystemExit(f"config.json: open_matches_scope must be one of {', '.join(OPEN_MATCHES_SCOPES)} (got {scope!r})")
+    return scope
+
+
+def _write_open_matches(min_score: int, max_age: Optional[int], scope: str = DEFAULT_OPEN_MATCHES_SCOPE) -> int:
+    """Rewrite output/open_matches.csv: the jobs scored >= min_score that Manish has not applied to, inside this run's posted-date
+    window (undated jobs kept, as in the scan). `scope` "this_run" lists only the jobs the scan that just finished scored (T124);
+    "all_open" lists every such job in data/jobs.db, old ones included (T39). Returns the number of rows."""
     today = date.today()
     jobs = []
-    for r in open_match_rows(min_score):
+    if scope == "all_open":
+        rows = open_match_rows(min_score)
+    else:
+        rows = [r for r in (last_scan_jobs() or []) if (r.get("score") or 0) >= min_score and r.get("application_status") is None]
+    for r in rows:
         seen_on = local_date_of(r.get("scored_at") or r.get("discovered_at") or "") or today   # the local day (T110)
         age = current_age_days(r.get("posted_at") or "", seen_on, today)
         if max_age is not None and age is not None and age > max_age:
@@ -332,6 +351,7 @@ def run_scan(config: dict, companies: list[dict]) -> None:
         rubric_source = configure_rubric(config)
     except (TitleRulesError, RubricError) as e:
         raise SystemExit(f"config.json: {e}") from None
+    open_scope = open_matches_scope_of(config)
     titles_from = "config.json candidate.titles" if (config.get("candidate") or {}).get("titles") is not None else "the defaults"
     logger.info(f"Title filter: {titles_from} ({len(titles.include)} include, {len(titles.exclude)} exclude"
                 f"{', generic engineer titles on' if titles.generic_engineer_titles else ''})")
@@ -630,8 +650,8 @@ def run_scan(config: dict, companies: list[dict]) -> None:
     # Always persist results to CSV when there are scored jobs — this is the
     # durable record regardless of whether Telegram is configured.
     csv_path = _export_to_csv(all_scored_jobs, "scan results") if all_scored_jobs else None
-    open_count = _write_open_matches(min_score, max_age)
-    logger.info(f"Open matches (score >= {min_score}, not applied"
+    open_count = _write_open_matches(min_score, max_age, open_scope)
+    logger.info(f"Open matches ({'found this run' if open_scope == 'this_run' else 'all still open'}, score >= {min_score}, not applied"
                 + (f", posted within {max_age} day(s)" if max_age is not None else "")
                 + f"): {open_count} → {OPEN_MATCHES_FILE}")
 

@@ -69,4 +69,4 @@ def test_open_matches_keeps_a_workday_job_scored_after_midnight_for_its_whole_wi
         conn.execute("INSERT INTO jobs (global_id, ats, company, title, url, status, score, score_reason, posted_at, scored_at, "
                      "first_seen) VALUES ('w:2', 'workday', 'Acme', 'Backend Engineer', 'https://acme/2', 'scored', 80, 'fits', "
                      "'Posted 1 Day Ago', ?, ?)", (MORNING_UTC, MORNING_UTC))
-    assert scanner._write_open_matches(70, 7) == 1
+    assert scanner._write_open_matches(70, 7, "all_open") == 1
