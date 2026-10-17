@@ -11,7 +11,7 @@ ruff check job_hunt/ tests/ conftest.py   # the same paths CI lints
 mypy                      # checks job_hunt/
 ```
 
-Last recorded: 398 tests passing, coverage 89.99%, after the T30 review fix (2026-10-04).
+Last recorded: 1,749 tests passing, coverage 93.34%, ruff and mypy clean, after the T121–T125 review (2026-10-17).
 
 **Tests must never touch the network.**
 
@@ -30,7 +30,12 @@ Last recorded: 398 tests passing, coverage 89.99%, after the T30 review fix (202
 ```bash
 autopilot --help                       # command list, exit 0
 autopilot export --min 101; echo $?    # "No jobs with score >= 101 in last scan", no traceback
+autopilot schedule status              # "Daily scan: OFF (the default; …)"; reads only, changes nothing (T121)
 ```
+
+Do not run `autopilot schedule on` on a working machine just to test it: it starts a real daily scan. The tests
+([test_schedule.py](../tests/test_schedule.py)) run the real `install.sh` and the real subprocess calls against stand-in
+`systemctl` and `crontab` programs; the one thing they cannot show is a real power-off and login.
 
 ## 3. Environment
 
@@ -55,9 +60,19 @@ Check, in order:
 2. Each company logs `Fetched N job(s)` or `No open jobs found`.
 3. `Full descriptions fetched for K of N survivor(s)` appears when Workday,
    SmartRecruiters or Oracle HCM jobs survived.
-4. A new `output/jobs_*.csv`, best first, with Reason filled.
-5. The DB status counts moved
+4. A new `output/jobs_*.csv`, best first, with Reason filled and the **ATS** column (second) filled on every row (T122).
+5. `output/open_matches.csv` holds only the jobs this scan scored at or above `min_score`, not marked applied; a scan
+   that found nothing new leaves the header and no rows (T124). `"open_matches_scope": "all_open"` in `config.json`
+   gives the rolling list of every unmarked match instead.
+6. The DB status counts moved
    ([05](05-outputs-and-notifications.md#the-seen-job-database-datajobsdb)).
+
+`--limit N` takes the first N companies of `companies.json`: Amazon, then Ashby boards in alphabetical order. On a
+database that has never seen those jobs, Amazon alone queued 44 jobs for Gemini on 2026-10-17 (measured by fetching and
+pre-filtering, no scoring), so "a few Gemini calls" holds only when the jobs were scored before. To choose the companies, or to keep your real `data/jobs.db` and `output/` as they are, run from an empty folder that has
+its own `companies.json` (the companies you want), `config.json`, `.env` and the resume file: `scan` reads and writes
+everything relative to the folder it is started in. Remove the `telegram` block and the `TELEGRAM_*` lines there if you
+do not want phone alerts from a trial.
 
 For a change that only affects fetching, call the adapter directly. That makes no Gemini
 calls and writes no state:

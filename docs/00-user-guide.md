@@ -308,7 +308,9 @@ Funnel: fetched 2354 | India 2167 | already scored 0 | pre-filter rejected 2058 
 The scan writes `output/jobs_YYYY-MM-DD.csv` (only the jobs scored in that scan, best first; a new file each
 time) and `output/open_matches.csv` (only what **this** scan found: its jobs above `min_score` that you have not
 marked as applied; a scan with nothing new leaves it empty, and yesterday's jobs are in yesterday's file). Open either in a
-spreadsheet.
+spreadsheet. The files are UTF-8 without a byte-order mark: if a place name such as "Karnātaka" shows as "KarnÄ…taka", choose
+**UTF-8** in the spreadsheet's import dialog (measured with LibreOffice 7.3 started headless: its default import garbled 5
+cells of a 49-row file, and with UTF-8 chosen none; Excel was not tested).
 
 | Column | What to do with it |
 |---|---|

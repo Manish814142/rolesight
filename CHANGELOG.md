@@ -9,6 +9,15 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Docs (2026-10-17, after the T121–T125 review: testing checklist, test counts, a real 11-company run)
+- `docs/09-testing-checklist.md` still recorded 398 tests (2026-10-04). Now 1,749 passed, coverage 93.34%, ruff and mypy clean (measured on the tree after the reviewer's fixes). Added: `autopilot schedule status` as a keyless smoke test
+  (and why `schedule on` is not a test to run on a working machine), the ATS column and the T124 `open_matches.csv` meaning in the "real, small scan" steps, and that `--limit N` takes the first N companies (Amazon alone queued 44
+  jobs on 2026-10-17, measured by fetching and pre-filtering), with a recipe for a trial in an empty folder that keeps the real `data/jobs.db` and `output/` untouched. The T121/T124 test counts above now include the reviewer's tests.
+- A real scan of 11 companies (Cisco, Hewlett Packard Enterprise, Renesas Electronics, NielsenIQ, Bosch, ServiceNow, UKG, JPMorgan Chase, Rubrik, Kong, Proximity Labs; 7 job systems) was run from an empty folder with a fresh
+  database and no Telegram: 11/11 companies, 49 jobs queued, 49 scored, 0 failed, 6.0 min. `jobs_*.csv` has 49 rows × 11 columns, ATS second and filled on every row; `open_matches.csv` has the 13 jobs of that run with a score of 70
+  or more, best first, all of them also in the jobs file. Both open in LibreOffice (converted to .xlsx and read back with openpyxl: 49 and 13 rows, same header). The files are UTF-8 without a byte-order mark; LibreOffice 7.3
+  started headless guessed a legacy encoding and garbled 5 cells ("Karnātaka", a non-breaking space), and with UTF-8 chosen at import none (a copy with a BOM did not help in that LibreOffice; Excel not tested). Noted in the user guide.
+
 ### Fixed (2026-10-17, T125: what happens to a scheduled run when the computer is off, and numbers that were still 224)
 - Manish asked what happens when someone schedules the scan for 06:00 on Ubuntu and the laptop is off then. `schedule on` and the docs said a missed run is "made up when it is back on". More exactly (systemd.timer(5) on this
   machine: `Persistent=true` triggers the service when the timer is activated if it would have run while the timer was inactive): the **user** timer is activated when the user manager starts, which is **at login**
@@ -21,7 +30,7 @@ reconstructed from git history.
   until `autopilot mark` said otherwise, so with nobody marking it only grew. Now `output/open_matches.csv` holds the jobs **the scan that just ran scored** at or above `min_score`, not marked applied, inside
   the posted-date window (best first, same columns); a scan with nothing new leaves the header and no rows. Nothing is lost: every scored job is in that day's `jobs_*.csv` and in `autopilot export --days N`.
   `"open_matches_scope": "all_open"` in `config.json` brings the T39 rolling list back; any other value stops the scan before it fetches anything. The 10 tests that pinned the rolling list now set `all_open`;
-  14 new tests; 7 mutants (scope ignored, `min_score` or applied filter dropped, default flipped, scope not validated, config not passed on, empty run falling back to the rolling list) each fail a test.
+  17 new tests (14 + the reviewer's: interview, rejected and offer marks also keep a job off the list); 7 mutants (scope ignored, `min_score` or applied filter dropped, default flipped, scope not validated, config not passed on, empty run falling back to the rolling list) each fail a test.
 
 ### Added (2026-10-17, T121: `autopilot schedule on | off | status`, the daily scan as an opt-in switch)
 - Manish: "if someone wants to schedule it on a daily basis it runs automatically, but don't start it on my laptop; give users the option to turn it on and off, by default it's off." New
@@ -29,7 +38,7 @@ reconstructed from git history.
   the scheduler (a test checks both the calls and the imports). `on` uses the systemd user timer of T07 where `systemctl --user` works, else one crontab line ending in `# rolesight-scan` (also what macOS gets);
   every other crontab line is kept as it was, an unreadable crontab is never overwritten, turning one method on removes the other (one run a day), `off` removes only `job-hunt-scan.*` and the marked line (not the
   monthly recheck units, not `job-hunt-wallpaper.*`), and `status` only reads. Windows: `on` explains the Task Scheduler steps and changes nothing. Tested with stand-in `systemctl` and `crontab` programs at the front of PATH
-  (the real `install.sh` and real subprocess calls run against them; the fixture checks first that PATH resolves both names to the stand-ins): 38 tests; a cron line is run through `/bin/sh` in cron's bare environment
+  (the real `install.sh` and real subprocess calls run against them; the fixture checks first that PATH resolves both names to the stand-ins): 39 tests (38 + the reviewer's); a cron line is run through `/bin/sh` in cron's bare environment
   against a copy of the real `run_daily.sh`; 20 mutants, 1 survived and got its test. Measured on this machine, read-only: `schedule status` → OFF, and the real `systemctl --user` and `crontab -l` agree (no
   `job-hunt-scan` unit, no crontab). **Not run:** the real `systemctl enable` and a real cron daemon (turning either on here was not allowed), anything on macOS or Windows.
 
