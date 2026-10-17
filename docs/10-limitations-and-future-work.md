@@ -73,8 +73,9 @@ network needed, measurable on a saved fetch), then the adapters.
 
 ### Running it
 
-- **Not scheduled by default.** Scans run by hand; `scripts/systemd/install.sh` installs a daily timer (Linux,
-  systemd) when you choose. There is no ready-made scheduler for macOS or Windows.
+- **Not scheduled by default.** Scans run by hand; `autopilot schedule on` turns a daily scan on (systemd user timer on
+  Linux, else cron, which also covers macOS) and `schedule off` turns it off. The cron path was written for macOS but has
+  not been run on a Mac. There is no ready-made scheduler for Windows.
 - **Tested on Linux only.** CI runs on Ubuntu with Python 3.11, 3.12 and 3.13.
 - **Telegram alerts are unverified:** the last send attempts (2026-10-03) failed with HTTP 404. The CSV is the main
   output.
@@ -100,7 +101,7 @@ Ideas, not started. The first ones help a job seeker most; the size is a rough e
 | Region company lists | Starter `companies.json` lists for Europe, Singapore, the Gulf, built with `discover` | medium |
 | More job boards | Adapters for other systems with public APIs (not yet checked: Keka, Zoho Recruit, …) | per board |
 | Re-score after a rubric change | A command that finds the stored scores a scan can still re-score, and resets only those | small |
-| Scheduling on macOS and Windows | launchd and Task Scheduler next to the systemd timer | small |
+| Scheduling on Windows (and launchd on macOS) | Task Scheduler (and launchd) next to the systemd timer and cron; today `schedule on` on Windows only explains the steps | small |
 
 ## 3. Picking one up
 

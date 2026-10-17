@@ -138,11 +138,26 @@ Run it by hand with the runner, which timestamps every output line into `data/sc
 ./run_daily.sh --posted-within 3    # one run with another window; `all` switches it off
 ```
 
-To run it every day, install the systemd **user** timer (nothing is installed until you run this):
+To run it every day, switch the schedule on. It is **off until you do** (nothing in RoleSight schedules anything by itself):
 
 ```bash
-scripts/systemd/install.sh              # daily at 09:00 local time, catches up a missed run (Persistent=true)
-scripts/systemd/install.sh --at 07:30   # another time
+autopilot schedule on                # every day at 09:00 local time
+autopilot schedule on --at 07:30     # another time
+autopilot schedule status            # ON or OFF, the time, and the next run
+autopilot schedule off               # removes everything `on` wrote
+```
+
+`on` uses the systemd **user** timer where `systemctl --user` works (Linux; it catches up a run missed while the
+computer was off, `Persistent=true`), and a single marked line in your crontab otherwise (Linux without a user manager,
+macOS; a run missed while the computer is off is skipped). Your other crontab lines are never touched, and turning one
+method on removes the other, so a day has one run. `--method systemd|cron` chooses. On Windows `on` explains how to make
+the task in Task Scheduler. It runs `run_daily.sh`, so the log is `data/scan.log`, and it needs the `config.json` and the
+keys a manual scan needs (`on` warns if `config.json` is missing).
+
+The same timer by hand, and the monthly company-list check (`--with-recheck`), are in `scripts/systemd/install.sh`:
+
+```bash
+scripts/systemd/install.sh --at 07:30
 systemctl --user list-timers job-hunt-scan.timer
 systemctl --user start job-hunt-scan.service   # one scan right now
 scripts/systemd/install.sh --uninstall

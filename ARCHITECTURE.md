@@ -67,9 +67,10 @@ TinyFish careers-page path was removed (T42).
 | [`harvester.py`](job_hunt/harvester.py), [`validator.py`](job_hunt/validator.py), [`company_builder.py`](job_hunt/company_builder.py) | Older list builders. `validate` **rewrites `companies.json` in place**; `harvest` writes there by default but refuses to overwrite an existing file without `--force` (T43). Use `discover`. `company_builder.match_headcount` is still used by `discover` for the badge. |
 | [`doctor.py`](job_hunt/doctor.py) | `autopilot doctor`: SQLite write, a 1-token Gemini call, Telegram `getMe`, ATS egress. |
 | [`drafter.py`](job_hunt/drafter.py) | `autopilot draft N\|URL [--jd-file F]`: reads the job description stored in the database (T29/T40) → tailored resume, cover letter, application info in `output/<company>-<date>/`. |
-| [`main.py`](job_hunt/main.py) | CLI (`init doctor validate harvest discover scan draft export mcp`) and `load_config()`; `config.py` re-exports it. |
+| [`main.py`](job_hunt/main.py) | CLI (`init doctor validate harvest discover scan draft export mark schedule mcp`) and `load_config()`; `config.py` re-exports it. |
+| [`scheduler.py`](job_hunt/scheduler.py) | `autopilot schedule on / off / status` (T121): the daily scan as a systemd user timer (`scripts/systemd/install.sh`) or one marked crontab line; off by default, `off` removes what `on` wrote. |
 | [`tools.py`](job_hunt/tools.py) / [`mcp_server.py`](job_hunt/mcp_server.py) | Protocol-agnostic tool layer and FastMCP stdio server (`scan_jobs`, `draft_application`, `export_jobs`). |
-| [`run_daily.sh`](run_daily.sh) | Runner: timestamps every output line into `data/scan.log`, sets no `min_score` of its own (it comes from `config.json`, default 70, T05). Not scheduled yet (T07). |
+| [`run_daily.sh`](run_daily.sh) | Runner: timestamps every output line into `data/scan.log`, sets no `min_score` of its own (it comes from `config.json`, default 70, T05). Scheduled only when the person runs `autopilot schedule on` (T121; default off). |
 
 ---
 
@@ -192,7 +193,7 @@ Measured on the date given. Each one has a task.
 - **Unreachable employers:** custom portals and platforms without a public API (Darwinbox,
   Zoho Recruit…; Phenom mostly fronts Workday, T26). The census found 52% of 458 careers pages
   JS-only or unidentified.
-- **Operations:** not scheduled: the timer is `scripts/systemd/install.sh`, run by Manish (T07); the code is backed up on GitHub (T01); the database, resume and keys are not.
+- **Operations:** not scheduled unless the person runs `autopilot schedule on` (systemd user timer, else cron; T121, T07); Manish has not; the code is backed up on GitHub (T01); the database, resume and keys are not.
 
 ---
 

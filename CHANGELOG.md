@@ -9,6 +9,20 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Added (2026-10-17, T121: `autopilot schedule on | off | status`, the daily scan as an opt-in switch)
+- Manish: "if someone wants to schedule it on a daily basis it runs automatically, but don't start it on my laptop; give users the option to turn it on and off, by default it's off." New
+  `job_hunt/scheduler.py` and the command `autopilot schedule on [--at HH:MM] [--method auto|systemd|cron]`, `schedule off`, `schedule status`. **Off by default**: no other command or module touches
+  the scheduler (a test checks both the calls and the imports). `on` uses the systemd user timer of T07 where `systemctl --user` works, else one crontab line ending in `# rolesight-scan` (also what macOS gets);
+  every other crontab line is kept as it was, an unreadable crontab is never overwritten, turning one method on removes the other (one run a day), `off` removes only `job-hunt-scan.*` and the marked line (not the
+  monthly recheck units, not `job-hunt-wallpaper.*`), and `status` only reads. Windows: `on` explains the Task Scheduler steps and changes nothing. Tested with stand-in `systemctl` and `crontab` programs at the front of PATH
+  (the real `install.sh` and real subprocess calls run against them; the fixture checks first that PATH resolves both names to the stand-ins): 38 tests; a cron line is run through `/bin/sh` in cron's bare environment
+  against a copy of the real `run_daily.sh`; 20 mutants, 1 survived and got its test. Measured on this machine, read-only: `schedule status` → OFF, and the real `systemctl --user` and `crontab -l` agree (no
+  `job-hunt-scan` unit, no crontab). **Not run:** the real `systemctl enable` and a real cron daemon (turning either on here was not allowed), anything on macOS or Windows.
+
+### Fixed (2026-10-17, T119: the scan unit's timeout)
+- `scripts/systemd/job-hunt-scan.service.in`: `TimeoutStartSec` 3 h → 4 h. With no cap on the jobs scored (T118) a day can score 1,000 jobs (500 per model): measured 6.1–7.5 s a job, so ~125 min of scoring plus ~17 min to fetch
+  the 1,589 boards, ~2.4 h in the worst case; 3 h left little room for retries. The comment in the unit no longer says "30-40 minutes".
+
 ### Added (2026-10-17, T122: an ATS column in the CSV)
 - Manish: "add the source of the ATS in the excel, so a person can filter by the ATS they want to apply on." Every CSV (the scan's `jobs_*.csv`, the rolling `open_matches.csv`, `autopilot export`) has a column **ATS**
   right after Company, holding the id the board is listed under in `companies.json` and in `data/jobs.db` (`greenhouse`, `lever`, `workday`, `oracle_hcm`, …). It is always written, like Company. Measured on a copy of the real

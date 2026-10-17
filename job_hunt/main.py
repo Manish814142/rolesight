@@ -18,6 +18,7 @@ Usage:
   autopilot export --days 7 --min 60  — combine filters
   autopilot mark #1 applied   — record an application: applied | interview | rejected | offer (none clears it)
   autopilot mark https://... interview  — the same for a job URL
+  autopilot schedule on [--at HH:MM]  — run the daily scan by itself (off by default); `schedule off` / `schedule status`
   autopilot mcp               — run the MCP server over stdio (for Claude Code)
 """
 import json
@@ -211,6 +212,12 @@ def main() -> None:
         check_filter_command(sys.argv[2:])
         return
 
+    # schedule turns the daily scan on or off (T121) — local only, no config or API keys needed
+    if cmd == "schedule":
+        from job_hunt.scheduler import main as schedule_main
+        schedule_main(sys.argv[2:])
+        return
+
     # mcp starts the stdio server; it loads config lazily per tool call, so it
     # must NOT require config.json to exist just to launch.
     if cmd == "mcp":
@@ -299,7 +306,7 @@ def main() -> None:
     else:
         sys.exit(
             f"Unknown command: {cmd}\n"
-            "Use: init | check-filter | doctor | validate | harvest | discover | scan | draft | export | mark | mcp"
+            "Use: init | check-filter | doctor | validate | harvest | discover | scan | draft | export | mark | schedule | mcp"
         )
 
 

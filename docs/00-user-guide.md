@@ -22,7 +22,7 @@ spreadsheet (CSV), best first. It **never applies** to anything; you do that you
 | Allow or block places | the location words in `job_hunt/prefilter.py` | [5](#5-which-jobs-reach-gemini-the-word-lists) |
 | Scan more companies | `autopilot discover --add` | [6](#6-add-companies) |
 | Get alerts on Telegram | `TELEGRAM_TOKEN`, `TELEGRAM_CHAT_ID` | [4](#4-the-settings-file-configjson) |
-| Run it every day by itself | `scripts/systemd/install.sh` | [8](#8-run-it-every-day) |
+| Run it every day by itself (off until you switch it on) | `autopilot schedule on` | [8](#8-run-it-every-day) |
 
 If you only do one thing: add your Gemini key and run `rolesight init --resume` with your resume. It writes
 everything that is personal for you to read and change. Everything else has a working default.
@@ -340,14 +340,20 @@ By hand, with a log (`run_daily.sh` uses the `.venv` folder from section 2):
 ./run_daily.sh --posted-within 3    # one run with another window
 ```
 
-The log goes to `data/scan.log`. To have your computer do it daily, the systemd **user** timer
-(Linux; nothing is installed until you run this):
+The log goes to `data/scan.log`. To have your computer do it daily, switch the schedule on. It is **off by
+default**; nothing schedules a scan until you run `on`:
 
 ```bash
-scripts/systemd/install.sh              # every day at 09:00, catches up a missed run
-scripts/systemd/install.sh --at 07:30   # another time
-scripts/systemd/install.sh --uninstall
+autopilot schedule on                # every day at 09:00 (local time)
+autopilot schedule on --at 07:30     # another time
+autopilot schedule status            # is it on, at what time, when is the next run
+autopilot schedule off               # back to no schedule
 ```
+
+On Linux this is a systemd **user** timer (it catches up a run missed while the computer was off); where that is not
+available, and on macOS, it is one line in your crontab (a missed run is skipped) that `off` removes again. On Windows
+`on` tells you how to make the task in Task Scheduler. The scheduled scan needs the same `config.json` and keys as
+a scan you start yourself.
 
 Details and the monthly company-list health check: [01](01-install.md#7-run-it-daily).
 

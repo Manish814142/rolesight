@@ -23,6 +23,7 @@ autopilot scan --posted-within 3   # window for this run (default: candidate.max
 autopilot discover --recheck --merge companies.json --report /tmp/r.csv   # monthly list health check
 autopilot discover --census scripts/careers_urls.txt --report /tmp/c.csv --emit-seeds /tmp/s.txt
                             # which ATS do careers pages use? --emit-seeds -> verify with discover --add-file
+autopilot schedule on [--at HH:MM] | off | status   # the daily scan by itself: systemd user timer, else cron; OFF by default (T121)
 ./run_daily.sh              # runner: timestamps into data/scan.log; min_score comes from config.json (default 70, T05)
 autopilot harvest --out /tmp/x.json   # rebuilds a list from india.yml + LinkedIn cache; refuses to overwrite an existing file without --force (T43); prefer discover
 autopilot validate          # prunes companies.json in place (accepts empty boards) — prefer discover
@@ -180,6 +181,7 @@ job_hunt/
   harvester.py    old companies.json builder;  validator.py  board pruning
   company_builder.py  headcount matching + blocklist tiers
   doctor.py       diagnostics;  drafter.py  drafts;  tools.py / mcp_server.py  MCP layer
+  scheduler.py    `schedule on|off|status`: the daily scan as a systemd user timer or a cron line, off by default (T121)
   main.py         CLI + load_config (config.py re-exports it)
 ```
 

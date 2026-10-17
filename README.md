@@ -130,8 +130,9 @@ one setup, and ideas for extending it, is in [docs/10 — Limitations and future
 - **India only.** The location filter, four job-board adapters (Workday, Eightfold, Phenom, Oracle HCM ask the board for
   India jobs), rubric rule 1 and `discover` are built for India, and so is the company list. Other countries are task T108
   (a design is on the board).
-- **Not scheduled by default.** Scans run by hand. `scripts/systemd/install.sh` installs a daily systemd user
-  timer when you choose.
+- **Not scheduled by default.** Scans run by hand. `autopilot schedule on` turns on a daily scan (a systemd user
+  timer on Linux, else cron, which also covers macOS), `autopilot schedule off` turns it off again, and
+  `autopilot schedule status` says which it is. Windows has no ready-made scheduler.
 - **Telegram is unverified.** The last send attempts (2026-10-03) failed with HTTP 404, so treat Telegram as off.
   The CSV is the primary output.
 - **Scores vary a little between runs.** On the 20 hardest labelled jobs, 5 runs each at the default temperature:

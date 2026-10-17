@@ -199,7 +199,7 @@ def test_the_commands_in_the_fenced_blocks_are_really_checked():
     """The first version of this test never looked inside ``` blocks, where most commands are."""
     spans = _backtick_spans()
     assert any(s.startswith("autopilot scan") for s in spans)
-    assert any(s.startswith("scripts/systemd/install.sh") for s in spans)
+    assert any(s.startswith("autopilot schedule on") for s in spans)          # a command that only the guide's fenced block holds
     assert _flag_is_defined("--posted-within") and _flag_is_defined("--uninstall")
     assert not _flag_is_defined("--no-such-flag")
 

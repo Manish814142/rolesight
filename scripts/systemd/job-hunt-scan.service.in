@@ -8,8 +8,9 @@ WorkingDirectory=@REPO@
 # so wait here: a run made up at login (Persistent=true) can start before Wi-Fi is connected.
 ExecStartPre=/usr/bin/env bash @REPO@/scripts/systemd/wait-online.sh
 ExecStart=/usr/bin/env bash @REPO@/run_daily.sh
-# A full scan takes 30-40 minutes (fetch ~10 min, then about 5 s per job scored); never let one run forever.
-TimeoutStartSec=3h
+# Measured: fetching the 1,589 boards takes ~17 min, scoring 6.1-7.5 s a job; with no cap on the jobs scored (T118) a day scores
+# up to 1,000 (500 on each of the two models), ~2.4 h in the worst case. 4 h leaves room for retries; never let one run forever.
+TimeoutStartSec=4h
 Nice=10
 StandardOutput=journal
 StandardError=journal
