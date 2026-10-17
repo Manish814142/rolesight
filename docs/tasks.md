@@ -570,6 +570,9 @@ can run `python scripts/import_json_history.py --apply`. The old `state/*.json` 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
 | T108 | Location is the person's own, not India: countries, cities and a remote policy in `config.json` (Manish 2026-10-14: senior people he knows want Europe, Singapore, Dubai) | decision | — | L | T103 |
+| T121 | `autopilot schedule on [--at HH:MM] \| off \| status`: the daily scan as an opt-in switch, **off by default** (Manish 2026-10-17: "if someone wants to schedule it on a daily basis it runs automatically, but don't start it on my laptop; give users the option to turn it on and off, by default it's off"). Linux: the systemd user timer of T07, else cron (also macOS); nothing else turns it on | todo | claude | M | T07 |
+| T122 | An `ATS` column in every CSV (the scan's `jobs_*.csv`, `open_matches.csv`, `autopilot export`) so a spreadsheet filter can pick the platform the person wants to apply on (Manish 2026-10-17) | doing · claude · 2026-10-17 | claude | S | — |
+| T123 | **Standing rule from Manish (2026-10-17): whenever anything is pushed to GitHub, `companies.json` (and its shipped copy `job_hunt/data/companies.json`) goes with it, so other job seekers get the list.** Written where the pusher reads it (CLAUDE.md, this board's ground rules) and checked with a command he can run | todo | claude | XS | — |
 
 **T108 · Location is the person's own, not India** (Manish 2026-10-14: "don't hard code location India, make this project as generic as possible… senior people I know can use it to search jobs in Europe, Singapore, Dubai"; he decides when). **Where India is hard-coded (measured 2026-10-14):** (1) the pre-filter's location rules (`prefilter.py`: `LOCATION_INDIA_*`, the Indian place lists, the remote-from-India rule, `LOCATION_EXCLUDE_PATTERN` of non-India regions; `candidate.cities` knows only Indian cities); (2) **four adapters ask the board for India only**: Workday `SEARCH_TEXT = "India"`, Eightfold `SEARCH_LOCATION`, Phenom `SEARCH_COUNTRY`, Oracle HCM's India location facet; (3) rubric rule 1 caps on-site work "outside India"; (4) `discover` accepts a company only with ≥ 1 India job; (5) the scan's funnel counts "India"; (6) `companies.json` is the India-curated list (224 boards). The other adapters already return every location: the saved fetch of 2026-10-13 holds **41** jobs in Dubai/UAE, **629** in Singapore, **2,268** in UK/DE/NL/FR/IE/ES/PL (location text, regex count).
 **Proposed design** (claude): `candidate.locations` in `config.json`: `{"countries": ["United Arab Emirates"], "cities": ["Dubai", "Abu Dhabi"], "remote": "in_country" | "anywhere" | "none"}`. Built-in place packs per country (name, ISO codes, main cities, states or emirates): the **India pack = today's lists**, plus packs for the first countries asked for; any other country falls back to its name, its ISO codes and the person's own cities. The four adapters take their search term from the same setting; rubric rule 1 is written from the countries (the built-in text stays byte-identical for India); `discover` asks for ≥ 1 job in the person's locations; the funnel says "in your locations"; `init --resume` drafts `locations` from the resume. `companies.json` stays India-curated: someone in Dubai adds companies with `discover --add` (a starter list per region is a later, separate step that needs network runs).
@@ -630,7 +633,7 @@ Which terms would you add?
 
 ## Inbox
 
-New findings go here with the next free ID (next: **T121**), an evidence tag and the
+New findings go here with the next free ID (next: **T124**), an evidence tag and the
 file:line. Manish or the triaging agent moves each one into a priority table.
 
 | ID | Finding | Evidence | Added by |
