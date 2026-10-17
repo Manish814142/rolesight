@@ -573,6 +573,7 @@ can run `python scripts/import_json_history.py --apply`. The old `state/*.json` 
 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
+| T128 | CSV columns in reading order (Score first, Worth Applying last) and a formatted Excel report `.xlsx` next to every CSV (Manish 2026-10-17: "ATS score field is not the first field… what do you suggest about the priority of all columns?", "Worth Applying at the end is okay", "csv or excel any format works, you decide", "to make the Excel report what other things can we do: formatting, text size, colouring?") | doing · claude · 2026-10-17 | claude | M | — |
 | T108 | Location is the person's own, not India: countries, cities and a remote policy in `config.json` (Manish 2026-10-14: senior people he knows want Europe, Singapore, Dubai) | decision | — | L | T103 |
 
 **T108 · Location is the person's own, not India** (Manish 2026-10-14: "don't hard code location India, make this project as generic as possible… senior people I know can use it to search jobs in Europe, Singapore, Dubai"; he decides when). **Where India is hard-coded (measured 2026-10-14):** (1) the pre-filter's location rules (`prefilter.py`: `LOCATION_INDIA_*`, the Indian place lists, the remote-from-India rule, `LOCATION_EXCLUDE_PATTERN` of non-India regions; `candidate.cities` knows only Indian cities); (2) **four adapters ask the board for India only**: Workday `SEARCH_TEXT = "India"`, Eightfold `SEARCH_LOCATION`, Phenom `SEARCH_COUNTRY`, Oracle HCM's India location facet; (3) rubric rule 1 caps on-site work "outside India"; (4) `discover` accepts a company only with ≥ 1 India job; (5) the scan's funnel counts "India"; (6) `companies.json` is the India-curated list (224 boards). The other adapters already return every location: the saved fetch of 2026-10-13 holds **41** jobs in Dubai/UAE, **629** in Singapore, **2,268** in UK/DE/NL/FR/IE/ES/PL (location text, regex count).
@@ -634,7 +635,7 @@ Which terms would you add?
 
 ## Inbox
 
-New findings go here with the next free ID (next: **T128**), an evidence tag and the
+New findings go here with the next free ID (next: **T129**), an evidence tag and the
 file:line. Manish or the triaging agent moves each one into a priority table.
 
 | ID | Finding | Evidence | Added by |
