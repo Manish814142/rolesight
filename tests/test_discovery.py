@@ -939,3 +939,41 @@ def test_workday_check_still_reads_a_redirect_that_ends_in_json(mock_post):
     r.headers = {"Content-Type": "application/json"}
     mock_post.return_value = r
     assert disc.evaluate_workday("Acme", "acme", "wd1", "External")["accepted"] is True
+
+
+
+# ── T117: one entry per Oracle HCM host, the busiest site, named by its own title ────────────────────────────────
+
+def _ora(name, host, site):
+    return {"name": name, "ats": "oracle_hcm", "host": host, "site": site}
+
+
+def test_merge_keeps_one_oracle_entry_per_host_the_first_given():
+    existing = [_ora("Kotak Mahindra Bank", "hcbt.fa.em2.oraclecloud.com", "CX")]
+    new = [_ora("Resideo", "ehtl.fa.us6.oraclecloud.com", "CX"), _ora("ADI", "ehtl.fa.us6.oraclecloud.com", "CX_2"),
+           _ora("Kotak Additional", "hcbt.fa.em2.oraclecloud.com", "CX_1001"), _ora("Nokia", "fa-evmr.fa.ocs.oraclecloud.com", "CX_1")]
+    assert [(c["name"], c["site"]) for c in merge_companies(existing, new)] == [
+        ("Kotak Mahindra Bank", "CX"), ("Nokia", "CX_1"), ("Resideo", "CX")]
+
+
+def test_oracle_hosts_are_compared_without_regard_to_case_and_other_ats_are_untouched():
+    existing = [_ora("A", "HOST.fa.us2.oraclecloud.com", "CX")]
+    new = [_ora("B", "host.fa.us2.oraclecloud.com", "CX_2"), {"name": "C", "ats": "greenhouse", "slug": "host"}]
+    assert [c["name"] for c in merge_companies(existing, new)] == ["C", "A"]            # sorted by (ats, name)
+
+
+def test_discover_then_merge_names_a_host_after_its_busiest_site_not_after_the_hosts_commonest_title(monkeypatch):
+    """T117: Resideo's site has 7 India jobs, ADI's 1, and two sites are titled ADI: the entry must be Resideo."""
+    monkeypatch.setattr(disc, "load_linkedin_cache", lambda path: ({}, {}))
+    india = {"CX": 7, "CX_2": 1, "CX_3": 1}
+
+    def fake_entry(name, entry):
+        n = india[entry["site"]]
+        return {"seed": name, "accepted": True, "verdict": "verified", "ats": "oracle_hcm", "board": f"{entry['host']}:{entry['site']}",
+                "jobs": n, "india_jobs": n, "prefilter_pass": 0, "entry": {"name": name, **entry}}
+    monkeypatch.setattr(disc, "evaluate_entry", fake_entry)
+    host = "ehtl.fa.us6.oraclecloud.com"
+    seeds = parse_seeds("".join(f"{n} | https://{host}/hcmUI/CandidateExperience/en/sites/{s} | exact\n"
+                                for n, s in (("ADI", "CX_2"), ("ADI", "CX_3"), ("Resideo", "CX"))))
+    verified, _ = disc.discover(seeds, workers=2)
+    assert [c["name"] for c in merge_companies([], verified)] == ["Resideo"]

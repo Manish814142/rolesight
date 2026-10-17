@@ -9,6 +9,18 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed (2026-10-17, T117: an Oracle HCM entry is named after the site that is scanned)
+- Found by the review of T112 (jobnotify-fa): the harvest named every site of a host with the title most of the host's sites carry, while `discover` keeps the host's busiest site, which can
+  be another employer's: 3 of the 104 entries were named after the wrong employer (ADI for Resideo's site, Lutech for McDermott's, Tumi for Samsonite's) and 3 after another site's region
+  (First Solar (US), Intertek UK, Novotech China); the six were renamed by hand. Now each site is named by **its own** page title (a site whose title names nobody takes the host's main title),
+  a host's sites are written together with the main-titled ones first (so a tie in India jobs goes to the host's main brand), and `merge_companies` keeps **one Oracle entry per host**, the
+  first given, which is the busiest site: two employers on one host are one entry (Manish: "do needful for the t117"; measured on the 104 hosts: 8 have sites with different titles, and
+  keeping them all would add small-subsidiary entries such as eight SVKM colleges).
+- Tested end to end on 2026-10-17: the list without its 104 Oracle additions, the archive's 2,092 Oracle URLs, new seeds, `discover` (147 sites verified), merge. The Oracle part of the list comes out as the same 108
+  employers (1,589 entries as now); 104 are identical in name and scanned site to the current list, including Resideo, McDermott and Samsonite, which the rule now gets right by itself; the other four
+  carry their site's own title (First Solar India, Intertek Global, Novotech Global, SVKM enterprize for the host named NMIMS). The names already in `companies.json` are not changed (the merge keeps
+  existing entries).
+
 ### Changed (2026-10-17, T118: no cap on the jobs scored per run)
 - Manish: "there should be no cap, on my account I have 500 per model limit so total 1000 I can run; first 500 on the 3.5 flash lite model, the rest on 3.1 flash lite, so it should
   switch automatically when it hits the limit." `max_jobs_to_score_per_run` now defaults to **0 (no cap)**; it was 400 (T04). The switch to the second model already existed (T64: a

@@ -208,8 +208,10 @@ def board_seeds(urls: List[str], existing: List[Dict[str, Any]], names: Optional
         # one board written in two cases is one board; keep the spelling with capitals (a Workday site, a SmartRecruiters id)
         if key not in found or (detected[1] != detected[1].lower() and found[key][1] == found[key][1].lower()):
             found[key] = detected
-    # One name per Oracle host: the title most of its sites have (then the shorter, then the alphabetical one), so "DP World"
-    # and "We One" sites of one host are one employer and a site whose own title names nobody still gets its host's name.
+    # Each Oracle site is named by its own page title (T117: the host's commonest title named Resideo's site "ADI" and McDermott's
+    # "Lutech", and `discover` keeps a host's busiest site). A site whose own title names nobody takes the host's main title: the one
+    # most of its sites carry (then the shorter, then the alphabetical one). `discover` keeps one entry per host, the busiest site, and on
+    # a tie the first it was given, so a host's sites are written together, those with the main title first.
     titles: Dict[str, List[str]] = {}
     for ats, ident in found.values():
         if ats == "oracle_hcm":
@@ -218,19 +220,25 @@ def board_seeds(urls: List[str], existing: List[Dict[str, Any]], names: Optional
                 titles.setdefault(ident.rpartition(":")[0].lower(), []).append(title)
     host_name = {host: sorted(Counter(ts).items(), key=lambda kv: (-kv[1], len(kv[0]), kv[0]))[0][0] for host, ts in titles.items()}
     lines = []
+    order: Dict[str, Tuple[str, int, str]] = {}
     for ats, ident in found.values():
         if ats == "oracle_hcm":
             host, _, site = ident.rpartition(":")
-            if host.lower() in host_name:                  # no employer name, no seed
-                label = host_name[host.lower()].replace("|", "/")      # `|` separates the fields of a seed line
-                lines.append(f"{label} | https://{host}/hcmUI/CandidateExperience/en/sites/{site} | exact")
+            main = host_name.get(host.lower())
+            if main is None:                                   # no site of this host names an employer: no seed
+                continue
+            own = (names or {}).get(ident) or (names or {}).get(ident.lower()) or main
+            label = own.replace("|", "/")                      # `|` separates the fields of a seed line
+            line = f"{label} | https://{host}/hcmUI/CandidateExperience/en/sites/{site} | exact"
+            lines.append(line)
+            order[line] = (main.lower(), 0 if own == main else 1, label.lower())
             continue
         if ats == "workday":
             tenant, dc, site = ident.split(":")
             lines.append(f"{pretty(tenant)} | https://{tenant}.{dc}.myworkdayjobs.com/{site} | exact")   # exact: one seed per site
         else:
             lines.append(f"{pretty(ident)} | {_BOARD_URL[ats].format(ident)} | exact")
-    return sorted(lines, key=lambda ln: (ln.split(" | ")[0].lower(), ln))
+    return sorted(lines, key=lambda ln: (*order.get(ln, (ln.split(" | ")[0].lower(), 0, "")), ln))
 
 
 def main(argv: Optional[List[str]] = None) -> int:

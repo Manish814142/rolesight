@@ -275,22 +275,28 @@ def accept_board(
 
 
 def merge_companies(existing: List[Dict[str, Any]], new: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    """Existing entries win; a new entry is dropped if its name or board is already present."""
+    """Existing entries win; a new entry is dropped if its name or board is already present (and, for Oracle HCM, its host)."""
     def board_key(c: Dict[str, Any]) -> Tuple[str, str]:
         return c.get("ats", ""), _board_ident(c).lower()
 
     def name_key(c: Dict[str, Any]) -> str:
         return " ".join(_core_words(c["name"]))  # "Mindtickle India" == "Mindtickle"
 
+    def oracle_host(c: Dict[str, Any]) -> str:
+        return str(c.get("host", "")).lower() if c.get("ats") == "oracle_hcm" else ""
+
     out = list(existing)
     names = {name_key(c) for c in out}
     boards = {board_key(c) for c in out}
+    # An Oracle HCM host is one employer's tenant and its sites are its career sites: one entry per host, the first given (T117).
+    oracle_hosts = {oracle_host(c) for c in out} - {""}
     for c in new:
-        if name_key(c) in names or board_key(c) in boards:
+        if name_key(c) in names or board_key(c) in boards or (oracle_host(c) and oracle_host(c) in oracle_hosts):
             continue
         out.append(c)
         names.add(name_key(c))
         boards.add(board_key(c))
+        oracle_hosts.add(oracle_host(c))
     return sorted(out, key=lambda c: (c.get("ats", ""), c["name"].lower()))
 
 

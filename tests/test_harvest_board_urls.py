@@ -230,20 +230,31 @@ def test_main_carries_on_when_the_archive_does_not_answer_for_one_host_and_says_
     assert "lever" in captured.err and "ashby" not in captured.err.split("did not answer")[-1] and "1 seed" in captured.out
 
 
-# ── T112: on Oracle HCM the host is the employer; its sites are its career sites ───────────────────────────────────────
+# ── T112/T117: an Oracle HCM host is one employer's tenant; each of its sites is named by its own page title ───────────
 
 def _oracle(host, site):
     return f"https://{host}/hcmUI/CandidateExperience/en/sites/{site}"
 
 
-def test_all_the_sites_of_one_oracle_host_carry_the_employers_most_common_title_as_their_name():
-    host = "ehpv.fa.em2.oraclecloud.com"
-    urls = [_oracle(host, s) for s in ("CX", "CX_1", "WeOneCareers")]
-    names = {f"{host}:CX": "DP World", f"{host}:CX_1": "DP World", f"{host}:WeOneCareers": "We One"}
-    assert hb.board_seeds(urls, [], names=names) == [f"DP World | {u} | exact" for u in sorted(urls)]
+def test_each_oracle_site_is_named_by_its_own_title_not_by_the_hosts_most_common_one():
+    """T117: the host's majority title named Resideo's site 'ADI' and McDermott's 'Lutech'; discover keeps the busiest site."""
+    host = "ehtl.fa.us6.oraclecloud.com"
+    urls = [_oracle(host, "CX"), _oracle(host, "CX_2"), _oracle(host, "CX_3")]
+    names = {f"{host}:CX": "Resideo", f"{host}:CX_2": "ADI", f"{host}:CX_3": "ADI"}
+    lines = hb.board_seeds(urls, [], names=names)
+    assert {ln.split(" | ")[1].rsplit("/", 1)[1]: ln.split(" | ")[0] for ln in lines} == {"CX": "Resideo", "CX_2": "ADI", "CX_3": "ADI"}
 
 
-def test_a_tie_between_titles_goes_to_the_shorter_name_then_the_alphabetical_one():
+def test_within_a_host_the_sites_with_the_hosts_most_common_title_come_first_so_a_tie_goes_to_it():
+    """discover keeps the busiest site and, on a tie, the first one it was given (a stable sort): the host's main brand."""
+    host = "eczd.fa.us2.oraclecloud.com"
+    urls = [_oracle(host, "KFC-Europe-Careers"), _oracle(host, "CX_1"), _oracle(host, "CX_2")]
+    names = {f"{host}:KFC-Europe-Careers": "KFC Europe", f"{host}:CX_1": "Yum!", f"{host}:CX_2": "Yum!"}
+    order = [ln.split(" | ")[0] for ln in hb.board_seeds(urls, [], names=names)]
+    assert order == ["Yum!", "Yum!", "KFC Europe"]
+
+
+def test_a_tie_between_titles_for_the_hosts_main_one_goes_to_the_shorter_then_the_alphabetical():
     host = "abcd.fa.us2.oraclecloud.com"
     urls = [_oracle(host, "CX_1"), _oracle(host, "CX_2")]
     assert hb.board_seeds(urls, [], names={f"{host}:CX_1": "Acme Alumni", f"{host}:CX_2": "Acme"})[0].startswith("Acme | ")
