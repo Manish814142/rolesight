@@ -68,7 +68,7 @@ def scan(tmp_path, monkeypatch):
 
 
 def test_the_scans_csv_names_each_jobs_ats_and_a_filter_on_it_finds_that_platform_only(scan):
-    (out,) = Path("output").glob("jobs_*.csv")
+    (out,) = Path("output/history").glob("jobs_*.csv")
     rows = _read(out)
     assert len(rows) == 4 and all(r["ATS"] for r in rows)                   # no blank cell
     assert {r["Application URL"] for r in rows if r["ATS"] == "greenhouse"} == {"https://greenhouse.example/1", "https://greenhouse.example/2"}
@@ -84,10 +84,10 @@ def test_the_rolling_open_matches_file_has_it_too(scan):
 
 
 def test_autopilot_export_has_it_too(scan, monkeypatch):
-    before = set(Path("output").glob("*.csv"))
+    before = set(Path("output/history").glob("*.csv"))
     monkeypatch.setattr(sys, "argv", ["autopilot", "export"])
     cli.main()
-    (written,) = set(Path("output").glob("*.csv")) - before
+    (written,) = set(Path("output/history").glob("*.csv")) - before
     assert sorted(r["ATS"] for r in _read(written)) == ["greenhouse", "greenhouse", "lever", "workday"]
 
 
@@ -121,5 +121,5 @@ def test_the_deprecated_scorers_csv_has_it_too(tmp_path, monkeypatch):
     monkeypatch.setattr(scanner, "chat_with_llm", lambda config, messages, temperature=0.1, max_tokens=4096: reply)
     cfg = {"llm_provider": "anthropic", "candidate": {"name": "Ada", "resume_path": "resume.md", "min_score": 55, "top_n": 5}}
     scanner.run_scan(cfg, [{"name": "Ashby Co", "ats": "ashby", "slug": "ashby"}])
-    (out,) = Path("output").glob("jobs_*.csv")
+    (out,) = Path("output/history").glob("jobs_*.csv")
     assert [r["ATS"] for r in _read(out)] == ["ashby"]

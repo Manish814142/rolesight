@@ -160,7 +160,7 @@ def test_run_scan_puts_sub_scores_in_the_results_only_in_structured_mode(monkeyp
     cfg = {"candidate": {"resume_path": "resume.md", "min_score": 60}, "gemini_api_key": "k", "telegram": {},
            "scoring_mode": "structured"}
     scanner.run_scan(cfg, [{"name": "X", "ats": "greenhouse", "slug": "x"}])
-    row = list(csv.DictReader(next(Path("output").glob("jobs_*.csv")).open()))[0]
+    row = list(csv.DictReader(next(Path("output/history").glob("jobs_*.csv")).open()))[0]
     assert row["Stack fit"] == "70" and row["Seniority fit"] == "100" and row["Min years"] == "3"
 
 

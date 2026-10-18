@@ -179,7 +179,7 @@ def test_a_scan_stores_logs_and_does_not_flag_the_current_rubric(tmp_path, monke
     with connect("data/jobs.db") as con:
         assert {r[0] for r in con.execute("SELECT score_rubric FROM jobs")} == {llm_utils.rubric_id()}
     assert any(r.getMessage() == f"Scoring rubric: {llm_utils.rubric_id()}" for r in caplog.records)
-    (csv_path,) = (tmp_path / "output").glob("jobs_*.csv")
+    (csv_path,) = (tmp_path / "output" / "history").glob("jobs_*.csv")
     assert "Rubric" not in _rows(csv_path)[0]
 
 

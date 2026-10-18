@@ -109,7 +109,7 @@ def test_cli_mark_then_export_shows_the_status(scanned, monkeypatch, capsys):
     assert "applied" in capsys.readouterr().out
     assert _row(scanned[0].url)["application_status"] == "applied"
     _cli(monkeypatch, "export", "--days", "7")
-    (out,) = Path("output").glob("*.csv")
+    (out,) = Path("output/history").glob("*.csv")
     rows = {r["Application URL"]: r for r in csv.DictReader(out.open(encoding="utf-8"))}
     assert rows[scanned[0].url]["Application"] == "applied 2026-10-08"
     assert rows[scanned[1].url]["Application"] == ""
@@ -117,7 +117,7 @@ def test_cli_mark_then_export_shows_the_status(scanned, monkeypatch, capsys):
 
 def test_export_without_any_mark_keeps_its_columns(scanned, monkeypatch):
     _cli(monkeypatch, "export")
-    (out,) = Path("output").glob("*.csv")
+    (out,) = Path("output/history").glob("*.csv")
     assert "Application" not in next(csv.reader(out.open(encoding="utf-8")))
 
 

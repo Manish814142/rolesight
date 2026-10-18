@@ -59,9 +59,9 @@ def history(tmp_path, monkeypatch):
 
 def _export(monkeypatch, *args):
     monkeypatch.setattr(sys, "argv", ["autopilot", "export", *args])
-    before = set(Path("output").glob("*.csv"))
+    before = set(Path("output/history").glob("*.csv"))
     cli.main()
-    (written,) = set(Path("output").glob("*.csv")) - before    # the file this call wrote: not "the newest by mtime" (T82)
+    (written,) = set(Path("output/history").glob("*.csv")) - before    # the file this call wrote: not "the newest by mtime" (T82)
     with written.open(newline="", encoding="utf-8") as fh:
         return list(csv.DictReader(fh))
 

@@ -305,15 +305,22 @@ of a scan are the **funnel**, which says where every job went:
 Funnel: fetched 2354 | India 2167 | already scored 0 | pre-filter rejected 2058 | too old 279 | queued 17 | scored 17 (gemini-3.5-flash-lite 17) | failed 0 | left for next scan 0
 ```
 
-The scan writes `output/jobs_YYYY-MM-DD.csv` (only the jobs scored in that scan, best first; a new file each
-time) and `output/open_matches.csv` (only what **this** scan found: its jobs above `min_score` that you have not
-marked as applied; a scan with nothing new leaves it empty, and yesterday's jobs are in yesterday's file). **Each has an
-`.xlsx` beside it with the same name: open that one.** It is the same table made easy to read: the header row and the Score and
+The scan keeps two files at the top of `output/`, replaced by every scan, so you never look for the newest: **`open_matches.xlsx`**
+(only what **this** scan found: its jobs above `min_score` that you have not marked as applied; a scan with nothing new leaves it
+empty) and **`last_scan.xlsx`** (everything this scan scored, whatever the score). Each has a `.csv` twin. The dated record of every
+scan, `jobs_YYYY-MM-DD.csv` and `.xlsx`, goes to `output/history/` and is never overwritten; drafts go to `output/drafts/`. Nothing is
+deleted for you: remove old files from `history/` whenever you like, because `data/jobs.db` has every job. **Open the `.xlsx`.** It is the same table made easy to read: the header row and the Score and
 Company columns stay in view when you scroll, every column has a filter (use it on **ATS**), Score is green from 85 and amber
 from your `min_score`, and "Open" in the Application URL column is the link. The `.csv` is the same data for scripts; it is UTF-8
 without a byte-order mark, so if you open it directly and a name such as "Karnātaka" shows as "KarnÄ…taka", choose **UTF-8** in
 the import dialog (measured with LibreOffice 7.3 started headless: its default import garbled 5 cells of a 49-row file, and with
 UTF-8 chosen none; the `.xlsx` has no such problem there; Excel was not tested).
+
+**Opening the links.** "Open" and "Search" are real hyperlinks, and each program has its own rule for following one. **Excel** (Windows, Mac, the web): one plain click opens it; to select the cell without opening, hold the
+click until the pointer turns into the cross, or move onto it with the arrow keys (Microsoft's page on links describes the desktop and web apps; Excel for Mac was not checked separately). **LibreOffice** (Linux, Windows, Mac): **Ctrl+click**
+by default, a safeguard so that a click can select the cell; to open on a plain click untick Tools → Options → LibreOffice → Security → Options… → **Ctrl-click required to open hyperlinks** (the label is from LibreOffice 7.3; it is a
+setting of your LibreOffice, not of the file, so no file can change it). **Google Sheets**: a link shows a small preview when you point at it and opens with one click (seen when pasting the table in; not tested further). If links
+"do nothing" on a click, it is almost always this LibreOffice setting, not a broken file.
 
 | Column | What to do with it |
 |---|---|
@@ -330,7 +337,7 @@ Other commands that read what the last scan saved (none of them needs a key, exc
 autopilot export --min 85            # the last scan again, only scores of 85 or more
 autopilot export --days 7 --min 70   # every job scored in the last 7 days
 autopilot mark 1 applied             # row 1 of the last scan: applied | interview | rejected | offer | none
-autopilot draft 2                    # a tailored resume and cover letter for row 2, in output/<company>-<date>/
+autopilot draft 2                    # a tailored resume and cover letter for row 2, in output/drafts/<company>-<date>/
 ```
 
 `draft` makes 3 Gemini calls (measured: 16 s) and writes the files for you to **review and send yourself**.

@@ -8,7 +8,7 @@ India company list) are deliberate defaults. Read this together with [CLAUDE.md]
 [docs/tasks.md](docs/tasks.md) before changing anything.
 
 > ⚠️ **Invariant: drafts only.** Nothing in this project may ever submit an application or
-> fill in a form. All outputs are CSVs and draft files in `output/` for a human to review.
+> fill in a form. All outputs are CSV/Excel files and draft files in `output/` for a human to review.
 
 Current as of 2026-10-04, after T47 (Workday paging), T30 (dedupe by ATS id) and T24.
 
@@ -39,7 +39,7 @@ flowchart TD
     SCORE -- error --> DISC["stays discovered<br/>(retried next scan)"]
     SCORE -- ok --> SCORED["status = scored (+score, reason)"]
     SCORED -- "score ≥ min_score & Telegram HTTP 200" --> NOTIFIED["status = notified"]
-    SCORED --> OUT["sorted best-first →<br/>output/jobs_YYYY-MM-DD[_N].csv + .xlsx · Telegram digest<br/>(scores live in data/jobs.db)"]
+    SCORED --> OUT["sorted best-first →<br/>output/history/jobs_YYYY-MM-DD[_N].csv + .xlsx, output/last_scan.*, output/open_matches.* · Telegram digest<br/>(scores live in data/jobs.db)"]
 ```
 
 A company whose `careers_url` names a known ATS is detected automatically; one with no
@@ -61,13 +61,13 @@ TinyFish careers-page path was removed (T42).
 | [`scanner.py`](job_hunt/scanner.py) | `run_scan()`: parallel fetch (`fetch_workers`) → per-job dedupe / pre-filter / age → enrich → score → state files, CSV, digest. Also `score_jobs`, the batch prompt used by the non-Gemini providers. |
 | [`scorer.py`](job_hunt/scorer.py) | `score_and_process_job` (single, default) / `score_and_process_batch` (opt-in): Gemini call, 4.2 s pacing, DB status update, per-job Telegram alert. A failure returns `score=None` and leaves the row `discovered`. |
 | [`llm_utils.py`](job_hunt/llm_utils.py) | `score_job_with_gemini` / `score_jobs_batch_with_gemini` (JSON output, model fallback `gemini-3.5-flash-lite` → `gemini-3.1-flash-lite`, one retry per model on 429/503/quota; a model whose daily quota is gone is skipped until its reset, T64); `chat_with_llm` provider dispatch for drafting (`gemini`, `anthropic`, `claude_cli`; `openrouter` was removed). |
-| [`exporter.py`](job_hunt/exporter.py) | CSV writer: 11 columns in reading order (Score first), never overwrites (`jobs_DATE.csv`, `jobs_DATE_1.csv`, …). |
+| [`exporter.py`](job_hunt/exporter.py) | CSV writer: 11 columns in reading order (Score first), never overwrites (`output/history/jobs_DATE.csv`, `jobs_DATE_1.csv`, …); where the files go: `HISTORY_DIR`. |
 | [`xlsx_report.py`](job_hunt/xlsx_report.py) | The formatted Excel copy written beside each CSV (T128): frozen header, filter, coloured Score, wrapped text, links. Built from the CSV; a failure only logs a warning. |
 | [`notifier.py`](job_hunt/notifier.py) | `send_telegram`, `is_telegram_configured` (empty or placeholder ⇒ off), `format_job_alert` (with the headcount badge). |
 | [`discovery.py`](job_hunt/discovery.py) | `autopilot discover`: seeds / `--add-file` / `--add` → slug candidates → probe ATSs and curated Workday tenants → accept only if live, the right employer, ≥1 India job and the newest posting ≤180 days; `--merge`, `--recheck`, `--census`, `--emit-seeds`. `KNOWN_BAD_BOARDS` is never accepted. |
 | [`harvester.py`](job_hunt/harvester.py), [`validator.py`](job_hunt/validator.py), [`company_builder.py`](job_hunt/company_builder.py) | Older list builders. `validate` **rewrites `companies.json` in place**; `harvest` writes there by default but refuses to overwrite an existing file without `--force` (T43). Use `discover`. `company_builder.match_headcount` is still used by `discover` for the badge. |
 | [`doctor.py`](job_hunt/doctor.py) | `autopilot doctor`: SQLite write, a 1-token Gemini call, Telegram `getMe`, ATS egress. |
-| [`drafter.py`](job_hunt/drafter.py) | `autopilot draft N\|URL [--jd-file F]`: reads the job description stored in the database (T29/T40) → tailored resume, cover letter, application info in `output/<company>-<date>/`. |
+| [`drafter.py`](job_hunt/drafter.py) | `autopilot draft N\|URL [--jd-file F]`: reads the job description stored in the database (T29/T40) → tailored resume, cover letter, application info in `output/drafts/<company>-<date>/`. |
 | [`main.py`](job_hunt/main.py) | CLI (`init doctor validate harvest discover scan draft export mark schedule mcp`) and `load_config()`; `config.py` re-exports it. |
 | [`scheduler.py`](job_hunt/scheduler.py) | `autopilot schedule on / off / status` (T121): the daily scan as a systemd user timer (`scripts/systemd/install.sh`) or one marked crontab line; off by default, `off` removes what `on` wrote. |
 | [`tools.py`](job_hunt/tools.py) / [`mcp_server.py`](job_hunt/mcp_server.py) | Protocol-agnostic tool layer and FastMCP stdio server (`scan_jobs`, `draft_application`, `export_jobs`). |
@@ -118,7 +118,7 @@ model and the legacy no-key path.
 | `data/autopilot.log` | Full DEBUG log of every command (`autopilot` and `job_hunt.*` loggers); rotates at 5 MB, keeps 3 older files; `ROLESIGHT_LOG` overrides the path | ignored |
 | `scan.log` | Where this log lived before T16 (root dir, unrotated); no longer written | ignored |
 | `state/*.json` | Retired (T34): no longer written or read; `scripts/import_json_history.py` imports scores only they hold | ignored |
-| `output/` | CSVs and drafts | ignored |
+| `output/` | `open_matches.*` and `last_scan.*` (fixed names, replaced every scan), `history/` (dated files), `drafts/` (T130) | ignored |
 | `job_hunt/data/` | Templates that `autopilot init` copies, including a copy of the curated `companies.json` (a test checks they match; T50) | committed |
 
 ---

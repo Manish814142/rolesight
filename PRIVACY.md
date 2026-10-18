@@ -36,7 +36,7 @@ personal details (phone, email, address) from the resume file. Scoring doesn't n
 | `config.json`, `.env` | Candidate profile and API keys |
 | `data/jobs.db` | Jobs seen, statuses, scores and reasons. Job data only, no resume |
 | `state/*.json` | Left by versions before T34 (scored jobs, seen URLs); no longer written |
-| `output/` | CSVs. Drafts (`output/<company>-<date>/`) contain your personal content |
+| `output/` | CSV and Excel files of scan results (`open_matches.*`, `last_scan.*`, `history/`). Drafts (`output/drafts/<company>-<date>/`) contain your personal content |
 | `scan.log`, `data/scan.log` | Run logs: job titles, scores and reasons. No keys |
 
 ## Telemetry

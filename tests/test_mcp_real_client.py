@@ -87,5 +87,5 @@ def test_export_through_the_client_writes_the_csv_from_the_database(tmp_path):
 
     _, result = _converse(tmp_path, steps)
     assert _dump(result)["isError"] is False and "Export complete" in _text(result)
-    (csv_file,) = (tmp_path / "output").glob("jobs_*.csv")
+    (csv_file,) = (tmp_path / "output" / "history").glob("jobs_*.csv")
     assert "Backend Engineer" in csv_file.read_text(encoding="utf-8")

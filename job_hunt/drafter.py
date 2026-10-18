@@ -9,7 +9,7 @@ from job_hunt.log import get_logger
 
 logger = get_logger()
 
-OUTPUT_DIR = Path("output")
+DRAFTS_DIR = Path("output") / "drafts"       # (T130; before, output/<company>-<date>/)
 
 
 def _slug(text: str) -> str:
@@ -53,7 +53,7 @@ def _job_description(url: str, jd_file: str | None) -> tuple[str, str | None]:
     return row["description"], row.get("company")
 
 
-def draft_application(config: dict, job_ref: str, jd_file: str | None = None) -> None:
+def draft_application(config: dict, job_ref: str, jd_file: str | None = None) -> Path:
     cand = config.get("candidate", {})
     candidate_name = cand.get("name", "the candidate")
     resume_path = Path(cand.get("resume_path", "resume/YOUR_RESUME.md"))
@@ -70,7 +70,7 @@ def draft_application(config: dict, job_ref: str, jd_file: str | None = None) ->
     logger.debug(f"JD: {len(jd)} chars (using {len(jd_truncated)} for prompts)")
 
     date_str = datetime.now().strftime("%Y-%m-%d")
-    out_dir = OUTPUT_DIR / f"{company_slug}-{date_str}"
+    out_dir = DRAFTS_DIR / f"{company_slug}-{date_str}"
     out_dir.mkdir(parents=True, exist_ok=True)
     logger.debug(f"Output directory: {out_dir.resolve()}")
 
@@ -155,3 +155,4 @@ JOB DESCRIPTION:
 
     logger.info(f"\nAll files in: {out_dir.resolve()}")
     logger.info("Review, edit, then submit manually.")
+    return out_dir

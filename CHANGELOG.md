@@ -9,6 +9,24 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Changed (2026-10-18, T130: a clean `output/`, a fixed `last_scan.*`, dated files in `history/`, drafts in `drafts/`, and the link-click note)
+- Manish (screenshot of `output/`): "I want the output path clean so a user is not confused by so many files; the newest file should not be at the bottom of 100 files." Chosen with him: the lighter variant (the CSV twins of the two fixed files stay at the top),
+  "no monthly subfolders, leave my existing files alone, no auto-delete". Now: **`open_matches.xlsx/.csv`** (the jobs this scan found to apply to) and the new **`last_scan.xlsx/.csv`** (everything this scan scored, whatever the score, the same table and row order as
+  the dated file, so row N is still job N for `draft N` and `mark N`) keep their names and are replaced by every scan; **`history/`** holds the dated pair of every scan (`jobs_DATE[_N].csv` and `.xlsx`, never overwritten) and what
+  `autopilot export` writes; **`drafts/`** holds `autopilot draft` output (`output/drafts/<company>-<date>/`, before `output/<company>-<date>/`). A scan that scores nothing adds nothing to `history/` and leaves both fixed files with the header only. RoleSight deletes
+  no dated file and has no clean-up setting (Manish: users keep the delete control); files written before T130 are not moved. `export_jobs()` now returns the CSV's path, `draft_application()` the folder, and the MCP tools say where the file is (the
+  skill reads `last_scan.csv`/`open_matches.csv` or the file the export reply names).
+- A fixed file that cannot be replaced (open in a spreadsheet on Windows, where a rename over an open file fails) is now a **warning**, not an exception: before, `os.replace` raised at the end of the scan, after the scan row was finished but before the Telegram digest.
+  The same helper writes `open_matches` and `last_scan` (beside its name, then moved over it, and its Excel copy).
+- Docs: README, user guide, `docs/01`, `04`, `05`, `06`, `09`, ARCHITECTURE, CLAUDE.md, PRIVACY.md and the skill describe the layout; `docs/00` and `docs/05` say how a link opens in each program (Excel: one click; LibreOffice: Ctrl+click unless "Ctrl-click required to open
+  hyperlinks" is unticked in Tools → Options → LibreOffice → Security → Options; Google Sheets: hover card), so a user on another system does not think the links are broken; a test checks the guides name no removed path and carry that note.
+- Measured, real network and real Gemini, in an empty scratch folder that already held old-style files: scan 1 (6 companies, 12 jobs scored, 1 at 70 or more) wrote exactly `history/jobs_DATE.{csv,xlsx}`, `last_scan.*` (12 rows, byte-identical to the dated CSV) and `open_matches.*` (1 row);
+  `draft 1` and `mark 1 applied` acted on row 1 of `last_scan.csv`; `export` and `export --days 7 --min 70` wrote `_1` and `_last7d` pairs into `history/`; scan 2 (nothing new) left `history/` as it was and both fixed files with 0 rows (csv and xlsx);
+  the three old files kept their checksums; no `.tmp` left. LibreOffice 7.3 opened both fixed workbooks. **Not tested:** a really locked file (Windows; simulated by a test that makes the replace raise), anything on Windows or macOS, Excel.
+  `scripts/verify_ats_and_score.py` (a one-off) still writes its report at the top of `output/`.
+- 22 new tests (`tests/test_output_layout.py`: fresh folder, second scan, empty scan, weak-only scan, old files, export, drafts, both MCP tools, locked file, the guides); 17 mutants each fail a test (three survived the first run: a test checked "history" against all of a test's
+  log records, including an earlier INFO line, and the exporter's own default folder was never used; both fixed). 30 existing tests now look in `history/` and `drafts/`.
+
 ### Changed + Added (2026-10-17, T128: columns in reading order, and a formatted Excel report beside every CSV)
 - Manish, after opening the sample run: Score was the 8th column, behind two long links. "Worth Applying at the end is okay"; "csv or excel, any format works, you decide"; "what else can we do: formatting, text size, colouring?"
   The CSV columns are now **Score (%), Company, ATS, Role, Location, Posted, Reason, Application URL, LinkedIn people, Worth Applying, Scan Date** (optional columns, Model and Rubric still follow). `Worth Applying` stays in `open_matches.csv`

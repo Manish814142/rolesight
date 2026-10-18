@@ -116,15 +116,16 @@ Full descriptions fetched for 170 of 226 survivor(s) in 32 s
 Scoring 226 job(s) one per Gemini call (~4.2 s each)...
 1044 job(s) skipped as posted more than 7 day(s) ago
 === Scan complete — 215/215 companies, 226 jobs found, 5 top matches (34.3 min) ===
-Results saved to CSV: output/jobs_2026-10-04_1.csv
+Results saved to CSV: output/history/jobs_2026-10-04_1.csv
 ```
 
 For a quick trial first, `autopilot scan --limit 5` scans only the first 5 companies.
 
 ## 6. Read the results
 
-Open the newest `output/jobs_*.xlsx` (the Excel copy of the CSV beside it) in a spreadsheet. Rows are sorted best score first,
-the Score is the first column, and every column has a filter.
+Open `output/open_matches.xlsx` (the jobs this scan found to apply to) or `output/last_scan.xlsx` (everything it scored) in a spreadsheet.
+Rows are sorted best score first, the Score is the first column, and every column has a filter. Every scan also keeps a dated copy in
+`output/history/`.
 Read the **Reason** column before trusting a score. Apply through the
 **Application URL**, which is the company's own posting.
 

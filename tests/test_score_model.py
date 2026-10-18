@@ -120,7 +120,7 @@ def test_a_scan_whose_primary_fails_on_one_job_records_the_fallback_on_that_row_
     with connect("data/jobs.db") as con:
         rows = dict(con.execute("SELECT global_id, score_model FROM jobs").fetchall())
     assert rows == {"greenhouse:x:0": FALLBACK, "greenhouse:x:1": PRIMARY}
-    (csv_path,) = (tmp_path / "output").glob("jobs_*.csv")
+    (csv_path,) = (tmp_path / "output" / "history").glob("jobs_*.csv")
     by_role = {r["Role"]: r for r in csv.DictReader(csv_path.open(encoding="utf-8"))}
     assert by_role["Backend Engineer 0"]["Model"] == FALLBACK and by_role["Backend Engineer 1"]["Model"] == PRIMARY
     line = next(r.getMessage() for r in caplog.records if "Funnel" in r.getMessage())
@@ -139,7 +139,7 @@ def test_the_funnel_line_names_the_model_when_only_one_scored(tmp_path, monkeypa
                       "telegram": {}}, [{"name": "X", "ats": "greenhouse", "slug": "x"}])
     line = next(r.getMessage() for r in caplog.records if "Funnel" in r.getMessage())
     assert f"scored 3 ({PRIMARY} 3)" in line, line
-    (csv_path,) = (tmp_path / "output").glob("jobs_*.csv")
+    (csv_path,) = (tmp_path / "output" / "history").glob("jobs_*.csv")
     assert "Model" not in next(csv.reader(csv_path.open(encoding="utf-8")))    # the normal case: no new column
 
 

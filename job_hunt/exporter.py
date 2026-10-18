@@ -9,6 +9,11 @@ from urllib.parse import quote
 
 from job_hunt.llm_utils import GEMINI_DEFAULT_MODEL, current_rubric_ids
 
+# Where the files go (T130): the two the person opens every day keep fixed names at the top of output/ (scanner.OPEN_MATCHES_FILE and
+# LAST_SCAN_FILE), every dated per-scan file goes to output/history/, drafts to output/drafts/ (drafter.DRAFTS_DIR).
+OUTPUT_DIR = Path("output")
+HISTORY_DIR = OUTPUT_DIR / "history"
+
 # In reading order (T128): the score first, the file is sorted by it; the long link columns after the text; Worth Applying, which only
 # repeats the score against min_score, with the date at the end. Optional columns (OPTIONAL_COLUMNS, Model, Rubric) follow.
 EXPORT_FIELDS: List[str] = [
@@ -109,7 +114,7 @@ def job_from_db_row(r: Dict[str, Any], threshold: Optional[int]) -> Dict[str, An
 
 def get_incremental_csv_path(
     base_name: str,
-    out_dir: Union[Path, str] = "output",
+    out_dir: Union[Path, str] = HISTORY_DIR,
 ) -> Path:
     """
     Generate an incremental CSV path.
@@ -128,7 +133,7 @@ def get_incremental_csv_path(
 def export_jobs_to_csv(
     jobs: List[Dict[str, Any]],
     base_name: Optional[str] = None,
-    out_dir: Union[Path, str] = "output",
+    out_dir: Union[Path, str] = HISTORY_DIR,
     out_path: Optional[Path] = None,
 ) -> Path:
     """

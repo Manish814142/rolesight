@@ -78,7 +78,12 @@ Scoring: 80-100 near-perfect; 60-79 good fit; 40-59 partial; <40 poor.
 Set worth_applying=true only if score >= {min_score}.
 Include ALL jobs. Output ONLY the JSON array."""
 
-from job_hunt.exporter import export_jobs_to_csv, job_from_db_row  # noqa: E402
+from job_hunt.exporter import (  # noqa: E402
+    HISTORY_DIR,
+    OUTPUT_DIR,
+    export_jobs_to_csv,
+    job_from_db_row,
+)
 from job_hunt.xlsx_report import write_xlsx_report  # noqa: E402
 
 
@@ -285,13 +290,36 @@ def format_telegram_message(top_jobs: list[dict], date_str: str) -> str:
 
 
 def _export_to_csv(jobs: list[dict], label: str) -> Path:
-    out_path = export_jobs_to_csv(jobs, out_dir="output")
+    """The scan's dated record, output/history/jobs_DATE[_N].csv, never overwritten, with its Excel copy beside it (T128, T130)."""
+    out_path = export_jobs_to_csv(jobs, out_dir=HISTORY_DIR)
     logger.info(f"Results exported to CSV ({label}): {out_path}")
-    write_xlsx_report(out_path)                 # the formatted Excel copy beside it (T128)
+    write_xlsx_report(out_path)
     return out_path
 
 
-OPEN_MATCHES_FILE = Path("output/open_matches.csv")
+OPEN_MATCHES_FILE = OUTPUT_DIR / "open_matches.csv"
+LAST_SCAN_FILE = OUTPUT_DIR / "last_scan.csv"       # everything the last scan scored, a fixed name beside open_matches (T130)
+
+
+def _replace_report(jobs: list[dict], final: Path) -> bool:
+    """Write `jobs` as the fixed-name CSV `final` and its Excel copy, replacing the earlier ones. Written beside its name and moved over it,
+    so a reader never meets a half file. A file that cannot be replaced (open in a spreadsheet on Windows) is a warning, not the end of the
+    scan: the scan's own record is in output/history/ and data/jobs.db, and nothing after this step is skipped (T130)."""
+    tmp = final.with_suffix(".csv.tmp")
+    try:
+        export_jobs_to_csv(jobs, out_path=tmp)          # creates output/ when it is missing
+        os.replace(tmp, final)
+    except OSError as exc:
+        logger.warning(f"{final} was not updated ({exc}). Is it open in a spreadsheet? Close it; the next scan replaces it. This scan's "
+                       f"results are in {HISTORY_DIR}/ and in the database.")
+        try:
+            tmp.unlink(missing_ok=True)
+        except OSError:
+            pass
+        return False
+    write_xlsx_report(final)                    # the formatted Excel copy (T128)
+    return True
+
 
 # What output/open_matches.csv holds. "this_run" (T124, Manish 2026-10-17: nobody marks a job applied by hand, so the rolling list
 # only grew with old jobs): the jobs the last scan scored. "all_open" (T39): every scored job >= min_score not marked applied.
@@ -323,10 +351,7 @@ def _write_open_matches(min_score: int, max_age: Optional[int], scope: str = DEF
         if max_age is not None and age is not None and age > max_age:
             continue
         jobs.append(job_from_db_row(r, min_score))
-    tmp = OPEN_MATCHES_FILE.with_suffix(".csv.tmp")
-    export_jobs_to_csv(jobs, out_path=tmp)
-    os.replace(tmp, OPEN_MATCHES_FILE)          # never a half-written file if it is open in a spreadsheet
-    write_xlsx_report(OPEN_MATCHES_FILE)        # and its Excel copy (T128)
+    _replace_report(jobs, OPEN_MATCHES_FILE)
     return len(jobs)
 
 
@@ -653,6 +678,8 @@ def run_scan(config: dict, companies: list[dict]) -> None:
     # Always persist results to CSV when there are scored jobs — this is the
     # durable record regardless of whether Telegram is configured.
     csv_path = _export_to_csv(all_scored_jobs, "scan results") if all_scored_jobs else None
+    _replace_report(all_scored_jobs, LAST_SCAN_FILE)         # what this scan scored, whatever the score; empty when it scored nothing (T130)
+    logger.info(f"Last scan (everything it scored): {len(all_scored_jobs)} → {LAST_SCAN_FILE}")
     open_count = _write_open_matches(min_score, max_age, open_scope)
     logger.info(f"Open matches ({'found this run' if open_scope == 'this_run' else 'all still open'}, score >= {min_score}, not applied"
                 + (f", posted within {max_age} day(s)" if max_age is not None else "")

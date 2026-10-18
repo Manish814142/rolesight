@@ -33,5 +33,5 @@ def test_draft_numbers_follow_score_order(tmp_path, monkeypatch):
     assert drafter._resolve_job("2")[0] == "https://x/C"
     assert drafter._resolve_job("3")[0] == "https://x/A"
     # The CSV (the primary interface) lists jobs in the same order, so row N = draft N.
-    rows = list(csv.DictReader(next(Path("output").glob("jobs_*.csv")).open()))
+    rows = list(csv.DictReader(next(Path("output/history").glob("jobs_*.csv")).open()))
     assert [r["Application URL"] for r in rows] == ["https://x/B", "https://x/C", "https://x/A"]

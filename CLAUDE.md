@@ -36,7 +36,7 @@ python scripts/rubric_ids.py [--db data/jobs.db]   # which rubric text each stor
 python scripts/measure_workday_tenants.py   # per-tenant Workday fetch time, detail calls, survivors (~4-9 min, real network)
 python scripts/score_golden_set.py         # score the labelled jobs with the rubric off/on (~150 Gemini calls); --from-scores re-analyses
 autopilot doctor            # SQLite / Gemini / Telegram / ATS egress checks
-autopilot export [--min N] [--days N]   # CSV from data/jobs.db: last finished scan, or N days (no API keys needed; T32)
+autopilot export [--min N] [--days N]   # CSV (+ .xlsx) in output/history/ from data/jobs.db: last finished scan, or N days (no API keys needed; T32)
 autopilot draft 1 | URL [--jd-file F]   # resume + cover letter draft from the stored description, + keyword_gaps.txt (T44)
 autopilot mark 1 | URL applied          # application status (applied|interview|rejected|offer|none) in data/jobs.db; export shows it (T38)
 ```
@@ -69,7 +69,8 @@ Tests must make **no network calls** — stub `send_telegram`, adapters, and Gem
    a model other than the primary scored; T71) and the id of the rubric text (`jobs.score_rubric`, scan log `Scoring rubric:`, CSV `Rubric`
    column when a score is not from the current one; `python scripts/rubric_ids.py [--db data/jobs.db]` decodes the ids; T97).
 7. Per-job Telegram alert (if configured) → results sorted best-first → incremental CSV
-   `output/jobs_YYYY-MM-DD[_N].csv` (never overwrites; each CSV also gets a formatted `.xlsx` beside it, T128) and `output/open_matches.csv` (rewritten every run: the jobs *this* scan
+   `output/history/jobs_YYYY-MM-DD[_N].csv` (never overwrites; each CSV also gets a formatted `.xlsx` beside it, T128), `output/last_scan.csv` (everything *this* scan scored, rewritten every run, T130)
+   and `output/open_matches.csv` (rewritten every run: the jobs *this* scan
    scored ≥ min_score, not marked applied, inside the posted window; T124. `open_matches_scope: "all_open"` brings back the rolling list
    of every unmarked match, T39); the scan's row in table `scans` is finished,
    digest of the top `top_n`.

@@ -108,7 +108,7 @@ def test_run_scan_no_telegram_writes_csv(scan_setup, monkeypatch):
     assert not sent  # no telegram configured
     import csv
     from pathlib import Path
-    (out,) = Path("output").glob("jobs_*.csv")
+    (out,) = Path("output/history").glob("jobs_*.csv")
     assert next(csv.DictReader(out.open(encoding="utf-8")))["Score (%)"] == "90"
 
 

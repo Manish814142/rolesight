@@ -252,7 +252,7 @@ def _sheet(path):
 
 
 def test_a_scan_writes_a_report_for_the_scans_file_and_for_open_matches(scan):
-    (jobs_csv,) = Path("output").glob("jobs_*.csv")
+    (jobs_csv,) = Path("output/history").glob("jobs_*.csv")
     assert _sheet(jobs_csv.with_suffix(".xlsx")).max_row == 3
     ws = _sheet("output/open_matches.xlsx")
     assert ws.max_row == 3 and [ws.cell(i, 1).value for i in (2, 3)] == [90, 75]
@@ -273,10 +273,10 @@ def test_a_second_scan_that_finds_nothing_empties_the_report_too(scan):
 
 
 def test_autopilot_export_writes_one_too(scan, monkeypatch):
-    before = set(Path("output").glob("*.xlsx"))
+    before = set(Path("output/history").glob("*.xlsx"))
     monkeypatch.setattr(sys, "argv", ["autopilot", "export"])
     cli.main()
-    (written,) = set(Path("output").glob("*.xlsx")) - before
+    (written,) = set(Path("output/history").glob("*.xlsx")) - before
     assert _sheet(written).max_row == 3
 
 
@@ -291,7 +291,7 @@ def test_a_scan_still_finishes_and_keeps_its_csvs_when_the_report_cannot_be_writ
                         lambda job, **kw: (update_job_status(job_key(job), "scored", 90, "fits"), {"score": 90, "reason": "fits", "status": "scored"})[1])
     scanner.run_scan({"candidate": {"resume_path": "resume.md", "min_score": 70}, "gemini_api_key": "k", "telegram": {}},
                      [{"name": "G", "ats": "greenhouse", "slug": "g"}])
-    assert len(list(Path("output").glob("jobs_*.csv"))) == 1 and Path("output/open_matches.csv").exists()
+    assert len(list(Path("output/history").glob("jobs_*.csv"))) == 1 and Path("output/open_matches.csv").exists()
     assert not list(Path("output").glob("*.xlsx"))
 
 

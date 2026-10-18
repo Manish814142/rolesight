@@ -145,7 +145,7 @@ replaces both.
 5. **Score** each queued job with Gemini, one call per job, 4.2 s apart. Success →
    `scored` (or `notified` if a Telegram alert went out). Failure → stays `discovered`
    for the next scan.
-6. **Write** `output/jobs_YYYY-MM-DD.csv` (best first; the scores are already in `data/jobs.db`), log the top `top_n`, and send the Telegram
+6. **Write** `output/history/jobs_YYYY-MM-DD.csv` and `.xlsx` (best first; the scores are already in `data/jobs.db`), replace `output/last_scan.*` and `output/open_matches.*`, log the top `top_n`, and send the Telegram
    digest if it's configured.
 
 The pre-filter and scoring rules are spelled out in [07](07-config-and-scoring.md).

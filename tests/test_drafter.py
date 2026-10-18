@@ -25,7 +25,7 @@ def draft_env(tmp_path, monkeypatch):
 def test_draft_from_url_writes_three_files_named_after_the_company(draft_env):
     drafter.draft_application(draft_env, URL)
     from pathlib import Path
-    out_dirs = list(Path("output").glob("acme_co-*"))
+    out_dirs = list(Path("output/drafts").glob("acme_co-*"))
     assert out_dirs
     files = {p.name for p in out_dirs[0].iterdir()}
     assert any(f.startswith("resume_") for f in files)

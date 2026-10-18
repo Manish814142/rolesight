@@ -124,5 +124,5 @@ def test_only_worth_applying_jobs_reach_the_csv(legacy_scan):
     run, _, set_reply = legacy_scan
     set_reply(_both_scored())
     run()
-    (out,) = Path("output").glob("jobs_*.csv")
+    (out,) = Path("output/history").glob("jobs_*.csv")
     assert [r["Application URL"] for r in csv.DictReader(out.open(encoding="utf-8"))] == ["https://x.co/jobs/1"]

@@ -65,7 +65,7 @@ def test_draft_writes_keyword_gaps_next_to_the_cover_letter(draft_env, tmp_path,
     import logging
     caplog.set_level(logging.INFO, logger="autopilot")
     drafter.draft_application(draft_env, URL)
-    (folder,) = (tmp_path / "output").iterdir()
+    (folder,) = (tmp_path / "output" / "drafts").iterdir()
     text = (folder / "keyword_gaps.txt").read_text(encoding="utf-8")
     assert "In the posting, not in your resume (3): Go, gRPC, Kubernetes" in text
     assert "In both (2): PostgreSQL, Redis" in text

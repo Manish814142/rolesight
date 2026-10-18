@@ -103,7 +103,7 @@ def test_an_undated_job_is_kept_like_in_the_scan_itself(env):
 
 def test_the_per_scan_csv_still_has_every_job_scored_so_the_old_ones_are_not_lost(env):
     env(new=[_job("N1"), _job("N2")], scores={"N1": 90, "N2": 40})
-    (per_scan,) = Path("output").glob("jobs_*.csv")
+    (per_scan,) = Path("output/history").glob("jobs_*.csv")
     with per_scan.open(encoding="utf-8") as fh:
         assert sorted(r["Application URL"].rsplit("/", 1)[1] for r in csv.DictReader(fh)) == ["N1", "N2"]
 

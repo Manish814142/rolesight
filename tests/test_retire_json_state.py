@@ -43,7 +43,7 @@ def test_a_scan_writes_no_json_state(tmp_path, monkeypatch):
     scanner.run_scan({"candidate": {"resume_path": "resume.md", "min_score": 60}, "gemini_api_key": "k",
                       "telegram": {}}, [{"name": "X", "ats": "greenhouse", "slug": "x"}])
     assert not (tmp_path / "state").exists()
-    assert list((tmp_path / "output").glob("jobs_*.csv"))           # the CSV is still written
+    assert list((tmp_path / "output" / "history").glob("jobs_*.csv"))           # the CSV is still written
 
 
 def test_tool_scan_reports_the_last_scan_from_the_database(tmp_path, monkeypatch):
@@ -133,5 +133,5 @@ def test_imported_jobs_show_up_in_export_days(legacy_dir, monkeypatch):
     con.close()
     monkeypatch.setattr(sys, "argv", ["autopilot", "export", "--days", "1", "--min", "70"])
     cli.main()
-    (csv_path,) = Path("output").glob("*.csv")
+    (csv_path,) = Path("output/history").glob("*.csv")
     assert "https://x/c" in csv_path.read_text() and "https://x/e" in csv_path.read_text()

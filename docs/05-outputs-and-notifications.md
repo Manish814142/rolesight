@@ -3,10 +3,30 @@
 Everything a scan writes, how to read it, and the optional channels on top. All of these
 paths are gitignored.
 
+## What a scan writes (T130)
+
+```
+output/
+  open_matches.xlsx    ← open this: the jobs this scan found at or above min_score that you have not marked
+  open_matches.csv        the same table as plain text
+  last_scan.xlsx       ← everything this scan scored, whatever the score
+  last_scan.csv           the same table as plain text
+  history/             ← one dated pair per scan, jobs_YYYY-MM-DD[_N].csv and .xlsx, never overwritten; `autopilot export` writes here too
+  drafts/              ← what `autopilot draft` writes, one folder per draft
+```
+
+The four files at the top keep their names and are **replaced by every scan**, so there is never a "newest file" to look for among a
+hundred. A scan that scores nothing replaces them with the header row only and adds nothing to `history/`. RoleSight deletes none of
+your dated files: they pile up in `history/` (two a day with a daily schedule) until you remove them, and nothing is lost by
+removing them, because `data/jobs.db` has every job (`autopilot export --days N` writes a new file for any period). Files written before
+T130 (`jobs_*.csv` at the top of `output/`) are left where they are. If a fixed file cannot be replaced (it is open in a spreadsheet on
+Windows), the scan logs `… was not updated … Is it open in a spreadsheet?` and carries on: that scan's results are in `history/` and in the
+database, and the next scan replaces the file.
+
 ## The CSV (primary output) and its Excel copy
 
-`output/jobs_YYYY-MM-DD.csv`. One file per scan; if the name is taken, the scan writes
-`_1`, `_2`, … and never overwrites. Rows are **sorted best score first**. Row N of the CSV
+`output/history/jobs_YYYY-MM-DD.csv`. One file per scan; if the name is taken, the scan writes
+`_1`, `_2`, … and never overwrites. `output/last_scan.csv` is a copy of the same table under a fixed name. Rows are **sorted best score first**. Row N of the CSV
 is job N of the last completed scan, which `draft N` and `mark N` look up in `data/jobs.db` (table `scans`, T31).
 
 | Column | Meaning |
@@ -25,13 +45,19 @@ is job N of the last completed scan, which `draft N` and `mark N` look up in `da
 
 The columns are in reading order since T128 (Manish: the score is what he ranks and filters on, and it was the 8th column, behind two long links).
 
-**The Excel copy (T128).** Beside every CSV the scan writes a workbook of the same rows under the same name (`jobs_YYYY-MM-DD.xlsx`, `open_matches.xlsx`; `autopilot export` writes one too). It is built from the CSV just written, so the
+**The Excel copy (T128).** Beside every CSV the scan writes a workbook of the same rows under the same name (`history/jobs_YYYY-MM-DD.xlsx`, `last_scan.xlsx`, `open_matches.xlsx`; `autopilot export` writes one too). It is built from the CSV just written, so the
 columns, their order and the optional ones below always agree. What it adds: the header row is dark blue, bold and **frozen together with Score and Company**; a **filter** is on every column (filter on ATS, or on Score); Score is a **number**
 (sorts and filters as one), **green** at 85 and above and **amber** from `min_score` up to 84, plain below; Role, Location and Reason **wrap** and the rows are sized to fit; **Application URL** and **LinkedIn people** are cells
 that read "Open" and "Search" and are the links; widths are set; the sheet prints landscape, one page wide, with the header repeated. Text from a job board is always stored as text: a title that starts with `=`, `+`, `-` or `@` is not
 run as a formula. Characters a spreadsheet cannot hold (control characters) are dropped from the report, not from the CSV. The CSV is the primary output: if the report cannot be written (the file is open in Excel on
 Windows, say) the scan logs `Excel report … not written`, removes an older report of that name so it cannot be mistaken for this one, and carries on. It is written with the `openpyxl` library (a core dependency).
 Measured: LibreOffice 7.3 opens it and the letters ("Karnātaka") come out right without an import dialog; Excel was not tested.
+
+**Opening the links.** "Open" and "Search" are real hyperlinks, and each program has its own rule for following one. **Excel** (Windows, Mac, the web): one plain click opens it; to select the cell without opening, hold the
+click until the pointer turns into the cross, or move onto it with the arrow keys (Microsoft's page on links describes the desktop and web apps; Excel for Mac was not checked separately). **LibreOffice** (Linux, Windows, Mac): **Ctrl+click**
+by default, a safeguard so that a click can select the cell; to open on a plain click untick Tools → Options → LibreOffice → Security → Options… → **Ctrl-click required to open hyperlinks** (the label is from LibreOffice 7.3; it is a
+setting of your LibreOffice, not of the file, so no file can change it). **Google Sheets**: a link shows a small preview when you point at it and opens with one click (seen when pasting the table in; not tested further). If links
+"do nothing" on a click, it is almost always this LibreOffice setting, not a broken file.
 
 A column appears only when some job in the file has a value for it: **Stack** (from the deprecated non-Gemini
 scorer) and, with `scoring_mode: structured`, **Stack fit**, **Role fit**, **Seniority fit**, **Location fit**,
@@ -58,7 +84,7 @@ found: the jobs it scored at or above `min_score`** that you have not marked wit
 interview, rejected, offer), inside the posted-date window (`--posted-within N` / `candidate.max_posted_age_days`; undated
 jobs are kept). Best score first, same columns as the per-scan CSV. A scan that finds nothing new leaves the header and no
 rows; yesterday's jobs are not repeated here (T124: nobody marks jobs applied by hand, so the old rolling list only grew).
-They stay in the earlier `jobs_*.csv` files and in `autopilot export --days 7 --min 70`.
+They stay in `history/` and in `autopilot export --days 7 --min 70`.
 
 To get the rolling list back (every job in `data/jobs.db` scored ≥ `min_score` and not marked, old ones included, closed
 jobs left out; T39), set `"open_matches_scope": "all_open"` in `config.json`. The default is `"this_run"`; any other value
@@ -69,9 +95,9 @@ stops the scan before it fetches anything. Workday's "Posted 5 Days Ago" is aged
 Writes a fresh CSV from saved results. It needs no API keys.
 
 ```bash
-autopilot export                    # last scan            → output/jobs_DATE.csv
+autopilot export                    # last scan            → output/history/jobs_DATE.csv (+ .xlsx)
 autopilot export --min 70           # last scan, score ≥ 70
-autopilot export --days 7 --min 70  # every job scored in the last 7 days → output/jobs_DATE_last7d.csv
+autopilot export --days 7 --min 70  # every job scored in the last 7 days → output/history/jobs_DATE_last7d.csv
 ```
 
 It reads `data/jobs.db` (T32): without `--days`, the jobs scored during the last finished scan (the same list and
@@ -175,7 +201,7 @@ autopilot draft 1          # job #1 of the last scan (= CSV row 1)
 autopilot draft https://…  # any posting URL
 ```
 
-It writes `output/<company>-<date>/`: `resume_<company>.md` (a tailored resume),
+It writes `output/drafts/<company>-<date>/`: `resume_<company>.md` (a tailored resume),
 `cover_letter_<company>.md`, `application_info.txt` and `keyword_gaps.txt` (T44: the technologies the posting names
 that your resume does not, and those in both; printed too). **It never submits anything.**
 

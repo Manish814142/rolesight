@@ -118,7 +118,7 @@ def export_jobs(
     ] = 0,
 ) -> str:
     """
-    Export job scan results to a CSV file in the output/ directory.
+    Export job scan results to a CSV file in output/history/ (with an .xlsx beside it); the reply names the file.
 
     Returns a summary of the export.
     """

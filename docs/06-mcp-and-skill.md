@@ -32,7 +32,7 @@ the three tools below.
 | Tool | Arguments | Does |
 |---|---|---|
 | `scan_jobs` | none | A full `autopilot scan` with the current config. Returns "Scan complete. N jobs found, M scored." |
-| `export_jobs` | `min_score` (0 = all), `days` (0 = last scan only) | Same as `autopilot export --min … --days …` |
+| `export_jobs` | `min_score` (0 = all), `days` (0 = last scan only) | Same as `autopilot export --min … --days …`; the reply names the CSV it wrote, in `output/history/` (an `.xlsx` beside it) |
 | `draft_application` | `job_ref`: `#1`, `1` or a job URL | Same as `autopilot draft` (no `--jd-file` here), see [05](05-outputs-and-notifications.md#drafts-autopilot-draft) |
 
 Caveats:

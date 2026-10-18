@@ -25,7 +25,8 @@ apply or submit.**
 ## Steps
 
 1. **Get results.** Prefer existing results: call `export_jobs(min_score, days)`, e.g.
-   `min_score=70, days=7`, and read the CSV it writes in `output/`. Only call `scan_jobs()`
+   `min_score=70, days=7`; the reply names the CSV it wrote in `output/history/`: read that. (The fixed files `output/last_scan.csv`
+   and `output/open_matches.csv` hold the last scan without any export.) Only call `scan_jobs()`
    if the user asks for a fresh scan. A full scan takes about 35 minutes and may outlast
    the tool call. Suggest running `autopilot scan --posted-within 7` in a terminal
    instead.
@@ -34,7 +35,7 @@ apply or submit.**
    90), so the reason is what separates them. Ask which roles the user wants to pursue.
 3. **Draft (optional).** For a chosen role, call `draft_application(job_ref)`, where
    `job_ref` is `#N` (row N of the last scan = CSV row N) or the job URL. It writes a
-   tailored resume, a cover letter and application info to `output/<company>-<date>/`.
+   tailored resume, a cover letter and application info to `output/drafts/<company>-<date>/`.
 4. **Review.** Read the drafts back and point out anything that overstates or
    misrepresents the resume. Edits, and the application itself, are the user's.
 

@@ -70,8 +70,8 @@ def tool_draft(job_ref: str, config_path: str = "config.json") -> str:
     os.chdir(project_root)
     try:
         config = load_config()
-        draft_application(config, job_ref)
-        return "Application drafted in output/ directory."
+        folder = draft_application(config, job_ref)
+        return f"Application drafted in {folder or 'output/drafts/'}"
     finally:
         os.chdir(old_cwd)
 
@@ -89,7 +89,9 @@ def tool_export(min_score: int = 0, days: int = 0, config_path: str = "config.js
     try:
         from job_hunt.onboarding import use_rubric_of_config_file
         use_rubric_of_config_file()                     # T106: the person's rubric is "current" for the Rubric column
-        export_jobs(min_score=min_score, days=days)
-        return "Export complete. Check output/ directory."
+        written = export_jobs(min_score=min_score, days=days)
+        if written is None:
+            return "Export complete. No job matched, so no file was written."
+        return f"Export complete: {written} (the same table as an .xlsx beside it)."
     finally:
         os.chdir(old_cwd)

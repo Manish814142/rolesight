@@ -12,7 +12,7 @@ Usage:
   autopilot scan --posted-within 3  — only score jobs posted in the last 3 days (undated jobs kept)
   autopilot draft #1          — draft application for job #1 from last scan
   autopilot draft https://... — draft application for a specific URL (add --jd-file FILE to paste the description)
-  autopilot export            — export last scan to CSV (output/jobs_YYYY-MM-DD.csv)
+  autopilot export            — export last scan to CSV (output/history/jobs_YYYY-MM-DD.csv, and an .xlsx beside it)
   autopilot export --min 60   — export only jobs with score >= 60
   autopilot export --days 7   — export jobs from last 7 days (requires scan history)
   autopilot export --days 7 --min 60  — combine filters
@@ -128,7 +128,12 @@ def init_project(resume: str | None = None, yes: bool = False) -> None:
     _init(resume=resume, yes=yes)
 
 
-from job_hunt.exporter import export_jobs_to_csv, job_from_db_row, job_to_export_row  # noqa: E402
+from job_hunt.exporter import (  # noqa: E402
+    HISTORY_DIR,
+    export_jobs_to_csv,
+    job_from_db_row,
+    job_to_export_row,
+)
 from job_hunt.xlsx_report import write_xlsx_report  # noqa: E402
 
 _job_to_row = job_to_export_row
@@ -161,9 +166,9 @@ def _export_min_score() -> int | None:
     return min_score_of(load_config())
 
 
-def export_jobs(min_score: int = 0, days: int = 0) -> None:
-    """Write a CSV of scored jobs from data/jobs.db: the last finished scan, or with `days` every job scored in the
-    last N days (UTC dates), best first (T32)."""
+def export_jobs(min_score: int = 0, days: int = 0) -> Path | None:
+    """Write a CSV of scored jobs from data/jobs.db into output/history/: the last finished scan, or with `days` every job scored in the
+    last N days (UTC dates), best first (T32). Returns the CSV's path, None when no job matched."""
     from job_hunt.db import last_scan_jobs, scored_jobs_since
     if days > 0:
         cutoff = (datetime.now(timezone.utc) - timedelta(days=days)).strftime("%Y-%m-%d")
@@ -183,17 +188,18 @@ def export_jobs(min_score: int = 0, days: int = 0) -> None:
 
     if not filtered:
         print(f"No jobs with score >= {min_score} in {source_label}")
-        return
+        return None
 
     date_str = datetime.now().strftime("%Y-%m-%d")
     day_suffix = f"_last{days}d" if days else ""
     base_name = f"jobs_{date_str}{day_suffix}"
-    out_path = export_jobs_to_csv(filtered, base_name=base_name, out_dir="output")
+    out_path = export_jobs_to_csv(filtered, base_name=base_name, out_dir=HISTORY_DIR)
     report = write_xlsx_report(out_path)
 
     print(f"Exported {len(filtered)} jobs ({source_label}) → {out_path}" + (f" and {report}" if report else ""))
     if min_score:
         print(f"Filter: score >= {min_score} (skipped {len(jobs) - len(filtered)})")
+    return out_path
 
 
 def main() -> None:

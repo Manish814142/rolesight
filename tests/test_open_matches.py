@@ -84,10 +84,10 @@ def test_it_is_regenerated_every_run_even_when_nothing_new_is_scored(env):
     assert env() == ["D", "E", "B", "F"]
     tracker.mark_job("https://x/D", "interview")             # any application status means "applied"
     assert env() == ["E", "B", "F"]
-    per_scan = sorted(p.name for p in Path("output").glob("jobs_*.csv"))
+    per_scan = sorted(p.name for p in Path("output/history").glob("jobs_*.csv"))
     assert per_scan == []                                    # nothing scored, so no per-scan CSV: only the rolling file
     env(new=[_job("H")])
-    assert len(list(Path("output").glob("jobs_*.csv"))) == 1  # the per-scan files stay
+    assert len(list(Path("output/history").glob("jobs_*.csv"))) == 1  # the per-scan files stay
 
 
 def test_an_empty_result_still_rewrites_the_file(env):

@@ -41,7 +41,7 @@ def _scan_csv():
         _, day, *counter = f.stem.split("_")
         return day, int(counter[0]) if counter else 0
 
-    files = sorted(Path("output").glob("jobs_*.csv"), key=order)
+    files = sorted(Path("output/history").glob("jobs_*.csv"), key=order)
     if not files:
         return []
     with files[-1].open(newline="", encoding="utf-8") as fh:
@@ -268,10 +268,10 @@ def test_scan_csv_helper_picks_the_highest_numbered_file_even_when_mtimes_tie(tm
     import os
     from pathlib import Path
     monkeypatch.chdir(tmp_path)
-    Path("output").mkdir()
+    Path("output/history").mkdir(parents=True)
     for name, marker in (("jobs_2026-10-14.csv", "first"), ("jobs_2026-10-14_1.csv", "second"), ("jobs_2026-10-14_2.csv", "third")):
-        Path("output", name).write_text(f"Company\n{marker}\n")
-        os.utime(Path("output", name), ns=(1_700_000_000_000_000_000,) * 2)
+        Path("output/history", name).write_text(f"Company\n{marker}\n")
+        os.utime(Path("output/history", name), ns=(1_700_000_000_000_000_000,) * 2)
     assert _scan_csv() == [{"Company": "third"}]
 
 
