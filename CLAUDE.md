@@ -20,7 +20,7 @@ autopilot check-filter "Java Developer" "Pune, India"   # KEPT/REJECTED with con
 autopilot scan              # full scan of companies.json (alias: python -m job_hunt scan)
 autopilot scan --limit 5    # only the first 5 companies
 autopilot scan --posted-within 3   # window for this run (default: candidate.max_posted_age_days, 7; `all` = none; undated jobs kept)
-autopilot discover --recheck --merge companies.json --report /tmp/r.csv   # monthly list health check
+autopilot discover --recheck --merge companies.json --report /tmp/r.csv --out /tmp/recheck.json   # monthly list health check (from the repo folder)
 autopilot discover --census scripts/careers_urls.txt --report /tmp/c.csv --emit-seeds /tmp/s.txt
                             # which ATS do careers pages use? --emit-seeds -> verify with discover --add-file
 autopilot schedule on [--at HH:MM] | off | status   # the daily scan by itself: systemd user timer, else cron; OFF by default (T121)

@@ -16,7 +16,7 @@ Usage:
     python -m job_hunt discover --add "Plane, BitGo, Groww" --merge companies.json
     # periodic health check of the existing list (run monthly/quarterly): re-verify every
     # entry; boards that fail are re-discovered by name (ATS migration) or removed
-    python -m job_hunt discover --recheck --merge companies.json --report /tmp/recheck.csv
+    python -m job_hunt discover --recheck --merge companies.json --report /tmp/recheck.csv --out /tmp/recheck.json
     # ATS census: which platform do careers pages use? ("Name | careers URL" lines)
     python -m job_hunt discover --census scripts/careers_urls.txt --report /tmp/census.csv \\
         [--emit-seeds /tmp/census_seeds.txt]   # then: discover --add-file /tmp/census_seeds.txt --merge ...
@@ -32,7 +32,8 @@ Seeds file, one company per line ('#' comments allowed):
 
 Options: --report FILE, --out FILE, --merge FILE (add the verified entries to it), --no-recheck (do not re-check the
 entries already in the --merge file), --workers N (parallel probes, default 40; use 3 for Workable and Recruitee seeds,
-which refuse bursts). Guide: docs/04-companies-and-scanning.md, "Growing the list".
+which refuse bursts). Run it from the repository folder (the paths are relative); no API key is needed.
+Guide: docs/04-companies-and-scanning.md, "Growing the list".
 """
 from __future__ import annotations
 

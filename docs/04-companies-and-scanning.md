@@ -58,7 +58,19 @@ its host is already there. By default it also re-checks every existing entry (`-
 appended to `scripts/company_seeds.txt` for the record. Without `--report` / `--out` the files land in the current folder
 as `discovery_report.csv` and `verified_companies.json`: pass scratch paths.
 
+**Run every command below from the repository folder** (the clone): `discover` reads and writes `scripts/company_seeds.txt`,
+`companies.json` and its default report files relative to the folder it is started in, and stops with `FileNotFoundError`
+elsewhere. It needs **no API key** (no Gemini call is made; only the job boards' public APIs are read).
+
 **Always:** back up first (`cp companies.json /tmp/companies.backup.json`), read the report, then `git diff companies.json`.
+
+**The report's verdicts:** `verified` (accepted), `no open jobs`, `no India jobs`, `identity not confirmed`, `stale board (newest
+posting N days old)`, `known bad board`, `no live board on supported ATSs`, and `error: …` (the check raised; nothing was decided).
+With `--merge`, rows starting `[existing]` are the re-check of the entries already in the list.
+
+**The default re-check removes entries.** With `--merge` and without `--no-recheck`, an existing entry that now fails the
+four checks is dropped (the run prints `dropping existing <name>`), so the diff can show removals you did not ask for. Pass
+`--no-recheck` when you only add, and read the diff either way.
 
 ### 1. By name: a pasted list
 
@@ -88,7 +100,9 @@ autopilot discover --add-file /tmp/seeds.txt --report /tmp/r.csv --out /tmp/v.js
 ```
 
 The census fingerprints 29 platforms on each page, following up to 3 job links one level deep, and writes seed lines for
-the boards it recognises. Its first run (2026-10-04, 458 pages; `scripts/careers_urls.txt` holds 509 now) identified 197:
+the boards it recognises. **If it wrote no seed line, stop there:** `--add-file` with an empty file stops with "holds no company
+name" (T132; before that it fell back to checking every line of `scripts/company_seeds.txt`, hours of network). Its first run
+(2026-10-04, 458 pages; `scripts/careers_urls.txt` holds 506 now) identified 197:
 Workday 17%, Greenhouse 9%, Eightfold and Phenom 7% each, Oracle HCM and Darwinbox 6% each; **52% were JavaScript-only
 pages or an unknown platform**. That last group is where most of the missing companies are (see "Where to grow next").
 
@@ -158,17 +172,22 @@ fetch (all fixed or decided since; check for them in yours):
 | **Wrong name** on an Oracle host with several brands | "ADI" on Resideo's site, "Lutech" on McDermott's (T117, fixed in the script) | Compare the entry's name with its jobs' descriptions |
 | A **one-posting board** that lost its India job a day later | Loopio, Ryansg (T112) | The monthly recheck removes them |
 
+**Removing a wrong entry by hand:** delete its object from `companies.json`, `cp companies.json job_hunt/data/companies.json`,
+and, when the board itself is wrong (another employer, a stub), add `(ats, slug)` to `discovery.KNOWN_BAD_BOARDS` with the
+reason in the commit, so no later `discover` run adds it back.
+
 ### Keeping the list healthy: the monthly recheck
 
 ```bash
-autopilot discover --recheck --merge companies.json --report /tmp/recheck.csv
+autopilot discover --recheck --merge companies.json --report /tmp/recheck.csv --out /tmp/recheck.json   # --out: the changed rows
 git diff companies.json                                    # read it before committing; then copy the list to job_hunt/data/
 scripts/monthly_recheck.sh                                 # the same, report only: it never changes companies.json
 scripts/systemd/install.sh --with-recheck                  # run it monthly by systemd (not part of `autopilot schedule on`)
 ```
 
 Every entry is checked again with the four rules (identity is trusted: these were verified once). A board that fails is
-re-discovered by name, which catches a company that moved to another ATS; if that fails too, the entry goes. Entries are
+re-discovered by name, which catches a company that moved to another ATS; if that fails too, the entry goes. The report's
+`REPLACED <old board> (…) -> <new board>` and `REMOVED <old board>: <reason>` rows are the changes (also in `--out`). Entries are
 sent round-robin over the ATSs, an empty answer gets a second look two at a time (a rate limit is not a dead board), a
 board whose check raises and a Workday tenant in maintenance are kept and flagged `error`. Measured: 1,515 entries in
 5 min 19 s (2026-10-16). Entries the recheck flags but that are not yours to remove (Confluent, Fi Money and Cloudflare in
@@ -199,8 +218,9 @@ Ranked by how many companies each could add, for an India job seeker:
    `harvester.ATS_PROBES` if a name can be turned into its board address, an `ENRICHERS` entry if its list API has no
    descriptions, a query in `scripts/harvest_board_urls.py`, and tests that make no network call.
 3. **Pasted lists** (`--add-file`) for companies you know by name.
-4. **Small, known options:** Greenhouse EU and Lever EU boards were left out of the harvest (T111; how many would pass was
-   not measured); KPMG's second Oracle site holds jobs its kept site does not (T120).
+4. **Small, known options:** Greenhouse EU boards (`boards.eu.greenhouse.io`; the `greenhouse_eu` adapter exists) were left out of
+   the harvest (T111; how many would pass was not measured). Lever EU (`jobs.eu.lever.co`) has no adapter yet: `detect_ats` and
+   `lever.py` know only `jobs.lever.co` / `api.lever.co`. KPMG's second Oracle site holds jobs its kept site does not (T120).
 
 ### What cannot be reached
 
@@ -278,7 +298,8 @@ incomplete, so its stored jobs are not marked closed.
 
 ### How long it takes
 
-Measured from `data/scan.log` (`=== Scan complete … (N min)`):
+Measured from the scan logs (`=== Scan complete … (N min)`; the 2026-10-04 line is in the old root `scan.log`, the others in
+`data/scan.log`):
 
 | Scan | Boards | Jobs scored | Time |
 |---|---|---|---|

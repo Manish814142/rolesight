@@ -23,7 +23,7 @@ every job's pre-filter decision, score and reason is there.
 | The log says "Gemini quota exhausted … scoring stopped" | The daily quota is gone: scoring stops once 3 jobs in a row fail on every model (T03); the rest stay `discovered` | Nothing: they are scored on the next scan |
 | `Workday <tenant>/<site>: 600s budget spent, stopping at N jobs` | A slow Workday tenant | Jobs past N are missed for this scan only |
 | `<ATS> fetch failed for <slug>: …` (e.g. `… still downloading after 900s`), then `No open jobs found` for that company | The board errored or trickled past the hard deadline. The adapter returns no jobs for this scan. These warnings go to the console (and `data/scan.log` via `run_daily.sh`) and to `data/autopilot.log` | Retried automatically on the next scan |
-| `No open jobs found via <ats> adapter` for a company, every scan | The board has died or the company moved ATS | `autopilot discover --recheck --merge companies.json --report /tmp/r.csv` and review the diff ([04](04-companies-and-scanning.md#health-check---recheck)) |
+| `No open jobs found via <ats> adapter` for a company, every scan | The board has died or the company moved ATS | `autopilot discover --recheck --merge companies.json --report /tmp/r.csv --out /tmp/recheck.json` from the repository folder, and review the diff ([04](04-companies-and-scanning.md#keeping-the-list-healthy-the-monthly-recheck)) |
 | `llm_provider 'openrouter' was removed` | Old config | Set `"llm_provider": "gemini"` |
 
 ## Results

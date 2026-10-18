@@ -9,6 +9,15 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed (2026-10-18, T132 and two review follow-ups)
+- **T132:** `discover --add-file FILE` (or `--add`) with no company name in it now stops ("holds no company name", exit 1). Before, an
+  empty paste read like no `--add-file` at all and `discover` checked every line of `scripts/company_seeds.txt` (1,491 names, hours of
+  network); the census writes such an empty file when it recognises no board.
+- **T123:** the before/after push checks name the files from the repository root (`:/companies.json`): run from `scripts/`, the
+  after-check had said "GitHub has the current list" while the lists differed, and the before-check had printed nothing.
+- **T117:** the tie-break test puts the main-title site between the others by name, so a tie broken by name in either direction fails
+  it (a descending one passed before).
+
 ### Docs (2026-10-18, T131: a guide to growing the company list)
 - Manish: "if someone wants to increase the company list … they get the ground to work on top of that instead of doing from scratch."
   `docs/04-companies-and-scanning.md` had the 223-board counts of 2026-10-06, said Eightfold and Phenom had no adapter and did not
@@ -19,6 +28,11 @@ reconstructed from git history.
   Freshteam, Zoho Recruit, Keka, and what an adapter needs). The scan section: Eightfold and Phenom in the enrich step, the Phenom row,
   Workday's cap of 2,000, the 429 retry, and the measured scan times of 2026-10-12/14/15. CLAUDE.md no longer says Oracle sites are not
   harvested; `discover --help` shows the `exact` seed line and its options; README, the docs index and the user guide link the guide.
+- After jobnotify-70's review of T131: the guide says to run `discover` from the repository folder and that it needs no API key, lists
+  the report's verdicts, warns that the default re-check removes failing entries, stops step 2 when the census wrote no seed line,
+  adds `--out` to every recheck example (it left `verified_companies.json` in the current folder), says how to remove an entry by
+  hand, and corrects Lever EU (no adapter), the source of the 2026-10-04 timing (the root `scan.log`) and the census file's 506 URLs.
+  `docs/08` links the renamed recheck section.
 
 ### Changed (2026-10-18, T130: a clean `output/`, a fixed `last_scan.*`, dated files in `history/`, drafts in `drafts/`, and the link-click note)
 - Manish (screenshot of `output/`): "I want the output path clean so a user is not confused by so many files; the newest file should not be at the bottom of 100 files." Chosen with him: the lighter variant (the CSV twins of the two fixed files stay at the top),
