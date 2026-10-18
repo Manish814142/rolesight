@@ -832,9 +832,14 @@ def main(argv: Optional[List[str]] = None) -> None:
         return
 
     seeds_path = Path(opts["--seeds"])
+    asked_to_add = bool(opts["--add"] or opts["--add-file"])
     add_text = opts["--add"].replace(",", "\n")
     if opts["--add-file"]:
         add_text += "\n" + Path(opts["--add-file"]).read_text(encoding="utf-8")
+    if asked_to_add and not [ln for ln in add_text.splitlines() if ln.strip() and not ln.strip().startswith("#")]:
+        # An empty paste (a census that found no board) must not fall through to the whole seeds file: hours of network (T132).
+        sys.exit("discover: the --add / --add-file input holds no company name, so there is nothing to check "
+                 f"(without --add / --add-file, discover checks every line of {seeds_path}).")
     if add_text.strip():
         # "Name | url" / "Name | workday | tenant | dc | site" lines are already seed format.
         seed_lines = [ln for ln in add_text.splitlines() if "|" in ln and not ln.strip().startswith("<")]
