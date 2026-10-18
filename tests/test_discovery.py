@@ -988,8 +988,37 @@ def test_discover_keeps_the_seed_order_on_a_tie_so_the_hosts_main_title_wins(mon
         return {"seed": name, "accepted": True, "verdict": "verified", "ats": "oracle_hcm", "board": f"{entry['host']}:{entry['site']}",
                 "jobs": 23, "india_jobs": 23, "prefilter_pass": 0, "entry": {"name": name, **entry}}
     monkeypatch.setattr(disc, "evaluate_entry", fake_entry)
-    host = "zeta.fa.em2.oraclecloud.com"
+    host = "mid.fa.em2.oraclecloud.com"
+    # the main-title site sorts between the others by name, so a tie broken by name either way picks another site
     seeds = parse_seeds("".join(f"{n} | https://{host}/hcmUI/CandidateExperience/en/sites/{s} | exact\n"
-                                for n, s in (("Zeta Group", "CX"), ("Alpha Unit", "CX_2"), ("Beta Unit", "CX_3"))))
+                                for n, s in (("Mid Group", "CX"), ("Alpha Unit", "CX_2"), ("Zulu Unit", "CX_3"))))
     verified, _ = disc.discover(seeds, workers=3)
-    assert [c["name"] for c in merge_companies([], verified)] == ["Zeta Group"]
+    assert [c["name"] for c in merge_companies([], verified)] == ["Mid Group"]
+
+
+@pytest.mark.parametrize("content", ["", "\n\n", "# only a comment\n"])
+def test_an_empty_add_file_stops_instead_of_checking_the_whole_seeds_file(tmp_path, monkeypatch, capsys, content):
+    """T132: a census that found no board writes an empty seeds file; `--add-file` with it used to fall back to every line
+    of scripts/company_seeds.txt (1,491 names, hours of network), because an empty paste read like "no --add-file given"."""
+    seeds = tmp_path / "seeds.txt"
+    seeds.write_text("Stripe\nPlane\n")
+    add = tmp_path / "empty.txt"
+    add.write_text(content)
+    called = []
+    monkeypatch.setattr(disc, "discover", lambda s, workers=40: called.append(s) or ([], []))
+    with pytest.raises(SystemExit) as stop:
+        disc.main(["--seeds", str(seeds), "--add-file", str(add), "--out", str(tmp_path / "v.json"), "--report", str(tmp_path / "r.csv")])
+    assert stop.value.code not in (0, None)
+    assert called == []                                                   # nothing was checked
+    assert "no company" in str(stop.value.code).lower()
+    assert seeds.read_text() == "Stripe\nPlane\n"                          # the seeds file is untouched
+    assert not (tmp_path / "v.json").exists()
+
+
+def test_without_add_options_the_seeds_file_is_still_checked(tmp_path, monkeypatch):
+    seeds = tmp_path / "seeds.txt"
+    seeds.write_text("Stripe\nPlane\n")
+    seen = {}
+    monkeypatch.setattr(disc, "discover", lambda s, workers=40: seen.setdefault("names", [x["name"] for x in s]) and ([], []))
+    disc.main(["--seeds", str(seeds), "--out", str(tmp_path / "v.json"), "--report", str(tmp_path / "r.csv")])
+    assert seen["names"] == ["Stripe", "Plane"]
