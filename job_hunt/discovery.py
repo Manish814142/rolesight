@@ -27,6 +27,12 @@ Seeds file, one company per line ('#' comments allowed):
     BlackBerry | workday | bb | wd3 | BlackBerry
     Qualcomm | eightfold | qualcomm.eightfold.ai | qualcomm.com     (host of the careers site | employer domain)
     BCG | phenom | careers.bcg.com | global/en                      (host of the careers site | locale path of its URLs)
+    Acme | https://jobs.lever.co/acme | exact                       (only this board; the name comes from the board:
+                                                                   what scripts/harvest_board_urls.py writes, T111)
+
+Options: --report FILE, --out FILE, --merge FILE (add the verified entries to it), --no-recheck (do not re-check the
+entries already in the --merge file), --workers N (parallel probes, default 40; use 3 for Workable and Recruitee seeds,
+which refuse bursts). Guide: docs/04-companies-and-scanning.md, "Growing the list".
 """
 from __future__ import annotations
 

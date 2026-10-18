@@ -13,7 +13,7 @@ best-first CSV. It **never applies** to anything. The project overview is in the
 | 01 | [Install & first run](01-install.md) | venv, extras, `.env` / `config.json`, resume, `doctor`, the first scan |
 | 02 | [LLM providers](02-providers.md) | Gemini (default) models, retries, quotas, batch mode; Anthropic; Claude CLI |
 | 03 | [API keys](03-api-keys.md) | Which keys exist, which are required, precedence |
-| 04 | [Companies & scanning](04-companies-and-scanning.md) | `companies.json`, `discover` (add / recheck / census), what a scan does, per-ATS details, timings |
+| 04 | [Companies & scanning](04-companies-and-scanning.md) | `companies.json`, growing the list (`discover` by name / census / bulk harvest, the recheck, traps, costs, where to grow next), what a scan does, per-ATS details, timings |
 | 05 | [Outputs & notifications](05-outputs-and-notifications.md) | CSV columns, DB statuses, state files, logs, `export`, drafts, Telegram |
 | 06 | [MCP server & skill](06-mcp-and-skill.md) | Using RoleSight from Claude Code |
 | 07 | [Config & scoring](07-config-and-scoring.md) | Every config key; the pre-filter rules; the scoring prompt and what scores mean |

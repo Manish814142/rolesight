@@ -9,6 +9,17 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Docs (2026-10-18, T131: a guide to growing the company list)
+- Manish: "if someone wants to increase the company list … they get the ground to work on top of that instead of doing from scratch."
+  `docs/04-companies-and-scanning.md` had the 223-board counts of 2026-10-06, said Eightfold and Phenom had no adapter and did not
+  mention the bulk harvest. Its new **Growing the list** section: the one gate (`discover`'s four checks), the three ways in (a pasted
+  list, the careers-page census, the bulk harvest of `scripts/harvest_board_urls.py` incl. Oracle HCM names from page titles), every
+  seed-line format, the traps a report can hide (aggregators, Metro Manila "NCR", same-slug boards, Oracle names, one-posting boards),
+  the monthly recheck, what a bigger list costs (fetch and Gemini, measured) and where to grow next (rerun the harvest; adapters for
+  Freshteam, Zoho Recruit, Keka, and what an adapter needs). The scan section: Eightfold and Phenom in the enrich step, the Phenom row,
+  Workday's cap of 2,000, the 429 retry, and the measured scan times of 2026-10-12/14/15. CLAUDE.md no longer says Oracle sites are not
+  harvested; `discover --help` shows the `exact` seed line and its options; README, the docs index and the user guide link the guide.
+
 ### Changed (2026-10-18, T130: a clean `output/`, a fixed `last_scan.*`, dated files in `history/`, drafts in `drafts/`, and the link-click note)
 - Manish (screenshot of `output/`): "I want the output path clean so a user is not confused by so many files; the newest file should not be at the bottom of 100 files." Chosen with him: the lighter variant (the CSV twins of the two fixed files stay at the top),
   "no monthly subfolders, leave my existing files alone, no auto-delete". Now: **`open_matches.xlsx/.csv`** (the jobs this scan found to apply to) and the new **`last_scan.xlsx/.csv`** (everything this scan scored, whatever the score, the same table and row order as

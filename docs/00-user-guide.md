@@ -289,6 +289,8 @@ autopilot discover --add "Figma, Some Company" --report report.csv --out verifie
   then `autopilot discover --seeds seeds.txt --report r.csv --out v.json --merge companies.json --no-recheck --workers 20`
   (about 1 board per 0.15 s; read `r.csv`). The harvest lists boards by their web address, so it finds companies whose name you
   would not think to type. Run Workable and Recruitee with `--workers 3`: Workable refuses about half the requests of a long burst (HTTP 429; the scanner now waits and asks again).
+- The whole method, with what to check in the report before you merge and where the list can still grow:
+  [04 — Growing the list](04-companies-and-scanning.md#growing-the-list).
 
 ## 7. Run a scan and read the result
 

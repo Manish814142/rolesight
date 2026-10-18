@@ -265,7 +265,10 @@ Details, including what each DB status means: [docs/05-outputs-and-notifications
 To add companies, paste their names into a file in any format and run
 `autopilot discover --add-file paste.txt --report /tmp/r.csv --out /tmp/v.json --merge companies.json`.
 A board is accepted only if it has live jobs, belongs to that employer, has at least one
-India job, and has a posting from the last 180 days.
+India job, and has a posting from the last 180 days. To add hundreds at once, harvest every job-board
+address the web has seen (`python scripts/harvest_board_urls.py`). **Growing the list** — the three ways in, what to check
+before a merge, the monthly recheck, what a bigger list costs and where to grow next — is in
+[docs/04](docs/04-companies-and-scanning.md#growing-the-list).
 
 Companies on custom career portals (Google, Flipkart, Swiggy's own site, Darwinbox,
 Zoho Recruit, …) can't be reached. See [docs/04](docs/04-companies-and-scanning.md).
@@ -310,7 +313,7 @@ The design: [ARCHITECTURE.md](ARCHITECTURE.md).
 | [docs/01 — Install & first run](docs/01-install.md) | Setup from zero to the first CSV |
 | [docs/02 — LLM providers](docs/02-providers.md) | Gemini (default), Anthropic, Claude CLI; quotas |
 | [docs/03 — API keys](docs/03-api-keys.md) | Which keys exist, which are needed, where they go |
-| [docs/04 — Companies & scanning](docs/04-companies-and-scanning.md) | `companies.json`, adding companies, what a scan does, timings |
+| [docs/04 — Companies & scanning](docs/04-companies-and-scanning.md) | `companies.json`, growing the list (by name, by careers page, in bulk), what a scan does, timings |
 | [docs/05 — Outputs & notifications](docs/05-outputs-and-notifications.md) | CSV, DB statuses, state files, logs, export, Telegram, drafts |
 | [docs/06 — MCP server & skill](docs/06-mcp-and-skill.md) | Driving it from Claude Code |
 | [docs/07 — Config & scoring](docs/07-config-and-scoring.md) | Every config key; the pre-filter and scoring in detail |
