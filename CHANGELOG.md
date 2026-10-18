@@ -10,9 +10,11 @@ reconstructed from git history.
 ## [Unreleased]
 
 ### Fixed (2026-10-18, T132 and two review follow-ups)
-- **T132:** `discover --add-file FILE` (or `--add`) with no company name in it now stops ("holds no company name", exit 1). Before, an
-  empty paste read like no `--add-file` at all and `discover` checked every line of `scripts/company_seeds.txt` (1,491 names, hours of
-  network); the census writes such an empty file when it recognises no board.
+- **T132:** `discover --add-file FILE` or `--add TEXT` with no company name in it (an empty file, blank lines, comments, `--add ","`,
+  or an explicitly empty value such as `--add "$NAMES"` with an unset variable) now stops ("holds no company name", exit 1). Before,
+  that read like no `--add` at all and `discover` checked every line of `scripts/company_seeds.txt` (1,491 names, hours of network);
+  the census writes such an empty file when it recognises no board. `.gitignore` now covers `discover`'s default `discovery_report.csv`
+  and `verified_companies.json`, and the README's examples pass scratch paths.
 - **T123:** the before/after push checks name the files from the repository root (`:/companies.json`): run from `scripts/`, the
   after-check had said "GitHub has the current list" while the lists differed, and the before-check had printed nothing.
 - **T117:** the tie-break test puts the main-title site between the others by name, so a tie broken by name in either direction fails

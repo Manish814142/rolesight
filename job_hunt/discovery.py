@@ -833,7 +833,7 @@ def main(argv: Optional[List[str]] = None) -> None:
         return
 
     seeds_path = Path(opts["--seeds"])
-    asked_to_add = bool(opts["--add"] or opts["--add-file"])
+    asked_to_add = "--add" in argv or "--add-file" in argv     # given at all: an empty value ("$NAMES" unset) still asks to add
     add_text = opts["--add"].replace(",", "\n")
     if opts["--add-file"]:
         add_text += "\n" + Path(opts["--add-file"]).read_text(encoding="utf-8")

@@ -1022,3 +1022,17 @@ def test_without_add_options_the_seeds_file_is_still_checked(tmp_path, monkeypat
     monkeypatch.setattr(disc, "discover", lambda s, workers=40: seen.setdefault("names", [x["name"] for x in s]) and ([], []))
     disc.main(["--seeds", str(seeds), "--out", str(tmp_path / "v.json"), "--report", str(tmp_path / "r.csv")])
     assert seen["names"] == ["Stripe", "Plane"]
+
+
+@pytest.mark.parametrize("argv", [["--add", ","], ["--add", " "], ["--add", "# a note"], ["--add", ""], ["--add-file", ""]])
+def test_an_add_option_with_no_company_name_stops_too(tmp_path, monkeypatch, argv):
+    """T132 review: the same stop for `--add`, and for an explicitly empty value (a script's `--add "$NAMES"`
+    with an empty variable), which `bool(opts[...])` read as "no --add given"."""
+    seeds = tmp_path / "seeds.txt"
+    seeds.write_text("Stripe\nPlane\n")
+    called = []
+    monkeypatch.setattr(disc, "discover", lambda s, workers=40: called.append(s) or ([], []))
+    with pytest.raises(SystemExit) as stop:
+        disc.main(["--seeds", str(seeds), *argv, "--out", str(tmp_path / "v.json"), "--report", str(tmp_path / "r.csv")])
+    assert stop.value.code not in (0, None) and "no company" in str(stop.value.code).lower()
+    assert called == [] and seeds.read_text() == "Stripe\nPlane\n"

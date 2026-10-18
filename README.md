@@ -192,8 +192,8 @@ All commands run from the repo root (they read `config.json`, `companies.json` a
 | `autopilot scan --posted-within 3` | One run with a 3-day window (`all` = none). The default window is `max_posted_age_days`, 7; undated jobs are kept | Gemini |
 | `./run_daily.sh [args]` | Runs `scan` with each output line timestamped into `data/scan.log` | Gemini |
 | `autopilot export [--min N] [--days N]` | Writes a CSV from the last scan, or from N days of history, keeping jobs with score ≥ N | none |
-| `autopilot discover --add-file paste.txt --merge companies.json` | Verifies pasted company names and adds the ones that pass ([docs/04](docs/04-companies-and-scanning.md)) | none |
-| `autopilot discover --recheck --merge companies.json` | Re-verifies every board; repairs or removes dead ones | none |
+| `autopilot discover --add-file paste.txt --report /tmp/r.csv --out /tmp/v.json --merge companies.json` | Verifies pasted company names and adds the ones that pass ([docs/04](docs/04-companies-and-scanning.md)) | none |
+| `autopilot discover --recheck --merge companies.json --report /tmp/r.csv --out /tmp/recheck.json` | Re-verifies every board; repairs or removes dead ones | none |
 | `autopilot discover --census FILE` | Identifies which ATS each careers page uses | none |
 | `autopilot doctor` | Checks the SQLite write, a 1-token Gemini call, Telegram `getMe` and ATS reachability | Gemini (Telegram optional) |
 | `autopilot draft N \| URL` | Drafts a tailored resume and cover letter for job N of the last scan | stored description + LLM (`--jd-file` for a pasted one) |

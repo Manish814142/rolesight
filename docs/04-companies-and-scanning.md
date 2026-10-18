@@ -65,7 +65,8 @@ elsewhere. It needs **no API key** (no Gemini call is made; only the job boards'
 **Always:** back up first (`cp companies.json /tmp/companies.backup.json`), read the report, then `git diff companies.json`.
 
 **The report's verdicts:** `verified` (accepted), `no open jobs`, `no India jobs`, `identity not confirmed`, `stale board (newest
-posting N days old)`, `known bad board`, `no live board on supported ATSs`, and `error: …` (the check raised; nothing was decided).
+posting N days old)`, `known bad board`, `no live board on supported ATSs`, `not rechecked` (an existing entry under `--no-recheck`), and `error: …` (the check raised;
+nothing was decided).
 With `--merge`, rows starting `[existing]` are the re-check of the entries already in the list.
 
 **The default re-check removes entries.** With `--merge` and without `--no-recheck`, an existing entry that now fails the

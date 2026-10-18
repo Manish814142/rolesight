@@ -58,3 +58,7 @@ rubric.md
 rubric.md.bak
 config.json.bak*
 .env.bak*
+
+# `autopilot discover`'s default report and output names, when run without --report / --out (pass scratch paths)
+/discovery_report.csv
+/verified_companies.json
