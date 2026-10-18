@@ -11,7 +11,7 @@ ruff check job_hunt/ tests/ conftest.py   # the same paths CI lints
 mypy                      # checks job_hunt/
 ```
 
-Last recorded: 1,800 tests passing, coverage 93.38%, ruff and mypy clean, after T130 (2026-10-18).
+Last recorded: 1,804 tests passing (Python 3.12; 1,803 + 1 skipped on 3.11 and 3.13 with `mcp` 2.3.0), coverage 93.38%, ruff and mypy clean, before the push of 2026-10-18 (T132).
 
 **Tests must never touch the network.**
 
