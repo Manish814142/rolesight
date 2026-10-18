@@ -573,6 +573,7 @@ can run `python scripts/import_json_history.py --apply`. The old `state/*.json` 
 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
+| T130 | A clean `output/`: the two files you open every day keep fixed names at the top (`open_matches.*` and the new `last_scan.*`: everything the last scan scored), the dated per-scan files go to `output/history/`, drafts to `output/drafts/`; a fixed file that cannot be replaced (open in a spreadsheet on Windows) warns instead of ending the scan; the link-click note (one click in Excel, Ctrl-click in LibreOffice) in the guides; a sweep of docs and code for what is stale before the review (Manish 2026-10-17/18: "I want the output path clean so a user is not confused by so many files; the newest should not be at the bottom of 100 files", the lighter variant, "no monthly subfolders, leave my existing files alone, no auto-delete", "document the link click or users think it is broken on their OS") | doing · claude · 2026-10-18 | claude | M | T128 |
 | T128 | CSV columns in reading order (Score first, Worth Applying last) and a formatted Excel report `.xlsx` next to every CSV (Manish 2026-10-17: "ATS score field is not the first field… what do you suggest about the priority of all columns?", "Worth Applying at the end is okay", "csv or excel any format works, you decide", "to make the Excel report what other things can we do: formatting, text size, colouring?") | review · claude · 0dd9a45 | claude | M | — |
 | T108 | Location is the person's own, not India: countries, cities and a remote policy in `config.json` (Manish 2026-10-14: senior people he knows want Europe, Singapore, Dubai) | decision | — | L | T103 |
 
@@ -635,7 +636,7 @@ Which terms would you add?
 
 ## Inbox
 
-New findings go here with the next free ID (next: **T130**), an evidence tag and the
+New findings go here with the next free ID (next: **T131**), an evidence tag and the
 file:line. Manish or the triaging agent moves each one into a priority table.
 
 | ID | Finding | Evidence | Added by |
