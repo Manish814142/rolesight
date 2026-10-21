@@ -195,7 +195,8 @@ job_hunt/
   models.py       JobPosting, job_key (global_id, else canonical_hash), url_hash
   db.py           SQLite: init_db, get_job, save_job, update_job_status
   prefilter.py    title rules (TitleRules: config.json candidate.titles or the defaults), India location regexes (+ _in_your_places)
-  places.py       candidate.countries / home_country -> Places: country packs, configure/active/using, listed_for (T136-T139)
+  places.py       candidate.countries / home_country -> Places: a pack for every country (9 hand-made + GeoNames: data/countries.json,
+                  scripts/build_countries.py), explicit_countries, configure/active/using, listed_for (T136-T142)
   visa.py         the Visa column: wording (posting), record (visa_sponsors.json), note (T138)
   onboarding.py   `init` (+ --resume drafting with Gemini) and `check-filter`
   scorer.py       Gemini scoring + DB status + optional Telegram alert

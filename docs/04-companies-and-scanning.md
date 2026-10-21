@@ -6,9 +6,9 @@ The list of job boards to scan. It is committed, it is the core of the project, 
 was checked by `autopilot discover` (below) to be live, to belong to the employer it names and to have India jobs (or,
 for the 27 entries that carry `"places"`, jobs in those countries: T139).
 
-**Counts (2026-10-21):** 1,616 boards: Greenhouse 515, Workday 302, Ashby 197, SmartRecruiters 186, Lever 154,
-Oracle HCM 108, Workable 103, Recruitee 40, Eightfold 4, Personio 5, Amazon 1, Phenom 1. The first 224 were curated by
-hand; the rest came from the bulk harvest (T111, T112), and 27 that hire abroad but not in India from T139. Count yours with
+**Counts (2026-10-21):** 1,647 boards: Greenhouse 525, Workday 302, Ashby 207, SmartRecruiters 187, Lever 159,
+Oracle HCM 108, Workable 106, Recruitee 41, Eightfold 4, Personio 6, Amazon 1, Phenom 1. The first 224 were curated by
+hand; the rest came from the bulk harvest (T111, T112), and 58 checked for other countries instead of India (T139, T142). Count yours with
 `python -c "import json,collections;print(collections.Counter(c['ats'] for c in json.load(open('companies.json'))))"`.
 
 `job_hunt/data/companies.json` is the copy `autopilot init` gives a new user. **After any change, copy the list there**
@@ -316,6 +316,13 @@ Sunday have no job in those six countries. After that the record covers 561 of 1
 Ireland 86, lists 45); the three new loose matches (Monzo Bank Ltd, Raisin Platforms Limited, SumUp Payments Limited) were
 read and accepted. With relocate.me's list (T141, rebuilt 2026-10-21 with the UK register of that day): **563 of 1,616**
 (UK 478, Netherlands 189, Ireland 86, lists 49).
+
+**T142** checked the three lists' 167 other names for the 29 countries their entries name (`discover --places`, every country
+now has a pack): 34 verified; read by hand, 3 were another company with the name (`ashby/lightspeed` is LightSpeed Build
+Technologies in Illinois, not Auckland's Lightspeed; `ashby/clark` and `ashby/sunday` are US start-ups, not Berlin's Clark
+and Sunday: "named in N/N job descriptions" proves nothing for a common word), removed and added to `KNOWN_BAD_BOARDS`. The
+other 31 joined: Mercari, Wayve, Mollie, Coolblue, Bol.com, Betsson, Flow Traders, Back Market, BlaBlaCar, Smartly.io, Tractable
+and more. Record rebuilt: **594 of 1,647** (6 new loose matches read: 4 accepted, 2 rejected).
 
 ### Germany, the UAE and Singapore (T141)
 

@@ -856,6 +856,17 @@
     "source": "ie"
    }
   ],
+  "Applike Group": [
+   {
+    "match": "exact",
+    "names": {
+     "Applike Group": [
+      "relocate.me list: Hamburg, Germany"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
   "AppsFlyer": [
    {
     "match": "exact",
@@ -1116,6 +1127,27 @@
     "source": "lists"
    }
   ],
+  "Back Market": [
+   {
+    "match": "exact",
+    "names": {
+     "Back Market UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Back Market": [
+      "abhi-jha gist: Berlin, Germany"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
   "Backbase": [
    {
     "match": "exact",
@@ -1221,6 +1253,17 @@
     "source": "nl"
    }
   ],
+  "Betsson Group": [
+   {
+    "match": "exact",
+    "names": {
+     "Betsson Group": [
+      "relocate.me list: Ta' Xbiex (Malta), MT"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
   "Billups": [
    {
     "match": "exact",
@@ -1251,6 +1294,18 @@
      }
     },
     "source": "ie"
+   }
+  ],
+  "BlaBlaCar": [
+   {
+    "match": "exact",
+    "names": {
+     "BlaBlaCar": [
+      "abhi-jha gist: Paris",
+      "relocate.me list: Paris, FR"
+     ]
+    },
+    "source": "lists"
    }
   ],
   "BlackBerry": [
@@ -1350,6 +1405,24 @@
      ]
     },
     "source": "uk"
+   }
+  ],
+  "Bol.com": [
+   {
+    "match": "exact",
+    "names": {
+     "Bol.com B.V.": "32147382"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Bol.com": [
+      "relocate.me list: Utrecht, Netherlands"
+     ]
+    },
+    "source": "lists"
    }
   ],
   "Bosch": [
@@ -2003,6 +2076,24 @@
     "source": "uk"
    }
   ],
+  "Coolblue": [
+   {
+    "match": "exact",
+    "names": {
+     "Coolblue B.V.": "24330087"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Coolblue": [
+      "relocate.me list: Rotterdam, Netherlands"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
   "Copart": [
    {
     "match": "exact",
@@ -2081,6 +2172,24 @@
      ]
     },
     "source": "uk"
+   }
+  ],
+  "Creative Fabrica": [
+   {
+    "match": "exact",
+    "names": {
+     "Creative Fabrica B.V.": "70114412"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Creative Fabrica": [
+      "relocate.me list: Amsterdam, Netherlands"
+     ]
+    },
+    "source": "lists"
    }
   ],
   "CrowdStrike": [
@@ -2539,6 +2648,17 @@
     "source": "uk"
    }
   ],
+  "Elements": [
+   {
+    "match": "exact",
+    "names": {
+     "Elements": [
+      "relocate.me list: Almere, Netherlands"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
   "Encora": [
    {
     "match": "loose",
@@ -2856,6 +2976,17 @@
     "source": "nl"
    }
   ],
+  "FINN": [
+   {
+    "match": "exact",
+    "names": {
+     "FINN": [
+      "relocate.me list: Munich, Germany"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
   "Factset": [
    {
     "match": "exact",
@@ -3034,6 +3165,34 @@
     "source": "uk"
    }
   ],
+  "Flow Traders": [
+   {
+    "match": "loose",
+    "names": {
+     "Flow Traders UK Services Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Flow Traders B.V.": "33223268"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Flow Traders": [
+      "relocate.me list: Amsterdam, Netherlands",
+      "relocate.me list: Hong Kong, HK"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
   "Flowserve": [
    {
     "match": "exact",
@@ -3132,6 +3291,17 @@
      ]
     },
     "source": "uk"
+   }
+  ],
+  "FxPro": [
+   {
+    "match": "exact",
+    "names": {
+     "FxPro": [
+      "relocate.me list: Limassol, CY"
+     ]
+    },
+    "source": "lists"
    }
   ],
   "GSK": [
@@ -3627,6 +3797,24 @@
     "source": "uk"
    }
   ],
+  "HousingAnywhere": [
+   {
+    "match": "exact",
+    "names": {
+     "HousingAnywhere B.V.": "58882693"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "HousingAnywhere": [
+      "relocate.me list: Rotterdam, Netherlands"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
   "Hudl India": [
    {
     "match": "exact",
@@ -3883,6 +4071,26 @@
     "source": "nl"
    }
   ],
+  "Intropic": [
+   {
+    "match": "exact",
+    "names": {
+     "Intropic Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Intropic": [
+      "relocate.me list: London, United Kingdom"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
   "Invesco": [
    {
     "match": "exact",
@@ -3957,6 +4165,17 @@
      ]
     },
     "source": "uk"
+   }
+  ],
+  "Jam City": [
+   {
+    "match": "exact",
+    "names": {
+     "Jam City": [
+      "abhi-jha gist: Berlin, Germany"
+     ]
+    },
+    "source": "lists"
    }
   ],
   "Jamf": [
@@ -4231,6 +4450,24 @@
     "source": "uk"
    }
   ],
+  "Lemonade": [
+   {
+    "match": "exact",
+    "names": {
+     "Lemonade B.V.": "73233293"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Lemonade": [
+      "relocate.me list: Amsterdam, Netherlands"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
   "Lesaffre": [
    {
     "match": "exact",
@@ -4365,6 +4602,18 @@
      ]
     },
     "source": "uk"
+   }
+  ],
+  "Manychat": [
+   {
+    "match": "exact",
+    "names": {
+     "Manychat": [
+      "relocate.me list: Barcelona, ES",
+      "relocate.me list: Yerevan, AM"
+     ]
+    },
+    "source": "lists"
    }
   ],
   "Mapbox": [
@@ -4570,6 +4819,18 @@
     "source": "uk"
    }
   ],
+  "Mercari": [
+   {
+    "match": "exact",
+    "names": {
+     "Mercari": [
+      "abhi-jha gist: Japan",
+      "relocate.me list: Tokyo, JP"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
   "MiQ Digital": [
    {
     "match": "exact",
@@ -4731,6 +4992,35 @@
     "source": "uk"
    }
   ],
+  "Mollie": [
+   {
+    "match": "exact",
+    "names": {
+     "Mollie B.V.": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Mollie B.V.": "30204462"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Mollie": [
+      "relocate.me list: Amsterdam, Netherlands",
+      "relocate.me list: Lisbon, PT"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
   "MongoDB": [
    {
     "match": "exact",
@@ -4882,6 +5172,24 @@
      }
     },
     "source": "ie"
+   }
+  ],
+  "Mujin": [
+   {
+    "match": "exact",
+    "names": {
+     "Mujin Netherlands B.V.": "91662451"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Mujin": [
+      "relocate.me list: Tokyo, JP"
+     ]
+    },
+    "source": "lists"
    }
   ],
   "Munters": [
@@ -5681,6 +5989,17 @@
     "source": "nl"
    }
   ],
+  "PhotoRoom": [
+   {
+    "match": "exact",
+    "names": {
+     "PhotoRoom": [
+      "relocate.me list: Paris, FR"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
   "Ping Identity": [
    {
     "match": "exact",
@@ -6429,6 +6748,17 @@
     "source": "uk"
    }
   ],
+  "Scout24": [
+   {
+    "match": "exact",
+    "names": {
+     "Scout24": [
+      "relocate.me list: Berlin, Germany"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
   "Sensor Tower": [
    {
     "match": "exact",
@@ -6688,6 +7018,45 @@
      ]
     },
     "source": "uk"
+   }
+  ],
+  "SmartNews": [
+   {
+    "match": "exact",
+    "names": {
+     "SmartNews": [
+      "relocate.me list: Tokyo, JP"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
+  "Smartly.io": [
+   {
+    "match": "loose",
+    "names": {
+     "Smartly.io Solutions Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Smartly.io Solutions Oy Netherlands Branch": "86695118"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Smartly.io": [
+      "relocate.me list: Helsinki, FI"
+     ]
+    },
+    "source": "lists"
    }
   ],
   "Smartsheet": [
@@ -6983,6 +7352,24 @@
     "source": "ie"
    }
   ],
+  "Stream": [
+   {
+    "match": "exact",
+    "names": {
+     "Stream.io B.V.": "64009483"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Stream": [
+      "relocate.me list: Amsterdam, Netherlands"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
   "Stripe": [
    {
     "match": "loose",
@@ -7192,6 +7579,26 @@
      ]
     },
     "source": "uk"
+   }
+  ],
+  "Tactile Games": [
+   {
+    "match": "exact",
+    "names": {
+     "Tactile Games Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Tactile Games": [
+      "relocate.me list: Copenhagen, DK"
+     ]
+    },
+    "source": "lists"
    }
   ],
   "Take-Two Interactive Software, Inc.": [
@@ -7448,6 +7855,27 @@
      ]
     },
     "source": "uk"
+   }
+  ],
+  "Tractable": [
+   {
+    "match": "exact",
+    "names": {
+     "TRACTABLE LTD": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Tractable": [
+      "relocate.me list: London, United Kingdom",
+      "relocate.me list: Tokyo, JP"
+     ]
+    },
+    "source": "lists"
    }
   ],
   "Trainline": [
@@ -8080,6 +8508,37 @@
     "source": "uk"
    }
   ],
+  "Wallapop": [
+   {
+    "match": "exact",
+    "names": {
+     "Wallapop": [
+      "relocate.me list: Barcelona, ES"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
+  "Wayve": [
+   {
+    "match": "loose",
+    "names": {
+     "Wayve Technologies Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Wayve": [
+      "relocate.me list: London, United Kingdom"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
   "Weatherford": [
    {
     "match": "exact",
@@ -8127,6 +8586,18 @@
      }
     },
     "source": "ie"
+   }
+  ],
+  "Welltech": [
+   {
+    "match": "exact",
+    "names": {
+     "Welltech": [
+      "relocate.me list: Limassol, CY",
+      "relocate.me list: Warsaw, PL"
+     ]
+    },
+    "source": "lists"
    }
   ],
   "Western Digital": [
@@ -8494,6 +8965,17 @@
     "source": "uk"
    }
   ],
+  "movingimage": [
+   {
+    "match": "exact",
+    "names": {
+     "movingimage": [
+      "relocate.me list: Berlin, Germany"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
   "project44": [
    {
     "match": "exact",
@@ -8507,6 +8989,17 @@
     "names": {
      "Project44": [
       "abhi-jha gist: Berlin, Germany"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
+  "straiv": [
+   {
+    "match": "exact",
+    "names": {
+     "straiv": [
+      "relocate.me list: Stuttgart, Germany"
      ]
     },
     "source": "lists"

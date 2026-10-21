@@ -118,7 +118,7 @@ uses the default. A name that is not in the tables below is ignored without any 
 | `candidate.titles` | the default word lists | Which job titles are scored at all: `include`, `exclude`, `exceptions`, `generic_engineer_titles`. Section 5 |
 | `candidate.rubric_file` | built-in rubric | The file with your scoring rubric, e.g. `"rubric.md"`. Without this line the built-in rubric is used. See [the scoring rubric](#the-scoring-rubric-rubricmd) |
 | `candidate.cities` | `[]` | Leave empty to look at **all of India** (and remote jobs from India), or all of your `countries`. To look only at some cities, list them: `["Pune", "Hyderabad", "Delhi NCR"]`. Usual alternative names match (Bangalore = Bengaluru, Gurgaon = Gurugram); remote jobs and jobs that name no city (just "India") are always kept |
-| `candidate.countries` | India | Where to look, e.g. `["United Kingdom", "Germany"]` (or `"UK, Germany"`). Built-in: India, United Kingdom, Germany, Netherlands, Ireland, United Arab Emirates, Singapore ("UK", "UAE", "Holland" … work too); another country is matched by its name. Jobs that name one of them, a region that includes them ("Remote - EMEA", "Europe") with no other place, or remote jobs with no place pass. `candidate.cities` then means cities of these countries. `rolesight check-filter "Backend Engineer" "Berlin" --countries Germany` tries one job |
+| `candidate.countries` | India | Where to look, e.g. `["United Kingdom", "Germany"]` (or `"UK, Germany"`). Any country: written as you like ("UK", "UAE", "Holland", "USA", "Korea", "BR"). Jobs that name one of them, a region that includes them ("Remote - EMEA", "Europe") with no other place, or remote jobs with no place pass. `candidate.cities` then means cities of these countries. `rolesight check-filter "Backend Engineer" "Berlin" --countries Germany` tries one job |
 | `candidate.home_country` | India | Where you live. A job in another country needs a work visa: the rubric and the Visa column use this |
 | `llm_provider` | `gemini` | Leave as `gemini` |
 | `gemini_api_key` | — | Your key; usually put in `.env` instead (`GEMINI_API_KEY`) |
@@ -207,9 +207,12 @@ Name the countries in `config.json`, or in a new folder run `rolesight init --co
 "home_country": "India"
 ```
 
-- **Built in:** India, United Kingdom, Germany, Netherlands, Ireland, United Arab Emirates and Singapore, written however
-  you like ("UK", "UAE", "Holland", "Deutschland"). Another country, say "Canada", works by its name: a job that names it
-  passes (check its cities with `check-filter`), the scan log says it has no built-in list, and Amazon is not searched for it.
+- **Every country is built in** (T142). Nine have hand-made place lists, with their cities, codes and regions measured on real
+  boards: India, United Kingdom, Germany, Netherlands, Ireland, United Arab Emirates, Singapore, and the **United States, Canada
+  and Australia** (their states and provinces too: "Austin, TX", "Toronto, ON", "Sydney, NSW"). Every other country has a list
+  built from [GeoNames](https://www.geonames.org) (CC BY 4.0): its name and common other names, its ISO codes, its 8 biggest cities and the regions that include it
+  ("LATAM", "CEE", "Nordics"). Write a country however you like ("UK", "UAE", "Holland", "USA", "Korea", "Türkiye", "BR").
+  A name that is no country ("Atlantis") works by that word only, and the scan log says so.
 - **`home_country`** is where you live (default India). A job in any other of your countries needs a work visa.
 - India with others (`["India", "Germany"]`) works: Indian jobs pass as they always did.
 
@@ -218,7 +221,11 @@ What changes:
 1. **Which jobs pass the filter.** A job that names one of your countries or one of its cities; a region that includes one
    of them when it names no other place ("Remote - EMEA" and "Europe" for Germany, "APAC" for Singapore, not "EMEA - UK");
    worldwide or anywhere; a remote job that names no place. "London, Ontario" and "Dublin, OH" are not the UK and Ireland.
-   Try a job: `rolesight check-filter "Backend Engineer" "Berlin" --countries Germany` (KEPT).
+   Try a job: `rolesight check-filter "Backend Engineer" "Berlin" --countries Germany` (KEPT). A location is read part by part
+   ("London; New York"), and a city counts unless what qualifies it names another country: "London, Ontario" is Canada,
+   "Dublin, OH" the USA, "Munich, DE" Germany but "Wilmington, DE" Delaware; a list of cities ("New York, Dubai, London") is a
+   list. A city whose name the bigger city of another country also has is left to its country word ("Valencia" alone is
+   Venezuela's; "Valencia, Spain" is Spain).
 2. **What is fetched.** Workday, Eightfold, Phenom, Oracle HCM and Amazon search your countries; the other job sites return
    every location anyway. Measured 2026-10-21: a Singapore scan of 6 boards (Thoughtworks, Databricks, Airwallex, Nvidia,
    Qualcomm, Salesforce) fetched 1,618 jobs, 249 of them in Singapore, in 1.5 minutes. More countries mean more requests:

@@ -9,6 +9,21 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Added (2026-10-21, T142: every country)
+- Manish: "australia, canada and other countries also basically all the countries in the world". **Every country has a pack now.**
+  Hand-made for the USA, Canada and Australia (tech-hub cities, states and provinces by name and code: "Austin, TX", "Toronto, ON",
+  "Sydney, NSW"); every other country built from GeoNames (CC BY 4.0; `scripts/build_countries.py` -> `job_hunt/data/countries.json`,
+  252 countries: names, other names, ISO codes, the 8 biggest cities whose name no bigger foreign city shares, regions such as
+  LATAM, CEE, Nordics, GCC). Workday searches the country name (measured: "United States" found more than "USA" at all four
+  tenants tried, "Canada" more than "Toronto", "Australia" more than "Sydney"); Amazon its ISO code (all tried codes answer).
+- A location is read part by part, and a city counts unless what qualifies it (its comma segment, the next one, a code prefix)
+  names another country; a code at the end that is both a state and a country is the country after one of its cities ("Munich,
+  DE" Germany, "Wilmington, DE" Delaware); a lower-case country suffix wins over a region code before it ("Magdeburg, SA, de").
+  Measured on 13,015 saved locations: India's decisions unchanged on 111,106 jobs; for T136's six countries 40 locations changed,
+  all read (US/Australian places no longer pass as British; lists such as "New York, London" now count).
+- 31 companies that hire abroad joined the list (1,616 -> 1,647) from the community lists, checked for their 29 countries; 3 others
+  with the same names were wrong employers (read by hand) and are in `KNOWN_BAD_BOARDS`. Visa record: 594 of 1,647.
+
 ### Added (2026-10-21, T141: visa evidence for Germany, the UAE and Singapore)
 - Manish: "use internet, github or public sites so that a person can target these country jobs also". These three publish no sponsor
   register because their rules make one unnecessary, so a silent posting there now says the rule, read on the official pages:

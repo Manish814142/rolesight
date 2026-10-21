@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue)](https://www.python.org/)
 
-**An AI job radar.** Every day it pulls open roles straight from the public job APIs of 1,616
+**An AI job radar.** Every day it pulls open roles straight from the public job APIs of 1,647
 company boards (1,589 of them hiring in India), drops the ones that obviously don't fit, has Google Gemini score
 the rest against your resume, and writes the matches to a CSV, best first.
 
@@ -70,8 +70,8 @@ the company's own job page.
 | Area | What you get |
 |---|---|
 | **Direct ATS APIs** | Adapters for Greenhouse (US and EU), Lever, Ashby, SmartRecruiters, Workday, Oracle HCM, Eightfold, Phenom, Amazon Jobs, Workable, Recruitee and Personio. Parallel fetching (8 workers) with a hard time limit on every request, so one slow board can't stall a scan. |
-| **Company list** | `companies.json`: 1,616 boards, each checked to be live: 1,589 have India jobs; 27 hire in the UK, Germany, the Netherlands, Ireland, the UAE or Singapore and not in India, and are fetched only when `candidate.countries` names one of those (T139). The first 224 were curated by hand and matched to the right employer by name; the other 1,365 were taken from the job boards' own web addresses (`scripts/harvest_board_urls.py`, T111). `autopilot discover` adds companies from a pasted list in any format and applies the same checks. |
-| **Local pre-filter** | Word-bounded title rules (backend / Node.js / SDE / software engineer in, plus generic "Senior Engineer" titles; staff / lead / manager / other stacks out), location rules (all of India or remote from India, or the countries in `candidate.countries`: UK, Germany, Netherlands, Ireland, UAE, Singapore built in; or only the cities you list in `candidate.cities`), and an optional "posted within N days" window. |
+| **Company list** | `companies.json`: 1,647 boards, each checked to be live: 1,589 have India jobs; 58 were checked for other countries instead (Europe, the UK, the USA, Japan, Singapore, …) and are fetched only when `candidate.countries` names one of those (T139, T142). The first 224 were curated by hand and matched to the right employer by name; the other 1,365 were taken from the job boards' own web addresses (`scripts/harvest_board_urls.py`, T111). `autopilot discover` adds companies from a pasted list in any format and applies the same checks. |
+| **Local pre-filter** | Word-bounded title rules (backend / Node.js / SDE / software engineer in, plus generic "Senior Engineer" titles; staff / lead / manager / other stacks out), location rules (all of India or remote from India, or any countries in `candidate.countries`; or only the cities you list in `candidate.cities`), and an optional "posted within N days" window. |
 | **Full descriptions** | For Workday, SmartRecruiters, Oracle HCM and Eightfold, whose list APIs carry little or no description, the full text is fetched for survivors only, just before scoring. |
 | **Resume-aware scoring** | Gemini reads the whole resume, the candidate profile and the whole job description. It returns a score and one sentence explaining it. One job per call, by design: batching measurably inflated scores. |
 | **Seen-job memory** | `data/jobs.db` (SQLite) records every job's status. A job is scored once; scoring failures are retried on the next scan; pre-filter rejections are re-checked each scan, so filter fixes apply to old jobs too. |
@@ -85,7 +85,7 @@ the company's own job page.
 
 ```mermaid
 flowchart TD
-    C["companies.json<br/>1,616 boards"] --> F["Fetch<br/>public ATS APIs, 8 in parallel"]
+    C["companies.json<br/>1,647 boards"] --> F["Fetch<br/>public ATS APIs, 8 in parallel"]
     F --> D{"Seen before?<br/>data/jobs.db"}
     D -- "already scored" --> X["skip"]
     D -- "new, or not scored yet" --> P{"Pre-filter<br/>title · location · posted date"}
@@ -129,9 +129,10 @@ one setup, and ideas for extending it, is in [docs/10 — Limitations and future
 
 **Known gaps** (each is a task on the board)
 - **Other countries are new (T108, 2026-10-21).** `candidate.countries` (or `rolesight init --countries "UK, Germany"`) points
-  the filter, the job-board searches, rubric rule 1 (with visa sponsorship) and `discover` at the UK, Germany, the Netherlands,
-  Ireland, the UAE, Singapore or India; another country works by its name only. A Visa column says what the posting and public
-  records say about sponsorship. Postings in other languages do not match the English title words.
+  the filter, the job-board searches, rubric rule 1 (with visa sponsorship) and `discover` at any country: the UK, Germany,
+  the Netherlands, Ireland, the UAE, Singapore, the USA, Canada and Australia have hand-made place lists, every other country one
+  built from [GeoNames](https://www.geonames.org) (CC BY 4.0) (T142). A Visa column says what the posting and public records say about sponsorship. Postings in other
+  languages do not match the English title words.
   [User guide](docs/00-user-guide.md#looking-for-jobs-outside-india).
 - **Not scheduled by default.** Scans run by hand. `autopilot schedule on` turns on a daily scan (a systemd user
   timer on Linux, else cron, which also covers macOS), `autopilot schedule off` turns it off again, and
@@ -173,7 +174,7 @@ rolesight scan --posted-within 7
 ls output/                              # open_matches.xlsx and last_scan.xlsx (open these), history/, drafts/
 ```
 
-`rolesight` and `autopilot` are the same command. In this repo `companies.json` (1,616 boards) is already in place;
+`rolesight` and `autopilot` are the same command. In this repo `companies.json` (1,647 boards) is already in place;
 `rolesight init` skips files that exist, and in an empty directory it copies the same curated list. Without
 `--resume`, `init` writes the default settings and you edit them yourself ([the guide](docs/00-user-guide.md)).
 
@@ -222,7 +223,7 @@ The full reference is in [docs/07-config-and-scoring.md](docs/07-config-and-scor
 The **title filter** is plain word lists in `config.json` (`candidate.titles`; spaces and hyphens inside an
 entry are optional, so `back end` also matches "Back-End"); without them the defaults apply, tuned to the
 example profile. The **location rules** are India's (`job_hunt/prefilter.py`) unless `candidate.countries` names others
-(`job_hunt/places.py`: the UK, Germany, the Netherlands, Ireland, the UAE, Singapore built in); `candidate.cities` narrows them. `rolesight check-filter "Java Developer" "Pune, India"` shows what the filter does with one job.
+(`job_hunt/places.py`: every country; nine with hand-made lists, the rest from GeoNames); `candidate.cities` narrows them. `rolesight check-filter "Java Developer" "Pune, India"` shows what the filter does with one job.
 
 ---
 
@@ -250,19 +251,19 @@ Details, including what each DB status means: [docs/05-outputs-and-notifications
 
 | ATS | Boards |
 |---|---|
-| Greenhouse | 515 |
+| Greenhouse | 525 |
 | Workday | 302 |
-| Ashby | 197 |
-| SmartRecruiters | 186 |
-| Lever | 154 |
+| Ashby | 207 |
+| SmartRecruiters | 187 |
+| Lever | 159 |
 | Oracle HCM | 108 |
-| Workable | 103 |
-| Recruitee | 40 |
+| Workable | 106 |
+| Recruitee | 41 |
 | Eightfold | 4 |
-| Personio | 5 |
+| Personio | 6 |
 | Amazon Jobs | 1 |
 | Phenom | 1 |
-| **Total** | **1,616** (counted 2026-10-21; 27 of them for other countries only) |
+| **Total** | **1,647** (counted 2026-10-21; 58 of them for other countries only) |
 
 To add companies, paste their names into a file in any format and run
 `autopilot discover --add-file paste.txt --report /tmp/r.csv --out /tmp/v.json --merge companies.json`.
@@ -275,7 +276,7 @@ before a merge, the monthly recheck, what a bigger list costs and where to grow 
 Companies on custom career portals (Google, Flipkart, Swiggy's own site, Darwinbox,
 Zoho Recruit, …) can't be reached. See [docs/04](docs/04-companies-and-scanning.md).
 
-Which of the companies can sponsor a visa (563 of 1,616 are on the UK, Dutch or Irish sponsor records, or on a community
+Which of the companies can sponsor a visa (594 of 1,647 are on the UK, Dutch or Irish sponsor records, or on a community
 relocation list) is in `job_hunt/data/visa_sponsors.json`; most postings abroad never say. See
 [docs/04](docs/04-companies-and-scanning.md#visa-sponsorship-which-companies-can-sponsor). With `candidate.countries` set,
 the scan writes it per job abroad as the CSV's **Visa** column ([user guide](docs/00-user-guide.md#looking-for-jobs-outside-india)).

@@ -35,10 +35,10 @@ def test_india_alone_asks_what_it_asked_before():
 
 
 def test_the_search_terms_of_several_countries():
-    p = pl.places_from_config({"candidate": {"countries": ["UK", "UAE", "India", "Canada"]}})
-    assert p.workday_terms() == ["United Kingdom", "UK", "United Arab Emirates", "Dubai", "India", "Canada"]
-    assert p.search_names() == ["United Kingdom", "United Arab Emirates", "India", "Canada"]
-    assert p.amazon_codes() == ["GBR", "ARE", "IND"]                 # Canada has no built-in code
+    p = pl.places_from_config({"candidate": {"countries": ["UK", "UAE", "India", "Canada", "Brazil", "Atlantis"]}})
+    assert p.workday_terms() == ["United Kingdom", "UK", "United Arab Emirates", "Dubai", "India", "Canada", "Brazil", "Atlantis"]
+    assert p.search_names() == ["United Kingdom", "United Arab Emirates", "India", "Canada", "Brazil", "Atlantis"]
+    assert p.amazon_codes() == ["GBR", "ARE", "IND", "CAN", "BRA"]        # Atlantis has no code
 
 
 # ── Workday ──────────────────────────────────────────────────────────────────
@@ -166,7 +166,7 @@ def test_amazon_searches_each_country_code_once_per_job(mock_get, uk_sg):
 
 @patch("requests.get")
 def test_amazon_skips_a_country_without_a_code(mock_get):
-    pl.configure_places({"candidate": {"countries": ["Canada"]}})
+    pl.configure_places({"candidate": {"countries": ["Atlantis"]}})
     try:
         assert fetch_company_jobs({"name": "Amazon", "ats": "amazon"}) == [] and mock_get.call_count == 0
     finally:

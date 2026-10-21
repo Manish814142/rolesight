@@ -1582,3 +1582,83 @@ Wayfair
 Weaveworks
 Zalando
 e-Bot7
+
+# ── added via discover --add (2026-10-21) ──
+Byborg Enterprises | https://careers.smartrecruiters.com/DoclerHolding
+Creative Fabrica | https://boards.eu.greenhouse.io/creativefabrica
+Intropic | https://jobs.lever.co/intropic
+Lightspeed | https://boards.greenhouse.io/lightspeedhq
+Mujin | https://jobs.lever.co/mujininc
+PhotoRoom | https://jobs.lever.co/photoroom
+SmartNews | https://apply.workable.com/smartnews
+Solsten | https://boards.greenhouse.io/solsten
+Stream | https://boards.greenhouse.io/stream
+Wallapop | https://boards.eu.greenhouse.io/wallapop
+Applike Group
+BandLab
+Betsson Group
+Bol.com
+CloudLinux
+Coolblue
+Cube Dev
+EVBox
+Elements
+Exness
+FINN
+FxPro
+GeoPhy
+Gnosis
+Greentube
+HENNGE
+Highsnobiety
+HomeToGo
+HousingAnywhere
+JOIN
+Journi
+Jumbo
+Just Eat Takeaway.com
+LINE Fukuoka
+LOOP
+Lemonade
+Manychat
+Mollie
+Multiverse Computing
+Neocom
+OJ Electronics
+Oda
+Oxbotica
+Payrails
+Picnic
+Procreate
+QuadSAT
+Queue-it
+Runtastic
+Scout24
+Seldon
+Shape
+Shape Games
+SimScale
+Smallpdf
+Smartly.io
+Solvians
+Sumo Digital
+Tactile Games
+Talkwalker
+Tractable
+TuSimple
+Uphold
+Vimcar
+Volkswagen Digital Solutions
+Wayve
+Welltech
+WiseTech Global
+Xeneta
+Xovis
+Zenly
+Ziegert Group
+Zivid
+Zound Industries
+ePages
+foodspring
+movingimage
+straiv

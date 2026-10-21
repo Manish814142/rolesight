@@ -1,0 +1,4875 @@
+{
+"about": "Every country's names, ISO codes, main cities and regions, for job_hunt/places.py (T142). Rebuild: python scripts/build_countries.py",
+"countries": {
+"AD": {
+"aliases": [],
+"cities": [
+"Andorra la Vella",
+"les Escaldes"
+],
+"continent": "EU",
+"iso3": "AND",
+"name": "Andorra",
+"regions": [
+"europe",
+"emea"
+]
+},
+"AE": {
+"aliases": [
+"uae",
+"u.a.e."
+],
+"cities": [
+"Dubai",
+"Abu Dhabi",
+"Sharjah",
+"Al Ain City",
+"Ajman",
+"Dayrah",
+"Ras Al Khaimah",
+"Musaffah"
+],
+"continent": "AS",
+"iso3": "ARE",
+"name": "United Arab Emirates",
+"regions": [
+"emea",
+"middle east",
+"mena",
+"gcc",
+"asia"
+]
+},
+"AF": {
+"aliases": [],
+"cities": [
+"Kabul",
+"Herāt",
+"Herat",
+"Mazār-e Sharīf",
+"Mazar-e Sharif",
+"Kandahār",
+"Kandahar",
+"Jalālābād",
+"Jalalabad",
+"Kunduz",
+"Ghazni",
+"Balkh"
+],
+"continent": "AS",
+"iso3": "AFG",
+"name": "Afghanistan",
+"regions": [
+"apac",
+"asia",
+"south asia"
+]
+},
+"AG": {
+"aliases": [],
+"cities": [
+"Saint John’s",
+"Saint John's"
+],
+"continent": "NA",
+"iso3": "ATG",
+"name": "Antigua and Barbuda",
+"regions": [
+"americas"
+]
+},
+"AI": {
+"aliases": [],
+"cities": [
+"The Valley"
+],
+"continent": "NA",
+"iso3": "AIA",
+"name": "Anguilla",
+"regions": [
+"americas"
+]
+},
+"AL": {
+"aliases": [],
+"cities": [
+"Tirana",
+"Durrës",
+"Durres",
+"Vlorë",
+"Vlore",
+"Elbasan",
+"Shkodër",
+"Shkoder",
+"Lushnjë",
+"Lushnje",
+"Berat",
+"Fier-Çifçi",
+"Fier-Cifci"
+],
+"continent": "EU",
+"iso3": "ALB",
+"name": "Albania",
+"regions": [
+"europe",
+"emea",
+"cee"
+]
+},
+"AM": {
+"aliases": [],
+"cities": [
+"Yerevan",
+"Malatia-Sebastia",
+"Shengavit",
+"Nor Nork",
+"Kentron",
+"Erebuni",
+"Ajapnyak",
+"Arabkir"
+],
+"continent": "AS",
+"iso3": "ARM",
+"name": "Armenia",
+"regions": [
+"apac",
+"asia"
+]
+},
+"AN": {
+"aliases": [],
+"cities": [],
+"continent": "NA",
+"iso3": "ANT",
+"name": "Netherlands Antilles",
+"regions": [
+"americas"
+]
+},
+"AO": {
+"aliases": [],
+"cities": [
+"Luanda",
+"Mulenvos",
+"Viana",
+"Kikolo",
+"Maianga",
+"Camama",
+"Golfe",
+"Calumbo"
+],
+"continent": "AF",
+"iso3": "AGO",
+"name": "Angola",
+"regions": [
+"emea",
+"africa"
+]
+},
+"AQ": {
+"aliases": [],
+"cities": [],
+"continent": "AN",
+"iso3": "ATA",
+"name": "Antarctica",
+"regions": []
+},
+"AR": {
+"aliases": [],
+"cities": [
+"Buenos Aires",
+"Córdoba",
+"Cordoba",
+"Rosario",
+"Mar del Plata",
+"San Miguel de Tucumán",
+"San Miguel de Tucuman",
+"Salta",
+"Santa Fe",
+"Avellaneda"
+],
+"continent": "SA",
+"iso3": "ARG",
+"name": "Argentina",
+"regions": [
+"latam",
+"south america",
+"americas"
+]
+},
+"AS": {
+"aliases": [],
+"cities": [
+"Pago Pago"
+],
+"continent": "OC",
+"iso3": "ASM",
+"name": "American Samoa",
+"regions": [
+"apac"
+]
+},
+"AT": {
+"aliases": [],
+"cities": [
+"Vienna",
+"Graz",
+"Linz",
+"Favoriten",
+"Donaustadt",
+"Floridsdorf",
+"Salzburg",
+"Innsbruck"
+],
+"continent": "EU",
+"iso3": "AUT",
+"name": "Austria",
+"regions": [
+"europe",
+"eu",
+"eea",
+"emea",
+"dach"
+]
+},
+"AU": {
+"aliases": [],
+"cities": [
+"Sydney",
+"Melbourne",
+"Brisbane",
+"Perth",
+"Adelaide",
+"Gold Coast",
+"Newcastle",
+"Sunshine Coast"
+],
+"continent": "OC",
+"iso3": "AUS",
+"name": "Australia",
+"regions": [
+"apac",
+"anz"
+]
+},
+"AW": {
+"aliases": [],
+"cities": [
+"Oranjestad",
+"Tanki Leendert"
+],
+"continent": "NA",
+"iso3": "ABW",
+"name": "Aruba",
+"regions": [
+"americas"
+]
+},
+"AX": {
+"aliases": [],
+"cities": [
+"Mariehamn"
+],
+"continent": "EU",
+"iso3": "ALA",
+"name": "Aland Islands",
+"regions": [
+"europe",
+"emea"
+]
+},
+"AZ": {
+"aliases": [],
+"cities": [
+"Baku",
+"Sumgayit",
+"Ganja",
+"Khirdalan",
+"Yevlakh",
+"Mingachevir",
+"Naxçıvan",
+"Naxcivan"
+],
+"continent": "AS",
+"iso3": "AZE",
+"name": "Azerbaijan",
+"regions": [
+"apac",
+"asia"
+]
+},
+"BA": {
+"aliases": [
+"bosnia"
+],
+"cities": [
+"Sarajevo",
+"Banja Luka",
+"Zenica",
+"Tuzla",
+"Mostar",
+"Bihać",
+"Bihac",
+"Ilidža",
+"Ilidza",
+"Lukavac"
+],
+"continent": "EU",
+"iso3": "BIH",
+"name": "Bosnia and Herzegovina",
+"regions": [
+"europe",
+"emea",
+"cee"
+]
+},
+"BB": {
+"aliases": [],
+"cities": [
+"Bridgetown"
+],
+"continent": "NA",
+"iso3": "BRB",
+"name": "Barbados",
+"regions": [
+"latam",
+"americas"
+]
+},
+"BD": {
+"aliases": [],
+"cities": [
+"Dhaka",
+"Chattogram",
+"Gazipur",
+"Khulna",
+"Rangpur",
+"Rajshahi",
+"Comilla",
+"Pallabi"
+],
+"continent": "AS",
+"iso3": "BGD",
+"name": "Bangladesh",
+"regions": [
+"apac",
+"asia",
+"south asia"
+]
+},
+"BE": {
+"aliases": [],
+"cities": [
+"Brussels",
+"Antwerp",
+"Gent",
+"Charleroi",
+"Liège",
+"Liege",
+"Anderlecht",
+"Schaerbeek",
+"Brugge"
+],
+"continent": "EU",
+"iso3": "BEL",
+"name": "Belgium",
+"regions": [
+"europe",
+"eu",
+"eea",
+"emea",
+"benelux"
+]
+},
+"BF": {
+"aliases": [],
+"cities": [
+"Ouagadougou",
+"Bobo-Dioulasso",
+"Koudougou",
+"Saaba",
+"Ouahigouya",
+"Kaya",
+"Banfora",
+"Pouytenga"
+],
+"continent": "AF",
+"iso3": "BFA",
+"name": "Burkina Faso",
+"regions": [
+"emea",
+"africa"
+]
+},
+"BG": {
+"aliases": [],
+"cities": [
+"Sofia",
+"Plovdiv",
+"Varna",
+"Burgas",
+"Stara Zagora",
+"Ruse",
+"Pleven",
+"Sliven"
+],
+"continent": "EU",
+"iso3": "BGR",
+"name": "Bulgaria",
+"regions": [
+"europe",
+"eu",
+"eea",
+"emea",
+"cee"
+]
+},
+"BH": {
+"aliases": [],
+"cities": [
+"Al Muharraq",
+"Manama",
+"Madīnat Ḩamad",
+"Madinat Hamad",
+"Ar Rifā‘",
+"Ar Rifa'",
+"Sitrah",
+"Jidd Ḩafş",
+"Jidd Hafs",
+"Dār Kulayb",
+"Dar Kulayb"
+],
+"continent": "AS",
+"iso3": "BHR",
+"name": "Bahrain",
+"regions": [
+"emea",
+"middle east",
+"mena",
+"gcc",
+"asia"
+]
+},
+"BI": {
+"aliases": [],
+"cities": [
+"Bujumbura",
+"Gitega",
+"Ngozi",
+"Rumonge",
+"Cibitoke",
+"Kayanza",
+"Cendajuru",
+"Bubanza"
+],
+"continent": "AF",
+"iso3": "BDI",
+"name": "Burundi",
+"regions": [
+"emea",
+"africa"
+]
+},
+"BJ": {
+"aliases": [],
+"cities": [
+"Cotonou",
+"Abomey-Calavi",
+"Porto-Novo",
+"Parakou",
+"Godomè",
+"Godome",
+"Abomey",
+"Djougou",
+"Bohicon"
+],
+"continent": "AF",
+"iso3": "BEN",
+"name": "Benin",
+"regions": [
+"emea",
+"africa"
+]
+},
+"BL": {
+"aliases": [],
+"cities": [
+"Gustavia"
+],
+"continent": "NA",
+"iso3": "BLM",
+"name": "Saint Barthelemy",
+"regions": [
+"americas"
+]
+},
+"BM": {
+"aliases": [],
+"cities": [],
+"continent": "NA",
+"iso3": "BMU",
+"name": "Bermuda",
+"regions": [
+"americas"
+]
+},
+"BN": {
+"aliases": [],
+"cities": [
+"Bandar Seri Begawan",
+"Sengkurong",
+"Mentiri",
+"Kuala Belait",
+"Tutong",
+"Serasa",
+"Liang"
+],
+"continent": "AS",
+"iso3": "BRN",
+"name": "Brunei",
+"regions": [
+"apac",
+"asia",
+"sea"
+]
+},
+"BO": {
+"aliases": [],
+"cities": [
+"La Paz",
+"Santa Cruz de la Sierra",
+"Cochabamba",
+"Sucre",
+"Oruro",
+"Sacaba",
+"Quillacollo",
+"Tarija"
+],
+"continent": "SA",
+"iso3": "BOL",
+"name": "Bolivia",
+"regions": [
+"latam",
+"south america",
+"americas"
+]
+},
+"BQ": {
+"aliases": [],
+"cities": [
+"Kralendijk"
+],
+"continent": "NA",
+"iso3": "BES",
+"name": "Bonaire, Saint Eustatius and Saba ",
+"regions": [
+"americas"
+]
+},
+"BR": {
+"aliases": [],
+"cities": [
+"São Paulo",
+"Sao Paulo",
+"Rio de Janeiro",
+"Belo Horizonte",
+"Salvador",
+"Fortaleza",
+"Manaus",
+"Brasília",
+"Brasilia",
+"Curitiba"
+],
+"continent": "SA",
+"iso3": "BRA",
+"name": "Brazil",
+"regions": [
+"latam",
+"south america",
+"americas"
+]
+},
+"BS": {
+"aliases": [],
+"cities": [
+"Nassau",
+"Lucaya"
+],
+"continent": "NA",
+"iso3": "BHS",
+"name": "Bahamas",
+"regions": [
+"latam",
+"americas"
+]
+},
+"BT": {
+"aliases": [],
+"cities": [
+"Thimphu",
+"Phuntsholing",
+"Tsirang",
+"Punākha",
+"Punakha"
+],
+"continent": "AS",
+"iso3": "BTN",
+"name": "Bhutan",
+"regions": [
+"apac",
+"asia",
+"south asia"
+]
+},
+"BV": {
+"aliases": [],
+"cities": [],
+"continent": "AN",
+"iso3": "BVT",
+"name": "Bouvet Island",
+"regions": []
+},
+"BW": {
+"aliases": [],
+"cities": [
+"Gaborone",
+"Francistown",
+"Mogoditshane",
+"Maun",
+"Molepolole",
+"Serowe",
+"Tlokweng",
+"Palapye"
+],
+"continent": "AF",
+"iso3": "BWA",
+"name": "Botswana",
+"regions": [
+"emea",
+"africa"
+]
+},
+"BY": {
+"aliases": [],
+"cities": [
+"Minsk",
+"Homyel'",
+"Hrodna",
+"Vitebsk",
+"Mahilyow",
+"Brest",
+"Bobruysk",
+"Baranovichi"
+],
+"continent": "EU",
+"iso3": "BLR",
+"name": "Belarus",
+"regions": [
+"europe",
+"emea"
+]
+},
+"BZ": {
+"aliases": [],
+"cities": [
+"Belize City",
+"San Ignacio",
+"Orange Walk",
+"Belmopan"
+],
+"continent": "NA",
+"iso3": "BLZ",
+"name": "Belize",
+"regions": [
+"latam",
+"americas"
+]
+},
+"CA": {
+"aliases": [],
+"cities": [
+"Toronto",
+"Montréal",
+"Montreal",
+"Calgary",
+"Ottawa",
+"Edmonton",
+"Winnipeg",
+"Mississauga",
+"Vancouver"
+],
+"continent": "NA",
+"iso3": "CAN",
+"name": "Canada",
+"regions": [
+"north america",
+"americas"
+]
+},
+"CC": {
+"aliases": [],
+"cities": [
+"West Island"
+],
+"continent": "AS",
+"iso3": "CCK",
+"name": "Cocos Islands",
+"regions": [
+"apac",
+"asia"
+]
+},
+"CD": {
+"aliases": [
+"dr congo",
+"democratic republic of the congo"
+],
+"cities": [
+"Kinshasa",
+"Lubumbashi",
+"Mbuji-Mayi",
+"Kisangani",
+"Kananga",
+"Bukavu",
+"Kolwezi",
+"Likasi"
+],
+"continent": "AF",
+"iso3": "COD",
+"name": "Democratic Republic of the Congo",
+"regions": [
+"emea",
+"africa"
+]
+},
+"CF": {
+"aliases": [],
+"cities": [
+"Bangui",
+"Bimbo",
+"Bégoua",
+"Begoua",
+"Carnot",
+"Berbérati",
+"Berberati",
+"Bambari",
+"Bouar",
+"Bossangoa"
+],
+"continent": "AF",
+"iso3": "CAF",
+"name": "Central African Republic",
+"regions": [
+"emea",
+"africa"
+]
+},
+"CG": {
+"aliases": [
+"republic of the congo"
+],
+"cities": [
+"Brazzaville",
+"Pointe-Noire",
+"Dolisie",
+"Nkayi",
+"Impfondo",
+"Ouesso",
+"Owando",
+"Sibiti"
+],
+"continent": "AF",
+"iso3": "COG",
+"name": "Republic of the Congo",
+"regions": [
+"emea",
+"africa"
+]
+},
+"CH": {
+"aliases": [],
+"cities": [
+"Zürich",
+"Zuerich",
+"Geneva",
+"Basel",
+"Lausanne",
+"Bern",
+"Winterthur",
+"Luzern"
+],
+"continent": "EU",
+"iso3": "CHE",
+"name": "Switzerland",
+"regions": [
+"europe",
+"emea",
+"dach"
+]
+},
+"CI": {
+"aliases": [
+"ivory coast",
+"côte d'ivoire",
+"cote d'ivoire"
+],
+"cities": [
+"Abidjan",
+"Abobo",
+"Bouaké",
+"Bouake",
+"Korhogo",
+"Daloa",
+"Koumassi",
+"San-Pédro",
+"San-Pedro",
+"Gagnoa"
+],
+"continent": "AF",
+"iso3": "CIV",
+"name": "Ivory Coast",
+"regions": [
+"emea",
+"africa"
+]
+},
+"CK": {
+"aliases": [],
+"cities": [
+"Avarua"
+],
+"continent": "OC",
+"iso3": "COK",
+"name": "Cook Islands",
+"regions": [
+"apac"
+]
+},
+"CL": {
+"aliases": [],
+"cities": [
+"Santiago",
+"Puente Alto",
+"Maipú",
+"Maipu",
+"Antofagasta",
+"Viña del Mar",
+"Vina del Mar",
+"Valparaíso",
+"Valparaiso",
+"Ñuñoa",
+"Nunoa",
+"San Bernardo"
+],
+"continent": "SA",
+"iso3": "CHL",
+"name": "Chile",
+"regions": [
+"latam",
+"south america",
+"americas"
+]
+},
+"CM": {
+"aliases": [],
+"cities": [
+"Douala",
+"Yaoundé",
+"Yaounde",
+"Bamenda",
+"Bafoussam",
+"Maroua",
+"Ngaoundéré",
+"Ngaoundere",
+"Kumba",
+"Nkongsamba"
+],
+"continent": "AF",
+"iso3": "CMR",
+"name": "Cameroon",
+"regions": [
+"emea",
+"africa"
+]
+},
+"CN": {
+"aliases": [],
+"cities": [
+"Shanghai",
+"Chongqing",
+"Chengdu",
+"Beijing",
+"Guangzhou",
+"Shenzhen",
+"Tianjin",
+"Wuhan"
+],
+"continent": "AS",
+"iso3": "CHN",
+"name": "China",
+"regions": [
+"apac",
+"asia"
+]
+},
+"CO": {
+"aliases": [],
+"cities": [
+"Bogotá",
+"Bogota",
+"Cali",
+"Medellín",
+"Medellin",
+"Barranquilla",
+"Kennedy",
+"Cartagena",
+"Cúcuta",
+"Cucuta",
+"Soacha"
+],
+"continent": "SA",
+"iso3": "COL",
+"name": "Colombia",
+"regions": [
+"latam",
+"south america",
+"americas"
+]
+},
+"CR": {
+"aliases": [],
+"cities": [
+"Limón",
+"Limon",
+"Alajuela",
+"Puntarenas",
+"Curridabat",
+"San Vicente de Moravia",
+"Purral",
+"Turrialba",
+"San Rafael Abajo"
+],
+"continent": "NA",
+"iso3": "CRI",
+"name": "Costa Rica",
+"regions": [
+"latam",
+"americas"
+]
+},
+"CS": {
+"aliases": [],
+"cities": [],
+"continent": "EU",
+"iso3": "SCG",
+"name": "Serbia and Montenegro",
+"regions": [
+"europe",
+"emea"
+]
+},
+"CU": {
+"aliases": [],
+"cities": [
+"Havana",
+"Santiago de Cuba",
+"Camagüey",
+"Camagueey",
+"Holguín",
+"Holguin",
+"Guantánamo",
+"Guantanamo",
+"Santa Clara",
+"Almendares"
+],
+"continent": "NA",
+"iso3": "CUB",
+"name": "Cuba",
+"regions": [
+"latam",
+"americas"
+]
+},
+"CV": {
+"aliases": [
+"cabo verde"
+],
+"cities": [
+"Praia",
+"Mindelo",
+"Espargos",
+"Assomada"
+],
+"continent": "AF",
+"iso3": "CPV",
+"name": "Cabo Verde",
+"regions": [
+"emea",
+"africa"
+]
+},
+"CW": {
+"aliases": [],
+"cities": [
+"Willemstad",
+"Bandariba"
+],
+"continent": "NA",
+"iso3": "CUW",
+"name": "Curacao",
+"regions": [
+"americas"
+]
+},
+"CX": {
+"aliases": [],
+"cities": [
+"Flying Fish Cove"
+],
+"continent": "OC",
+"iso3": "CXR",
+"name": "Christmas Island",
+"regions": [
+"apac"
+]
+},
+"CY": {
+"aliases": [],
+"cities": [
+"Nicosia",
+"Limassol",
+"Larnaca",
+"Stróvolos",
+"Strovolos",
+"Famagusta",
+"Káto Lakatámeia",
+"Kato Lakatameia",
+"Paphos",
+"Kyrenia"
+],
+"continent": "EU",
+"iso3": "CYP",
+"name": "Cyprus",
+"regions": [
+"europe",
+"eu",
+"eea",
+"emea",
+"middle east",
+"mena"
+]
+},
+"CZ": {
+"aliases": [
+"czech republic"
+],
+"cities": [
+"Prague",
+"Brno",
+"Ostrava",
+"Pilsen",
+"Liberec",
+"Olomouc",
+"České Budějovice",
+"Ceske Budejovice",
+"Hradec Králové",
+"Hradec Kralove"
+],
+"continent": "EU",
+"iso3": "CZE",
+"name": "Czechia",
+"regions": [
+"europe",
+"eu",
+"eea",
+"emea",
+"cee"
+]
+},
+"DE": {
+"aliases": [],
+"cities": [
+"Berlin",
+"Hamburg",
+"Munich",
+"Köln",
+"Koeln",
+"Frankfurt am Main",
+"Düsseldorf",
+"Duesseldorf"
+],
+"continent": "EU",
+"iso3": "DEU",
+"name": "Germany",
+"regions": [
+"europe",
+"eu",
+"eea",
+"emea",
+"dach"
+]
+},
+"DJ": {
+"aliases": [],
+"cities": [
+"Balbala",
+"Ali Sabih",
+"Dikhil",
+"Tadjoura",
+"Obock"
+],
+"continent": "AF",
+"iso3": "DJI",
+"name": "Djibouti",
+"regions": [
+"emea",
+"africa"
+]
+},
+"DK": {
+"aliases": [],
+"cities": [
+"Copenhagen",
+"Århus",
+"Arhus",
+"Odense",
+"Aalborg",
+"Frederiksberg",
+"Esbjerg",
+"Randers",
+"Kolding"
+],
+"continent": "EU",
+"iso3": "DNK",
+"name": "Denmark",
+"regions": [
+"europe",
+"eu",
+"eea",
+"emea",
+"nordics"
+]
+},
+"DM": {
+"aliases": [],
+"cities": [
+"Roseau"
+],
+"continent": "NA",
+"iso3": "DMA",
+"name": "Dominica",
+"regions": [
+"americas"
+]
+},
+"DO": {
+"aliases": [],
+"cities": [
+"Santo Domingo",
+"Santiago de los Caballeros",
+"Santo Domingo Oeste",
+"Santo Domingo Este",
+"San Pedro de Macorís",
+"San Pedro de Macoris",
+"La Romana",
+"Bella Vista",
+"Puerto Plata"
+],
+"continent": "NA",
+"iso3": "DOM",
+"name": "Dominican Republic",
+"regions": [
+"latam",
+"americas"
+]
+},
+"DZ": {
+"aliases": [],
+"cities": [
+"Algiers",
+"Oran",
+"Constantine",
+"Annaba",
+"Blida",
+"Batna",
+"Bab Ezzouar",
+"Djelfa"
+],
+"continent": "AF",
+"iso3": "DZA",
+"name": "Algeria",
+"regions": [
+"emea",
+"mena",
+"africa"
+]
+},
+"EC": {
+"aliases": [],
+"cities": [
+"Quito",
+"Guayaquil",
+"Cuenca",
+"Santo Domingo de los Colorados",
+"Ambato",
+"Portoviejo",
+"Eloy Alfaro",
+"Machala"
+],
+"continent": "SA",
+"iso3": "ECU",
+"name": "Ecuador",
+"regions": [
+"latam",
+"south america",
+"americas"
+]
+},
+"EE": {
+"aliases": [],
+"cities": [
+"Tallinn",
+"Lasnamäe",
+"Lasnamaee",
+"Tartu",
+"Mustamäe",
+"Mustamaee",
+"Kesklinn",
+"Põhja-Tallinn",
+"Pohja-Tallinn"
+],
+"continent": "EU",
+"iso3": "EST",
+"name": "Estonia",
+"regions": [
+"europe",
+"eu",
+"eea",
+"emea",
+"cee"
+]
+},
+"EG": {
+"aliases": [],
+"cities": [
+"Cairo",
+"Alexandria",
+"Giza",
+"Shubrā al Khaymah",
+"Shubra al Khaymah",
+"Port Said",
+"Suez",
+"Madīnat an Naşr",
+"Madinat an Nasr",
+"Al Mansurah"
+],
+"continent": "AF",
+"iso3": "EGY",
+"name": "Egypt",
+"regions": [
+"emea",
+"middle east",
+"mena",
+"africa"
+]
+},
+"EH": {
+"aliases": [],
+"cities": [
+"Laayoune",
+"Dakhla",
+"Boujdour",
+"El Marsa"
+],
+"continent": "AF",
+"iso3": "ESH",
+"name": "Western Sahara",
+"regions": [
+"emea",
+"africa"
+]
+},
+"ER": {
+"aliases": [],
+"cities": [
+"Asmara",
+"Keren",
+"Himora",
+"Af’abet",
+"Af'abet",
+"Massawa",
+"Assab",
+"Mendefera"
+],
+"continent": "AF",
+"iso3": "ERI",
+"name": "Eritrea",
+"regions": [
+"emea",
+"africa"
+]
+},
+"ES": {
+"aliases": [],
+"cities": [
+"Madrid",
+"Barcelona",
+"Zaragoza",
+"Sevilla",
+"Málaga",
+"Malaga",
+"Murcia",
+"Palma",
+"Las Palmas de Gran Canaria"
+],
+"continent": "EU",
+"iso3": "ESP",
+"name": "Spain",
+"regions": [
+"europe",
+"eu",
+"eea",
+"emea"
+]
+},
+"ET": {
+"aliases": [],
+"cities": [
+"Addis Ababa",
+"Jijiga",
+"Gonder",
+"Mek'ele",
+"Nazrēt",
+"Nazret",
+"Warder",
+"Awasa",
+"Bahir Dar"
+],
+"continent": "AF",
+"iso3": "ETH",
+"name": "Ethiopia",
+"regions": [
+"emea",
+"africa"
+]
+},
+"FI": {
+"aliases": [],
+"cities": [
+"Helsinki",
+"Espoo",
+"Tampere",
+"Vantaa",
+"Oulu",
+"Turku",
+"East Helsinki",
+"Jyväskylä",
+"Jyvaeskylae"
+],
+"continent": "EU",
+"iso3": "FIN",
+"name": "Finland",
+"regions": [
+"europe",
+"eu",
+"eea",
+"emea",
+"nordics"
+]
+},
+"FJ": {
+"aliases": [],
+"cities": [
+"Nasinu",
+"Suva",
+"Lautoka",
+"Nadi",
+"Labasa",
+"Lami",
+"Sigatoka"
+],
+"continent": "OC",
+"iso3": "FJI",
+"name": "Fiji",
+"regions": [
+"apac"
+]
+},
+"FK": {
+"aliases": [],
+"cities": [],
+"continent": "SA",
+"iso3": "FLK",
+"name": "Falkland Islands",
+"regions": [
+"latam",
+"south america",
+"americas"
+]
+},
+"FM": {
+"aliases": [],
+"cities": [
+"Palikir"
+],
+"continent": "OC",
+"iso3": "FSM",
+"name": "Micronesia",
+"regions": [
+"apac"
+]
+},
+"FO": {
+"aliases": [],
+"cities": [
+"Tórshavn",
+"Torshavn"
+],
+"continent": "EU",
+"iso3": "FRO",
+"name": "Faroe Islands",
+"regions": [
+"europe",
+"emea"
+]
+},
+"FR": {
+"aliases": [],
+"cities": [
+"Paris",
+"Marseille",
+"Lyon",
+"Toulouse",
+"Nice",
+"Nantes",
+"Marne La Vallée",
+"Marne La Vallee",
+"Strasbourg"
+],
+"continent": "EU",
+"iso3": "FRA",
+"name": "France",
+"regions": [
+"europe",
+"eu",
+"eea",
+"emea"
+]
+},
+"GA": {
+"aliases": [],
+"cities": [
+"Libreville",
+"Port-Gentil",
+"Franceville",
+"Owendo",
+"Oyem",
+"Ntoum",
+"Lambaréné",
+"Lambarene",
+"Mouila"
+],
+"continent": "AF",
+"iso3": "GAB",
+"name": "Gabon",
+"regions": [
+"emea",
+"africa"
+]
+},
+"GB": {
+"aliases": [
+"uk",
+"u.k.",
+"great britain",
+"britain",
+"northern ireland",
+"england",
+"scotland",
+"wales"
+],
+"cities": [
+"London",
+"Birmingham",
+"Glasgow",
+"Manchester",
+"Sheffield",
+"Leeds",
+"Edinburgh",
+"Liverpool"
+],
+"continent": "EU",
+"iso3": "GBR",
+"name": "United Kingdom",
+"regions": [
+"europe",
+"emea",
+"uk&i"
+]
+},
+"GD": {
+"aliases": [],
+"cities": [
+"Saint George's"
+],
+"continent": "NA",
+"iso3": "GRD",
+"name": "Grenada",
+"regions": [
+"americas"
+]
+},
+"GE": {
+"aliases": [],
+"cities": [
+"Tbilisi",
+"Batumi",
+"Kutaisi",
+"Rustavi",
+"Sokhumi",
+"Gori",
+"Poti",
+"Zugdidi"
+],
+"continent": "AS",
+"iso3": "GEO",
+"name": "Georgia",
+"regions": [
+"apac",
+"asia"
+]
+},
+"GF": {
+"aliases": [],
+"cities": [
+"Cayenne",
+"Matoury",
+"Saint-Laurent-du-Maroni",
+"Kourou",
+"Rémire-Montjoly",
+"Remire-Montjoly"
+],
+"continent": "SA",
+"iso3": "GUF",
+"name": "French Guiana",
+"regions": [
+"latam",
+"south america",
+"americas"
+]
+},
+"GG": {
+"aliases": [],
+"cities": [
+"Saint Peter Port"
+],
+"continent": "EU",
+"iso3": "GGY",
+"name": "Guernsey",
+"regions": [
+"europe",
+"emea"
+]
+},
+"GH": {
+"aliases": [],
+"cities": [
+"Kumasi",
+"Accra",
+"Tamale",
+"Takoradi",
+"Sekondi",
+"Cape Coast",
+"Atsiaman",
+"Ashaiman"
+],
+"continent": "AF",
+"iso3": "GHA",
+"name": "Ghana",
+"regions": [
+"emea",
+"africa"
+]
+},
+"GI": {
+"aliases": [],
+"cities": [],
+"continent": "EU",
+"iso3": "GIB",
+"name": "Gibraltar",
+"regions": [
+"europe",
+"emea"
+]
+},
+"GL": {
+"aliases": [],
+"cities": [
+"Nuuk"
+],
+"continent": "NA",
+"iso3": "GRL",
+"name": "Greenland",
+"regions": [
+"americas"
+]
+},
+"GM": {
+"aliases": [],
+"cities": [
+"Serekunda",
+"Brikama",
+"Bununka Kunda",
+"Sukuta",
+"Talinding",
+"Faji Kunda",
+"Bakau",
+"Banjul"
+],
+"continent": "AF",
+"iso3": "GMB",
+"name": "Gambia",
+"regions": [
+"emea",
+"africa"
+]
+},
+"GN": {
+"aliases": [],
+"cities": [
+"Conakry",
+"Camayenne",
+"Nzérékoré",
+"Nzerekore",
+"Kankan",
+"Manéah",
+"Maneah",
+"Dixinn",
+"Dubréka",
+"Dubreka",
+"Kindia"
+],
+"continent": "AF",
+"iso3": "GIN",
+"name": "Guinea",
+"regions": [
+"emea",
+"africa"
+]
+},
+"GP": {
+"aliases": [],
+"cities": [
+"Les Abymes",
+"Baie-Mahault",
+"Le Gosier",
+"Petit-Bourg",
+"Sainte-Anne",
+"Le Moule",
+"Sainte-Rose",
+"Capesterre-Belle-Eau"
+],
+"continent": "NA",
+"iso3": "GLP",
+"name": "Guadeloupe",
+"regions": [
+"americas"
+]
+},
+"GQ": {
+"aliases": [],
+"cities": [
+"Bata",
+"Malabo",
+"Ebebiyin",
+"Añisoc",
+"Anisoc",
+"Aconibe",
+"Ciudad de la Paz"
+],
+"continent": "AF",
+"iso3": "GNQ",
+"name": "Equatorial Guinea",
+"regions": [
+"emea",
+"africa"
+]
+},
+"GR": {
+"aliases": [],
+"cities": [
+"Athens",
+"Thessaloníki",
+"Thessaloniki",
+"Pátra",
+"Patra",
+"Piraeus",
+"Lárisa",
+"Larisa",
+"Peristéri",
+"Peristeri",
+"Irákleion",
+"Irakleion",
+"Kallithéa",
+"Kallithea"
+],
+"continent": "EU",
+"iso3": "GRC",
+"name": "Greece",
+"regions": [
+"europe",
+"eu",
+"eea",
+"emea"
+]
+},
+"GS": {
+"aliases": [],
+"cities": [
+"Grytviken"
+],
+"continent": "AN",
+"iso3": "SGS",
+"name": "South Georgia and the South Sandwich Islands",
+"regions": []
+},
+"GT": {
+"aliases": [],
+"cities": [
+"Guatemala City",
+"Villa Nueva",
+"Mixco",
+"Cobán",
+"Coban",
+"Quetzaltenango",
+"Jalapa",
+"Escuintla",
+"Villa Canales"
+],
+"continent": "NA",
+"iso3": "GTM",
+"name": "Guatemala",
+"regions": [
+"latam",
+"americas"
+]
+},
+"GU": {
+"aliases": [],
+"cities": [
+"Dededo Village",
+"Yigo Village",
+"Tamuning-Tumon-Harmon Village",
+"Tamuning",
+"Mangilao Village",
+"Hagåtña",
+"Hagatna"
+],
+"continent": "OC",
+"iso3": "GUM",
+"name": "Guam",
+"regions": [
+"apac"
+]
+},
+"GW": {
+"aliases": [],
+"cities": [
+"Bissau",
+"Bairro Militar",
+"Gabú",
+"Gabu",
+"Contumo",
+"Reino de Bandim",
+"Missira",
+"Bafatá",
+"Bafata",
+"Reino de Antula"
+],
+"continent": "AF",
+"iso3": "GNB",
+"name": "Guinea-Bissau",
+"regions": [
+"emea",
+"africa"
+]
+},
+"GY": {
+"aliases": [],
+"cities": [
+"Georgetown",
+"Linden",
+"New Amsterdam"
+],
+"continent": "SA",
+"iso3": "GUY",
+"name": "Guyana",
+"regions": [
+"latam",
+"south america",
+"americas"
+]
+},
+"HK": {
+"aliases": [
+"hong kong sar"
+],
+"cities": [
+"New Territories",
+"Kowloon",
+"Hong Kong Island",
+"Victoria",
+"Tuen Mun",
+"Sha Tin",
+"Sham Shui Po",
+"Wong Tai Sin"
+],
+"continent": "AS",
+"iso3": "HKG",
+"name": "Hong Kong",
+"regions": [
+"apac",
+"asia"
+]
+},
+"HM": {
+"aliases": [],
+"cities": [],
+"continent": "AN",
+"iso3": "HMD",
+"name": "Heard Island and McDonald Islands",
+"regions": []
+},
+"HN": {
+"aliases": [],
+"cities": [
+"Tegucigalpa",
+"San Pedro Sula",
+"Danlí",
+"Danli",
+"La Ceiba",
+"Puerto Cortez",
+"Catacamas",
+"Choloma",
+"Siguatepeque"
+],
+"continent": "NA",
+"iso3": "HND",
+"name": "Honduras",
+"regions": [
+"latam",
+"americas"
+]
+},
+"HR": {
+"aliases": [],
+"cities": [
+"Zagreb",
+"Split",
+"Rijeka",
+"Osijek",
+"Zadar",
+"Sesvete",
+"Pula",
+"Slavonski Brod"
+],
+"continent": "EU",
+"iso3": "HRV",
+"name": "Croatia",
+"regions": [
+"europe",
+"eu",
+"eea",
+"emea",
+"cee"
+]
+},
+"HT": {
+"aliases": [],
+"cities": [
+"Port-au-Prince",
+"Carrefour",
+"Delmas",
+"Pétionville",
+"Petionville",
+"Port-de-Paix",
+"Saint-Marc",
+"Cité Soleil",
+"Cite Soleil",
+"Croix-des-Bouquets"
+],
+"continent": "NA",
+"iso3": "HTI",
+"name": "Haiti",
+"regions": [
+"latam",
+"americas"
+]
+},
+"HU": {
+"aliases": [],
+"cities": [
+"Budapest",
+"Pest",
+"Buda",
+"Debrecen",
+"Szeged",
+"Miskolc",
+"Pécs",
+"Pecs",
+"Budapest XI. kerület",
+"Budapest XI. keruelet"
+],
+"continent": "EU",
+"iso3": "HUN",
+"name": "Hungary",
+"regions": [
+"europe",
+"eu",
+"eea",
+"emea",
+"cee"
+]
+},
+"ID": {
+"aliases": [],
+"cities": [
+"Jakarta",
+"Surabaya",
+"Bekasi",
+"Bandung",
+"Medan",
+"Depok",
+"Tangerang",
+"Palembang"
+],
+"continent": "AS",
+"iso3": "IDN",
+"name": "Indonesia",
+"regions": [
+"apac",
+"asia",
+"sea"
+]
+},
+"IE": {
+"aliases": [],
+"cities": [
+"Dublin",
+"South Dublin",
+"Cork",
+"Limerick",
+"Galway",
+"Tallaght",
+"Drogheda",
+"Swords"
+],
+"continent": "EU",
+"iso3": "IRL",
+"name": "Ireland",
+"regions": [
+"europe",
+"eu",
+"eea",
+"emea",
+"uk&i"
+]
+},
+"IL": {
+"aliases": [],
+"cities": [
+"Jerusalem",
+"Tel Aviv",
+"West Jerusalem",
+"Haifa",
+"Rishon LeTsiyyon",
+"Petaẖ Tiqva",
+"Petah Tiqva",
+"Netanya",
+"Ashdod"
+],
+"continent": "AS",
+"iso3": "ISR",
+"name": "Israel",
+"regions": [
+"emea",
+"middle east",
+"mena",
+"asia"
+]
+},
+"IM": {
+"aliases": [],
+"cities": [],
+"continent": "EU",
+"iso3": "IMN",
+"name": "Isle of Man",
+"regions": [
+"europe",
+"emea"
+]
+},
+"IN": {
+"aliases": [],
+"cities": [
+"Mumbai",
+"Delhi",
+"Bengaluru",
+"Hyderabad",
+"Ahmedabad",
+"Chennai",
+"Kolkata",
+"Surat"
+],
+"continent": "AS",
+"iso3": "IND",
+"name": "India",
+"regions": [
+"apac",
+"asia",
+"south asia"
+]
+},
+"IO": {
+"aliases": [],
+"cities": [],
+"continent": "AS",
+"iso3": "IOT",
+"name": "British Indian Ocean Territory",
+"regions": [
+"apac",
+"asia"
+]
+},
+"IQ": {
+"aliases": [],
+"cities": [
+"Baghdad",
+"Al Mawşil al Jadīdah",
+"Al Mawsil al Jadidah",
+"Mosul",
+"Erbil",
+"Basrah",
+"Karbala",
+"Sadr City",
+"Kirkuk"
+],
+"continent": "AS",
+"iso3": "IRQ",
+"name": "Iraq",
+"regions": [
+"emea",
+"middle east",
+"mena",
+"asia"
+]
+},
+"IR": {
+"aliases": [],
+"cities": [
+"Tehran",
+"Mashhad",
+"Isfahan",
+"Karaj",
+"Tabriz",
+"Shiraz",
+"Qom",
+"Ahvaz"
+],
+"continent": "AS",
+"iso3": "IRN",
+"name": "Iran",
+"regions": [
+"emea",
+"middle east",
+"mena",
+"asia"
+]
+},
+"IS": {
+"aliases": [],
+"cities": [
+"Reykjavík",
+"Reykjavik",
+"Kópavogur",
+"Kopavogur",
+"Hafnarfjörður",
+"Hafnarfjoerdur",
+"Reykjanesbær",
+"Reykjanesbaer",
+"Akureyri",
+"Keflavík",
+"Keflavik"
+],
+"continent": "EU",
+"iso3": "ISL",
+"name": "Iceland",
+"regions": [
+"europe",
+"eea",
+"emea",
+"nordics"
+]
+},
+"IT": {
+"aliases": [],
+"cities": [
+"Rome",
+"Milan",
+"Naples",
+"Turin",
+"Palermo",
+"Genoa",
+"Bologna",
+"Florence"
+],
+"continent": "EU",
+"iso3": "ITA",
+"name": "Italy",
+"regions": [
+"europe",
+"eu",
+"eea",
+"emea"
+]
+},
+"JE": {
+"aliases": [],
+"cities": [
+"Saint Helier"
+],
+"continent": "EU",
+"iso3": "JEY",
+"name": "Jersey",
+"regions": [
+"europe",
+"emea"
+]
+},
+"JM": {
+"aliases": [],
+"cities": [
+"Kingston",
+"New Kingston",
+"Spanish Town",
+"Portmore",
+"Montego Bay",
+"Mandeville",
+"May Pen",
+"Ocho Rios"
+],
+"continent": "NA",
+"iso3": "JAM",
+"name": "Jamaica",
+"regions": [
+"latam",
+"americas"
+]
+},
+"JO": {
+"aliases": [],
+"cities": [
+"Amman",
+"Zarqa",
+"Irbid",
+"Russeifa",
+"Ḩayy Khildā",
+"Hayy Khilda",
+"Khuraybat as Sūq",
+"Khuraybat as Suq",
+"Wādī as Sīr",
+"Wadi as Sir",
+"Ar Ramthā",
+"Ar Ramtha"
+],
+"continent": "AS",
+"iso3": "JOR",
+"name": "Jordan",
+"regions": [
+"emea",
+"middle east",
+"mena",
+"asia"
+]
+},
+"JP": {
+"aliases": [],
+"cities": [
+"Tokyo",
+"Yokohama",
+"Osaka",
+"Nagoya",
+"Sapporo",
+"Fukuoka",
+"Kawasaki",
+"Kobe"
+],
+"continent": "AS",
+"iso3": "JPN",
+"name": "Japan",
+"regions": [
+"apac",
+"asia"
+]
+},
+"KE": {
+"aliases": [],
+"cities": [
+"Nairobi",
+"Kakamega",
+"Mombasa",
+"Nakuru",
+"Ruiru",
+"Eldoret",
+"Kisumu",
+"Kikuyu"
+],
+"continent": "AF",
+"iso3": "KEN",
+"name": "Kenya",
+"regions": [
+"emea",
+"africa"
+]
+},
+"KG": {
+"aliases": [],
+"cities": [
+"Bishkek",
+"Osh",
+"Manas",
+"Karakol",
+"Tokmok",
+"Uzgen",
+"Kara-Balta",
+"Balykchy"
+],
+"continent": "AS",
+"iso3": "KGZ",
+"name": "Kyrgyzstan",
+"regions": [
+"apac",
+"asia"
+]
+},
+"KH": {
+"aliases": [],
+"cities": [
+"Phnom Penh",
+"Takeo",
+"Siem Reap",
+"Battambang",
+"Paoy Paet",
+"Dangkao",
+"Kampong Chhnang",
+"Sihanoukville"
+],
+"continent": "AS",
+"iso3": "KHM",
+"name": "Cambodia",
+"regions": [
+"apac",
+"asia",
+"sea"
+]
+},
+"KI": {
+"aliases": [],
+"cities": [
+"Tarawa"
+],
+"continent": "OC",
+"iso3": "KIR",
+"name": "Kiribati",
+"regions": [
+"apac"
+]
+},
+"KM": {
+"aliases": [],
+"cities": [
+"Moroni",
+"Moutsamoudou",
+"Fomboni"
+],
+"continent": "AF",
+"iso3": "COM",
+"name": "Comoros",
+"regions": [
+"emea",
+"africa"
+]
+},
+"KN": {
+"aliases": [],
+"cities": [
+"Basseterre"
+],
+"continent": "NA",
+"iso3": "KNA",
+"name": "Saint Kitts and Nevis",
+"regions": [
+"americas"
+]
+},
+"KP": {
+"aliases": [
+"north korea"
+],
+"cities": [
+"Pyongyang",
+"Hamhŭng",
+"Hamhung",
+"Namp’o",
+"Namp'o",
+"Sunch’ŏn",
+"Sunch'on",
+"Hŭngnam",
+"Hungnam",
+"Kaesŏng",
+"Kaesong"
+],
+"continent": "AS",
+"iso3": "PRK",
+"name": "North Korea",
+"regions": [
+"apac",
+"asia"
+]
+},
+"KR": {
+"aliases": [
+"korea",
+"republic of korea",
+"korea, republic of"
+],
+"cities": [
+"Seoul",
+"Busan",
+"Incheon",
+"Daegu",
+"Daejeon",
+"Gwangju",
+"Suwon",
+"Ulsan"
+],
+"continent": "AS",
+"iso3": "KOR",
+"name": "South Korea",
+"regions": [
+"apac",
+"asia"
+]
+},
+"KW": {
+"aliases": [],
+"cities": [
+"Al Aḩmadī",
+"Al Ahmadi",
+"Ḩawallī",
+"Hawalli",
+"As Sālimīyah",
+"As Salimiyah",
+"Şabāḩ as Sālim",
+"Sabah as Salim",
+"Al Farwānīyah",
+"Al Farwaniyah",
+"Al Faḩāḩīl",
+"Al Fahahil",
+"Kuwait City",
+"Ar Rumaythīyah",
+"Ar Rumaythiyah"
+],
+"continent": "AS",
+"iso3": "KWT",
+"name": "Kuwait",
+"regions": [
+"emea",
+"middle east",
+"mena",
+"gcc",
+"asia"
+]
+},
+"KY": {
+"aliases": [],
+"cities": [
+"West Bay"
+],
+"continent": "NA",
+"iso3": "CYM",
+"name": "Cayman Islands",
+"regions": [
+"americas"
+]
+},
+"KZ": {
+"aliases": [],
+"cities": [
+"Almaty",
+"Astana",
+"Shymkent",
+"Aktobe",
+"Karagandy",
+"Taraz",
+"Kyzylorda",
+"Oral"
+],
+"continent": "AS",
+"iso3": "KAZ",
+"name": "Kazakhstan",
+"regions": [
+"apac",
+"asia"
+]
+},
+"LA": {
+"aliases": [
+"lao pdr"
+],
+"cities": [
+"Vientiane",
+"Savannakhet",
+"Thakhèk",
+"Thakhek",
+"Pakse",
+"Ban Khoan",
+"Xam Nua",
+"Luang Prabang",
+"Muang Phônsavan",
+"Muang Phonsavan"
+],
+"continent": "AS",
+"iso3": "LAO",
+"name": "Laos",
+"regions": [
+"apac",
+"asia",
+"sea"
+]
+},
+"LB": {
+"aliases": [],
+"cities": [
+"Beirut",
+"Ra’s Bayrūt",
+"Ra's Bayrut",
+"Sidon",
+"Tyre",
+"Aley",
+"Nabatîyé et Tahta",
+"Nabatiye et Tahta",
+"Habboûch",
+"Habbouch"
+],
+"continent": "AS",
+"iso3": "LBN",
+"name": "Lebanon",
+"regions": [
+"emea",
+"middle east",
+"mena",
+"asia"
+]
+},
+"LC": {
+"aliases": [],
+"cities": [
+"Gros Islet",
+"Castries"
+],
+"continent": "NA",
+"iso3": "LCA",
+"name": "Saint Lucia",
+"regions": [
+"americas"
+]
+},
+"LI": {
+"aliases": [],
+"cities": [
+"Vaduz"
+],
+"continent": "EU",
+"iso3": "LIE",
+"name": "Liechtenstein",
+"regions": [
+"europe",
+"eea",
+"emea"
+]
+},
+"LK": {
+"aliases": [],
+"cities": [
+"Colombo",
+"Dehiwala-Mount Lavinia",
+"Maharagama",
+"Jaffna",
+"Moratuwa",
+"Negombo",
+"Pita Kotte",
+"Sri Jayewardenepura Kotte"
+],
+"continent": "AS",
+"iso3": "LKA",
+"name": "Sri Lanka",
+"regions": [
+"apac",
+"asia",
+"south asia"
+]
+},
+"LR": {
+"aliases": [],
+"cities": [
+"Monrovia",
+"Gbarnga",
+"Buchanan",
+"Ganta",
+"Kakata",
+"Zwedru",
+"Harbel",
+"Harper"
+],
+"continent": "AF",
+"iso3": "LBR",
+"name": "Liberia",
+"regions": [
+"emea",
+"africa"
+]
+},
+"LS": {
+"aliases": [],
+"cities": [
+"Maseru",
+"Maputsoe",
+"Mohale's Hoek",
+"Mafeteng",
+"Hlotse",
+"Butha-Buthe",
+"Mabote",
+"Quthing"
+],
+"continent": "AF",
+"iso3": "LSO",
+"name": "Lesotho",
+"regions": [
+"emea",
+"africa"
+]
+},
+"LT": {
+"aliases": [],
+"cities": [
+"Vilnius",
+"Kaunas",
+"Klaipėda",
+"Klaipeda",
+"Šiauliai",
+"Siauliai",
+"Panevėžys",
+"Panevezys",
+"Dainava (Kaunas)",
+"Alytus",
+"Šilainiai",
+"Silainiai"
+],
+"continent": "EU",
+"iso3": "LTU",
+"name": "Lithuania",
+"regions": [
+"europe",
+"eu",
+"eea",
+"emea",
+"cee"
+]
+},
+"LU": {
+"aliases": [],
+"cities": [
+"Esch-sur-Alzette",
+"Dudelange"
+],
+"continent": "EU",
+"iso3": "LUX",
+"name": "Luxembourg",
+"regions": [
+"europe",
+"eu",
+"eea",
+"emea",
+"benelux"
+]
+},
+"LV": {
+"aliases": [],
+"cities": [
+"Riga",
+"Daugavpils",
+"Liepāja",
+"Liepaja",
+"Jelgava",
+"Jūrmala",
+"Jurmala",
+"Ventspils",
+"Rēzekne",
+"Rezekne",
+"Valmiera"
+],
+"continent": "EU",
+"iso3": "LVA",
+"name": "Latvia",
+"regions": [
+"europe",
+"eu",
+"eea",
+"emea",
+"cee"
+]
+},
+"LY": {
+"aliases": [],
+"cities": [
+"Tripoli",
+"Benghazi",
+"Misratah",
+"Zliten",
+"Al Khums",
+"Az Zāwīyah",
+"Az Zawiyah",
+"Zawiya",
+"Janzūr",
+"Janzur"
+],
+"continent": "AF",
+"iso3": "LBY",
+"name": "Libya",
+"regions": [
+"emea",
+"mena",
+"africa"
+]
+},
+"MA": {
+"aliases": [],
+"cities": [
+"Casablanca",
+"Rabat",
+"Fes",
+"Tangier",
+"Marrakesh",
+"Salé",
+"Sale",
+"Agadir",
+"Meknes"
+],
+"continent": "AF",
+"iso3": "MAR",
+"name": "Morocco",
+"regions": [
+"emea",
+"mena",
+"africa"
+]
+},
+"MC": {
+"aliases": [],
+"cities": [
+"Monte-Carlo"
+],
+"continent": "EU",
+"iso3": "MCO",
+"name": "Monaco",
+"regions": [
+"europe",
+"emea"
+]
+},
+"MD": {
+"aliases": [],
+"cities": [
+"Chisinau",
+"Tiraspol",
+"Bălţi",
+"Balti",
+"Bender",
+"Rîbniţa",
+"Ribnita",
+"Cahul",
+"Ungheni",
+"Soroca"
+],
+"continent": "EU",
+"iso3": "MDA",
+"name": "Moldova",
+"regions": [
+"europe",
+"emea",
+"cee"
+]
+},
+"ME": {
+"aliases": [],
+"cities": [
+"Podgorica",
+"Nikšić",
+"Niksic",
+"Herceg Novi",
+"Pljevlja",
+"Budva",
+"Bar",
+"Bijelo Polje",
+"Cetinje"
+],
+"continent": "EU",
+"iso3": "MNE",
+"name": "Montenegro",
+"regions": [
+"europe",
+"emea",
+"cee"
+]
+},
+"MF": {
+"aliases": [],
+"cities": [
+"Marigot"
+],
+"continent": "NA",
+"iso3": "MAF",
+"name": "Saint Martin",
+"regions": [
+"americas"
+]
+},
+"MG": {
+"aliases": [],
+"cities": [
+"Antananarivo",
+"Toamasina",
+"Antsirabe",
+"Mahajanga",
+"Fianarantsoa",
+"Toliara",
+"Antsiranana",
+"Sambava"
+],
+"continent": "AF",
+"iso3": "MDG",
+"name": "Madagascar",
+"regions": [
+"emea",
+"africa"
+]
+},
+"MH": {
+"aliases": [],
+"cities": [
+"Majuro",
+"Dalap-Uliga-Dorrit"
+],
+"continent": "OC",
+"iso3": "MHL",
+"name": "Marshall Islands",
+"regions": [
+"apac"
+]
+},
+"MK": {
+"aliases": [
+"macedonia"
+],
+"cities": [
+"Skopje",
+"Kumanovo",
+"Prilep",
+"Bitola",
+"Čair",
+"Cair",
+"Tetovo",
+"Kisela Voda",
+"Veles"
+],
+"continent": "EU",
+"iso3": "MKD",
+"name": "North Macedonia",
+"regions": [
+"europe",
+"emea",
+"cee"
+]
+},
+"ML": {
+"aliases": [],
+"cities": [
+"Bamako",
+"Sikasso",
+"Koutiala",
+"Ségou",
+"Segou",
+"Kayes",
+"Mopti",
+"Kalaban Koro",
+"Gao"
+],
+"continent": "AF",
+"iso3": "MLI",
+"name": "Mali",
+"regions": [
+"emea",
+"africa"
+]
+},
+"MM": {
+"aliases": [
+"burma"
+],
+"cities": [
+"Yangon",
+"Mandalay",
+"Nay Pyi Taw",
+"Hlaingthaya",
+"Mawlamyine",
+"Kalemyo",
+"Insein",
+"Bago"
+],
+"continent": "AS",
+"iso3": "MMR",
+"name": "Myanmar",
+"regions": [
+"apac",
+"asia",
+"sea"
+]
+},
+"MN": {
+"aliases": [],
+"cities": [
+"Ulan Bator",
+"Erdenet",
+"Darhan",
+"Choibalsan",
+"Nalayh",
+"Moeroen",
+"Bayanhongor",
+"Ulaangom"
+],
+"continent": "AS",
+"iso3": "MNG",
+"name": "Mongolia",
+"regions": [
+"apac",
+"asia"
+]
+},
+"MO": {
+"aliases": [
+"macao"
+],
+"cities": [
+"Macau",
+"Taipa",
+"Luhuan",
+"Zhuojiacun",
+"Lai Chi Van"
+],
+"continent": "AS",
+"iso3": "MAC",
+"name": "Macao",
+"regions": [
+"apac",
+"asia"
+]
+},
+"MP": {
+"aliases": [],
+"cities": [
+"Saipan"
+],
+"continent": "OC",
+"iso3": "MNP",
+"name": "Northern Mariana Islands",
+"regions": [
+"apac"
+]
+},
+"MQ": {
+"aliases": [],
+"cities": [
+"Fort-de-France",
+"Le Lamentin",
+"Le Robert",
+"Le François",
+"Le Francois",
+"Ducos",
+"La Trinité",
+"La Trinite"
+],
+"continent": "NA",
+"iso3": "MTQ",
+"name": "Martinique",
+"regions": [
+"americas"
+]
+},
+"MR": {
+"aliases": [],
+"cities": [
+"Nouakchott",
+"Nouadhibou",
+"Kiffa",
+"Dar Naim",
+"Néma",
+"Nema",
+"Mbera",
+"Ksar",
+"Kaédi",
+"Kaedi"
+],
+"continent": "AF",
+"iso3": "MRT",
+"name": "Mauritania",
+"regions": [
+"emea",
+"africa"
+]
+},
+"MS": {
+"aliases": [],
+"cities": [
+"Brades"
+],
+"continent": "NA",
+"iso3": "MSR",
+"name": "Montserrat",
+"regions": [
+"americas"
+]
+},
+"MT": {
+"aliases": [],
+"cities": [
+"San Pawl il-Baħar",
+"San Pawl il-Bahar",
+"Birkirkara",
+"Mosta",
+"Sliema",
+"Qormi",
+"Żabbar",
+"Zabbar",
+"Valletta"
+],
+"continent": "EU",
+"iso3": "MLT",
+"name": "Malta",
+"regions": [
+"europe",
+"eu",
+"eea",
+"emea"
+]
+},
+"MU": {
+"aliases": [],
+"cities": [
+"Port Louis",
+"Vacoas",
+"Beau Bassin-Rose Hill",
+"Curepipe",
+"Quatre Bornes",
+"Triolet",
+"Goodlands",
+"Bel Air Rivière Sèche",
+"Bel Air Riviere Seche"
+],
+"continent": "AF",
+"iso3": "MUS",
+"name": "Mauritius",
+"regions": [
+"emea",
+"africa"
+]
+},
+"MV": {
+"aliases": [],
+"cities": [
+"Male"
+],
+"continent": "AS",
+"iso3": "MDV",
+"name": "Maldives",
+"regions": [
+"apac",
+"asia",
+"south asia"
+]
+},
+"MW": {
+"aliases": [],
+"cities": [
+"Lilongwe",
+"Blantyre",
+"Mzuzu",
+"Zomba",
+"Karonga",
+"Kasungu",
+"Mangochi",
+"Salima"
+],
+"continent": "AF",
+"iso3": "MWI",
+"name": "Malawi",
+"regions": [
+"emea",
+"africa"
+]
+},
+"MX": {
+"aliases": [],
+"cities": [
+"Mexico City",
+"Tijuana",
+"Iztapalapa",
+"Puebla",
+"Ecatepec de Morelos",
+"Santiago de Querétaro",
+"Santiago de Queretaro",
+"León de los Aldama",
+"Leon de los Aldama",
+"Ciudad Juárez",
+"Ciudad Juarez"
+],
+"continent": "NA",
+"iso3": "MEX",
+"name": "Mexico",
+"regions": [
+"latam",
+"north america",
+"americas"
+]
+},
+"MY": {
+"aliases": [],
+"cities": [
+"Kuala Lumpur",
+"Johor Bahru",
+"Kampung Baru Subang",
+"Petaling Jaya",
+"Ipoh",
+"Shah Alam",
+"Subang Jaya",
+"Bukit Rahman Putra"
+],
+"continent": "AS",
+"iso3": "MYS",
+"name": "Malaysia",
+"regions": [
+"apac",
+"asia",
+"sea"
+]
+},
+"MZ": {
+"aliases": [],
+"cities": [
+"Maputo",
+"Matola",
+"Nampula",
+"Beira",
+"Chimoio",
+"Tete",
+"Quelimane",
+"Lichinga"
+],
+"continent": "AF",
+"iso3": "MOZ",
+"name": "Mozambique",
+"regions": [
+"emea",
+"africa"
+]
+},
+"NA": {
+"aliases": [],
+"cities": [
+"Windhoek",
+"Rundu",
+"Walvis Bay",
+"Swakopmund",
+"Oshakati",
+"Rehoboth",
+"Katima Mulilo",
+"Otjiwarongo"
+],
+"continent": "AF",
+"iso3": "NAM",
+"name": "Namibia",
+"regions": [
+"emea",
+"africa"
+]
+},
+"NC": {
+"aliases": [],
+"cities": [
+"Nouméa",
+"Noumea",
+"Mont-Dore",
+"Dumbéa",
+"Dumbea"
+],
+"continent": "OC",
+"iso3": "NCL",
+"name": "New Caledonia",
+"regions": [
+"apac"
+]
+},
+"NE": {
+"aliases": [],
+"cities": [
+"Niamey",
+"Maradi",
+"Zinder",
+"Tahoua",
+"Agadez",
+"Arlit",
+"Alaghsas",
+"Birni N Konni"
+],
+"continent": "AF",
+"iso3": "NER",
+"name": "Niger",
+"regions": [
+"emea",
+"africa"
+]
+},
+"NF": {
+"aliases": [],
+"cities": [],
+"continent": "OC",
+"iso3": "NFK",
+"name": "Norfolk Island",
+"regions": [
+"apac"
+]
+},
+"NG": {
+"aliases": [],
+"cities": [
+"Lagos",
+"Kano",
+"Ibadan",
+"Abuja",
+"Port Harcourt",
+"Kaduna",
+"Benin City",
+"Onitsha"
+],
+"continent": "AF",
+"iso3": "NGA",
+"name": "Nigeria",
+"regions": [
+"emea",
+"africa"
+]
+},
+"NI": {
+"aliases": [],
+"cities": [
+"Managua",
+"León",
+"Leon",
+"Masaya",
+"Chinandega",
+"Matagalpa",
+"Estelí",
+"Esteli",
+"Mateare",
+"Jinotega"
+],
+"continent": "NA",
+"iso3": "NIC",
+"name": "Nicaragua",
+"regions": [
+"latam",
+"americas"
+]
+},
+"NL": {
+"aliases": [
+"the netherlands",
+"holland"
+],
+"cities": [
+"Rotterdam",
+"Amsterdam",
+"The Hague",
+"Utrecht",
+"Groningen",
+"Eindhoven",
+"Tilburg",
+"Breda"
+],
+"continent": "EU",
+"iso3": "NLD",
+"name": "The Netherlands",
+"regions": [
+"europe",
+"eu",
+"eea",
+"emea",
+"benelux"
+]
+},
+"NO": {
+"aliases": [],
+"cities": [
+"Oslo",
+"Bergen",
+"Trondheim",
+"Stavanger",
+"Kristiansand",
+"Drammen",
+"Lillestrøm",
+"Lillestrom"
+],
+"continent": "EU",
+"iso3": "NOR",
+"name": "Norway",
+"regions": [
+"europe",
+"eea",
+"emea",
+"nordics"
+]
+},
+"NP": {
+"aliases": [],
+"cities": [
+"Kathmandu",
+"Pokhara",
+"Bharatpur",
+"Pātan",
+"Patan",
+"Birgañj",
+"Birganj",
+"Biratnagar",
+"Dhangaḍhi̇̄",
+"Dhangadhi",
+"Hetauda"
+],
+"continent": "AS",
+"iso3": "NPL",
+"name": "Nepal",
+"regions": [
+"apac",
+"asia",
+"south asia"
+]
+},
+"NR": {
+"aliases": [],
+"cities": [
+"Yaren"
+],
+"continent": "OC",
+"iso3": "NRU",
+"name": "Nauru",
+"regions": [
+"apac"
+]
+},
+"NU": {
+"aliases": [],
+"cities": [
+"Alofi"
+],
+"continent": "OC",
+"iso3": "NIU",
+"name": "Niue",
+"regions": [
+"apac"
+]
+},
+"NZ": {
+"aliases": [],
+"cities": [
+"Auckland",
+"Christchurch",
+"Wellington",
+"Manukau City",
+"North Shore",
+"Tauranga",
+"Dunedin",
+"Lower Hutt"
+],
+"continent": "OC",
+"iso3": "NZL",
+"name": "New Zealand",
+"regions": [
+"apac",
+"anz"
+]
+},
+"OM": {
+"aliases": [],
+"cities": [
+"Muscat",
+"Seeb",
+"Bawshar",
+"‘Ibrī",
+"'Ibri",
+"Şalālah",
+"Salalah",
+"Şaḩam",
+"Saham",
+"Rustaq"
+],
+"continent": "AS",
+"iso3": "OMN",
+"name": "Oman",
+"regions": [
+"emea",
+"middle east",
+"mena",
+"gcc",
+"asia"
+]
+},
+"PA": {
+"aliases": [],
+"cities": [
+"Panama City",
+"San Miguelito",
+"Juan Díaz",
+"Juan Diaz",
+"David",
+"Colón",
+"Colon",
+"Arraiján",
+"Arraijan",
+"Las Cumbres",
+"La Chorrera"
+],
+"continent": "NA",
+"iso3": "PAN",
+"name": "Panama",
+"regions": [
+"latam",
+"americas"
+]
+},
+"PE": {
+"aliases": [],
+"cities": [
+"Lima",
+"Callao",
+"Arequipa",
+"Trujillo",
+"Piura",
+"Chiclayo",
+"Huancayo",
+"Cusco"
+],
+"continent": "SA",
+"iso3": "PER",
+"name": "Peru",
+"regions": [
+"latam",
+"south america",
+"americas"
+]
+},
+"PF": {
+"aliases": [],
+"cities": [
+"Faaa",
+"Papeete",
+"Punaauia"
+],
+"continent": "OC",
+"iso3": "PYF",
+"name": "French Polynesia",
+"regions": [
+"apac"
+]
+},
+"PG": {
+"aliases": [],
+"cities": [
+"Port Moresby",
+"Lae",
+"Arawa",
+"Mount Hagen",
+"Popondetta",
+"Madang",
+"Kokopo",
+"Kimbe"
+],
+"continent": "OC",
+"iso3": "PNG",
+"name": "Papua New Guinea",
+"regions": [
+"apac"
+]
+},
+"PH": {
+"aliases": [
+"the philippines"
+],
+"cities": [
+"Quezon City",
+"Davao",
+"Caloocan",
+"Manila",
+"Taguig",
+"Budta",
+"Malingao",
+"Zamboanga"
+],
+"continent": "AS",
+"iso3": "PHL",
+"name": "Philippines",
+"regions": [
+"apac",
+"asia",
+"sea"
+]
+},
+"PK": {
+"aliases": [],
+"cities": [
+"Lahore",
+"Karachi",
+"Peshawar",
+"Faisalabad",
+"Rawalpindi",
+"Gujranwala",
+"Multan",
+"Quetta"
+],
+"continent": "AS",
+"iso3": "PAK",
+"name": "Pakistan",
+"regions": [
+"apac",
+"asia",
+"south asia"
+]
+},
+"PL": {
+"aliases": [],
+"cities": [
+"Warsaw",
+"Kraków",
+"Krakow",
+"Wrocław",
+"Wroclaw",
+"Łódź",
+"Lodz",
+"Poznań",
+"Poznan",
+"Gdańsk",
+"Gdansk"
+],
+"continent": "EU",
+"iso3": "POL",
+"name": "Poland",
+"regions": [
+"europe",
+"eu",
+"eea",
+"emea",
+"cee"
+]
+},
+"PM": {
+"aliases": [],
+"cities": [],
+"continent": "NA",
+"iso3": "SPM",
+"name": "Saint Pierre and Miquelon",
+"regions": [
+"americas"
+]
+},
+"PN": {
+"aliases": [],
+"cities": [
+"Adamstown"
+],
+"continent": "OC",
+"iso3": "PCN",
+"name": "Pitcairn",
+"regions": [
+"apac"
+]
+},
+"PR": {
+"aliases": [],
+"cities": [
+"San Juan",
+"Bayamón",
+"Bayamon",
+"Carolina",
+"Ponce",
+"Arecibo",
+"Caguas",
+"Guaynabo",
+"Trujillo Alto"
+],
+"continent": "NA",
+"iso3": "PRI",
+"name": "Puerto Rico",
+"regions": [
+"latam",
+"americas"
+]
+},
+"PS": {
+"aliases": [
+"palestinian territories"
+],
+"cities": [
+"East Jerusalem",
+"Gaza",
+"Khān Yūnis",
+"Khan Yunis",
+"Jabālyā",
+"Jabalya",
+"Hebron",
+"Nablus",
+"Rafaḩ",
+"Rafah",
+"Dayr al Balaḩ",
+"Dayr al Balah"
+],
+"continent": "AS",
+"iso3": "PSE",
+"name": "Palestinian Territory",
+"regions": [
+"emea",
+"middle east",
+"mena",
+"asia"
+]
+},
+"PT": {
+"aliases": [],
+"cities": [
+"Lisbon",
+"Porto",
+"Braga",
+"Amadora",
+"Coimbra",
+"Leiria",
+"Setúbal",
+"Setubal",
+"Funchal"
+],
+"continent": "EU",
+"iso3": "PRT",
+"name": "Portugal",
+"regions": [
+"europe",
+"eu",
+"eea",
+"emea"
+]
+},
+"PW": {
+"aliases": [],
+"cities": [
+"Ngerulmud"
+],
+"continent": "OC",
+"iso3": "PLW",
+"name": "Palau",
+"regions": [
+"apac"
+]
+},
+"PY": {
+"aliases": [],
+"cities": [
+"Asunción",
+"Asuncion",
+"Ciudad del Este",
+"San Lorenzo",
+"Capiatá",
+"Capiata",
+"Lambaré",
+"Lambare",
+"Fernando de la Mora",
+"Limpio",
+"Nemby"
+],
+"continent": "SA",
+"iso3": "PRY",
+"name": "Paraguay",
+"regions": [
+"latam",
+"south america",
+"americas"
+]
+},
+"QA": {
+"aliases": [],
+"cities": [
+"Doha",
+"Ar Rayyān",
+"Ar Rayyan",
+"Lusail",
+"Al Maţār al ‘Atīq",
+"Al Matar al 'Atiq",
+"Az̧ Z̧a‘āyin",
+"Az Za'ayin",
+"Madīnat Khalīfah",
+"Madinat Khalifah"
+],
+"continent": "AS",
+"iso3": "QAT",
+"name": "Qatar",
+"regions": [
+"emea",
+"middle east",
+"mena",
+"gcc",
+"asia"
+]
+},
+"RE": {
+"aliases": [],
+"cities": [
+"Saint-Denis",
+"Saint-Paul",
+"Saint-Pierre",
+"Le Tampon",
+"Saint-André",
+"Saint-Andre",
+"Saint-Joseph",
+"Saint-Benoît",
+"Saint-Benoit",
+"La Possession"
+],
+"continent": "AF",
+"iso3": "REU",
+"name": "Reunion",
+"regions": [
+"emea",
+"africa"
+]
+},
+"RO": {
+"aliases": [],
+"cities": [
+"Bucharest",
+"Sector 3",
+"Iaşi",
+"Iasi",
+"Sector 6",
+"Constanţa",
+"Constanta",
+"Sector 2",
+"Sector 4",
+"Cluj-Napoca"
+],
+"continent": "EU",
+"iso3": "ROU",
+"name": "Romania",
+"regions": [
+"europe",
+"eu",
+"eea",
+"emea",
+"cee"
+]
+},
+"RS": {
+"aliases": [],
+"cities": [
+"Belgrade",
+"Niš",
+"Nis",
+"Novi Sad",
+"Novi Beograd",
+"Zemun",
+"Kragujevac",
+"Čačak",
+"Cacak",
+"Subotica"
+],
+"continent": "EU",
+"iso3": "SRB",
+"name": "Serbia",
+"regions": [
+"europe",
+"emea",
+"cee"
+]
+},
+"RU": {
+"aliases": [
+"russian federation"
+],
+"cities": [
+"Moscow",
+"Saint Petersburg",
+"Novosibirsk",
+"Yekaterinburg",
+"Nizhniy Novgorod",
+"Kazan",
+"Chelyabinsk",
+"Omsk"
+],
+"continent": "EU",
+"iso3": "RUS",
+"name": "Russia",
+"regions": [
+"europe",
+"emea"
+]
+},
+"RW": {
+"aliases": [],
+"cities": [
+"Kigali",
+"Gisenyi",
+"Musanze",
+"Nyagatare",
+"Gitarama",
+"Muhanga",
+"Butare",
+"Kibuye"
+],
+"continent": "AF",
+"iso3": "RWA",
+"name": "Rwanda",
+"regions": [
+"emea",
+"africa"
+]
+},
+"SA": {
+"aliases": [],
+"cities": [
+"Jeddah",
+"Riyadh",
+"Makkah",
+"Madinah",
+"Dammam",
+"Sulţānah",
+"Sultanah",
+"Buraydah",
+"Ta’if",
+"Ta'if"
+],
+"continent": "AS",
+"iso3": "SAU",
+"name": "Saudi Arabia",
+"regions": [
+"emea",
+"middle east",
+"mena",
+"gcc",
+"asia"
+]
+},
+"SB": {
+"aliases": [],
+"cities": [
+"Honiara",
+"Panatina",
+"Nggosi",
+"Tandai",
+"Kola'a",
+"Vura",
+"Malango"
+],
+"continent": "OC",
+"iso3": "SLB",
+"name": "Solomon Islands",
+"regions": [
+"apac"
+]
+},
+"SC": {
+"aliases": [],
+"cities": [],
+"continent": "AF",
+"iso3": "SYC",
+"name": "Seychelles",
+"regions": [
+"emea",
+"africa"
+]
+},
+"SD": {
+"aliases": [],
+"cities": [
+"Khartoum",
+"Omdurman",
+"Khartoum North",
+"Nyala",
+"Port Sudan",
+"Kassala",
+"El Obeid",
+"Al Qadarif"
+],
+"continent": "AF",
+"iso3": "SDN",
+"name": "Sudan",
+"regions": [
+"emea",
+"mena",
+"africa"
+]
+},
+"SE": {
+"aliases": [],
+"cities": [
+"Stockholm",
+"Gothenburg",
+"Malmö",
+"Malmoe",
+"Uppsala",
+"Linköping",
+"Linkoeping",
+"Örebro",
+"OErebro"
+],
+"continent": "EU",
+"iso3": "SWE",
+"name": "Sweden",
+"regions": [
+"europe",
+"eu",
+"eea",
+"emea",
+"nordics"
+]
+},
+"SG": {
+"aliases": [],
+"cities": [
+"Ulu Bedok",
+"Bedok New Town",
+"Sengkang New Town",
+"Tampines Estate",
+"Jurong Town",
+"Tampines New Town",
+"Woodlands",
+"Jurong West"
+],
+"continent": "AS",
+"iso3": "SGP",
+"name": "Singapore",
+"regions": [
+"apac",
+"asia",
+"sea"
+]
+},
+"SH": {
+"aliases": [],
+"cities": [],
+"continent": "AF",
+"iso3": "SHN",
+"name": "Saint Helena",
+"regions": [
+"emea",
+"africa"
+]
+},
+"SI": {
+"aliases": [],
+"cities": [
+"Ljubljana",
+"Maribor",
+"Celje",
+"Kranj",
+"Koper",
+"Novo Mesto",
+"Velenje",
+"Ptuj"
+],
+"continent": "EU",
+"iso3": "SVN",
+"name": "Slovenia",
+"regions": [
+"europe",
+"eu",
+"eea",
+"emea",
+"cee"
+]
+},
+"SJ": {
+"aliases": [],
+"cities": [
+"Longyearbyen"
+],
+"continent": "EU",
+"iso3": "SJM",
+"name": "Svalbard and Jan Mayen",
+"regions": [
+"europe",
+"emea"
+]
+},
+"SK": {
+"aliases": [],
+"cities": [
+"Bratislava",
+"Košice",
+"Kosice",
+"Petržalka",
+"Petrzalka",
+"Nitra",
+"Prešov",
+"Presov",
+"Žilina",
+"Zilina",
+"Banská Bystrica",
+"Banska Bystrica",
+"Trnava"
+],
+"continent": "EU",
+"iso3": "SVK",
+"name": "Slovakia",
+"regions": [
+"europe",
+"eu",
+"eea",
+"emea",
+"cee"
+]
+},
+"SL": {
+"aliases": [],
+"cities": [
+"Freetown",
+"Kenema",
+"Koidu",
+"Makeni",
+"Port Loko",
+"Njala",
+"Lunsar",
+"Goderich"
+],
+"continent": "AF",
+"iso3": "SLE",
+"name": "Sierra Leone",
+"regions": [
+"emea",
+"africa"
+]
+},
+"SM": {
+"aliases": [],
+"cities": [],
+"continent": "EU",
+"iso3": "SMR",
+"name": "San Marino",
+"regions": [
+"europe",
+"emea"
+]
+},
+"SN": {
+"aliases": [],
+"cities": [
+"Dakar",
+"Pikine",
+"Touba",
+"Guédiawaye",
+"Guediawaye",
+"Thiès",
+"Thies",
+"Kaolack",
+"Rufisque",
+"Mbour"
+],
+"continent": "AF",
+"iso3": "SEN",
+"name": "Senegal",
+"regions": [
+"emea",
+"africa"
+]
+},
+"SO": {
+"aliases": [],
+"cities": [
+"Mogadishu",
+"Borama",
+"Hargeysa",
+"Berbera",
+"Kismayo",
+"Marka",
+"El Dibir",
+"Ruqi"
+],
+"continent": "AF",
+"iso3": "SOM",
+"name": "Somalia",
+"regions": [
+"emea",
+"africa"
+]
+},
+"SR": {
+"aliases": [],
+"cities": [
+"Paramaribo",
+"Blauwgrond",
+"Latour",
+"Pontbuiten",
+"Rainville",
+"Flora",
+"Welgelegen",
+"Lelydorp"
+],
+"continent": "SA",
+"iso3": "SUR",
+"name": "Suriname",
+"regions": [
+"latam",
+"south america",
+"americas"
+]
+},
+"SS": {
+"aliases": [],
+"cities": [
+"Juba",
+"Winejok",
+"Yei",
+"Malakal",
+"Wau",
+"Kuacjok",
+"Pajok",
+"Gogrial"
+],
+"continent": "AF",
+"iso3": "SSD",
+"name": "South Sudan",
+"regions": [
+"emea",
+"africa"
+]
+},
+"ST": {
+"aliases": [],
+"cities": [
+"São Tomé",
+"Sao Tome"
+],
+"continent": "AF",
+"iso3": "STP",
+"name": "Sao Tome and Principe",
+"regions": [
+"emea",
+"africa"
+]
+},
+"SV": {
+"aliases": [],
+"cities": [
+"San Salvador",
+"Soyapango",
+"San Miguel",
+"Mejicanos",
+"Santa Tecla",
+"Apopa",
+"Delgado",
+"Sonsonate"
+],
+"continent": "NA",
+"iso3": "SLV",
+"name": "El Salvador",
+"regions": [
+"latam",
+"americas"
+]
+},
+"SX": {
+"aliases": [],
+"cities": [
+"Philipsburg"
+],
+"continent": "NA",
+"iso3": "SXM",
+"name": "Sint Maarten",
+"regions": [
+"americas"
+]
+},
+"SY": {
+"aliases": [],
+"cities": [
+"Aleppo",
+"Damascus",
+"Homs",
+"Latakia",
+"Ar Raqqah",
+"Ḩamāh",
+"Hamah",
+"Ţarţūs",
+"Tartus",
+"Al Ḩasakah",
+"Al Hasakah"
+],
+"continent": "AS",
+"iso3": "SYR",
+"name": "Syria",
+"regions": [
+"emea",
+"middle east",
+"mena",
+"asia"
+]
+},
+"SZ": {
+"aliases": [
+"swaziland"
+],
+"cities": [
+"Manzini",
+"Mbabane",
+"Lobamba"
+],
+"continent": "AF",
+"iso3": "SWZ",
+"name": "Eswatini",
+"regions": [
+"emea",
+"africa"
+]
+},
+"TC": {
+"aliases": [],
+"cities": [
+"Providenciales",
+"Cockburn Town"
+],
+"continent": "NA",
+"iso3": "TCA",
+"name": "Turks and Caicos Islands",
+"regions": [
+"americas"
+]
+},
+"TD": {
+"aliases": [],
+"cities": [
+"N'Djamena",
+"Moundou",
+"Abéché",
+"Abeche",
+"Sarh",
+"Kelo",
+"Am Timan",
+"Doba",
+"Pala"
+],
+"continent": "AF",
+"iso3": "TCD",
+"name": "Chad",
+"regions": [
+"emea",
+"africa"
+]
+},
+"TF": {
+"aliases": [],
+"cities": [
+"Port-aux-Français",
+"Port-aux-Francais"
+],
+"continent": "AN",
+"iso3": "ATF",
+"name": "French Southern Territories",
+"regions": []
+},
+"TG": {
+"aliases": [],
+"cities": [
+"Lomé",
+"Lome",
+"Sokodé",
+"Sokode",
+"Kara",
+"Atakpamé",
+"Atakpame",
+"Kpalimé",
+"Kpalime",
+"Bassar",
+"Dapaong",
+"Tsévié",
+"Tsevie"
+],
+"continent": "AF",
+"iso3": "TGO",
+"name": "Togo",
+"regions": [
+"emea",
+"africa"
+]
+},
+"TH": {
+"aliases": [],
+"cities": [
+"Bangkok",
+"Samut Prakan",
+"Mueang Nonthaburi",
+"Chon Buri",
+"Phra Pradaeng",
+"Bang Khae",
+"Hat Yai",
+"Pak Kret"
+],
+"continent": "AS",
+"iso3": "THA",
+"name": "Thailand",
+"regions": [
+"apac",
+"asia",
+"sea"
+]
+},
+"TJ": {
+"aliases": [],
+"cities": [
+"Dushanbe",
+"Isfara",
+"Istaravshan",
+"Kŭlob",
+"Kulob",
+"Konibodom",
+"Khujand",
+"Bokhtar",
+"Qayroqqum"
+],
+"continent": "AS",
+"iso3": "TJK",
+"name": "Tajikistan",
+"regions": [
+"apac",
+"asia"
+]
+},
+"TK": {
+"aliases": [],
+"cities": [],
+"continent": "OC",
+"iso3": "TKL",
+"name": "Tokelau",
+"regions": [
+"apac"
+]
+},
+"TL": {
+"aliases": [],
+"cities": [
+"Dili",
+"Maliana",
+"Suai",
+"Likisá",
+"Likisa",
+"Aileu",
+"Lospalos",
+"Atsabe",
+"Maubara"
+],
+"continent": "OC",
+"iso3": "TLS",
+"name": "Timor Leste",
+"regions": [
+"apac",
+"sea"
+]
+},
+"TM": {
+"aliases": [],
+"cities": [
+"Ashgabat",
+"Türkmenabat",
+"Tuerkmenabat",
+"Daşoguz",
+"Dasoguz",
+"Mary",
+"Türkmenbaşy",
+"Tuerkmenbasy",
+"Balkanabat"
+],
+"continent": "AS",
+"iso3": "TKM",
+"name": "Turkmenistan",
+"regions": [
+"apac",
+"asia"
+]
+},
+"TN": {
+"aliases": [],
+"cities": [
+"Tunis",
+"Sfax",
+"Sousse",
+"Sukrah",
+"Kairouan",
+"Bizerte",
+"Sīdī Ḥusayn",
+"Sidi Husayn",
+"Sakiet ed Daier"
+],
+"continent": "AF",
+"iso3": "TUN",
+"name": "Tunisia",
+"regions": [
+"emea",
+"mena",
+"africa"
+]
+},
+"TO": {
+"aliases": [],
+"cities": [
+"Nuku‘alofa",
+"Nuku'alofa"
+],
+"continent": "OC",
+"iso3": "TON",
+"name": "Tonga",
+"regions": [
+"apac"
+]
+},
+"TR": {
+"aliases": [
+"turkey",
+"türkiye",
+"turkiye"
+],
+"cities": [
+"Istanbul",
+"Ankara",
+"Bursa",
+"İzmir",
+"Izmir",
+"Gaziantep",
+"Diyarbakır",
+"Diyarbakir",
+"Adana"
+],
+"continent": "AS",
+"iso3": "TUR",
+"name": "Turkey",
+"regions": [
+"emea",
+"middle east",
+"mena",
+"asia"
+]
+},
+"TT": {
+"aliases": [
+"trinidad"
+],
+"cities": [
+"Chaguanas",
+"Mon Repos",
+"Port of Spain",
+"Arima",
+"Marabella",
+"Diego Martin",
+"Laventille",
+"Point Fortin"
+],
+"continent": "NA",
+"iso3": "TTO",
+"name": "Trinidad and Tobago",
+"regions": [
+"latam",
+"americas"
+]
+},
+"TV": {
+"aliases": [],
+"cities": [
+"Funafuti"
+],
+"continent": "OC",
+"iso3": "TUV",
+"name": "Tuvalu",
+"regions": [
+"apac"
+]
+},
+"TW": {
+"aliases": [
+"republic of china"
+],
+"cities": [
+"Taipei",
+"New Taipei City",
+"Taichung",
+"Kaohsiung",
+"Tainan",
+"Banqiao",
+"Taoyuan",
+"Hsinchu"
+],
+"continent": "AS",
+"iso3": "TWN",
+"name": "Taiwan",
+"regions": [
+"apac",
+"asia"
+]
+},
+"TZ": {
+"aliases": [],
+"cities": [
+"Dar es Salaam",
+"Mwanza",
+"Dodoma",
+"Zanzibar",
+"Arusha",
+"Mbeya",
+"Morogoro",
+"Kahama"
+],
+"continent": "AF",
+"iso3": "TZA",
+"name": "Tanzania",
+"regions": [
+"emea",
+"africa"
+]
+},
+"UA": {
+"aliases": [],
+"cities": [
+"Kyiv",
+"Kharkiv",
+"Odesa",
+"Dnipro",
+"Donetsk",
+"Lviv",
+"Zaporizhzhya",
+"Kryvyy Rih"
+],
+"continent": "EU",
+"iso3": "UKR",
+"name": "Ukraine",
+"regions": [
+"europe",
+"emea",
+"cee"
+]
+},
+"UG": {
+"aliases": [],
+"cities": [
+"Kampala",
+"Nansana",
+"Kira",
+"Bunamwaya",
+"Kyengera",
+"Mbarara",
+"Kasangati",
+"Mukono"
+],
+"continent": "AF",
+"iso3": "UGA",
+"name": "Uganda",
+"regions": [
+"emea",
+"africa"
+]
+},
+"UM": {
+"aliases": [],
+"cities": [],
+"continent": "OC",
+"iso3": "UMI",
+"name": "United States Minor Outlying Islands",
+"regions": [
+"apac"
+]
+},
+"US": {
+"aliases": [
+"united states of america",
+"usa",
+"u.s.",
+"u.s.a.",
+"u.s.a"
+],
+"cities": [
+"New York City",
+"Los Angeles",
+"Brooklyn",
+"Chicago",
+"Queens",
+"Houston",
+"Phoenix",
+"Philadelphia"
+],
+"continent": "NA",
+"iso3": "USA",
+"name": "United States",
+"regions": [
+"north america",
+"americas"
+]
+},
+"UY": {
+"aliases": [],
+"cities": [
+"Montevideo",
+"Maldonado",
+"Rivera",
+"Paysandú",
+"Paysandu",
+"Las Piedras",
+"Tacuarembó",
+"Tacuarembo",
+"Melo",
+"Artigas"
+],
+"continent": "SA",
+"iso3": "URY",
+"name": "Uruguay",
+"regions": [
+"latam",
+"south america",
+"americas"
+]
+},
+"UZ": {
+"aliases": [],
+"cities": [
+"Tashkent",
+"Andijon",
+"Namangan",
+"Samarkand",
+"Yunusobod",
+"Nukus",
+"Fergana",
+"Bukhara"
+],
+"continent": "AS",
+"iso3": "UZB",
+"name": "Uzbekistan",
+"regions": [
+"apac",
+"asia"
+]
+},
+"VA": {
+"aliases": [],
+"cities": [
+"Vatican City"
+],
+"continent": "EU",
+"iso3": "VAT",
+"name": "Vatican",
+"regions": [
+"europe",
+"emea"
+]
+},
+"VC": {
+"aliases": [],
+"cities": [
+"Kingstown",
+"Calliaqua"
+],
+"continent": "NA",
+"iso3": "VCT",
+"name": "Saint Vincent and the Grenadines",
+"regions": [
+"americas"
+]
+},
+"VE": {
+"aliases": [],
+"cities": [
+"Caracas",
+"Maracaibo",
+"Valencia",
+"Barquisimeto",
+"Ciudad Guayana",
+"Maturín",
+"Maturin",
+"Maracay",
+"Ciudad Bolívar",
+"Ciudad Bolivar"
+],
+"continent": "SA",
+"iso3": "VEN",
+"name": "Venezuela",
+"regions": [
+"latam",
+"south america",
+"americas"
+]
+},
+"VG": {
+"aliases": [],
+"cities": [
+"Road Town"
+],
+"continent": "NA",
+"iso3": "VGB",
+"name": "British Virgin Islands",
+"regions": [
+"americas"
+]
+},
+"VI": {
+"aliases": [],
+"cities": [
+"Saint Croix",
+"Charlotte Amalie"
+],
+"continent": "NA",
+"iso3": "VIR",
+"name": "U.S. Virgin Islands",
+"regions": [
+"americas"
+]
+},
+"VN": {
+"aliases": [
+"viet nam"
+],
+"cities": [
+"Ho Chi Minh City",
+"Hanoi",
+"Haiphong",
+"Cần Thơ",
+"Can Tho",
+"Huế",
+"Hue",
+"Da Nang",
+"Biên Hòa",
+"Bien Hoa",
+"Thanh Hóa",
+"Thanh Hoa"
+],
+"continent": "AS",
+"iso3": "VNM",
+"name": "Vietnam",
+"regions": [
+"apac",
+"asia",
+"sea"
+]
+},
+"VU": {
+"aliases": [],
+"cities": [
+"Port-Vila"
+],
+"continent": "OC",
+"iso3": "VUT",
+"name": "Vanuatu",
+"regions": [
+"apac"
+]
+},
+"WF": {
+"aliases": [],
+"cities": [
+"Mata-Utu"
+],
+"continent": "OC",
+"iso3": "WLF",
+"name": "Wallis and Futuna",
+"regions": [
+"apac"
+]
+},
+"WS": {
+"aliases": [],
+"cities": [
+"Apia"
+],
+"continent": "OC",
+"iso3": "WSM",
+"name": "Samoa",
+"regions": [
+"apac"
+]
+},
+"XK": {
+"aliases": [],
+"cities": [
+"Pristina",
+"Prizren",
+"Mitrovicë",
+"Mitrovice",
+"Gjakovë",
+"Gjakove",
+"Suva Reka",
+"Ferizaj",
+"Glogovac",
+"Gjilan"
+],
+"continent": "EU",
+"iso3": "XKX",
+"name": "Kosovo",
+"regions": [
+"europe",
+"emea"
+]
+},
+"YE": {
+"aliases": [],
+"cities": [
+"Sanaa",
+"Aden",
+"Taiz",
+"Ibb",
+"Al Ḩudaydah",
+"Al Hudaydah",
+"Mukalla",
+"Dhamār",
+"Dhamar",
+"‘Amrān",
+"'Amran"
+],
+"continent": "AS",
+"iso3": "YEM",
+"name": "Yemen",
+"regions": [
+"emea",
+"middle east",
+"mena",
+"asia"
+]
+},
+"YT": {
+"aliases": [],
+"cities": [
+"Mamoudzou",
+"Koungou",
+"Labattoir",
+"Kaouéni",
+"Kaoueni",
+"Mtsapéré",
+"Mtsapere",
+"Dzaoudzi"
+],
+"continent": "AF",
+"iso3": "MYT",
+"name": "Mayotte",
+"regions": [
+"emea",
+"africa"
+]
+},
+"ZA": {
+"aliases": [],
+"cities": [
+"Johannesburg",
+"Cape Town",
+"Durban",
+"Pretoria",
+"Soweto",
+"Gqeberha",
+"Soshanguve",
+"Pietermaritzburg"
+],
+"continent": "AF",
+"iso3": "ZAF",
+"name": "South Africa",
+"regions": [
+"emea",
+"africa"
+]
+},
+"ZM": {
+"aliases": [],
+"cities": [
+"Lusaka",
+"Kitwe",
+"Ndola",
+"Chipata",
+"Solwezi",
+"Kabwe",
+"Chingola",
+"Luanshya"
+],
+"continent": "AF",
+"iso3": "ZMB",
+"name": "Zambia",
+"regions": [
+"emea",
+"africa"
+]
+},
+"ZW": {
+"aliases": [],
+"cities": [
+"Harare",
+"Bulawayo",
+"Chitungwiza",
+"Mutare",
+"Epworth",
+"Gweru",
+"Kwekwe",
+"Ruwa"
+],
+"continent": "AF",
+"iso3": "ZWE",
+"name": "Zimbabwe",
+"regions": [
+"emea",
+"africa"
+]
+}
+},
+"regions": {
+"africa": "africa",
+"americas": "americas",
+"anz": "anz|oceania",
+"apac": "apac|asia\\s+pacific|asia-pacific",
+"asia": "asia",
+"benelux": "benelux",
+"cee": "cee|central\\s+and\\s+eastern\\s+europe|eastern\\s+europe",
+"dach": "dach",
+"eea": "eea",
+"emea": "emea",
+"eu": "eu|european\\s+union",
+"europe": "europe|european",
+"gcc": "gcc|gulf",
+"latam": "latam|latin\\s+america",
+"mena": "mena",
+"middle east": "middle\\s+east",
+"nordics": "nordics?|scandinavia",
+"north america": "north\\s+america",
+"sea": "southeast\\s+asia|south\\s+east\\s+asia|(?-i:SEA)",
+"south america": "south\\s+america",
+"south asia": "south\\s+asia",
+"uk&i": "uk\\s*&\\s*i|uki"
+},
+"source": {
+"aliases_and_regions": "this project's (scripts/build_countries.py)",
+"built": "2026-10-21",
+"cities_per_country": 8,
+"data": "GeoNames countryInfo.txt and cities15000 (https://www.geonames.org)",
+"licence": "CC BY 4.0"
+}
+}

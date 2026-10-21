@@ -87,6 +87,10 @@ KNOWN_BAD_BOARDS = {
     ("ashby", "navi"), ("ashby", "bounce"), ("personio", "edelweiss"), ("personio", "josh"),
     ("workable", "eatclub"), ("lever", "porter"), ("smartrecruiters", "nobroker"),
     ("smartrecruiters", "upstox"), ("smartrecruiters", "turtlemint"), ("smartrecruiters", "whatfix"),
+    # T142, read by hand: another company with the name ("named in N/N job descriptions" proves nothing for a common word).
+    # The lists mean Lightspeed (Auckland), Clark (Berlin insurance) and Sunday (Berlin); these boards are LightSpeed Build
+    # Technologies (Illinois), an AI audit start-up (New York) and a home-robotics company (Redwood City).
+    ("ashby", "lightspeed"), ("ashby", "clark"), ("ashby", "sunday"),
 }
 
 # A board whose newest posting is older than this is treated as abandoned. Seen in the

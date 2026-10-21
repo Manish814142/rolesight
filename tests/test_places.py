@@ -46,10 +46,10 @@ def test_a_comma_separated_string_and_duplicates():
 
 
 def test_an_unknown_country_works_by_its_name_and_is_reported():
-    p = _places("Canada")
-    assert p.unknown() == ["Canada"] and p.countries[0].workday_terms == ("Canada",)
-    assert p.countries_in("Toronto, Canada") and not p.countries_in("Toronto")
-    assert should_evaluate_job(_job("Toronto, Ontario, Canada"), places=p)[0]
+    p = _places("Atlantis")              # no country of that name (T142: every real one has a pack)
+    assert p.unknown() == ["Atlantis"] and p.countries[0].workday_terms == ("Atlantis",)
+    assert p.countries_in("Poseidonia, Atlantis") and not p.countries_in("Poseidonia")
+    assert should_evaluate_job(_job("Poseidonia, Atlantis"), places=p)[0]
 
 
 # ── which country a location names ───────────────────────────────────────────

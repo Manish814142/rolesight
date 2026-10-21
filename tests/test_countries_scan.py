@@ -60,11 +60,11 @@ def test_an_india_scan_logs_and_counts_as_before(env, caplog):
 
 
 def test_a_country_without_a_pack_is_warned_about_and_matched_by_name(env, caplog):
-    env["candidate"]["countries"] = "Canada"
+    env["candidate"]["countries"] = "Atlantis"
     with caplog.at_level(logging.INFO, logger="job_hunt.scanner"):
-        queued = _scan(env, [_job(1, "Toronto, Canada"), _job(2, "Toronto")])
-    assert queued == ["Toronto, Canada"]
-    assert "'Canada' has no built-in place list" in caplog.text
+        queued = _scan(env, [_job(1, "Poseidonia, Atlantis"), _job(2, "Poseidonia")])
+    assert queued == ["Poseidonia, Atlantis"]
+    assert "'Atlantis' has no built-in place list" in caplog.text
 
 
 def test_check_filter_takes_countries(tmp_path):
@@ -101,14 +101,14 @@ def test_init_countries_writes_the_built_in_names_and_keeps_the_rest(tmp_path, m
     from job_hunt.onboarding import parse_init_args
     assert parse_init_args(["--countries", "UK, Dubai"]) == {"countries": "UK, Dubai"}
     monkeypatch.chdir(tmp_path)
-    init_project(**parse_init_args(["--countries", "uk, Dubai, Canada"]))
+    init_project(**parse_init_args(["--countries", "uk, Dubai, Atlantis"]))
     cfg = json.loads((tmp_path / "config.json").read_text())
-    assert cfg["candidate"]["countries"] == ["United Kingdom", "United Arab Emirates", "Canada"]
+    assert cfg["candidate"]["countries"] == ["United Kingdom", "United Arab Emirates", "Atlantis"]
     assert cfg["candidate"]["home_country"] == "India" and cfg["llm_provider"] == "gemini"
     assert (tmp_path / "config.json").stat().st_mode & 0o777 == 0o600
     out = capsys.readouterr().out
-    assert "looking in United Kingdom, United Arab Emirates, Canada" in out and "'Canada' has no built-in place list" in out
-    assert cfg["candidate"]["seeking"] == ("Backend or platform roles in United Kingdom, United Arab Emirates or Canada. I live in "
+    assert "looking in United Kingdom, United Arab Emirates, Atlantis" in out and "'Atlantis' has no built-in place list" in out
+    assert cfg["candidate"]["seeking"] == ("Backend or platform roles in United Kingdom, United Arab Emirates or Atlantis. I live in "
                                            "India; for a role outside India I need the employer to sponsor my work visa and relocation")
     assert "Bengaluru" not in json.dumps(cfg["candidate"]["seeking"])
 
