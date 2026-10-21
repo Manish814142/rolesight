@@ -18,11 +18,16 @@ import random
 import re
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from job_hunt.prefilter import title_included  # noqa: E402
+from job_hunt.visa import (  # noqa: E402,F401  (the classifier lives in job_hunt/visa.py, T138)
+    relocation_wording,
+    residence_required,
+)
+from job_hunt.visa import wording as visa_wording  # noqa: E402
 
 DESCRIBED_ATS = ("greenhouse", "lever", "ashby", "workable", "recruitee", "personio")
 
@@ -47,50 +52,6 @@ COUNTRY_NAMES: Dict[str, re.Pattern] = {
 }
 EUROPE_REGION = re.compile(r"\b(europe|european union|eu|emea|eea)\b", re.I)
 
-# Refusal is checked first: "we do not sponsor visas" also contains "sponsor visas".
-_REFUSED = [
-    r"\b(not|unable to|cannot|can't|can not|won't|will not|do not|don't|does not|doesn't|are not able to|is not able to|"
-    r"aren't able to|not in a position to)\s+(currently\s+|presently\s+)?(be\s+)?(able\s+to\s+)?(offer|provide|support|"
-    r"sponsor|consider|facilitate)\w*\s+(\w+\s+){0,4}?(visas?|sponsorship|work permits?|immigration)",
-    r"\bno\s+(visa\s+|immigration\s+)?sponsorship\b",
-    r"\bwithout\s+(the\s+need\s+for\s+|requiring\s+|need\s+of\s+|needing\s+)?(\w+\s+){0,2}?(visa\s+)?sponsorship",
-    r"\bsponsorship\s+(is\s+|will\s+)?(not|n't)\s+(be\s+)?(available|offered|provided|possible|supported)",
-    r"\b(must|need to|needs to|should|required to)\s+(already\s+)?(have|hold|possess|be)\s+(\w+\s+){0,4}?(right to work|"
-    r"work permit|work authori[sz]ation|eligib\w* to work|authori[sz]ed to work|permitted to work|entitled to work|"
-    r"legally (able|allowed|authori[sz]ed) to work)",
-    r"\b(right to work|work authori[sz]ation|work permit)\s+(in\s+(the\s+)?\w+(\s+\w+)?\s+)?(is\s+)?(required|essential|mandatory|a must)",
-    r"\bnot\s+eligible\s+for\s+(\w+\s+){0,3}?(visa\s+)?sponsorship",
-    r"\b(requires?|requiring)\s+(\w+\s+){0,3}?(to\s+)?(have|hold)\s+(\w+\s+){0,3}?(right to work|work authori[sz]ation|work permit)",
-]
-# US-style compliance boilerplate ("must be authorized to work in the country in which they apply"): no answer either way.
-_BOILERPLATE = re.compile(r"authori[sz]ed to work in the country (in which|where) (they|you) (apply|are applying)", re.I)
-_OFFERED = [
-    r"\bvisa\s+(sponsorship|support|assistance|help|processing)\s+(is\s+|will\s+be\s+|can\s+be\s+)?(available|provided|"
-    r"offered|possible|included)",
-    r"\b(we|will|can|able to|happy to|do|does|offer|offers|provide|provides|including|includes)\s+(\w+\s+){0,3}?"
-    r"(sponsor\w*|support|assist\w*|help)\s+(\w+\s+){0,3}?(visas?|work permits?|blue card)",
-    r"\b(offer|offers|offering|provide|provides|providing|including|includes|with)\s+(\w+\s+){0,4}?(visa|immigration|"
-    r"work permit)\s+(sponsorship|support|assistance)\b",
-    r"\b(relocation|relocation package|relocation support)\s+(and|&)\s+visa\s+(sponsorship|support|assistance)\b",
-    r"\bvisa\s+(sponsorship|support)\s+(where|if|when)\s+(needed|necessary|required|applicable|eligible)",
-    r"\bsponsorship\s+(is\s+)?available",
-]
-_VISA_WORDS = r"\b(visas?(?!\s*(and|&|/|,)?\s*(mastercard|amex|card|inc\b|payments|direct))|visa sponsorship|" \
-              r"sponsorship for (a |your )?(visa|work)|work permits?|right to work|work authori[sz]ation|authori[sz]ed to work|" \
-              r"immigration (sponsorship|support|assistance)|blue card|highly skilled migrant|kennismigrant|employment pass)\b"
-_RELOCATION_REFUSED = r"\b(no relocation|relocation (is\s+)?(not|n't)\s+(be\s+)?(available|offered|provided|possible|supported)|" \
-                      r"(not|unable to|cannot|can't|do not|don't) (offer|provide|support)\w* relocation)"
-_RELOCATION_OFFERED = r"\b(relocation\s+(support|assistance|package|bonus|allowance|budget|help|benefits?|stipend|is\s+" \
-                      r"(available|offered|provided|possible))|(help|support|assist)\w*\s+(you\s+)?(with\s+)?(your\s+)?relocat\w+)"
-_RESIDENCE_REQUIRED = r"\b(must|need to|needs to|required to|should)\s+(already\s+)?(be\s+)?(currently\s+)?(based|located|" \
-                      r"living|reside|resident)\s+(in|within)\b"
-
-REFUSED = [re.compile(p, re.I) for p in _REFUSED]
-OFFERED = [re.compile(p, re.I) for p in _OFFERED]
-VISA_WORDS = re.compile(_VISA_WORDS, re.I)
-RELOCATION_REFUSED = re.compile(_RELOCATION_REFUSED, re.I)
-RELOCATION_OFFERED = re.compile(_RELOCATION_OFFERED, re.I)
-RESIDENCE_REQUIRED = re.compile(_RESIDENCE_REQUIRED, re.I)
 
 
 def countries(location: str) -> List[str]:
@@ -102,37 +63,6 @@ def countries(location: str) -> List[str]:
     if not found and EUROPE_REGION.search(loc):
         return ["Europe"]
     return found
-
-
-def _first(patterns: List[re.Pattern], text: str) -> Optional[re.Match]:
-    hits = [m for p in patterns if (m := p.search(text))]
-    return min(hits, key=lambda m: m.start()) if hits else None
-
-
-def visa_wording(text: str) -> tuple[str, str]:
-    """("refused" | "offered" | "mentioned" | "silent", the matched sentence)."""
-    t = text or ""
-    for kind, pats in (("refused", REFUSED), ("offered", OFFERED)):
-        m = _first(pats, t)
-        if m and not (kind == "refused" and _BOILERPLATE.search(_sentence(t, m))):
-            return kind, _sentence(t, m)
-    m = VISA_WORDS.search(t)
-    return ("mentioned", _sentence(t, m)) if m else ("silent", "")
-
-
-def relocation_wording(text: str) -> str:
-    t = text or ""
-    if RELOCATION_REFUSED.search(t):
-        return "refused"
-    return "offered" if RELOCATION_OFFERED.search(t) else "silent"
-
-
-def residence_required(text: str) -> bool:
-    return bool(RESIDENCE_REQUIRED.search(text or ""))
-
-
-def _sentence(text: str, m: re.Match, pad: int = 140) -> str:
-    return " ".join(text[max(0, m.start() - pad): m.end() + pad].split())
 
 
 def analyse(rows: List[Dict[str, Any]], titles_only: bool = False) -> Dict[str, Dict[str, Any]]:

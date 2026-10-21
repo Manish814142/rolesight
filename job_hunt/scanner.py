@@ -7,6 +7,7 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Optional
 
+from job_hunt import llm_utils
 from job_hunt.adapters import enrich_job, fetch_company_jobs
 from job_hunt.adapters import workday as workday_adapter
 from job_hunt.adapters.base import WINDOW_STOP_REASON, begin_fetch, fetch_incomplete
@@ -26,7 +27,6 @@ from job_hunt.db import (
 )
 from job_hunt.llm_utils import (
     MAX_DESCRIPTION_CHARS,
-    STRUCTURED_INSTRUCTIONS,
     RubricError,
     chat_with_llm,
     configure_rubric,
@@ -49,6 +49,7 @@ from job_hunt.prefilter import (
 )
 from job_hunt.scorer import score_and_process_batch, score_and_process_job
 from job_hunt.settings import cities_of, max_posted_age_of, min_score_of
+from job_hunt.visa import note as visa_note
 
 logger = get_logger()
 
@@ -387,7 +388,7 @@ def run_scan(config: dict, companies: list[dict]) -> None:
     for warning in titles.warnings():
         logger.warning(f"Title filter: {warning}")
     if provider == "gemini":   # the other providers score with their own prompt, not this rubric (T97)
-        logger.info(f"Scoring rubric: {rubric_id(STRUCTURED_INSTRUCTIONS if config.get('scoring_mode') == 'structured' else None)}")
+        logger.info(f"Scoring rubric: {rubric_id(llm_utils.STRUCTURED_INSTRUCTIONS if config.get('scoring_mode') == 'structured' else None)}")
         logger.info(f"Rubric text: {rubric_source}")
 
     resume_path = Path(config.get("candidate", {}).get("resume_path", "resume/YOUR_RESUME.md"))
@@ -614,6 +615,7 @@ def run_scan(config: dict, companies: list[dict]) -> None:
                     "posted_at": job.posted_at,
                     "model": res.get("model"),
                     "rubric": res.get("rubric"),
+                    "visa": visa_note(job.company, job.location, job.description_text, places),   # T138
                     **(res.get("details") or {}),
                 })
         else:

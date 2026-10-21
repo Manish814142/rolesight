@@ -69,6 +69,8 @@ Tests must make **no network calls** — stub `send_telegram`, adapters, and Gem
    (`scorer.score_and_process_job`, full resume, 4.2 s pacing = 15 RPM). Opt-in
    `"gemini_scoring_mode": "batch"` scores `gemini_batch_size` (10) jobs per call — ~17×
    faster but measured to inflate weak fits by ~15 points (see CHANGELOG 2026-10-04).
+   With `candidate.countries` other than India alone, `llm_utils.configure_rubric` rewrites rule 1 and rule 5's location line for
+   those countries and the visa rule (`rubric_for_places`; India alone keeps the text and id `82e017b4`, T138).
    Each stored score names the model that answered (`jobs.score_model`, funnel line, CSV `Model` column when
    a model other than the primary scored; T71) and the id of the rubric text (`jobs.score_rubric`, scan log `Scoring rubric:`, CSV `Rubric`
    column when a score is not from the current one; `python scripts/rubric_ids.py [--db data/jobs.db]` decodes the ids; T97).

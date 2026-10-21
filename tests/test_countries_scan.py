@@ -80,3 +80,15 @@ def test_check_filter_takes_countries(tmp_path):
     (tmp_path / "config.json").write_text('{"candidate": {"countries": ["Germany"]}}')
     assert run("Backend Engineer", "Berlin, Germany") == "KEPT"                 # config.json's countries
     assert run("Backend Engineer", "Berlin, Germany", "--countries", "India").startswith("REJECTED")
+
+
+def test_a_uk_scan_writes_a_visa_column_and_an_india_scan_does_not(env, tmp_path):
+    import csv
+    env["candidate"]["countries"] = ["United Kingdom"]
+    _scan(env, [_job(1, "London, UK")])
+    rows = list(csv.DictReader(open(tmp_path / "output" / "last_scan.csv", encoding="utf-8")))
+    assert rows[0]["Location"] == "London, UK" and rows[0]["Visa"] == "Not stated"     # Acme: no record; "Node.js" says nothing
+    del env["candidate"]["countries"]
+    places.configure_places(places.INDIA)
+    _scan(env, [_job(2, "Pune, India")])
+    assert "Visa" not in open(tmp_path / "output" / "last_scan.csv", encoding="utf-8").readline()

@@ -7,7 +7,9 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 from urllib.parse import quote
 
+from job_hunt import visa
 from job_hunt.llm_utils import GEMINI_DEFAULT_MODEL, current_rubric_ids
+from job_hunt.places import active_places
 
 # Where the files go (T130): the two the person opens every day keep fixed names at the top of output/ (scanner.OPEN_MATCHES_FILE and
 # LAST_SCAN_FILE), every dated per-scan file goes to output/history/, drafts to output/drafts/ (drafter.DRAFTS_DIR).
@@ -48,6 +50,7 @@ def _posted_display(posted_at: str) -> str:
 # Written only when some job has a value, so no column is always empty (T36): Stack comes from the deprecated
 # non-Gemini scorer, the fit/years/cap columns from structured scoring (scoring_mode: structured, T41).
 OPTIONAL_COLUMNS = {
+    "Visa": "visa",                    # a job outside the home country (T138): the posting's words, then the company record
     "Stack": "stack",
     "Stack fit": "stack_fit",
     "Role fit": "role_fit",
@@ -109,6 +112,7 @@ def job_from_db_row(r: Dict[str, Any], threshold: Optional[int]) -> Dict[str, An
         "model": r.get("score_model"),
         "rubric": r.get("score_rubric"),
         "application": f"{app} {r.get('application_date') or ''}".strip() if app else "",  # `autopilot mark` (T38)
+        "visa": visa.note(r.get("company") or "", r.get("location") or "", r.get("description") or "", active_places()),
     }
 
 

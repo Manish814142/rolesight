@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any
 
 from job_hunt.log import get_logger
+from job_hunt.places import Places, active_places, places_from_config
 
 warnings.filterwarnings("ignore", message=".*automatic function calling.*")
 
@@ -328,10 +329,56 @@ def use_rubric(text: str) -> None:
 
 
 def configure_rubric(config: dict) -> str:
-    """Read candidate.rubric_file (raises RubricError with a message), make it the active rubric, return where it came from."""
+    """Read candidate.rubric_file (raises RubricError with a message), make it the active rubric, return where it came from.
+    With countries other than India alone (T138), the location lines are written from them (`rubric_for_places`)."""
+    global STRUCTURED_INSTRUCTIONS, _STRUCTURED_SWAPPED
     text, source = rubric_text_of(config)
+    places = places_from_config(config)
+    text, warning = rubric_for_places(text, places)
+    if warning:
+        logger.warning(warning)
     use_rubric(text)
+    if not places.india_only():
+        STRUCTURED_INSTRUCTIONS, _STRUCTURED_SWAPPED = structured_for_places(places), True
+    elif _STRUCTURED_SWAPPED:
+        STRUCTURED_INSTRUCTIONS, _STRUCTURED_SWAPPED = _DEFAULT_STRUCTURED, False
     return source
+
+
+# The built-in rubric's two India lines (T138). `rolesight init --resume` drafts keep rule 1 as it is, so a drafted rubric.md holds
+# them too; with countries other than India alone they are rewritten for those countries and the visa rule. A rule 1 the person
+# rewrote is kept as written, with a warning.
+INDIA_LOCATION_RULE = next(line for line in DEFAULT_SCORING_RUBRIC.splitlines()
+                           if line.strip().startswith("If the job requires on-site presence outside India"))
+INDIA_LOCATION_FIT = "   - Location fits (India or Remote)."
+
+
+def _where(places: Places) -> str:
+    """"United Kingdom", "United Kingdom or Germany", "United Kingdom, Germany or Singapore"."""
+    names = places.search_names()
+    return names[0] if len(names) == 1 else ", ".join(names[:-1]) + " or " + names[-1]
+
+
+def location_rule(places: Places) -> str:
+    where, home = _where(places), places.home
+    return (f"   If the job requires on-site or hybrid presence outside {where}, cap score at <= 30. The candidate lives in {home} "
+            f"and needs the employer to sponsor a work visa for any role outside {home}: if the posting says it cannot sponsor a "
+            f"visa, or requires citizenship, permanent residence or an existing right to work in that country, cap score at <= 30. "
+            f"A posting that says nothing about visas is not capped for that. (Roles in {where}, whether on-site, hybrid or "
+            f"remote, and remote roles open to candidates there, are eligible for higher scores.)")
+
+
+def rubric_for_places(text: str, places: Places) -> tuple[str, str | None]:
+    """(the rubric text for these places, a warning or None). India alone: unchanged."""
+    if places.india_only():
+        return text, None
+    warning = None
+    if INDIA_LOCATION_RULE in text:
+        text = text.replace(INDIA_LOCATION_RULE, location_rule(places))
+    else:
+        warning = (f"Scoring rubric: rule 1 is not the built-in India text, so it is used as written; check that it names your "
+                   f"countries ({places.label()}) and says whether you need visa sponsorship")
+    return text.replace(INDIA_LOCATION_FIT, f"   - Location fits ({_where(places)} or Remote)."), warning
 
 
 def rubric_id(text: str | None = None) -> str:
@@ -431,7 +478,8 @@ def combine_subscores(f: dict) -> dict:
     score = round(sum(float(f[k]) * w for k, w in SUBSCORE_WEIGHTS.items()))
     caps: list[tuple[int, str]] = []
     if f.get("onsite_outside_india"):
-        caps.append((30, "onsite or work authorisation outside India"))
+        caps.append((30, "onsite or work authorisation outside India" if active_places().india_only()
+                     else "onsite outside your places, or no visa sponsorship"))
     if f["role_fit"] < 30:
         caps.append((40, "role type not suitable"))
     years = f.get("min_years")
@@ -462,6 +510,26 @@ Fields:
 - onsite_outside_india: true if the job requires on-site presence outside India, or citizenship / work authorisation outside India without sponsorship.
 - aimed_at_freshers: true if the posting is aimed at freshers, new graduates or entry-level hires (0-1 years).
 - reason: one sentence."""
+
+_DEFAULT_STRUCTURED = STRUCTURED_INSTRUCTIONS
+_STRUCTURED_SWAPPED = False
+_INDIA_FIT_LINE = "- location_fit (0-100): 100 for India or remote open to India; low only when the job is outside India."
+_INDIA_ONSITE_LINE = ("- onsite_outside_india: true if the job requires on-site presence outside India, or citizenship / work "
+                      "authorisation outside India without sponsorship.")
+
+
+def structured_for_places(places: Places) -> str:
+    """The structured instructions (T41) for these places (T138); India alone: unchanged. The field keeps its name."""
+    if places.india_only():
+        return _DEFAULT_STRUCTURED
+    where, home = _where(places), places.home
+    return (_DEFAULT_STRUCTURED
+            .replace(_INDIA_FIT_LINE, f"- location_fit (0-100): 100 for {where} or remote open to candidates there; low only when "
+                                      f"the job is outside them.")
+            .replace(_INDIA_ONSITE_LINE, f"- onsite_outside_india: true if the job requires on-site presence outside {where}, or, "
+                                         f"for a job outside {home}, citizenship, permanent residence or an existing right to work "
+                                         f"there without visa sponsorship."))
+
 
 
 def score_job_structured_with_gemini(job: dict, resume: str, config: dict) -> dict:

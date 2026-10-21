@@ -59,9 +59,18 @@ by default, a safeguard so that a click can select the cell; to open on a plain 
 setting of your LibreOffice, not of the file, so no file can change it). **Google Sheets**: a link shows a small preview when you point at it and opens with one click (seen when pasting the table in; not tested further). If links
 "do nothing" on a click, it is almost always this LibreOffice setting, not a broken file.
 
-A column appears only when some job in the file has a value for it: **Stack** (from the deprecated non-Gemini
+A column appears only when some job in the file has a value for it: **Visa** (T138: for a job outside your
+`home_country`, when `candidate.countries` names other countries), **Stack** (from the deprecated non-Gemini
 scorer) and, with `scoring_mode: structured`, **Stack fit**, **Role fit**, **Seniority fit**, **Location fit**,
-**Min years** and **Capped by**. A default Gemini scan writes none of them (T36).
+**Min years** and **Capped by**. A default Gemini scan for India writes none of them (T36).
+
+**Visa** first says what the posting itself says: "Posting: no visa sponsorship", "Posting: offers visa sponsorship",
+"Posting: unclear" (it mentions a visa or the right to work without a clear answer) or "Not stated". Then, after "; ", what
+public records say about the company for that country, when they say anything: "UK licensed sponsor" (GOV.UK register),
+"Dutch recognised sponsor" (IND register), "N Irish work permits 2025-2026" (DETE), "on a relocation list" (two community
+lists). Example: `Not stated; UK licensed sponsor`. The posting's own words come first because a licence is not a promise:
+17 of the 44 UK companies whose postings refuse sponsorship are licensed (T133). The posting's words are read by patterns
+(in T133's hand-read samples "refused" was right 12 of 12, "offered" 10 of 12); Gemini reads the whole posting for the score.
 **Model** (T71) appears when some job in the file was scored by a model other than the default primary
 `gemini-3.5-flash-lite`, i.e. the fallback answered (primary failed or out of quota) or `gemini_model` is set to another
 model. The models score differently (T70: `gemini-3.1-flash-lite` gives weak fits ~7 points more), so compare scores

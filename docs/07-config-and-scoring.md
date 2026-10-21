@@ -149,7 +149,10 @@ One Gemini call per job. The prompt contains:
   run-to-run noise (CHANGELOG 2026-10-04).
 - **rubric anchors** (`llm_utils.SCORING_RUBRIC`, T48; replaced by `candidate.rubric_file` when set, T103; what follows is
   the built-in rubric): cap 30 for onsite work or work
-  authorisation outside India; cap 40 for roles in your `not_suitable` list or platform
+  authorisation outside India (with `candidate.countries` set to other countries, T138: cap 30 for on-site or hybrid work
+  outside them, and for a posting that refuses visa sponsorship or asks for citizenship, permanent residence or an existing
+  right to work there; a posting silent on visas is not capped; the same two lines of a `rubric.md` drafted by `init --resume`
+  are rewritten too, and a rule 1 you rewrote yourself is used as written, with a warning in the scan log); cap 40 for roles in your `not_suitable` list or platform
   administration of Salesforce, Coupa, SAP or ServiceNow (judged by the work, not the employer's
   name); cap 50 for roles that need 6+ years; cap 50 for roles aimed at freshers or asking 0-1
   years (by what the posting asks, not by its title: T58); cap 50 when the posting's *requirements

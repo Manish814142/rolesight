@@ -183,6 +183,9 @@ def export_jobs(min_score: int = 0, days: int = 0) -> Path | None:
         source_label = "last scan"
 
     threshold = _export_min_score()
+    if Path("config.json").exists():      # the Visa column needs your countries (T138); export works without config.json
+        from job_hunt.places import configure_places
+        configure_places(load_config())
     jobs = [job_from_db_row(r, threshold) for r in rows]
     filtered = [j for j in jobs if (j.get("score") or 0) >= min_score]
 

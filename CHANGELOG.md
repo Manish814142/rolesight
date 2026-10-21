@@ -9,6 +9,20 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Added (2026-10-21, T138: T108 part 3, scoring and a Visa column for your countries)
+- **The rubric follows your countries.** With `candidate.countries` other than India alone, rule 1 ("cap 30 for on-site work outside
+  India…") becomes: cap 30 for on-site or hybrid work outside your countries, and for a posting that cannot sponsor a visa or asks
+  for citizenship, permanent residence or an existing right to work there (you live in `home_country` and need sponsorship); a
+  posting silent on visas is not capped. Rule 5's "Location fits (India or Remote)" names your countries. Only these two built-in lines
+  change, also in a `rubric.md` drafted by `init --resume` (whose rule 1 stays the built-in one); a rule 1 you rewrote is used as
+  written, with a warning. Structured scoring's location lines and its cap label follow too. **India alone: the same text and id
+  (`82e017b4`).**
+- **A Visa column** in every CSV and Excel file, for a job outside your home country: what the posting says ("Posting: no visa
+  sponsorship" / "offers visa sponsorship" / "unclear" / "Not stated"), then the company's public record for that country from
+  T133 ("UK licensed sponsor", "Dutch recognised sponsor", "N Irish work permits", "on a relocation list"), e.g. `Not stated; UK
+  licensed sponsor`. `autopilot export` writes it from the stored descriptions. India alone: no Visa column, the CSV is unchanged.
+  New `job_hunt/visa.py` holds T133's wording patterns (moved from `scripts/measure_visa_wording.py`, which imports them).
+
 ### Added (2026-10-21, T137: T108 part 2, the connectors search your countries)
 - Workday, Eightfold, Phenom, Oracle HCM and Amazon answer only for the country they are asked about; with `candidate.countries`
   they now ask for yours. Workday: one full-text search per term (UK: "United Kingdom" and "UK", UAE: "United Arab Emirates" and
