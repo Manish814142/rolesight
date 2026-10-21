@@ -196,7 +196,9 @@ def test_download_finds_each_file_from_its_page(tmp_path, monkeypatch):
     assert meta["nl"]["published"] == "2026-10-05"
     assert meta["ie"]["years"] == [2025, 2026] and not any("2024" in c for c in calls)
     assert sorted(p.name for p in tmp_path.iterdir()) == ["gist.json", "ie_companies_2025.xlsx", "ie_companies_2026.xlsx",
-                                                          "nl_register.html", "shubheksha.md", "sources.json", "uk_register.csv"]
+                                                          "nl_register.html", "relocate.md", "shubheksha.md", "sources.json",
+                                                          "uk_register.csv"]
+    assert bvs.RELOCATE_RAW in calls and "CC0-1.0" in meta["lists"]["licence"]
 
 
 def test_the_shipped_dataset_and_review_file_are_well_formed():
@@ -209,3 +211,30 @@ def test_the_shipped_dataset_and_review_file_are_well_formed():
         assert all(isinstance(v, list) and all(isinstance(n, str) for n in v) for v in review[verdict].values())
     for company, ev in data["companies"].items():           # nothing rejected by hand made it into the file
         assert not {n for e in ev for n in e["names"]} & set(review["rejected"].get(company, []))
+
+
+RELOCATE = """# Intro
+
+# 🏢 Companies hiring internationally
+
+| Company name | Location(s) | Careers page |
+|-------|--------------|---------------|
+| Applike Group | Hamburg 🇩🇪 | https://applike-group.com/jobs |
+| Byborg Enterprises | Luxembourg 🇱🇺 <br> Budapest 🇭🇺 | https://careers.smartrecruiters.com/DoclerHolding |
+| CloudLinux | Remote 🌍 | https://www.cloudlinux.com/jobs |
+| BandLab | Singapore 🇸🇬 | https://www.bandlab.com/careers |
+
+# 🗣️ Job interviews
+| Not | a | company |
+"""
+
+
+def test_parse_relocate_reads_the_company_table_with_its_flags_as_countries():
+    assert bvs.parse_relocate(RELOCATE) == {"Applike Group": ["Hamburg, Germany"], "Byborg Enterprises": ["Luxembourg, LU", "Budapest, HU"],
+                                            "CloudLinux": ["Remote"], "BandLab": ["Singapore, Singapore"]}
+
+
+def test_an_older_download_without_the_relocate_file_still_builds(tmp_path):
+    data, _ = bvs.build(_sources(tmp_path / "src"), COMPANIES, {"accepted": {}, "rejected": {}})
+    assert data["companies"]["Stripe"][0]["source"] == "lists"
+

@@ -11,9 +11,10 @@ public record says instead:
   uk     GOV.UK register of licensed sponsors: workers (Skilled Worker, Global Business Mobility, Scale-up routes)
   nl     IND public register "Work": recognised sponsors for regular labour and highly skilled migrants
   ie     DETE "employment permits issued to companies", this year and last (permits actually granted)
-  lists  community lists of companies that hire from India with visa and relocation (abhi-jha's gist, shubheksha's repo)
-Germany, the UAE and Singapore are not covered (no such list is known for them; not searched for). A register says the employer
-can sponsor, not that a given job does.
+  lists  community lists of companies that hire from India with visa and relocation (abhi-jha's gist, shubheksha's repo) and
+         relocate.me's hand-checked list of companies hiring internationally (CC0-1.0; T141), each entry with its places
+Germany, the UAE and Singapore publish no register: their rules make one unnecessary (job_hunt/visa.py COUNTRY_RULE, T141), and
+the lists name companies there. A register says the employer can sponsor, not that a given job does.
 
 A match is "exact" when the names agree once legal suffixes and country words are dropped ("Google (UK) Limited" is Google),
 "loose" when they agree only once generic words are dropped too ("Atlassian (UK) Operations Limited" is Atlassian). Only
@@ -44,6 +45,8 @@ GIST_API = "https://api.github.com/gists/5225e0dcc912174dda6b7f01e8a24156"
 GIST_PAGE = "https://gist.github.com/abhi-jha/5225e0dcc912174dda6b7f01e8a24156"
 SHUBHEKSHA_RAW = "https://raw.githubusercontent.com/shubheksha/companies-sponsoring-visas/master/README.md"
 SHUBHEKSHA_PAGE = "https://github.com/shubheksha/companies-sponsoring-visas"
+RELOCATE_RAW = "https://raw.githubusercontent.com/AndrewStetsenko/tech-jobs-with-relocation/main/README.md"
+RELOCATE_PAGE = "https://github.com/AndrewStetsenko/tech-jobs-with-relocation"   # relocate.me's list, CC0-1.0 (T141)
 
 UK_ROUTES = ("Skilled Worker", "Global Business Mobility: Senior or Specialist Worker", "Scale-up",
              "Global Business Mobility: UK Expansion Worker", "Global Business Mobility: Graduate Trainee")
@@ -177,6 +180,30 @@ def parse_shubheksha(text: str) -> Dict[str, List[str]]:
     return out
 
 
+def parse_relocate(text: str) -> Dict[str, List[str]]:
+    """Company -> its places, from the "Companies hiring internationally" table of relocate.me's README (flags as countries:
+    "Hamburg 🇩🇪" -> "Hamburg, Germany")."""
+    section = text.split("Companies hiring internationally", 1)[-1].split("\n# ", 1)[0]
+    out: Dict[str, List[str]] = {}
+    for line in section.splitlines():
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if len(cells) < 2 or not cells[0] or cells[0].lower() == "company name" or set(cells[0]) <= set("-: "):
+            continue
+        out[cells[0]] = [_flags_to_names(p).strip() for p in re.split(r"<br\s*/?>", cells[1]) if p.strip()]
+    return out
+
+
+_FLAG_NAMES = {"DE": "Germany", "NL": "Netherlands", "GB": "United Kingdom", "IE": "Ireland", "AE": "United Arab Emirates",
+               "SG": "Singapore", "IN": "India"}
+
+
+def _flags_to_names(text: str) -> str:
+    def name(m: "re.Match[str]") -> str:
+        code = "".join(chr(ord(ch) - 0x1F1E6 + 65) for ch in m.group(1))
+        return ", " + _FLAG_NAMES.get(code, code)
+    return re.sub(r"\s*([\U0001F1E6-\U0001F1FF]{2})", name, text).replace("🌍", "").strip(" ,")
+
+
 # --- downloads -----------------------------------------------------------------------------------------------------
 
 def _get(url: str, timeout: int = 120):
@@ -220,9 +247,11 @@ def download(dest: Path) -> Dict[str, Dict[str, Any]]:
 
     (dest / "gist.json").write_text(_get(GIST_API).text, encoding="utf-8")
     (dest / "shubheksha.md").write_text(_get(SHUBHEKSHA_RAW).text, encoding="utf-8")
-    meta["lists"] = {"title": "Community lists of companies hiring from India with visa and relocation",
-                     "pages": [GIST_PAGE, SHUBHEKSHA_PAGE], "licence": "none stated (only matched names are recorded)",
-                     "files": ["gist.json", "shubheksha.md"]}
+    (dest / "relocate.md").write_text(_get(RELOCATE_RAW).text, encoding="utf-8")
+    meta["lists"] = {"title": "Community lists of companies hiring from India / internationally with visa and relocation",
+                     "pages": [GIST_PAGE, SHUBHEKSHA_PAGE, RELOCATE_PAGE],
+                     "licence": "gist and shubheksha: none stated (only matched names are recorded); relocate.me: CC0-1.0",
+                     "files": ["gist.json", "shubheksha.md", "relocate.md"]}
     for k in meta:
         meta[k]["downloaded"] = dt.date.today().isoformat()
     (dest / "sources.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
@@ -238,8 +267,11 @@ def load_sources(src: Path) -> Dict[str, Index]:
         for emp, n in parse_ie(src / name).items():
             ie.setdefault(emp, {})[str(year)] = n
     lists: Dict[str, List[str]] = {}
-    for label, parsed in (("abhi-jha gist", parse_gist((src / "gist.json").read_text(encoding="utf-8"))),
-                          ("shubheksha list", parse_shubheksha((src / "shubheksha.md").read_text(encoding="utf-8")))):
+    parsed_lists = [("abhi-jha gist", parse_gist((src / "gist.json").read_text(encoding="utf-8"))),
+                    ("shubheksha list", parse_shubheksha((src / "shubheksha.md").read_text(encoding="utf-8")))]
+    if (src / "relocate.md").exists():            # added in T141: an older download has no relocate.me file
+        parsed_lists.append(("relocate.me list", parse_relocate((src / "relocate.md").read_text(encoding="utf-8"))))
+    for label, parsed in parsed_lists:
         for company, where in parsed.items():
             lists.setdefault(company, []).extend(f"{label}: {w}" for w in where or [""])
     return {"uk": Index(parse_uk(src / "uk_register.csv")),

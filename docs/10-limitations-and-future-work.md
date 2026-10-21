@@ -17,7 +17,7 @@ them from anyone's resume). What follows is what is still fixed.
 connectors' searches, rule 1 (with the visa rule), `discover --places`, the summary line, and the list (27 companies that
 hire abroad, listed for those countries). See the [user guide](00-user-guide.md#looking-for-jobs-outside-india). What is
 still limited: a country without a built-in pack is matched by its name only (no cities, no codes, no Amazon); postings in
-another language do not match the English title words; Germany, the UAE and Singapore have no sponsor register; a scan for
+another language do not match the English title words; Germany, the UAE and Singapore have no sponsor register (the Visa note gives their rule instead, T141); a scan for
 several countries makes more requests. The rest of this section describes the state before T136, kept for the record.
 
 Before T136, India was built into six places:

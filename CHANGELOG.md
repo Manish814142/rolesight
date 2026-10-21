@@ -9,6 +9,19 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Added (2026-10-21, T141: visa evidence for Germany, the UAE and Singapore)
+- Manish: "use internet, github or public sites so that a person can target these country jobs also". These three publish no sponsor
+  register because their rules make one unnecessary, so a silent posting there now says the rule, read on the official pages:
+  `UAE: the employer applies for the work visa` (u.ae: "The employer must apply for the standard work visa"), `Singapore: the employer
+  applies for the Employment Pass` (MOM: "You can apply for an Employment Pass online as an employer or appointed employment agent"),
+  `Germany: no sponsor licence needed (EU Blue Card)` (Federal Employment Agency, 2026: €50,700, or €45,934.20 with its approval).
+- relocate.me's hand-checked list of companies hiring internationally (CC0-1.0, 95 companies) is a record source; every community
+  list now counts only for the places its entry names. Record rebuilt (UK register of 2026-10-21): 563 of 1,616 companies.
+- Nationals-only roles ("Emirati National required", "Singaporeans only") count as refusals; the bare word "Emiratisation" does not
+  (a job duty in 2 of the 3 postings that had it).
+- Looked at and not used, measured: Arbeitnow's `visa_sponsorship` filter (offers 20 of 280, refusals 17), Tech@SG (no public list
+  of companies), a company's other postings in the country (0 of 232 silent postings in the three would gain from it).
+
 ### Fixed (2026-10-21, T140 follow-up: what an audit of the international path found)
 - `rolesight init --resume CV --countries "…"`: the resume draft's `seeking` was asked for "your city, or anywhere in India or
   remote" whatever the countries, which brings back the location mark-down the end-to-end run found. With countries other than

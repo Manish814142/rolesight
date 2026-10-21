@@ -238,7 +238,8 @@ What changes:
    `--places "…"`).
 
 Limits: postings in another language (Japanese or German titles) do not match the English title words; Germany, the UAE and
-Singapore publish no sponsor register, so their Visa notes rest on the posting and the community lists; a board that answers
+Singapore publish no sponsor register, so their Visa notes give the country's own rule instead (in the UAE and Singapore the
+employer applies for the visa; Germany needs no sponsor licence: [docs/04](04-companies-and-scanning.md#germany-the-uae-and-singapore-t141)); a board that answers
 "too many requests" (Accenture did) stops early and is counted as incomplete.
 
 ### Pre-filter patterns

@@ -1554,6 +1554,16 @@
      "Catawiki B.V.": "01131735"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Catawiki": [
+      "relocate.me list: Amsterdam, Netherlands",
+      "relocate.me list: Lisbon, PT"
+     ]
+    },
+    "source": "lists"
    }
   ],
   "Caxton Associates": [
@@ -4797,7 +4807,8 @@
     "match": "exact",
     "names": {
      "Monzo": [
-      "shubheksha list: London, UK"
+      "shubheksha list: London, UK",
+      "relocate.me list: London, United Kingdom"
      ]
     },
     "source": "lists"
@@ -5050,6 +5061,9 @@
    {
     "match": "exact",
     "names": {
+     "NavVis": [
+      "relocate.me list: Munich, Germany"
+     ],
      "Navvis": [
       "abhi-jha gist: Berlin, Germany"
      ]
@@ -5580,6 +5594,17 @@
     "source": "ie"
    }
   ],
+  "PayPay India": [
+   {
+    "match": "exact",
+    "names": {
+     "PayPay": [
+      "relocate.me list: Tokyo, JP"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
   "Payoneer": [
    {
     "match": "exact",
@@ -5961,7 +5986,9 @@
     "match": "exact",
     "names": {
      "Reaktor": [
-      "abhi-jha gist: Amsterdam, Netherlands"
+      "abhi-jha gist: Amsterdam, Netherlands",
+      "relocate.me list: Amsterdam, Netherlands",
+      "relocate.me list: Lisbon, PT"
      ]
     },
     "source": "lists"
@@ -7092,7 +7119,8 @@
     "match": "exact",
     "names": {
      "Swisscom": [
-      "abhi-jha gist: Riga, Lativa"
+      "abhi-jha gist: Riga, Lativa",
+      "relocate.me list: Rotterdam, Netherlands"
      ]
     },
     "source": "lists"
@@ -8122,6 +8150,15 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Wise": [
+      "relocate.me list: London, United Kingdom"
+     ]
+    },
+    "source": "lists"
    }
   ],
   "Wiz, Inc.": [
@@ -8194,6 +8231,18 @@
      }
     },
     "source": "ie"
+   }
+  ],
+  "WorldQuant": [
+   {
+    "match": "exact",
+    "names": {
+     "WorldQuant": [
+      "relocate.me list: Yerevan, AM",
+      "relocate.me list: Budapest, HU"
+     ]
+    },
+    "source": "lists"
    }
   ],
   "Wri": [
@@ -8478,13 +8527,14 @@
   },
   "lists": {
    "downloaded": "2026-10-21",
-   "entries": 130,
-   "licence": "none stated (only matched names are recorded)",
+   "entries": 218,
+   "licence": "gist and shubheksha: none stated (only matched names are recorded); relocate.me: CC0-1.0",
    "pages": [
     "https://gist.github.com/abhi-jha/5225e0dcc912174dda6b7f01e8a24156",
-    "https://github.com/shubheksha/companies-sponsoring-visas"
+    "https://github.com/shubheksha/companies-sponsoring-visas",
+    "https://github.com/AndrewStetsenko/tech-jobs-with-relocation"
    ],
-   "title": "Community lists of companies hiring from India with visa and relocation"
+   "title": "Community lists of companies hiring from India / internationally with visa and relocation"
   },
   "nl": {
    "downloaded": "2026-10-21",
@@ -8496,11 +8546,11 @@
   },
   "uk": {
    "downloaded": "2026-10-21",
-   "entries": 123205,
-   "file": "https://assets.publishing.service.gov.uk/media/6ad71d3d67af5c09d047985e/SP_-_Worker_and_Temporary_Worker_Web_Register_-_2026-10-20.csv",
+   "entries": 123217,
+   "file": "https://assets.publishing.service.gov.uk/media/6ad871b15eadc3d6e8a10870/SP_-_Worker_and_Temporary_Worker_Web_Register_-_2026-10-21.csv",
    "licence": "Open Government Licence v3.0",
    "page": "https://www.gov.uk/government/publications/register-of-licensed-sponsors-workers",
-   "published": "2026-10-20",
+   "published": "2026-10-21",
    "title": "Register of licensed sponsors: workers"
   }
  }

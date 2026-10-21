@@ -271,9 +271,10 @@ So the employer's public record is used instead: **`job_hunt/data/visa_sponsors.
 | Netherlands: IND [public register "Work"](https://ind.nl/en/public-register-recognised-sponsors/public-register-regular-labour-and-highly-skilled-migrants) (2026-10-05) | recognised sponsor, which the highly skilled migrant permit needs | 13,012 | none stated on the page |
 | Ireland: DETE [employment permits issued to companies](https://enterprise.gov.ie/en/what-we-do/workplace-and-skills/employment-permits/statistics/), 2025 and Jan–Sep 2026 | permits actually granted, with the count per year | 12,715 employers | Government of Ireland copyright: reuse with the source acknowledged |
 | Community lists: [abhi-jha's gist](https://gist.github.com/abhi-jha/5225e0dcc912174dda6b7f01e8a24156), [shubheksha's list](https://github.com/shubheksha/companies-sponsoring-visas) | named as hiring from India with visa and relocation | 130 names | none stated |
+| [relocate.me's list](https://github.com/AndrewStetsenko/tech-jobs-with-relocation) (T141) | hand-checked: the company's postings or careers page offer visa or relocation help; each entry with its places | 95 companies (Germany 23, Netherlands 17, UK 9, Singapore 1) | CC0-1.0 |
 
-Germany, the UAE and Singapore are not covered: no public list of sponsoring employers is known for them (not searched for
-beyond these sources). The file holds only companies on `companies.json`,
+A community list counts only for the places its entry names (T141): the gist's "Berlin, Germany" says nothing about the
+company's jobs in Dubai; an entry for "Remote" or "Global" counts everywhere. The file holds only companies on `companies.json`,
 each with the source's own entry (Canva: "CANVA UK OPERATIONS LIMITED" with its two UK routes, and the gist's "London"; an
 Irish employer's permit counts per year), never a copy of a register. **2026-10-21: 534 of the 1,589 companies have evidence** (UK 467, Netherlands 185, Ireland 84, lists 18).
 
@@ -313,7 +314,33 @@ of them joined the list, each with its `places`: Monzo, N26, HelloFresh, Deliver
 Miro, Algolia, Ninja Van, Qonto, Raisin, Tipico and others. Mercari, BlaBlaCar, Back Market, Jam City, Circles.life and
 Sunday have no job in those six countries. After that the record covers 561 of 1,616 companies (UK 478, Netherlands 189,
 Ireland 86, lists 45); the three new loose matches (Monzo Bank Ltd, Raisin Platforms Limited, SumUp Payments Limited) were
-read and accepted.
+read and accepted. With relocate.me's list (T141, rebuilt 2026-10-21 with the UK register of that day): **563 of 1,616**
+(UK 478, Netherlands 189, Ireland 86, lists 49).
+
+### Germany, the UAE and Singapore (T141)
+
+These three publish no register of sponsoring employers, and searched for on 2026-10-21, none was found: their rules make one
+unnecessary. What a posting that says nothing still tells you, read on the official pages that day:
+
+| Country | The rule | Source | Visa note for a silent posting |
+|---|---|---|---|
+| UAE | "The employer must apply for the standard work visa"; employers "may not recruit or employ any worker unless a work permit is issued in accordance with MoHRE procedures" | [u.ae, Work visa](https://u.ae/en/information-and-services/visa-and-emirates-id/Types-of-visas/residence-visa-for-working-in-the-uae); [u.ae, Work permits](https://u.ae/en/information-and-services/jobs/Sector-of-employment/employment-in-the-private-sector/work-permits) | `UAE: the employer applies for the work visa` |
+| Singapore | "You can apply for an Employment Pass online as an employer or appointed employment agent"; the job must first be advertised on MyCareersFuture (page updated 15 June 2026) | [MOM, Apply for an Employment Pass](https://www.mom.gov.sg/passes-and-permits/employment-pass/apply-for-a-pass) | `Singapore: the employer applies for the Employment Pass` |
+| Germany | The EU Blue Card is the professional's own residence permit; no licence for the employer. From €50,700 a year (2026) no approval of the Federal Employment Agency; shortage occupations and career starters from €45,934.20, with its approval | [Federal Employment Agency, EU Blue Card (03/2026)](https://www.arbeitsagentur.de/vor-ort/zav/working-and-living-in-germany/iss-en/issue-03-2026/blue-card) | `Germany: no sponsor licence needed (EU Blue Card)` |
+
+The note follows the posting's own words and any record, e.g. `Not stated; on a relocation list; Germany: no sponsor licence
+needed (EU Blue Card)`. A rule is not a promise for one job: a posting that refuses keeps `Posting: no visa sponsorship`, and
+nationals-only roles count as refusals ("Emirati National required", "Singaporeans only"). On the 2026-10-21 fetch 4 of 9,884
+described postings had such wording, all read: Tamara's "Emirati National required" and Deliveroo's UAE-nationals talent pool
+are real; Infoprolearning's 2 ("support Emiratisation objectives through the training of UAE National employees") are a job
+duty. So only the explicit forms are used, and Deliveroo's (which says only "Emiratisation") is missed.
+
+Looked at and **not used**, with the reason: Arbeitnow's free job API (`visa_sponsorship=true`, mostly Germany): on 2026-10-21
+the filtered page's postings offered sponsorship in 20 of 280 and refused it in 17, against 4 of 300 unfiltered, too weak to call
+evidence. Singapore's Tech@SG programme endorses companies' Employment Pass applications but publishes only its list of investment
+firms, not the companies. A company's other postings in the same country: on the 2026-10-21 fetch, 0 of 232 silent engineering
+postings in these three countries were at a company whose other postings there offer sponsorship (UK: 24 of 301), so it was not
+built. No Dubai-specific list was found.
 
 **The scan uses it** (T138): with `candidate.countries` set, every job outside your home country gets a **Visa** column in
 the CSV: what the posting says, then this record for its country ([docs/05](05-outputs-and-notifications.md)).

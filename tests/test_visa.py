@@ -116,7 +116,7 @@ def records(monkeypatch):
     ("Stripe", "London, UK", "We are unable to sponsor visas for this role.",
      "Posting: no visa sponsorship; UK licensed sponsor; on a relocation list"),
     ("Stripe", "London, UK", "Visa sponsorship is available.", "Posting: offers visa sponsorship; UK licensed sponsor; on a relocation list"),
-    ("Stripe", "Dublin, Ireland", "A great team.", "Not stated; 6 Irish work permits 2025-2026; on a relocation list"),
+    ("Stripe", "Dublin, Ireland", "A great team.", "Not stated; 6 Irish work permits 2025-2026"),   # its list entry is London
     ("Adyen", "Amsterdam, Netherlands", "We will verify your right to work.", "Posting: unclear; Dutch recognised sponsor"),
     ("Acme", "London, UK", "", "Not stated"),
     ("Stripe", "Remote - EMEA", "", "Not stated; UK licensed sponsor; on a relocation list"),   # a region of the UK
@@ -126,6 +126,39 @@ def records(monkeypatch):
 ])
 def test_note(records, company, location, text, expected):
     assert visa.note(company, location, text, pl.places_from_config(_cfg("UK", "India", "Netherlands", "Ireland"))) == expected
+
+
+# ── T141: Germany, the UAE and Singapore ─────────────────────────────────────
+
+GULF = {"Acme": [{"source": "lists", "match": "exact", "names": {"Acme": ["relocate.me list: Berlin, Germany"]}}],
+        "Globex": [{"source": "lists", "match": "exact", "names": {"Globex": ["relocate.me list: Remote"]}}]}
+
+
+@pytest.mark.parametrize("company, location, text, expected", [
+    ("Nobody", "Dubai, United Arab Emirates", "A great team.", "Not stated; UAE: the employer applies for the work visa"),
+    ("Nobody", "Singapore", "We will verify your right to work.",
+     "Posting: unclear; Singapore: the employer applies for the Employment Pass"),
+    ("Nobody", "Berlin, Germany", "", "Not stated; Germany: no sponsor licence needed (EU Blue Card)"),
+    ("Acme", "Munich, Germany", "", "Not stated; on a relocation list; Germany: no sponsor licence needed (EU Blue Card)"),
+    ("Acme", "Dubai", "", "Not stated; UAE: the employer applies for the work visa"),      # its list entry is Berlin
+    ("Globex", "Singapore", "", "Not stated; on a relocation list; Singapore: the employer applies for the Employment Pass"),
+    ("Nobody", "Dubai", "Emirati National required.", "Posting: no visa sponsorship"),      # the rule is no promise for this job
+    ("Nobody", "Singapore", "We offer visa sponsorship.", "Posting: offers visa sponsorship"),
+])
+def test_the_country_rule_follows_a_silent_posting(monkeypatch, company, location, text, expected):
+    monkeypatch.setattr(visa, "_records", lambda: GULF)
+    p = pl.places_from_config(_cfg("UAE", "Singapore", "Germany"))
+    assert visa.note(company, location, text, p) == expected
+
+
+@pytest.mark.parametrize("text, kind", [
+    ("Bachelor's degree in Finance. Emirati National required. Skills: AML", "refused"),
+    ("This role is open only to Singaporeans.", "refused"),
+    ("Singaporeans only, please.", "refused"),
+    ("Support Emiratisation objectives through the training and coaching of UAE National employees.", "silent"),
+])
+def test_nationals_only_roles_are_refusals(text, kind):
+    assert visa.wording(text)[0] == kind
 
 
 def test_india_alone_never_writes_a_note(records):

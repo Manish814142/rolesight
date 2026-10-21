@@ -14,7 +14,7 @@ import re
 from functools import lru_cache
 from typing import Any, Dict, List, Optional, Tuple
 
-from job_hunt.places import Places
+from job_hunt.places import PACKS, Places
 
 # Refusal is checked first: "we do not sponsor visas" also contains "sponsor visas".
 _REFUSED = [
@@ -35,6 +35,11 @@ _REFUSED = [
     r"\b(requires?|required|requiring|must be|must hold|must have|open only to|only open to|limited to|restricted to)\s+"
     r"(\w+\s+){0,8}?(citizens?|citizenship|permanent residents?|permanent residency|(?-i:PRs?))\b",   # "PR" upper case only: "pr ocess"
     r"\bonly\s+(\w+\s+){0,3}?(citizens?|permanent residents?)\b",
+    # A nationals-only role (T141): Tamara Dubai "Emirati National required" (2026-10-21 fetch). The bare word "Emiratisation" is not
+    # used: Infoprolearning's "support Emiratisation objectives through the training of UAE National employees" is a job duty.
+    r"\b(nationals?|singaporeans?|emiratis?)\s+(only|required)\b",
+    r"\bonly\s+(\w+\s+){0,2}?(nationals?|singaporeans?|emiratis?)\b",
+    r"\b(open|restricted|limited|reserved)\s+(only\s+)?to\s+(\w+\s+){0,2}?(nationals?|singaporeans?|emiratis?)\b",
 ]
 # US-style compliance boilerplate ("must be authorized to work in the country in which they apply"): no answer either way.
 _BOILERPLATE = re.compile(r"authori[sz]ed to work in the country (in which|where) (they|you) (apply|are applying)", re.I)
@@ -100,6 +105,31 @@ def _sentence(text: str, m: re.Match, pad: int = 140) -> str:
 
 # The record of one company for one country, as a short phrase.
 _RECORD_SOURCE = {"United Kingdom": "uk", "Netherlands": "nl", "Ireland": "ie"}
+
+# Germany, the UAE and Singapore publish no register of sponsoring employers (T141), because their rules make one unnecessary:
+# what a silent posting there still tells you. Read on the official pages on 2026-10-21:
+# - UAE, u.ae "Work visa": "The employer must apply for the standard work visa."; MOHRE (u.ae "Work permits"): "employers may not
+#   recruit or employ any worker unless a work permit is issued in accordance with MoHRE procedures".
+# - Singapore, MOM "Apply for an Employment Pass" (updated 15 June 2026): "You can apply for an Employment Pass online as an
+#   employer or appointed employment agent"; the job must first be advertised on MyCareersFuture.
+# - Germany, Federal Employment Agency "EU Blue Card" (issue 03/2026): the professional applies; no licence for the employer; the
+#   regular card from EUR 50,700 a year needs no Agency approval, shortage occupations and career starters from EUR 45,934.20 do.
+COUNTRY_RULE = {
+    "United Arab Emirates": "UAE: the employer applies for the work visa",
+    "Singapore": "Singapore: the employer applies for the Employment Pass",
+    "Germany": "Germany: no sponsor licence needed (EU Blue Card)",
+}
+_ALL_PLACES = Places(PACKS)
+_ANY_PLACE = re.compile(r"\b(global|remote|worldwide|anywhere)\b", re.IGNORECASE)
+
+
+def _list_covers(details: List[str], country: str) -> bool:
+    """Whether a community list's entry ("abhi-jha gist: Berlin, Germany", "relocate.me list: Remote") is for `country`."""
+    for d in details or []:
+        where = d.split(": ", 1)[-1]
+        if _ANY_PLACE.search(where) or country in {c.name for c in _ALL_PLACES.countries_in(where)}:
+            return True
+    return False
 _LABEL = {"refused": "Posting: no visa sponsorship", "offered": "Posting: offers visa sponsorship",
           "mentioned": "Posting: unclear", "silent": "Not stated"}
 
@@ -120,7 +150,8 @@ def record(company: str, country: str) -> str:
     for ev in _records().get(company or "", []):
         source = ev.get("source")
         if source == "lists":
-            said.append("on a relocation list")
+            if any(_list_covers(d, country) for d in (ev.get("names") or {}).values()):   # the list's entry for this country
+                said.append("on a relocation list")
         elif source == _RECORD_SOURCE.get(country):
             if source == "uk":
                 said.append("UK licensed sponsor")
@@ -147,5 +178,8 @@ def note(company: str, location: str, description: str, places: Places) -> str:
     if not countries:
         region = places.region_in(location)
         countries = [region] if region else []
-    said = "; ".join(dict.fromkeys(r for r in (record(company, c.name) for c in countries) if r))
-    return f"{_LABEL[kind]}; {said}" if said else _LABEL[kind]
+    said = [r for r in (record(company, c.name) for c in countries) if r]
+    if kind in ("silent", "mentioned"):          # the country's own rule when the posting does not answer (T141)
+        said += [COUNTRY_RULE[c.name] for c in countries if c.name in COUNTRY_RULE]
+    said = list(dict.fromkeys(said))
+    return f"{_LABEL[kind]}; {'; '.join(said)}" if said else _LABEL[kind]
