@@ -98,6 +98,23 @@ def test_worth_applying_uses_the_scans_min_score_when_there_is_a_config(history,
     assert rows["https://x.example/2"] == "Yes" and rows["https://x.example/3"] == "No"
 
 
+def test_export_writes_the_visa_column_for_config_jsons_countries(history, monkeypatch):
+    """Review (T138): `autopilot export` reads config.json's countries for the Visa column; without them (India) there is none.
+    A mutant that skipped reading them passed every test."""
+    from job_hunt import places
+    london = _job(20, location="London, UK")
+    save_job(london)
+    update_job_status(job_key(london), "scored", 88, "r")
+    assert "Visa" not in _export(monkeypatch, "--days", "7")[0]
+    Path("config.json").write_text(json.dumps({"candidate": {"countries": ["United Kingdom"]}}))
+    try:
+        rows = {r["Application URL"]: r["Visa"] for r in _export(monkeypatch, "--days", "7")}
+    finally:
+        places.configure_places(places.INDIA)
+    assert rows["https://x.example/20"] == "Not stated"        # no record for "C20"; "Node.js" says nothing about a visa
+    assert rows["https://x.example/0"] == ""                   # Bengaluru: no visa needed
+
+
 def test_the_helper_reads_the_file_just_written_even_when_both_files_have_the_same_mtime(history, monkeypatch):
     """T82: two exports a few milliseconds apart can land in one filesystem timestamp tick (1 ms on ext4 here, measured), and
     "the newest file" was then whichever the directory listed first: the first export's, with every Worth Applying blank."""
