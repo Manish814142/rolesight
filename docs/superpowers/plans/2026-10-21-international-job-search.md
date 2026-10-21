@@ -1,5 +1,7 @@
 # International job search (T108) Implementation Plan
 
+**Status (2026-10-21): built as T136–T140, in the board's Review queue.** Deviations from this plan are in each task's CHANGELOG entry (e.g. a region counts only when it names no other place; citizenship/PR requirements count as refusals; `init --countries` replaces the example `seeking`).
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** a person in India can search jobs in the countries they choose (first: United Kingdom, Germany, Netherlands,
