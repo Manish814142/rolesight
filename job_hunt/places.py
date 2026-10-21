@@ -20,7 +20,7 @@ import unicodedata
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from functools import lru_cache
-from typing import Any, Dict, FrozenSet, Iterator, List, Optional, Set, Tuple, Union
+from typing import Any, Dict, FrozenSet, Iterable, Iterator, List, Optional, Set, Tuple, Union
 
 from job_hunt.settings import countries_of, home_country_of
 
@@ -357,6 +357,7 @@ _BY_ALIAS = {a: c for c in PACKS for a in (c.name.lower(), *c.aliases)}
 _HAND_ISO3 = {c.code: re.compile(rf"(?<![A-Za-z]){c.iso3}(?![A-Za-z])") for c in PACKS if c.iso3}
 
 
+@lru_cache(maxsize=None)
 def country(written: str) -> Country:
     """The pack for a country name as a person writes it ("UK", "Holland", "uae", "Brazil", "BR"); a name no pack knows gets
     a pack of its name alone."""
@@ -397,6 +398,15 @@ class Places:
 
     def names_place(self, location: str) -> bool:
         return bool(self.countries_in(location) or self.region_in(location))
+
+    def seen_in(self, locations: Iterable[str]) -> List[str]:
+        """The names of your countries that some of these locations name (a location that names no country but a region of
+        one counts for every country that region includes), in your order (T144: what a board's entry records as its places)."""
+        seen: Set[str] = set()
+        for loc in locations:
+            named = self.countries_in(loc)
+            seen.update(c.name for c in (named or [c for c in self.countries if c.in_region(loc)]))
+        return [c.name for c in self.countries if c.name in seen]
 
     # What the connectors that ask a board for one country send (T137). India alone gives exactly what they sent before:
     # Workday "India", Eightfold and Phenom "India", Oracle HCM the "India" facet, Amazon "IND".

@@ -396,6 +396,7 @@ def evaluate_board(seed_name: str, ats: str, slug: str, from_url: bool = False) 
         "jobs": len(jobs), "place_jobs": india, "prefilter_pass": len(passing),
         "newest_age_days": "" if age is None else age, "identity": how,
         "sample_titles": "; ".join(j.title[:50] for j in passing[:3]),
+        "seen_places": [] if active_places().india_only() else active_places().seen_in(j.location for j in jobs),
     }
 
 
@@ -517,7 +518,7 @@ def discover(seeds: List[Dict[str, Any]], workers: int = 40,
     """Return (verified companies.json entries, report rows for every seed). A board is accepted for `places` (default the
     active ones, India unless configured): it needs a job there, and its entry records them when they are not India (T139)."""
     places = places or active_places()
-    tag = {} if places.india_only() else {"places": places.search_names()}
+    tag = {} if places.india_only() else {"places": places.search_names()}   # Workday, Oracle HCM, Eightfold, Phenom: all checked
     board_seeds = [s for s in seeds if not {"workday", "oracle_hcm", "eightfold", "phenom"} & s.keys()]
     tasks = [(s, ats, slug, fu) for s in board_seeds for ats, slug, fu in _probe_pairs(s)]
     print(f"Phase 1/3 — probing {len(tasks)} (ATS, slug) pairs for {len(board_seeds)} companies...")
@@ -564,9 +565,12 @@ def discover(seeds: List[Dict[str, Any]], workers: int = 40,
             name = display_name(seed["name"])
             if seed.get("exact"):         # the board's own name where the ATS publishes one, else the label we gave it
                 name = _tidy_name(_board_name(best["ats"], best["board"]) or name)
+            # A board lists its jobs whole, so its entry records only the countries where it has one (T144); the others'
+            # light checks read the first page of a search, which cannot say where else there are jobs.
+            seen = {"places": best["seen_places"]} if tag and best.get("seen_places") else tag
             verified.append({
                 "name": name, "ats": best["ats"], "slug": best["board"],
-                "headcount": match_headcount(seed["name"], best["board"], company_cache, slug_cache), **tag,
+                "headcount": match_headcount(seed["name"], best["board"], company_cache, slug_cache), **seen,
             })
     rows.extend(wd_rows)
     # A tenant may have several sites (Careers, Campus, ...) and merge_companies keeps one entry per company, the first it

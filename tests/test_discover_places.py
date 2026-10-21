@@ -57,6 +57,33 @@ def test_discover_for_other_places_writes_them_on_the_entry(monkeypatch):
     assert verified == [] and any(r.get("verdict") == "no India jobs" for r in rows)
 
 
+EU = pl.places_from_config({"candidate": {"countries": ["United Kingdom", "Germany", "Spain", "Singapore"]}})
+
+
+def test_a_board_records_only_the_countries_where_it_has_a_job(monkeypatch):
+    """T144: 22 countries per run must not make every board listed for all 22."""
+    _stub_discovery(monkeypatch, "London, UK")
+    monkeypatch.setattr(disc, "fetch_company_jobs", lambda c: [_jp("London, UK"), _jp("Madrid, Spain"), _jp("Austin, TX")])
+    verified, _ = disc.discover(disc.parse_seeds("Monzo\n"), workers=2, places=EU)
+    assert verified[0]["places"] == ["United Kingdom", "Spain"]                 # in the person's order; Germany: no job
+
+
+def test_a_region_only_board_records_the_countries_of_that_region(monkeypatch):
+    _stub_discovery(monkeypatch, "Remote - EMEA")
+    verified, _ = disc.discover(disc.parse_seeds("Monzo\n"), workers=2, places=EU)
+    assert verified[0]["places"] == ["United Kingdom", "Germany", "Spain"]      # EMEA: not Singapore
+
+
+def test_seen_in_names_each_country_once_in_the_persons_order():
+    assert EU.seen_in(["Berlin", "London, UK", "Munich, Germany", "Pune, India"]) == ["United Kingdom", "Germany"]
+    assert EU.seen_in(["Singapore", "APAC"]) == ["Singapore"] and EU.seen_in(["Pune, India"]) == []
+    assert EU.seen_in(["Remote - Europe"]) == ["United Kingdom", "Germany", "Spain"]
+
+
+def test_country_is_looked_up_once():
+    assert pl.country("Spain") is pl.country("Spain") and pl.country("Atlantis") is pl.country("Atlantis")
+
+
 def test_discover_for_india_writes_no_places(monkeypatch):
     _stub_discovery(monkeypatch, "Bengaluru, India")
     verified, _ = disc.discover(disc.parse_seeds("Monzo\n"), workers=2)
