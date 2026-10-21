@@ -97,15 +97,22 @@ class ArchiveError(RuntimeError):
         self.urls = urls or []
 
 
-YEARS = list(range(2014, 2027))       # a chunk that still fails is asked again one year of captures at a time
+YEARS = list(range(2014, 2027))       # a chunk that still fails is asked again one year of captures at a time, then by half, quarter, month
+FIRST_YEAR = YEARS[0]
 
 
-def _fetch_one(query: Dict[str, Any], session: Any) -> List[str]:
+def _month(i: int) -> str:
+    """Month number i counted from January of FIRST_YEAR, as the archive writes a date: 0 -> '201401'."""
+    year, month = divmod(i, 12)
+    return f"{FIRST_YEAR + year}{month + 1:02d}"
+
+
+def _fetch_one(query: Dict[str, Any], session: Any, tries: int = TRIES) -> List[str]:
     params = {"url": query["url"], "matchType": query["matchType"], "collapse": "urlkey", "fl": "original", "output": "text",
               "filter": ["statuscode:200", f"original:{query['regex']}"]}
-    if query.get("year"):
-        params["from"] = params["to"] = str(query["year"])
-    for attempt in range(TRIES):
+    if query.get("from"):
+        params["from"], params["to"] = query["from"], query["to"]
+    for attempt in range(tries):
         try:
             resp = session.get(CDX, params=params, timeout=900)
             if resp.status_code == 200:
@@ -113,7 +120,21 @@ def _fetch_one(query: Dict[str, Any], session: Any) -> List[str]:
         except requests.RequestException:
             pass
         time.sleep(5 * (attempt + 1))
-    raise ArchiveError(f"the Internet Archive did not answer for {query['name']} after {TRIES} tries")
+    raise ArchiveError(f"the Internet Archive did not answer for {query['name']} after {tries} tries")
+
+
+def _fetch_span(query: Dict[str, Any], lo: int, hi: int, session: Any, got: List[str]) -> bool:
+    """URLs captured in months lo..hi (counted from FIRST_YEAR) into `got`; a span the archive will not answer is split in two,
+    down to one month. False when a month still fails (the rest of the span is kept)."""
+    try:
+        got += _fetch_one({**query, "from": _month(lo), "to": _month(hi)}, session, tries=2)
+        return True
+    except ArchiveError:
+        if lo == hi:
+            return False
+        mid = (lo + hi) // 2
+        first = _fetch_span(query, lo, mid, session, got)
+        return _fetch_span(query, mid + 1, hi, session, got) and first
 
 
 def fetch_urls(query: Dict[str, Any], session: Any = None, workers: int = 3) -> List[str]:
@@ -123,25 +144,24 @@ def fetch_urls(query: Dict[str, Any], session: Any = None, workers: int = 3) -> 
     if not query.get("split"):
         return _fetch_one(query, session)
 
-    def chunk(url: str) -> Tuple[str, Optional[List[str]]]:
+    def chunk(url: str) -> Tuple[str, List[str], bool]:
         try:
-            return url, _fetch_one({**query, "url": url}, session)
+            return url, _fetch_one({**query, "url": url}, session), True
         except ArchiveError:
             pass
-        # Too big for one answer (wd1, wd3, wd5, Lever's commonest letters, 2026-10-21): one year of captures at a time. A board
-        # captured in several years is listed once by `board_seeds`. The chunk fails only if one of its years does.
+        # Too big for one answer (wd1, wd3, wd5, Lever's commonest letters, 2026-10-21): one year of captures at a time, and a year
+        # that still fails in halves, down to one month. A board captured in several years is listed once by `board_seeds`.
         got: List[str] = []
+        ok = True
         for year in YEARS:
-            try:
-                got += _fetch_one({**query, "url": url, "year": year}, session)
-            except ArchiveError:
-                return url, None
-        return url, got
+            lo = (year - FIRST_YEAR) * 12
+            ok = _fetch_span(query, lo, lo + 11, session, got) and ok
+        return url, got, ok
 
     with ThreadPoolExecutor(max_workers=workers) as ex:
         done = list(ex.map(chunk, query["split"]))
-    urls = [u for _, got in done for u in (got or [])]
-    failed = [url for url, got in done if got is None]
+    urls = [u for _, got, _ in done for u in got]            # what a failed chunk did return is kept too
+    failed = [url for url, _, ok in done if not ok]
     if failed:
         raise ArchiveError(f"the Internet Archive did not answer for {query['name']}: {len(failed)} of {len(done)} chunks "
                            f"({', '.join(failed[:4])}{', ...' if len(failed) > 4 else ''})", urls)

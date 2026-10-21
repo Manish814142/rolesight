@@ -135,36 +135,56 @@ def test_a_chunk_that_never_answers_is_named_and_the_others_are_kept(monkeypatch
     assert sorted(e.value.urls) == ["https://jobs.lever.co/acme", "https://jobs.lever.co/cog"]
 
 
-class YearSession:
-    """The whole chunk is too big (504); asked one year at a time (`from`/`to`), it answers; 2020 never does for `bad_year`."""
-    def __init__(self, bad_year=None):
-        self.calls, self.bad_year = [], bad_year
+class SpanSession:
+    """The whole chunk is too big (504). A span of `max_months` months or fewer answers; `bad_month` (YYYYMM) never does."""
+    def __init__(self, max_months=12, bad_month=None):
+        self.calls, self.max_months, self.bad_month = [], max_months, bad_month
 
     def get(self, url, params=None, timeout=None):
         self.calls.append(dict(params))
-        year = params.get("from")
-        if year is None or year == self.bad_year:
+        lo, hi = params.get("from"), params.get("to")
+        if lo is None:
             return type("R", (), {"status_code": 504, "text": "x"})()
-        return type("R", (), {"status_code": 200, "text": f"https://jobs.lever.co/co{year}\nhttps://jobs.lever.co/always\n"})()
+        months = (int(hi[:4]) - int(lo[:4])) * 12 + int(hi[4:]) - int(lo[4:]) + 1
+        if months > self.max_months or (self.bad_month and lo <= self.bad_month <= hi and lo == hi):
+            return type("R", (), {"status_code": 504, "text": "x"})()
+        if self.bad_month and lo <= self.bad_month <= hi:
+            return type("R", (), {"status_code": 504, "text": "x"})()
+        return type("R", (), {"status_code": 200, "text": f"https://jobs.lever.co/co{lo}\nhttps://jobs.lever.co/always\n"})()
 
 
 def test_a_chunk_too_big_for_one_answer_is_asked_one_year_at_a_time(monkeypatch):
     monkeypatch.setattr(hb.time, "sleep", lambda s: None)
     q = {**hb.ARCHIVE_QUERIES["lever"], "split": ["jobs.lever.co/a"]}
-    session = YearSession()
+    session = SpanSession(max_months=12)
     got = hb.fetch_urls(q, session=session)
-    assert "https://jobs.lever.co/co2014" in got and "https://jobs.lever.co/co2026" in got and "https://jobs.lever.co/always" in got
-    assert {c["from"] for c in session.calls if "from" in c} == {str(y) for y in hb.YEARS}
-    assert all(c["from"] == c["to"] for c in session.calls if "from" in c)
+    assert "https://jobs.lever.co/co201401" in got and "https://jobs.lever.co/co202601" in got and "https://jobs.lever.co/always" in got
+    spans = {(c["from"], c["to"]) for c in session.calls if "from" in c}
+    assert ("201401", "201412") in spans and ("202601", "202612") in spans and len(spans) == len(hb.YEARS)
     lines = hb.board_seeds(got, [])
     assert sum("Always" in ln for ln in lines) == 1                       # captured in 13 years, one seed
 
 
-def test_a_chunk_with_one_year_that_never_answers_fails_and_keeps_the_other_chunks(monkeypatch):
+def test_a_year_that_is_still_too_big_is_halved_down_to_the_month(monkeypatch):
     monkeypatch.setattr(hb.time, "sleep", lambda s: None)
     q = {**hb.ARCHIVE_QUERIES["lever"], "split": ["jobs.lever.co/a"]}
-    with pytest.raises(hb.ArchiveError, match=r"1 of 1 chunks"):
-        hb.fetch_urls(q, session=YearSession(bad_year="2020"))
+    session = SpanSession(max_months=3)
+    got = hb.fetch_urls(q, session=session)
+    spans = {(c["from"], c["to"]) for c in session.calls if "from" in c}
+    assert ("201401", "201406") in spans and ("201401", "201403") in spans            # a year, a half, then a quarter that answers
+    assert not any(a == b for a, b in spans)                                          # never down to a month when a quarter does
+    assert "https://jobs.lever.co/co201401" in got and "https://jobs.lever.co/co201404" in got
+
+
+def test_a_month_that_never_answers_fails_the_chunk_but_keeps_what_the_other_months_gave(monkeypatch):
+    monkeypatch.setattr(hb.time, "sleep", lambda s: None)
+    q = {**hb.ARCHIVE_QUERIES["lever"], "split": ["jobs.lever.co/a"]}
+    with pytest.raises(hb.ArchiveError, match=r"1 of 1 chunks") as e:
+        hb.fetch_urls(q, session=SpanSession(max_months=12, bad_month="202003"))
+    urls = e.value.urls
+    assert "https://jobs.lever.co/co201401" in urls                                   # another year
+    assert "https://jobs.lever.co/co202001" in urls and "https://jobs.lever.co/co202004" in urls   # the months around it
+    assert "https://jobs.lever.co/co202003" not in urls                               # the month that never answered
 
 
 def test_main_writes_the_seeds_of_the_chunks_that_answered_and_exits_3(tmp_path, monkeypatch, capsys):
