@@ -438,6 +438,8 @@ def evaluate_workday(seed_name: str, tenant: str, dc: str, site: str) -> Dict[st
                 return row
             page = r.json().get("jobPostings", []) if r.status_code == 200 else []
             status = f"HTTP {r.status_code}"
+            if r.status_code in (404, 422):      # no such board or site: every other search term answers the same (T144)
+                break
         except Exception as e:
             page, status = [], str(e)[:60]
         known = {q.get("externalPath") for q in posts}

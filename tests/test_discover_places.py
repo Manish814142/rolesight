@@ -97,6 +97,18 @@ def test_the_workday_light_check_tries_each_term_until_one_shows_a_place(mock_po
 
 
 @patch("requests.post")
+@pytest.mark.parametrize("status", [404, 422])
+def test_the_workday_light_check_stops_at_a_missing_board(mock_post, status):
+    """T144: 24 countries are 24 search terms; a board or site that does not exist answers every one the same way."""
+    r = MagicMock()
+    r.status_code, r.headers = status, {}
+    mock_post.return_value = r
+    with pl.using(UK):
+        row = disc.evaluate_workday("Gone", "gone", "wd5", "Ext")
+    assert mock_post.call_count == 1 and row["accepted"] is False and f"HTTP {status}" in row["verdict"]
+
+
+@patch("requests.post")
 def test_the_workday_light_check_for_india_asks_once(mock_post):
     mock_post.return_value = _wd(["Pune, India"])
     assert disc.evaluate_workday("Acme", "acme", "wd5", "Ext")["accepted"] is True
