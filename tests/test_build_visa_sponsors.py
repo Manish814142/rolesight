@@ -254,6 +254,15 @@ def test_an_older_download_without_the_relocate_file_still_builds(tmp_path):
     assert data["companies"]["Stripe"][0]["source"] == "lists"
 
 
+def test_a_download_with_the_relocate_file_records_its_companies_with_their_places(tmp_path):
+    """Review: a build that skipped relocate.md passed every test (only the parser and the build without it were tested)."""
+    src = _sources(tmp_path / "src")
+    (src / "relocate.md").write_text(RELOCATE, encoding="utf-8")
+    data, _ = bvs.build(src, COMPANIES + [{"name": "Applike Group", "ats": "personio"}], {"accepted": {}, "rejected": {}})
+    assert data["companies"]["Applike Group"] == [{"source": "lists", "match": "exact",
+                                                   "names": {"Applike Group": ["relocate.me list: Hamburg, Germany"]}}]
+
+
 
 # ── T143: the USA's H-1B approvals and Canada's positive LMIA employers ───────
 

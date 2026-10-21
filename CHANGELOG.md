@@ -30,6 +30,10 @@ reconstructed from git history.
   posted-date stop reads the search's own new positions). India alone sends one term, so its requests and jobs are unchanged.
   T137's real-fetch counts (ABB 23 UK, …) were taken before the fix.
 
+### Tests added in review (2026-10-21, T141)
+- A visa build that skipped relocate.me's file passed every test (the parser and the build without the file were tested); four
+  other mutants of T141 were caught. `tests/test_build_visa_sponsors.py` now builds with the file and checks its entry.
+
 ### Tests added in review (2026-10-21, T139)
 - The monthly recheck re-discovers a dead board for the places its entry was accepted for; a mutant that searched for India
   jobs instead (so an entry like Monzo would be removed) passed every test (7 other mutants of T139 were caught).
