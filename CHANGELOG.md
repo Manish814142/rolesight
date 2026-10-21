@@ -9,6 +9,19 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed (2026-10-21, T140 follow-up: what an audit of the international path found)
+- `rolesight init --resume CV --countries "…"`: the resume draft's `seeking` was asked for "your city, or anywhere in India or
+  remote" whatever the countries, which brings back the location mark-down the end-to-end run found. With countries other than
+  India the prompt now asks for the roles in those countries and the visa sponsorship and relocation needed; India's prompt is
+  byte-identical to before (compared with the committed one).
+- The Telegram alert of a job outside your home country carries its Visa note (`🛂 Visa: …`); India's alert is unchanged.
+- `autopilot` help lists `init --countries`, `check-filter --countries` and `discover --places`.
+- Docs brought in line with the international path: ARCHITECTURE (pipeline, `places.py` and `visa.py`, discover's gate, rule 1,
+  the Visa column and alert, the limitation), README (location rules, the Visa column, the layout, the pre-filter row), the user
+  guide (what you can change, `cities`, `init --countries --resume`, rule 1 and your countries, the funnel's `In your places`,
+  `discover`, the filter table), `docs/07` (the place rules for other countries), `docs/08` (five symptoms), `docs/01`, the docs
+  index and CLAUDE.md (the package map, `config.json`).
+
 ### Added (2026-10-21, T140: T108 part 5, init --countries, the guide, the end-to-end run)
 - `rolesight init --countries "United Kingdom, Germany"` writes `candidate.countries` (as the built-in names) into `config.json` and
   keeps the rest; while `candidate.seeking` is still the example's text (it names Bengaluru) it is replaced with one naming your

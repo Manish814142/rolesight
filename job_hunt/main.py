@@ -3,11 +3,12 @@
 Usage:
   autopilot init              — set up working directory (first-time pip install setup)
   autopilot init --resume CV.pdf  — also draft your profile, title filter and rubric.md from your resume (Gemini)
-  autopilot check-filter "Java Developer" "Pune, India"  — would this job be scored? (your config.json filter)
+  autopilot init --countries "UK, Germany"  — look in these countries (config.json candidate.countries; default India)
+  autopilot check-filter "Java Developer" "Pune, India"  — would this job be scored? (your config.json filter; --countries "UK")
   autopilot doctor            — run environment and network sanity checks
   autopilot validate          — probe and prune 404/403 ATS boards from companies.json
   autopilot harvest           — probe all ATS engines and rebuild companies.json
-  autopilot discover          — verify company names against ATS boards (see job_hunt/discovery.py)
+  autopilot discover          — verify company names against ATS boards (see job_hunt/discovery.py; --places "UK, Germany")
   autopilot scan              — run daily job scan
   autopilot scan --posted-within 3  — only score jobs posted in the last 3 days (undated jobs kept)
   autopilot draft #1          — draft application for job #1 from last scan

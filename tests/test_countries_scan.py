@@ -132,3 +132,27 @@ def test_the_example_configs_name_india_and_mean_what_no_setting_means():
         cand = json.loads((Path(__file__).resolve().parent.parent / f).read_text())["candidate"]
         assert cand["countries"] == ["India"] and cand["home_country"] == "India"
         assert places_from_config({"candidate": cand}) == places_from_config({})
+
+
+def test_init_resume_drafts_seeking_for_your_countries(tmp_path, monkeypatch):
+    """T140: the draft prompt asks for a `seeking` in your countries, with the visa; India's prompt is unchanged."""
+    import json
+
+    from job_hunt import onboarding
+
+    class Stop(Exception):
+        pass
+    prompts = []
+
+    def fake_generate(key, models, parts, schema=None):
+        prompts.append(parts[-1])
+        raise Stop
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("GEMINI_API_KEY", "test-key")
+    (tmp_path / "cv.md").write_text("Backend engineer in Pune. " * 20)
+    (tmp_path / "config.json").write_text(json.dumps({"candidate": {"countries": ["Singapore"]}}))
+    with pytest.raises(Stop):
+        onboarding.personalize(tmp_path, tmp_path / "cv.md", True, True, generate=fake_generate)
+    assert "in Singapore (where they want to work" in prompts[0] and "need the employer to sponsor a work visa" in prompts[0]
+    assert "anywhere in India or remote" not in prompts[0]
+    assert onboarding._INDIA_SEEKING in onboarding._draft_prompt("cv", "2026-10-21")

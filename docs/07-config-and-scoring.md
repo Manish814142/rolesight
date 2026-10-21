@@ -65,7 +65,8 @@ them, the **defaults** below apply, written for one profile (Node.js / backend, 
 whole words in any case, so `java` doesn't match "JavaScript", `test` doesn't match "Latest", and `intern` doesn't
 match "Internal"; spaces and hyphens inside an entry are optional (`back end` also matches "Back-End" and
 "backend"). The defaults replaced hand-written regexes and make the same decision on all 34,624 distinct titles of
-the 2026-10-13 fetch and the production database (measured 2026-10-14). The **location rules** (India) stay in
+the 2026-10-13 fetch and the production database (measured 2026-10-14). The **location rules** (India's; other countries' packs in `job_hunt/places.py` when `candidate.countries` names them,
+T136) stay in
 `job_hunt/prefilter.py`.
 
 They are applied in this order (the default lists):
@@ -104,7 +105,14 @@ They are applied in this order (the default lists):
      NCR, Kolkata) or some 150 more (Coimbatore, Indore, Nagpur, Bhubaneswar, Lucknow, Kochi, …), or a lowercase trailing
      `, in` country code (SmartRecruiters) → **pass**, even when US cities are listed too. An uppercase `, IN` is Indiana and
      doesn't count. (`LOCATION_INDIA_PATTERN` and `LOCATION_INDIA_MORE_PATTERN` in `prefilter.py`.) Known limit: the lists have no country context, so a foreign place with an Indian name ("Kochi, Japan") also counts as India; such a job still has to pass the title rule, and the fetch of 2026-10-13 had none that did.
-   - **Optional city filter** (`candidate.cities`, e.g. `["Pune", "Hyderabad"]`; empty = all of India). A job in an Indian city
+   - **Other countries** (`candidate.countries`, T136): India alone takes the rules above unchanged. Otherwise a location passes
+     when it names one of your countries, one of its cities or a code boards write ("Dubai, ARE", "SGP", "Berlin, de"; upper-case
+     ", DE" is Delaware); when it names a region of one of them and no other place ("Remote - EMEA", "Europe" for Germany, "APAC"
+     for Singapore, not "EMEA - UK"); when it says worldwide/anywhere/global; or when it is remote and names no place. A city
+     that also exists in North America ("London, Ontario", "Dublin, OH", "US-CA-Dublin") counts only without a US/Canada
+     marker. Rejected otherwise: `Location '…' is not in your places (…)`. Measured on the 2026-10-21 fetch: a UAE config kept
+     every Dubai/UAE job with a passing title; India's decisions are unchanged on 111,106 saved jobs.
+   - **Optional city filter** (`candidate.cities`, e.g. `["Pune", "Hyderabad"]`; empty = all of India or of your countries). A job in an Indian city
      or state that is not one of them is rejected, unless it is remote or names no city (just "India"). Usual alternative names
      match (Bangalore = Bengaluru, Gurgaon = Gurugram), and `"Delhi NCR"` means Delhi, New Delhi, Noida, Greater Noida, Gurugram,
      Ghaziabad and Faridabad. A chosen city the lists do not know still counts as India.

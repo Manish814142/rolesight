@@ -23,6 +23,7 @@ from typing import Any, Callable, Dict, List, Optional
 from job_hunt.llm_utils import DEFAULT_SCORING_RUBRIC, _gemini_models, _get_genai_client_and_types
 from job_hunt.log import redact
 from job_hunt.models import JobPosting
+from job_hunt.places import Places, places_from_config
 from job_hunt.prefilter import (
     DEFAULT_TITLE_EXCEPTIONS,
     DEFAULT_TITLE_EXCLUDE,
@@ -193,7 +194,24 @@ DRAFT_SCHEMA: Dict[str, Any] = {
 TOO_BROAD = {"engineer", "engineers", "engineering", "developer engineer"}
 
 
-def _draft_prompt(resume: str, today: str) -> str:
+_INDIA_SEEKING = ('''- seeking: one line, the roles and work arrangement they would want, judged from the resume (e.g. "Backend or platform roles,
+  remote or hybrid in Bengaluru"). If the resume names a city, use it; otherwise say "anywhere in India or remote".''')
+
+
+def _seeking_instruction(places: Optional[Places] = None) -> str:
+    """The prompt's `seeking` line: India's as before; for other countries (T140) it names them and the visa the person needs,
+    since a Bengaluru preference in `seeking` made Gemini mark a Singapore office job down (the end-to-end run)."""
+    if places is None or places.india_only():
+        return _INDIA_SEEKING
+    names = places.search_names()
+    where = names[0] if len(names) == 1 else ", ".join(names[:-1]) + " or " + names[-1]
+    return (f'''- seeking: one line, the roles they would want, judged from the resume, in {where} (where they want to work, whatever
+  city the resume names), and that they live in {places.home} and need the employer to sponsor a work visa and relocation for a
+  role outside {places.home} (e.g. "Backend or platform roles in {where}; I live in {places.home} and need visa sponsorship and
+  relocation").''')
+
+
+def _draft_prompt(resume: str, today: str, places: Optional[Places] = None) -> str:
     example = {"include": list(DEFAULT_TITLE_INCLUDE), "exclude": list(DEFAULT_TITLE_EXCLUDE)}
     return f"""You set up a job radar for the person whose resume is below. It fetches jobs from company boards (mostly in India),
 drops those whose TITLE does not fit, and asks an AI to score the rest against the resume. Today is {today}.
@@ -203,8 +221,7 @@ Draft this person's settings as JSON:
 - jobs: every job and internship on the resume, each with company, title, start and end as "YYYY-MM" (a month name or
   number from the resume; "Nov 2023" is "2023-11"); end is "present" for a current role. Copy the dates, do not compute.
 - profile: one line, years of experience and core stack, e.g. "3 YOE backend engineer. Stack: Node.js, TypeScript, MongoDB, AWS".
-- seeking: one line, the roles and work arrangement they would want, judged from the resume (e.g. "Backend or platform roles,
-  remote or hybrid in Bengaluru"). If the resume names a city, use it; otherwise say "anywhere in India or remote".
+{_seeking_instruction(places)}
 - not_suitable: one line, roles that are clearly not for them (e.g. "Pure frontend, QA, support, management, internships").
 - include: 10 to 40 lower-case words or short phrases; a job title must contain one of them to be scored. Use the role names
   this person would apply to and their variants ("node", "nodejs", "node.js"). Matching is whole-word and case-insensitive;
@@ -424,7 +441,7 @@ def personalize(cwd: Path, resume: Path, config_was_created: bool, yes: bool,
 
     today = date.today().isoformat()
     print("Drafting your settings with Gemini…")
-    raw = generate(key, models, [_draft_prompt(text, today)], DRAFT_SCHEMA)
+    raw = generate(key, models, [_draft_prompt(text, today, places_from_config(config))], DRAFT_SCHEMA)   # T140: your countries
     try:
         draft = json.loads(raw)
     except ValueError:

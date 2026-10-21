@@ -30,10 +30,15 @@ every job's pre-filter decision, score and reason is there.
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| A job you expected isn't in today's CSV | (1) the pre-filter rejected it, (2) it was scored in an earlier scan (CSVs only hold that scan's jobs), (3) it's outside `--posted-within`, (4) Workday's India search didn't return it | `grep -i "<title words>" data/autopilot.log` shows the decision; `autopilot export --days 30` shows earlier scores |
+| A job you expected isn't in today's CSV | (1) the pre-filter rejected it, (2) it was scored in an earlier scan (CSVs only hold that scan's jobs), (3) it's outside `--posted-within`, (4) Workday's search (India, or your countries' terms) didn't return it | `grep -i "<title words>" data/autopilot.log` shows the decision; `autopilot export --days 30` shows earlier scores |
 | The same job appears several times | Fixed in T47 for Workday paging. If it still happens, the board may list the job twice under different requisitions | Compare the URLs; each should be a different requisition |
 | Many jobs score exactly 90 | Scores cluster; the rubric (T48) shifts calibration but not ranking | Read the Reason column to separate them; sub-scores are planned (T41) |
 | The scan uses a different `min_score` than `config.json` says | A `MIN_SCORE=` line in `.env` (or exported in the shell) overrides it; since T05 the template sets none and `run_daily.sh` exports none | Look at the scan's `Min score:` line; delete the `MIN_SCORE` line from `.env` |
+| Jobs abroad never reach Gemini | `candidate.countries` is not set (India is the default), or the job names a place that is not yours | `rolesight check-filter "Backend Engineer" "<location as the board writes it>" --countries "<yours>"` prints the reason |
+| The scan log says `'<country>' has no built-in place list` | Only India, the UK, Germany, the Netherlands, Ireland, the UAE and Singapore have packs | Jobs naming the country pass; add its cities to `candidate.cities`, or a pack to `job_hunt/places.py` |
+| `Scoring rubric: rule 1 is not the built-in India text` | Your `rubric.md` rule 1 was rewritten, so it is sent as written | Make it name your countries and the visa rule (see the user guide, "Rule 1 and your countries") |
+| Office jobs abroad score low "for the location" | `candidate.seeking` still names an Indian city or "remote" | Write `seeking` for your countries ("Backend roles in Berlin; I need visa sponsorship"); `init --countries` replaces the example text |
+| No Visa column | India alone, or every job is in your home country or remote with no place | Expected: the column appears only for jobs that need a visa |
 | A large `scan.log` in the repo root | The log used to live there, unrotated; nothing writes it now (T16) | Safe to delete. `data/autopilot.log` rotates at 5 MB and keeps 3 older files |
 
 ## Drafting and Telegram

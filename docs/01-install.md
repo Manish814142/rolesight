@@ -63,7 +63,8 @@ with `--yes` to replace the candidate settings; the previous files are kept as `
 
 ### Or configure by hand
 
-`rolesight init` without `--resume` writes the defaults (the example profile: a 3-year Node.js backend engineer).
+`rolesight init` without `--resume` writes the defaults (the example profile: a 3-year Node.js backend engineer). Add `--countries "United Kingdom, Germany"` to look
+outside India ([user guide](00-user-guide.md#looking-for-jobs-outside-india)).
 Put your key in `.env` (`GEMINI_API_KEY="…"`), copy `resume/YOUR_RESUME.md` to `resume/<your-name>.md`, replace its
 text and point `candidate.resume_path` at it, then edit the candidate part of `config.json` and the facts in
 `rubric.md`. Every key is documented in [07](07-config-and-scoring.md) and, step by step, in the

@@ -71,7 +71,7 @@ the company's own job page.
 |---|---|
 | **Direct ATS APIs** | Adapters for Greenhouse (US and EU), Lever, Ashby, SmartRecruiters, Workday, Oracle HCM, Eightfold, Phenom, Amazon Jobs, Workable, Recruitee and Personio. Parallel fetching (8 workers) with a hard time limit on every request, so one slow board can't stall a scan. |
 | **Company list** | `companies.json`: 1,616 boards, each checked to be live: 1,589 have India jobs; 27 hire in the UK, Germany, the Netherlands, Ireland, the UAE or Singapore and not in India, and are fetched only when `candidate.countries` names one of those (T139). The first 224 were curated by hand and matched to the right employer by name; the other 1,365 were taken from the job boards' own web addresses (`scripts/harvest_board_urls.py`, T111). `autopilot discover` adds companies from a pasted list in any format and applies the same checks. |
-| **Local pre-filter** | Word-bounded title rules (backend / Node.js / SDE / software engineer in, plus generic "Senior Engineer" titles; staff / lead / manager / other stacks out), location rules (all of India or remote from India, or only the cities you list in `candidate.cities`), and an optional "posted within N days" window. |
+| **Local pre-filter** | Word-bounded title rules (backend / Node.js / SDE / software engineer in, plus generic "Senior Engineer" titles; staff / lead / manager / other stacks out), location rules (all of India or remote from India, or the countries in `candidate.countries`: UK, Germany, Netherlands, Ireland, UAE, Singapore built in; or only the cities you list in `candidate.cities`), and an optional "posted within N days" window. |
 | **Full descriptions** | For Workday, SmartRecruiters, Oracle HCM and Eightfold, whose list APIs carry little or no description, the full text is fetched for survivors only, just before scoring. |
 | **Resume-aware scoring** | Gemini reads the whole resume, the candidate profile and the whole job description. It returns a score and one sentence explaining it. One job per call, by design: batching measurably inflated scores. |
 | **Seen-job memory** | `data/jobs.db` (SQLite) records every job's status. A job is scored once; scoring failures are retried on the next scan; pre-filter rejections are re-checked each scan, so filter fixes apply to old jobs too. |
@@ -221,8 +221,8 @@ The full reference is in [docs/07-config-and-scoring.md](docs/07-config-and-scor
 
 The **title filter** is plain word lists in `config.json` (`candidate.titles`; spaces and hyphens inside an
 entry are optional, so `back end` also matches "Back-End"); without them the defaults apply, tuned to the
-example profile. The **location rules** are India's and live in `job_hunt/prefilter.py`; `candidate.cities`
-narrows them. `rolesight check-filter "Java Developer" "Pune, India"` shows what the filter does with one job.
+example profile. The **location rules** are India's (`job_hunt/prefilter.py`) unless `candidate.countries` names others
+(`job_hunt/places.py`: the UK, Germany, the Netherlands, Ireland, the UAE, Singapore built in); `candidate.cities` narrows them. `rolesight check-filter "Java Developer" "Pune, India"` shows what the filter does with one job.
 
 ---
 
@@ -277,8 +277,8 @@ Zoho Recruit, …) can't be reached. See [docs/04](docs/04-companies-and-scannin
 
 Which of the companies can sponsor a visa (561 of 1,616 are on the UK, Dutch or Irish sponsor records, or on a community
 relocation list) is in `job_hunt/data/visa_sponsors.json`; most postings abroad never say. See
-[docs/04](docs/04-companies-and-scanning.md#visa-sponsorship-which-companies-can-sponsor). The scan itself still looks for
-jobs in India.
+[docs/04](docs/04-companies-and-scanning.md#visa-sponsorship-which-companies-can-sponsor). With `candidate.countries` set,
+the scan writes it per job abroad as the CSV's **Visa** column ([user guide](docs/00-user-guide.md#looking-for-jobs-outside-india)).
 
 ---
 
@@ -288,7 +288,9 @@ jobs in India.
 job_hunt/
   adapters/         one fetcher per ATS + detect_ats(), fetch_company_jobs(), enrich_job()
   scanner.py        run_scan(): the whole pipeline
-  prefilter.py      title rules (config.json candidate.titles, defaults built in), India location and posted-date rules
+  prefilter.py      title rules (config.json candidate.titles, defaults built in), location and posted-date rules
+  places.py         your countries (candidate.countries): place packs for India, UK, Germany, Netherlands, Ireland, UAE, Singapore
+  visa.py           the Visa column: what a posting says about sponsorship, then the company's public record
   onboarding.py     `init` (templates; --resume drafts the settings) and `check-filter`
   scorer.py         Gemini scoring per job, DB status updates, per-job Telegram alert
   llm_utils.py      LLM providers (gemini default; anthropic, claude_cli)

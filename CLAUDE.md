@@ -110,7 +110,7 @@ since those would have been on the pages read, and for no older or undated job.
 
 | File | Controls | Git |
 |---|---|---|
-| `config.json` | candidate profile, title filter (`candidate.titles`), `rubric_file`, `llm_provider`, `gemini_model`, telegram | ignored |
+| `config.json` | candidate profile, title filter (`candidate.titles`), `countries` / `home_country` (T136; absent = India), `rubric_file`, `llm_provider`, `gemini_model`, telegram | ignored |
 | `rubric.md` | the person's scoring rubric when `candidate.rubric_file` names it (else `llm_utils.DEFAULT_SCORING_RUBRIC`, Manish's) | ignored |
 | `.env` | API keys; overrides config.json unless value is a placeholder (`YOUR_…`, `…_here`) | ignored |
 | `companies.json` | ATS boards to scan (curated; maintained with `discover`) | committed |
@@ -192,7 +192,9 @@ job_hunt/
   adapters/       direct ATS fetchers + detect_ats / fetch_company_jobs / ENRICHERS + enrich_job
   models.py       JobPosting, job_key (global_id, else canonical_hash), url_hash
   db.py           SQLite: init_db, get_job, save_job, update_job_status
-  prefilter.py    title rules (TitleRules: config.json candidate.titles or the defaults), India location regexes
+  prefilter.py    title rules (TitleRules: config.json candidate.titles or the defaults), India location regexes (+ _in_your_places)
+  places.py       candidate.countries / home_country -> Places: country packs, configure/active/using, listed_for (T136-T139)
+  visa.py         the Visa column: wording (posting), record (visa_sponsors.json), note (T138)
   onboarding.py   `init` (+ --resume drafting with Gemini) and `check-filter`
   scorer.py       Gemini scoring + DB status + optional Telegram alert
   scanner.py      run_scan orchestration

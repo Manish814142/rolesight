@@ -19,6 +19,7 @@ spreadsheet (CSV), best first. It **never applies** to anything; you do that you
 | Look only at newer jobs | `candidate.max_posted_age_days` | [4](#4-the-settings-file-configjson) |
 | Allow or block job titles (Java, Data Engineer, …) | `candidate.titles` in `config.json` | [5](#5-which-jobs-reach-gemini-the-word-lists) |
 | Change how a job is scored against me (years, stack) | `rubric.md` (`candidate.rubric_file`) | [5](#the-scoring-rubric-rubricmd) |
+| Look for jobs outside India (UK, Germany, Netherlands, Ireland, UAE, Singapore, …) | `candidate.countries`, `candidate.home_country` (`rolesight init --countries "UK"`) | [5](#looking-for-jobs-outside-india) |
 | Allow or block places | the location words in `job_hunt/prefilter.py` | [5](#5-which-jobs-reach-gemini-the-word-lists) |
 | Scan more companies | `autopilot discover --add` | [6](#6-add-companies) |
 | Get alerts on Telegram | `TELEGRAM_TOKEN`, `TELEGRAM_CHAT_ID` | [4](#4-the-settings-file-configjson) |
@@ -55,6 +56,8 @@ autopilot --help         # prints the list of commands
 ```bash
 rolesight init                                   # the files, with defaults
 rolesight init --resume ~/Downloads/my_cv.pdf    # your settings, drafted from your resume
+rolesight init --countries "United Kingdom, Germany" --resume ~/Downloads/my_cv.pdf   # looking abroad: the draft's
+                                                 # `seeking` names these countries and the visa you need
 ```
 
 (`rolesight` and `autopilot` are the same program.) `rolesight init` creates whatever is missing and skips what
@@ -114,7 +117,7 @@ uses the default. A name that is not in the tables below is ignored without any 
 | `candidate.max_posted_age_days` | 7 | Only jobs posted in the last N days are scored. `null` switches the window off. Jobs with no posted date are always kept |
 | `candidate.titles` | the default word lists | Which job titles are scored at all: `include`, `exclude`, `exceptions`, `generic_engineer_titles`. Section 5 |
 | `candidate.rubric_file` | built-in rubric | The file with your scoring rubric, e.g. `"rubric.md"`. Without this line the built-in rubric is used. See [the scoring rubric](#the-scoring-rubric-rubricmd) |
-| `candidate.cities` | `[]` | Leave empty to look at **all of India** (and remote jobs from India). To look only at some cities, list them: `["Pune", "Hyderabad", "Delhi NCR"]`. Usual alternative names match (Bangalore = Bengaluru, Gurgaon = Gurugram); remote jobs and jobs that name no city (just "India") are always kept |
+| `candidate.cities` | `[]` | Leave empty to look at **all of India** (and remote jobs from India), or all of your `countries`. To look only at some cities, list them: `["Pune", "Hyderabad", "Delhi NCR"]`. Usual alternative names match (Bangalore = Bengaluru, Gurgaon = Gurugram); remote jobs and jobs that name no city (just "India") are always kept |
 | `candidate.countries` | India | Where to look, e.g. `["United Kingdom", "Germany"]` (or `"UK, Germany"`). Built-in: India, United Kingdom, Germany, Netherlands, Ireland, United Arab Emirates, Singapore ("UK", "UAE", "Holland" … work too); another country is matched by its name. Jobs that name one of them, a region that includes them ("Remote - EMEA", "Europe") with no other place, or remote jobs with no place pass. `candidate.cities` then means cities of these countries. `rolesight check-filter "Backend Engineer" "Berlin" --countries Germany` tries one job |
 | `candidate.home_country` | India | Where you live. A job in another country needs a work visa: the rubric and the Visa column use this |
 | `llm_provider` | `gemini` | Leave as `gemini` |
@@ -268,7 +271,9 @@ purpose (in India it often means 3–6 years).
 | Mechanical Engineer | Pune, India | rejected |
 
 (`Data Engineer` and `Mechanical Engineer` are rejected because no include word matches them. `Java Developer` is rejected by the exclude
-list. `Backend Engineer` in `Coimbatore` is kept because any Indian city or state counts as India, not only the main cities (T84). `Senior Engineer` is kept because a title that is only "Engineer" with a seniority or level ("Engineer II"), or "software" and "engineer" in any order, goes to Gemini to be judged by the description (T96).) These rows are checked against the real filter by a test, so they cannot drift from the code.
+list. `Backend Engineer` in `Coimbatore` is kept because any Indian city or state counts as India, not only the main cities (T84). `Senior Engineer` is kept because a title that is only "Engineer" with a seniority or level ("Engineer II"), or "software" and "engineer" in any order, goes to Gemini to be judged by the description (T96).) These rows are checked against the real filter by a test, so they cannot drift from the code. They are for
+India; with `--countries Germany`, `Backend Engineer` in `Berlin, Germany` is kept and the Indian rows are rejected (try
+`rolesight check-filter "Backend Engineer" "Berlin, Germany" --countries Germany`).
 
 ### Change a word, then check it
 
@@ -301,6 +306,14 @@ far more years than you have: at most 50"). The built-in rubric was written and 
 and the languages outside it, the domains you have or lack. The eight rule headings and their caps stay as they
 are; if Gemini changed them, `init` keeps the built-in text and says so.
 
+**Rule 1 and your countries.** Rule 1 ("cap 30 for on-site work outside India…") follows `candidate.countries`: with other
+countries the scan sends, instead, "cap 30 for on-site or hybrid work outside {your countries}, and for a posting that cannot
+sponsor a visa or asks for citizenship, permanent residence or an existing right to work there; a posting silent on visas is not
+capped", and rule 5's "Location fits (India or Remote)" names your countries. That happens to the built-in lines, also in a
+`rubric.md` that `init` or `init --resume` wrote (both keep rule 1 as built in). If you rewrote rule 1 yourself, it is sent as
+you wrote it and the scan log warns `Scoring rubric: rule 1 is not the built-in India text`: then make it name your countries
+and the visa rule. The `Scoring rubric:` id changes with your countries (India alone: `82e017b4`).
+
 Edit `rubric.md` like any text: change a fact that is wrong about you, keep the rule headings. `candidate.rubric_file`
 in `config.json` names the file; delete that line to go back to the built-in rubric. The first lines of a scan
 show which rubric is in force (`Scoring rubric: <id>`, `Rubric text: rubric.md`). Scores stored under an older
@@ -317,7 +330,8 @@ sentence in `rubric.md` that caused it.
 ## 6. Add companies
 
 `companies.json` lists the career boards that get scanned (about 1,500 companies). Do not edit it by hand:
-the `discover` command checks that a board is live, really belongs to the company and has jobs in India.
+the `discover` command checks that a board is live, really belongs to the company and has jobs in India (or in your
+`candidate.countries`, or `--places "…"`).
 
 ```bash
 autopilot discover --add "Figma, Some Company" --report report.csv --out verified.json --merge companies.json
@@ -351,6 +365,9 @@ of a scan are the **funnel**, which says where every job went:
 ```
 Funnel: fetched 2354 | India 2167 | already scored 0 | pre-filter rejected 2058 | too old 279 | queued 17 | scored 17 (gemini-3.5-flash-lite 17) | failed 0 | left for next scan 0
 ```
+
+With `candidate.countries` set to other countries the second field reads `In your places N` (jobs naming one of your countries
+or one of its regions), e.g. `Funnel: fetched 1618 | In your places 249 | …` for the Singapore run of 2026-10-21.
 
 The scan keeps two files at the top of `output/`, replaced by every scan, so you never look for the newest: **`open_matches.xlsx`**
 (only what **this** scan found: its jobs above `min_score` that you have not marked as applied; a scan with nothing new leaves it

@@ -66,3 +66,28 @@ def test_format_job_alert_unknown_headcount():
         headcount="Unknown",
     )
     assert "🏢 <b>Company:</b> Sarvam AI 🏷️ <i>[Unknown]</i>" in msg
+
+
+def test_format_job_alert_adds_the_visa_line_only_when_there_is_one():
+    """T140: a job outside the home country carries its Visa note; India alone has none, so the message is as before."""
+    base = dict(company="Monzo", title="Backend Engineer", location="London, UK", url="https://x/1", score=88, score_reason="fits")
+    assert "Visa" not in notifier.format_job_alert(**base)
+    msg = notifier.format_job_alert(**base, visa="Not stated; UK licensed sponsor")
+    assert "🛂 <b>Visa:</b> Not stated; UK licensed sponsor\n💡 <b>Match Reason:</b> fits" in msg
+
+
+def test_the_alert_of_a_job_abroad_carries_the_visa_note(monkeypatch):
+    from job_hunt import places, scorer
+    from job_hunt.models import JobPosting
+    sent = []
+    monkeypatch.setattr(scorer, "send_telegram", lambda token, chat, message: sent.append(message) or True)
+    job = JobPosting("g:1", "greenhouse", "Acme Ltd Nowhere", "Backend Engineer", "London, UK", False, "https://x/1",
+                     "We are unable to sponsor visas for this role.")
+    places.configure_places({"candidate": {"countries": ["UK"]}})
+    try:
+        scorer.send_telegram_notification("token", "chat", job, 90, "fits")
+    finally:
+        places.configure_places(places.INDIA)
+    scorer.send_telegram_notification("token", "chat", job, 90, "fits")
+    assert "Visa:</b> Posting: no visa sponsorship" in sent[0] and "Visa" not in sent[1]
+

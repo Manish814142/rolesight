@@ -14,6 +14,8 @@ from job_hunt.llm_utils import (
 )
 from job_hunt.models import JobPosting, job_key
 from job_hunt.notifier import format_job_alert, is_telegram_configured, send_telegram
+from job_hunt.places import active_places
+from job_hunt.visa import note as visa_note
 
 logger = logging.getLogger(__name__)
 
@@ -47,6 +49,7 @@ def send_telegram_notification(
         score=score,
         score_reason=reason,
         headcount=job.headcount,
+        visa=visa_note(job.company, job.location, job.description_text, active_places()),   # T140
     )
     return send_telegram(bot_token, chat_id, message)
 

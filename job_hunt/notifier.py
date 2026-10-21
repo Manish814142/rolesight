@@ -41,14 +41,16 @@ def format_job_alert(
     score: int,
     score_reason: str,
     headcount: str = "Unknown",
+    visa: str = "",
 ) -> str:
-    """Format Telegram alert message with headcount badge."""
+    """Format Telegram alert message with headcount badge; `visa` (T140, a job outside the home country) adds a line."""
     hc_badge = headcount if headcount and headcount.strip() else "Unknown"
     return (
         f"🎯 <b>New High Match Job ({score}/100)</b>\n"
         f"🏢 <b>Company:</b> {company} 🏷️ <i>[{hc_badge}]</i>\n"
         f"💼 <b>Role:</b> {title}\n"
         f"📍 <b>Location:</b> {location}\n"
-        f"💡 <b>Match Reason:</b> {score_reason}\n"
+        + (f"🛂 <b>Visa:</b> {visa}\n" if visa else "")
+        + f"💡 <b>Match Reason:</b> {score_reason}\n"
         f'🔗 <a href="{url}">Apply Here</a>'
     )
