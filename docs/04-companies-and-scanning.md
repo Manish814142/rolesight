@@ -3,11 +3,12 @@
 ## `companies.json`
 
 The list of job boards to scan. It is committed, it is the core of the project, and it is meant to be grown: every entry
-was checked by `autopilot discover` (below) to be live, to belong to the employer it names and to have India jobs.
+was checked by `autopilot discover` (below) to be live, to belong to the employer it names and to have India jobs (or,
+for the 27 entries that carry `"places"`, jobs in those countries: T139).
 
-**Counts (2026-10-18):** 1,589 boards: Greenhouse 502, Workday 302, Ashby 191, SmartRecruiters 184, Lever 151,
-Oracle HCM 108, Workable 103, Recruitee 39, Eightfold 4, Personio 3, Amazon 1, Phenom 1. The first 224 were curated by
-hand; the rest came from the bulk harvest (T111, T112). Count yours with
+**Counts (2026-10-21):** 1,616 boards: Greenhouse 515, Workday 302, Ashby 197, SmartRecruiters 186, Lever 154,
+Oracle HCM 108, Workable 103, Recruitee 40, Eightfold 4, Personio 5, Amazon 1, Phenom 1. The first 224 were curated by
+hand; the rest came from the bulk harvest (T111, T112), and 27 that hire abroad but not in India from T139. Count yours with
 `python -c "import json,collections;print(collections.Counter(c['ats'] for c in json.load(open('companies.json'))))"`.
 
 `job_hunt/data/companies.json` is the copy `autopilot init` gives a new user. **After any change, copy the list there**
@@ -47,11 +48,14 @@ Three ways in, one gate. Whatever the source, a company goes into `companies.jso
 2. **Right employer:** the board's own name matches, or the company is named in its job descriptions, or the board came
    from the company's own careers URL or from a harvested board address (`exact`, below). Same-slug boards of other
    companies exist (`ashby/navi` is a San Francisco company).
-3. **Hiring in India:** at least one job whose location is in India (the scanner's own location rule).
+3. **Hiring in your places:** at least one job whose location is in India (the scanner's own location rule), or, with
+   `--places "United Kingdom, Germany"` (default: `config.json`'s `candidate.countries`), in those countries. An entry
+   accepted for other countries records them (`"places": [...]`); the monthly recheck checks it against them, and a scan
+   fetches it only when your countries include one of them, so an India scan fetches what it fetched before (T139).
 4. **Not abandoned:** the newest posting is at most 180 days old (some SmartRecruiters boards still answer with postings
    from 2015–2020).
 
-`discover` writes a **report** (`--report`, one row per seed: verdict, ATS, board, jobs, India jobs, pre-filter passes,
+`discover` writes a **report** (`--report`, one row per seed: verdict, ATS, board, jobs, jobs in your places (`place_jobs`), pre-filter passes,
 newest posting age, identity evidence, sample titles) and a **list of verified entries** (`--out`), and with `--merge FILE`
 adds the new ones to the list. Existing entries always win; a new one is dropped when its name, its board or (Oracle HCM)
 its host is already there. By default it also re-checks every existing entry (`--no-recheck` skips that). New names are
@@ -64,7 +68,7 @@ elsewhere. It needs **no API key** (no Gemini call is made; only the job boards'
 
 **Always:** back up first (`cp companies.json /tmp/companies.backup.json`), read the report, then `git diff companies.json`.
 
-**The report's verdicts:** `verified` (accepted), `no open jobs`, `no India jobs`, `identity not confirmed`, `stale board (newest
+**The report's verdicts:** `verified` (accepted), `no open jobs`, `no India jobs` (with other places: `no jobs in …`), `identity not confirmed`, `stale board (newest
 posting N days old)`, `known bad board`, `no live board on supported ATSs`, `not rechecked` (an existing entry under `--no-recheck`), and `error: …` (the check raised;
 nothing was decided).
 With `--merge`, rows starting `[existing]` are the re-check of the entries already in the list.
@@ -304,10 +308,15 @@ writes the community-list names that are not on the list yet (111 on 2026-10-21)
 On 2026-10-21 none of the 111 passed (T135). **35 have a live board but no India job**: Monzo, N26, HelloFresh, Delivery
 Hero, SumUp, Plaid, Palantir, Mercari, Ninja Van, Trainline, Miro, Algolia and others, 3,184 jobs in all. 63 have no board
 on a supported ATS (Apple, Bloomberg, Zalando, …), 8 failed the identity check and 9 boards are stale. So the India gate keeps
-out exactly the employers that hire people from India to move abroad; they wait for T108.
+out exactly the employers that hire people from India to move abroad. **With T139** (`--places` with the six countries) 27
+of them joined the list, each with its `places`: Monzo, N26, HelloFresh, Delivery Hero, SumUp, Plaid, Palantir, Trainline,
+Miro, Algolia, Ninja Van, Qonto, Raisin, Tipico and others. Mercari, BlaBlaCar, Back Market, Jam City, Circles.life and
+Sunday have no job in those six countries. After that the record covers 561 of 1,616 companies (UK 478, Netherlands 189,
+Ireland 86, lists 45); the three new loose matches (Monzo Bank Ltd, Raisin Platforms Limited, SumUp Payments Limited) were
+read and accepted.
 
-**The scan does not use this yet.** Its pre-filter still keeps India jobs only. Making the location the person's own,
-and showing this evidence per job, is T108 in the [task board](tasks.md).
+**The scan uses it** (T138): with `candidate.countries` set, every job outside your home country gets a **Visa** column in
+the CSV: what the posting says, then this record for its country ([docs/05](05-outputs-and-notifications.md)).
 
 ---
 

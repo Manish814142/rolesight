@@ -149,6 +149,20 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Babbel",
+    "ats": "ashby",
+    "slug": "babbel",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "Ireland",
+      "United Arab Emirates",
+      "Singapore"
+    ]
+  },
+  {
     "name": "Better",
     "ats": "ashby",
     "slug": "better-mortgage",
@@ -401,6 +415,20 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Forto",
+    "ats": "ashby",
+    "slug": "forto",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "Ireland",
+      "United Arab Emirates",
+      "Singapore"
+    ]
+  },
+  {
     "name": "Fourier",
     "ats": "ashby",
     "slug": "Fourier",
@@ -641,6 +669,20 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Miro",
+    "ats": "ashby",
+    "slug": "miro",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "Ireland",
+      "United Arab Emirates",
+      "Singapore"
+    ]
+  },
+  {
     "name": "Neara",
     "ats": "ashby",
     "slug": "neara",
@@ -797,6 +839,20 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Plaid",
+    "ats": "ashby",
+    "slug": "plaid",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "Ireland",
+      "United Arab Emirates",
+      "Singapore"
+    ]
+  },
+  {
     "name": "Plane",
     "ats": "ashby",
     "slug": "plane",
@@ -849,6 +905,20 @@
     "ats": "ashby",
     "slug": "quantcast",
     "headcount": "Unknown"
+  },
+  {
+    "name": "Reaktor",
+    "ats": "ashby",
+    "slug": "reaktor",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "Ireland",
+      "United Arab Emirates",
+      "Singapore"
+    ]
   },
   {
     "name": "Realfast",
@@ -1085,6 +1155,20 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Trainline",
+    "ats": "ashby",
+    "slug": "trainline",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "Ireland",
+      "United Arab Emirates",
+      "Singapore"
+    ]
+  },
+  {
     "name": "Triomics",
     "ats": "ashby",
     "slug": "triomics",
@@ -1303,6 +1387,20 @@
     "ats": "greenhouse",
     "slug": "akqa",
     "headcount": "Unknown"
+  },
+  {
+    "name": "Algolia",
+    "ats": "greenhouse",
+    "slug": "algolia",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "Ireland",
+      "United Arab Emirates",
+      "Singapore"
+    ]
   },
   {
     "name": "Alpaca",
@@ -1786,6 +1884,20 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Collibra",
+    "ats": "greenhouse",
+    "slug": "collibra",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "Ireland",
+      "United Arab Emirates",
+      "Singapore"
+    ]
+  },
+  {
     "name": "CommerceIQ",
     "ats": "greenhouse",
     "slug": "commerceiq",
@@ -1820,6 +1932,20 @@
     "ats": "greenhouse",
     "slug": "cclfg",
     "headcount": "Unknown"
+  },
+  {
+    "name": "Contentful",
+    "ats": "greenhouse",
+    "slug": "contentful",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "Ireland",
+      "United Arab Emirates",
+      "Singapore"
+    ]
   },
   {
     "name": "Contentstack",
@@ -2266,6 +2392,20 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Flaconi",
+    "ats": "greenhouse",
+    "slug": "flaconi",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "Ireland",
+      "United Arab Emirates",
+      "Singapore"
+    ]
+  },
+  {
     "name": "Flexport",
     "ats": "greenhouse",
     "slug": "flexport",
@@ -2410,6 +2550,20 @@
     "headcount": "Unknown"
   },
   {
+    "name": "GoCardless",
+    "ats": "greenhouse",
+    "slug": "gocardless",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "Ireland",
+      "United Arab Emirates",
+      "Singapore"
+    ]
+  },
+  {
     "name": "GoDaddy",
     "ats": "greenhouse",
     "slug": "godaddy",
@@ -2522,6 +2676,20 @@
     "ats": "greenhouse",
     "slug": "hearcomin",
     "headcount": "Unknown"
+  },
+  {
+    "name": "HelloFresh",
+    "ats": "greenhouse",
+    "slug": "hellofresh",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "Ireland",
+      "United Arab Emirates",
+      "Singapore"
+    ]
   },
   {
     "name": "HG Insights",
@@ -2980,6 +3148,20 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Monzo",
+    "ats": "greenhouse",
+    "slug": "monzo",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "Ireland",
+      "United Arab Emirates",
+      "Singapore"
+    ]
+  },
+  {
     "name": "Motive",
     "ats": "greenhouse",
     "slug": "gomotive",
@@ -2992,6 +3174,20 @@
     "headcount": "Unknown"
   },
   {
+    "name": "N26",
+    "ats": "greenhouse",
+    "slug": "n26",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "Ireland",
+      "United Arab Emirates",
+      "Singapore"
+    ]
+  },
+  {
     "name": "Narvar",
     "ats": "greenhouse",
     "slug": "narvar",
@@ -3002,6 +3198,20 @@
     "ats": "greenhouse",
     "slug": "tripactions",
     "headcount": "Unknown"
+  },
+  {
+    "name": "Navvis",
+    "ats": "greenhouse",
+    "slug": "navvis",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "Ireland",
+      "United Arab Emirates",
+      "Singapore"
+    ]
   },
   {
     "name": "Nebius",
@@ -3383,6 +3593,20 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Raisin",
+    "ats": "greenhouse",
+    "slug": "raisin",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "Ireland",
+      "United Arab Emirates",
+      "Singapore"
+    ]
+  },
+  {
     "name": "Razorpay",
     "ats": "greenhouse",
     "slug": "razorpaysoftwareprivatelimited",
@@ -3683,6 +3907,20 @@
     "headcount": "Unknown"
   },
   {
+    "name": "SquareSpace",
+    "ats": "greenhouse",
+    "slug": "squarespace",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "Ireland",
+      "United Arab Emirates",
+      "Singapore"
+    ]
+  },
+  {
     "name": "Starburst",
     "ats": "greenhouse",
     "slug": "starburst",
@@ -3747,6 +3985,20 @@
     "ats": "greenhouse",
     "slug": "sumologic",
     "headcount": "Unknown"
+  },
+  {
+    "name": "SumUp",
+    "ats": "greenhouse",
+    "slug": "sumup",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "Ireland",
+      "United Arab Emirates",
+      "Singapore"
+    ]
   },
   {
     "name": "SupplyHouse.com",
@@ -3897,6 +4149,20 @@
     "ats": "greenhouse",
     "slug": "triplelift",
     "headcount": "Unknown"
+  },
+  {
+    "name": "Trivago",
+    "ats": "greenhouse",
+    "slug": "trivago",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "Ireland",
+      "United Arab Emirates",
+      "Singapore"
+    ]
   },
   {
     "name": "Truecaller",
@@ -4741,6 +5007,20 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Ninja Van",
+    "ats": "lever",
+    "slug": "ninjavan",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "Ireland",
+      "United Arab Emirates",
+      "Singapore"
+    ]
+  },
+  {
     "name": "Nium",
     "ats": "lever",
     "slug": "nium",
@@ -4775,6 +5055,20 @@
     "ats": "lever",
     "slug": "outreach",
     "headcount": "Unknown"
+  },
+  {
+    "name": "Palantir Technologies",
+    "ats": "lever",
+    "slug": "palantir",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "Ireland",
+      "United Arab Emirates",
+      "Singapore"
+    ]
   },
   {
     "name": "Parallelwireless",
@@ -4848,6 +5142,20 @@
     "ats": "lever",
     "slug": "protolabs",
     "headcount": "Unknown"
+  },
+  {
+    "name": "Qonto",
+    "ats": "lever",
+    "slug": "qonto",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "Ireland",
+      "United Arab Emirates",
+      "Singapore"
+    ]
   },
   {
     "name": "Qualdoc",
@@ -5114,13 +5422,6 @@
     "ats": "oracle_hcm",
     "host": "eibd.fa.em2.oraclecloud.com",
     "site": "CX_1",
-    "headcount": "Unknown"
-  },
-  {
-    "name": "Resideo",
-    "ats": "oracle_hcm",
-    "host": "ehtl.fa.us6.oraclecloud.com",
-    "site": "CX",
     "headcount": "Unknown"
   },
   {
@@ -5523,13 +5824,6 @@
     "headcount": "Unknown"
   },
   {
-    "name": "McDermott",
-    "ats": "oracle_hcm",
-    "host": "edsv.fa.us2.oraclecloud.com",
-    "site": "CX_1",
-    "headcount": "Unknown"
-  },
-  {
     "name": "Malomatia",
     "ats": "oracle_hcm",
     "host": "fa-eyhb-saasfaprod1.fa.ocs.oraclecloud.com",
@@ -5540,6 +5834,13 @@
     "name": "Mashreq",
     "ats": "oracle_hcm",
     "host": "hcld.fa.em2.oraclecloud.com",
+    "site": "CX_1",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "McDermott",
+    "ats": "oracle_hcm",
+    "host": "edsv.fa.us2.oraclecloud.com",
     "site": "CX_1",
     "headcount": "Unknown"
   },
@@ -5684,6 +5985,20 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Resideo",
+    "ats": "oracle_hcm",
+    "host": "ehtl.fa.us6.oraclecloud.com",
+    "site": "CX",
+    "headcount": "Unknown"
+  },
+  {
+    "name": "Samsonite",
+    "ats": "oracle_hcm",
+    "host": "ekkf.fa.em2.oraclecloud.com",
+    "site": "CX",
+    "headcount": "Unknown"
+  },
+  {
     "name": "SBIC",
     "ats": "oracle_hcm",
     "host": "edox.fa.ap1.oraclecloud.com",
@@ -5775,13 +6090,6 @@
     "headcount": "Unknown"
   },
   {
-    "name": "Samsonite",
-    "ats": "oracle_hcm",
-    "host": "ekkf.fa.em2.oraclecloud.com",
-    "site": "CX",
-    "headcount": "Unknown"
-  },
-  {
     "name": "UnitedLex",
     "ats": "oracle_hcm",
     "host": "ekkk.fa.us6.oraclecloud.com",
@@ -5857,6 +6165,34 @@
     "host": "fa-etvl-saasfaprod1.fa.ocs.oraclecloud.com",
     "site": "CX_1",
     "headcount": "Unknown"
+  },
+  {
+    "name": "Capmo",
+    "ats": "personio",
+    "slug": "capmo",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "Ireland",
+      "United Arab Emirates",
+      "Singapore"
+    ]
+  },
+  {
+    "name": "Celus",
+    "ats": "personio",
+    "slug": "celus",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "Ireland",
+      "United Arab Emirates",
+      "Singapore"
+    ]
   },
   {
     "name": "Dlubal",
@@ -6086,6 +6422,20 @@
     "ats": "recruitee",
     "slug": "skycellag",
     "headcount": "Unknown"
+  },
+  {
+    "name": "Swisscom",
+    "ats": "recruitee",
+    "slug": "swisscom",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "Ireland",
+      "United Arab Emirates",
+      "Singapore"
+    ]
   },
   {
     "name": "Techbizglobal",
@@ -6398,6 +6748,20 @@
     "ats": "smartrecruiters",
     "slug": "datakrewpvtltd",
     "headcount": "Unknown"
+  },
+  {
+    "name": "Delivery Hero",
+    "ats": "smartrecruiters",
+    "slug": "deliveryhero",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "Ireland",
+      "United Arab Emirates",
+      "Singapore"
+    ]
   },
   {
     "name": "Dr Reddy's Laboratories Limited",
@@ -7090,6 +7454,20 @@
     "ats": "smartrecruiters",
     "slug": "TheNielsenCompany",
     "headcount": "Unknown"
+  },
+  {
+    "name": "Tipico",
+    "ats": "smartrecruiters",
+    "slug": "tipico",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "Ireland",
+      "United Arab Emirates",
+      "Singapore"
+    ]
   },
   {
     "name": "Tomra",

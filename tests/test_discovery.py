@@ -53,12 +53,12 @@ def test_name_matches_board_names():
 
 
 def test_accept_board_requires_jobs_india_identity_and_not_known_bad():
-    ok = dict(ats="greenhouse", slug="stripe", jobs=716, india_jobs=42, identity_ok=True)
+    ok = dict(ats="greenhouse", slug="stripe", jobs=716, place_jobs=42, identity_ok=True)
     assert accept_board(**ok) == (True, "verified")
     assert accept_board(**{**ok, "jobs": 0})[0] is False
-    assert accept_board(**{**ok, "india_jobs": 0})[0] is False
+    assert accept_board(**{**ok, "place_jobs": 0})[0] is False
     assert accept_board(**{**ok, "identity_ok": False})[0] is False
-    assert accept_board(ats="ashby", slug="navi", jobs=3, india_jobs=1, identity_ok=True)[0] is False
+    assert accept_board(ats="ashby", slug="navi", jobs=3, place_jobs=1, identity_ok=True)[0] is False
 
 
 def test_merge_keeps_existing_and_dedupes_by_name_and_board():
@@ -76,7 +76,7 @@ def test_merge_keeps_existing_and_dedupes_by_name_and_board():
 
 def test_accept_board_rejects_stale_boards():
     """Abandoned SmartRecruiters boards (newest posting 2015-2020) still return 200 + jobs."""
-    ok = dict(ats="smartrecruiters", slug="lendingkart", jobs=1, india_jobs=1, identity_ok=True)
+    ok = dict(ats="smartrecruiters", slug="lendingkart", jobs=1, place_jobs=1, identity_ok=True)
     assert accept_board(**ok, newest_age_days=4200)[0] is False
     assert accept_board(**ok, newest_age_days=30) == (True, "verified")
     assert accept_board(**ok, newest_age_days=None) == (True, "verified")  # unknown dates: not penalised
@@ -181,7 +181,7 @@ def test_evaluate_board_counts_and_verdict(mock_fetch, _name):
         _jp("Senior Manager", location="Austin, TX", desc="Acme"),
     ]
     row = disc.evaluate_board("Acme", "lever", "acme")
-    assert (row["jobs"], row["india_jobs"], row["prefilter_pass"], row["accepted"]) == (2, 1, 1, True)
+    assert (row["jobs"], row["place_jobs"], row["prefilter_pass"], row["accepted"]) == (2, 1, 1, True)
     mock_fetch.return_value = [_jp(desc="Acme", posted="2015-04-06")]
     assert disc.evaluate_board("Acme", "lever", "acme")["verdict"].startswith("stale board")
 
@@ -192,7 +192,7 @@ def test_evaluate_workday(mock_post):
         {"title": "Software Engineer", "locationsText": "Bangalore, India"},
         {"title": "Director", "locationsText": "Austin"}]})
     row = disc.evaluate_workday("Intel", "intel", "wd1", "External")
-    assert row["accepted"] is True and row["india_jobs"] == 1 and row["prefilter_pass"] == 1
+    assert row["accepted"] is True and row["place_jobs"] == 1 and row["prefilter_pass"] == 1
     assert row["entry"] == {"name": "Intel", "ats": "workday", "tenant": "intel", "dc": "wd1", "site": "External"}
     mock_post.return_value = _resp(status=422)
     row = disc.evaluate_workday("Walmart", "walmart", "wd5", "WalmartExternal")
@@ -205,7 +205,7 @@ def test_discover_picks_best_board_and_reports_misses(monkeypatch):
     def fake_eval(name, ats, slug, from_url=False):
         india = {"greenhouse": 3, "lever": 9}[ats]
         return {"seed": name, "accepted": True, "verdict": "verified", "ats": ats, "board": slug,
-                "jobs": 10, "india_jobs": india, "prefilter_pass": 1, "identity": "board name 'Acme'"}
+                "jobs": 10, "place_jobs": india, "prefilter_pass": 1, "identity": "board name 'Acme'"}
     monkeypatch.setattr(disc, "evaluate_board", fake_eval)
     monkeypatch.setattr(disc, "evaluate_workday", lambda name, tenant, dc, site: {
         "seed": name, "accepted": True, "verdict": "verified", "ats": "workday", "board": tenant,
@@ -351,7 +351,7 @@ def test_recheck_replaces_moved_boards_and_removes_dead_ones(tmp_path, monkeypat
         "seed": name, "accepted": slug == "alive", "verdict": "verified" if slug == "alive" else "no open jobs",
         "ats": ats, "board": slug})
 
-    def fake_discover(seeds, workers=40):
+    def fake_discover(seeds, workers=40, places=None):
         assert sorted(s["name"] for s in seeds) == ["Gone", "Moved"]
         return ([{"name": "Moved", "ats": "ashby", "slug": "moved", "headcount": "Unknown"}],
                 [{"seed": "Moved", "verdict": "verified", "ats": "ashby", "board": "moved"}])
@@ -510,7 +510,7 @@ def test_evaluate_workday_reads_the_location_like_the_adapter_does(mock_post):
          "bulletFields": ["R2", "Hyderabad"]},
         {"title": "Software Engineer", "locationsText": "Austin", "externalPath": "/job/Austin/SE_R3"}]})
     row = disc.evaluate_workday("Accenture", "accenture", "wd103", "AccentureCareers")
-    assert row["india_jobs"] == 2 and row["prefilter_pass"] == 2 and row["accepted"] is True
+    assert row["place_jobs"] == 2 and row["prefilter_pass"] == 2 and row["accepted"] is True
 
 
 # --- T25: Eightfold boards (host + employer domain) ----------------------------------------
@@ -646,7 +646,7 @@ def test_discover_checks_exact_seeds_at_their_own_board_and_names_them_from_the_
     monkeypatch.setattr(disc, "_board_name", lambda ats, slug: "\u200e Acme  Corporation\u200f " if (ats, slug) == ("greenhouse", "acme-corp") else None)
     monkeypatch.setattr(disc, "load_linkedin_cache", lambda path: ({}, {}))
     monkeypatch.setattr(disc, "evaluate_board", lambda name, ats, slug, from_url=False: {
-        "seed": name, "accepted": True, "verdict": "verified", "ats": ats, "board": slug, "jobs": 5, "india_jobs": 2,
+        "seed": name, "accepted": True, "verdict": "verified", "ats": ats, "board": slug, "jobs": 5, "place_jobs": 2,
         "prefilter_pass": 1, "identity": "slug from company careers URL"})
     seeds = parse_seeds("Acme Corp | https://boards.greenhouse.io/acme-corp | exact\n"
                         "Acme Corp | https://jobs.lever.co/acme-corp | exact\n"
@@ -668,12 +668,12 @@ def test_parse_seeds_keeps_every_exact_workday_site_of_a_tenant():
     assert [s["workday"]["site"] for s in seeds] == ["Careers", "Campus", "Other"]   # a plain Acme line is its own seed, as before
 
 
-def test_discover_puts_the_workday_site_with_most_india_jobs_first_so_the_merge_keeps_it(monkeypatch):
+def test_discover_puts_the_workday_site_with_most_place_jobs_first_so_the_merge_keeps_it(monkeypatch):
     india = {"Careers": 3, "Campus": 9, "Empty": 0}
     monkeypatch.setattr(disc, "load_linkedin_cache", lambda path: ({}, {}))
     monkeypatch.setattr(disc, "evaluate_workday", lambda name, tenant, dc, site: {
         "seed": name, "accepted": india[site] > 0, "verdict": "verified", "ats": "workday", "board": f"{tenant}.{dc}/{site}",
-        "jobs": 20, "india_jobs": india[site], "prefilter_pass": 0,
+        "jobs": 20, "place_jobs": india[site], "prefilter_pass": 0,
         "entry": {"name": name, "ats": "workday", "tenant": tenant, "dc": dc, "site": site}})
     seeds = parse_seeds("".join(f"Acme | https://acme.wd1.myworkdayjobs.com/{s} | exact\n" for s in india))
 
@@ -693,14 +693,14 @@ def test_discover_survives_a_board_that_makes_the_fetch_raise_and_reports_it(mon
     def fake_eval(name, ats, slug, from_url=False):
         if slug == "bad":
             raise AttributeError("'NoneType' object has no attribute 'strip'")
-        return {"seed": name, "accepted": True, "verdict": "verified", "ats": ats, "board": slug, "jobs": 5, "india_jobs": 2,
+        return {"seed": name, "accepted": True, "verdict": "verified", "ats": ats, "board": slug, "jobs": 5, "place_jobs": 2,
                 "prefilter_pass": 1, "identity": "slug from company careers URL"}
     monkeypatch.setattr(disc, "evaluate_board", fake_eval)
 
     def fake_workday(name, tenant, dc, site):
         if tenant == "boom":
             raise ValueError("bad payload")
-        return {"seed": name, "accepted": True, "verdict": "verified", "ats": "workday", "board": tenant, "india_jobs": 1,
+        return {"seed": name, "accepted": True, "verdict": "verified", "ats": "workday", "board": tenant, "place_jobs": 1,
                 "entry": {"name": name, "ats": "workday", "tenant": tenant, "dc": dc, "site": site}}
     monkeypatch.setattr(disc, "evaluate_workday", fake_workday)
     seeds = parse_seeds("Bad | https://boards.greenhouse.io/bad | exact\nGood | https://boards.greenhouse.io/good | exact\n"
@@ -866,14 +866,14 @@ def test_workday_check_resolves_multi_location_postings_when_the_first_page_show
 
     row = disc.evaluate_workday("Northern Trust", "ntrs", "wd1", "northerntrust")
 
-    assert row["accepted"] is True and row["india_jobs"] == 1
+    assert row["accepted"] is True and row["place_jobs"] == 1
     assert [p for _, p in asked] == ["/job/a", "/job/c"]                      # stops at the first India job; "Chicago, IL" is not asked
     assert asked[0][0] == "https://ntrs.wd1.myworkdayjobs.com/wday/cxs/ntrs/northerntrust"
     assert row["prefilter_pass"] == 1                                          # the resolved location is what the filter sees: only "Developer" is in India
 
 
 @patch("requests.post")
-def test_workday_check_asks_for_at_most_eight_postings_and_then_says_no_india_jobs(mock_post, monkeypatch):
+def test_workday_check_asks_for_at_most_eight_postings_and_then_says_no_place_jobs(mock_post, monkeypatch):
     mock_post.return_value = _resp(payload={"jobPostings": [_wd_item("Engineer", "2 Locations", f"/job/{i}") for i in range(20)]})
     asked = []
     monkeypatch.setattr(disc, "fetch_detail_locations", lambda base, path: asked.append(path) or "Chicago, IL; Luxembourg")
@@ -898,7 +898,7 @@ def test_workday_check_survives_failed_detail_calls_and_postings_without_a_path(
                                                             _wd_item("Developer", "3 Locations", "/job/2")]})
     monkeypatch.setattr(disc, "fetch_detail_locations", lambda base, path: "")        # the adapter's answer when the call fails
     row = disc.evaluate_workday("Acme", "acme", "wd1", "External")
-    assert row["accepted"] is False and row["india_jobs"] == 0
+    assert row["accepted"] is False and row["place_jobs"] == 0
 
 
 def _maintenance_response():
@@ -970,7 +970,7 @@ def test_discover_then_merge_names_a_host_after_its_busiest_site_not_after_the_h
     def fake_entry(name, entry):
         n = india[entry["site"]]
         return {"seed": name, "accepted": True, "verdict": "verified", "ats": "oracle_hcm", "board": f"{entry['host']}:{entry['site']}",
-                "jobs": n, "india_jobs": n, "prefilter_pass": 0, "entry": {"name": name, **entry}}
+                "jobs": n, "place_jobs": n, "prefilter_pass": 0, "entry": {"name": name, **entry}}
     monkeypatch.setattr(disc, "evaluate_entry", fake_entry)
     host = "ehtl.fa.us6.oraclecloud.com"
     seeds = parse_seeds("".join(f"{n} | https://{host}/hcmUI/CandidateExperience/en/sites/{s} | exact\n"
@@ -986,7 +986,7 @@ def test_discover_keeps_the_seed_order_on_a_tie_so_the_hosts_main_title_wins(mon
 
     def fake_entry(name, entry):
         return {"seed": name, "accepted": True, "verdict": "verified", "ats": "oracle_hcm", "board": f"{entry['host']}:{entry['site']}",
-                "jobs": 23, "india_jobs": 23, "prefilter_pass": 0, "entry": {"name": name, **entry}}
+                "jobs": 23, "place_jobs": 23, "prefilter_pass": 0, "entry": {"name": name, **entry}}
     monkeypatch.setattr(disc, "evaluate_entry", fake_entry)
     host = "mid.fa.em2.oraclecloud.com"
     # the main-title site sorts between the others by name, so a tie broken by name either way picks another site

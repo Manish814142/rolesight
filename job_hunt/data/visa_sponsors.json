@@ -489,6 +489,27 @@
     "source": "nl"
    }
   ],
+  "Algolia": [
+   {
+    "match": "exact",
+    "names": {
+     "Algolia Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Algolia": [
+      "abhi-jha gist: London"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
   "Aliaxis": [
    {
     "match": "loose",
@@ -1084,6 +1105,17 @@
     "source": "uk"
    }
   ],
+  "Babbel": [
+   {
+    "match": "exact",
+    "names": {
+     "Babbel": [
+      "abhi-jha gist: Berlin, Germany"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
   "Backbase": [
    {
     "match": "exact",
@@ -1504,6 +1536,17 @@
     "source": "lists"
    }
   ],
+  "Capmo": [
+   {
+    "match": "exact",
+    "names": {
+     "Capmo": [
+      "abhi-jha gist: Berlin, Germany"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
   "Catawiki": [
    {
     "match": "exact",
@@ -1553,6 +1596,17 @@
      "Celonis B.V.": "67121780"
     },
     "source": "nl"
+   }
+  ],
+  "Celus": [
+   {
+    "match": "exact",
+    "names": {
+     "Celus": [
+      "abhi-jha gist: Berlin, Germany"
+     ]
+    },
+    "source": "lists"
    }
   ],
   "Centrient Pharmaceuticals Netherlands": [
@@ -1803,6 +1857,27 @@
     "source": "ie"
    }
   ],
+  "Collibra": [
+   {
+    "match": "exact",
+    "names": {
+     "Collibra UK Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Collibra": [
+      "abhi-jha gist: London"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
   "Commvault": [
    {
     "match": "loose",
@@ -1858,6 +1933,28 @@
      ]
     },
     "source": "uk"
+   }
+  ],
+  "Contentful": [
+   {
+    "match": "exact",
+    "names": {
+     "CONTENTFUL (UK) LIMITED": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Contentful": [
+      "abhi-jha gist: London",
+      "abhi-jha gist: Berlin, Germany",
+      "abhi-jha gist: Dublin, Ireland"
+     ]
+    },
+    "source": "lists"
    }
   ],
   "Control Risks": [
@@ -2211,6 +2308,17 @@
      "Deliveroo": [
       "abhi-jha gist: London",
       "shubheksha list: London, UK"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
+  "Delivery Hero": [
+   {
+    "match": "exact",
+    "names": {
+     "Delivery Hero": [
+      "abhi-jha gist: Berlin, Germany"
      ]
     },
     "source": "lists"
@@ -2861,6 +2969,17 @@
     "source": "uk"
    }
   ],
+  "Flaconi": [
+   {
+    "match": "exact",
+    "names": {
+     "Flaconi": [
+      "abhi-jha gist: Berlin, Germany"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
   "Flexport": [
    {
     "match": "loose",
@@ -2922,6 +3041,17 @@
      "Flowserve B.V.": "20052878"
     },
     "source": "nl"
+   }
+  ],
+  "Forto": [
+   {
+    "match": "exact",
+    "names": {
+     "Forto": [
+      "abhi-jha gist: Berlin, Germany"
+     ]
+    },
+    "source": "lists"
    }
   ],
   "Fortrea": [
@@ -3126,6 +3256,27 @@
      ]
     },
     "source": "uk"
+   }
+  ],
+  "GoCardless": [
+   {
+    "match": "exact",
+    "names": {
+     "GoCardless Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "GoCardless": [
+      "shubheksha list: London, UK"
+     ]
+    },
+    "source": "lists"
    }
   ],
   "Gojek": [
@@ -3370,6 +3521,18 @@
      ]
     },
     "source": "uk"
+   }
+  ],
+  "HelloFresh": [
+   {
+    "match": "exact",
+    "names": {
+     "HelloFresh": [
+      "abhi-jha gist: Berlin, Germany",
+      "shubheksha list: Berlin, DE"
+     ]
+    },
+    "source": "lists"
    }
   ],
   "Hewlett Packard Enterprise": [
@@ -4490,6 +4653,27 @@
     "source": "uk"
    }
   ],
+  "Miro": [
+   {
+    "match": "exact",
+    "names": {
+     "Miro EMEA UK Ltd.": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Miro": [
+      "abhi-jha gist: Amsterdam, Netherlands"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
   "Mitratech": [
    {
     "match": "exact",
@@ -4598,6 +4782,27 @@
     "source": "ie"
    }
   ],
+  "Monzo": [
+   {
+    "match": "loose",
+    "names": {
+     "Monzo Bank Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Monzo": [
+      "shubheksha list: London, UK"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
   "Moog": [
    {
     "match": "exact",
@@ -4696,6 +4901,17 @@
      ]
     },
     "source": "uk"
+   }
+  ],
+  "N26": [
+   {
+    "match": "exact",
+    "names": {
+     "N26": [
+      "abhi-jha gist: Berlin, Germany"
+     ]
+    },
+    "source": "lists"
    }
   ],
   "NCR": [
@@ -4828,6 +5044,17 @@
      "Navan Netherlands B.V.": "71801375"
     },
     "source": "nl"
+   }
+  ],
+  "Navvis": [
+   {
+    "match": "exact",
+    "names": {
+     "Navvis": [
+      "abhi-jha gist: Berlin, Germany"
+     ]
+    },
+    "source": "lists"
    }
   ],
   "Neara": [
@@ -4977,6 +5204,17 @@
      ]
     },
     "source": "uk"
+   }
+  ],
+  "Ninja Van": [
+   {
+    "match": "exact",
+    "names": {
+     "Ninja Van": [
+      "abhi-jha gist: Singapore"
+     ]
+    },
+    "source": "lists"
    }
   ],
   "Nium": [
@@ -5257,6 +5495,27 @@
     "source": "uk"
    }
   ],
+  "Palantir Technologies": [
+   {
+    "match": "exact",
+    "names": {
+     "Palantir Technologies UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Palantir Technologies": [
+      "abhi-jha gist: London"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
   "Palo Alto Networks": [
    {
     "match": "exact",
@@ -5409,6 +5668,25 @@
     "source": "uk"
    }
   ],
+  "Plaid": [
+   {
+    "match": "exact",
+    "names": {
+     "Plaid, B.V.": "74716603"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Plaid": [
+      "abhi-jha gist: London",
+      "abhi-jha gist: Amsterdam, Netherlands"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
   "Point72": [
    {
     "match": "exact",
@@ -5524,6 +5802,17 @@
     "source": "nl"
    }
   ],
+  "Qonto": [
+   {
+    "match": "exact",
+    "names": {
+     "Qonto": [
+      "abhi-jha gist: Berlin, Germany"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
   "Qualcomm": [
    {
     "match": "loose",
@@ -5627,6 +5916,27 @@
     "source": "uk"
    }
   ],
+  "Raisin": [
+   {
+    "match": "loose",
+    "names": {
+     "Raisin Platforms Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Raisin": [
+      "abhi-jha gist: Berlin, Germany"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
   "Ramboll": [
    {
     "match": "exact",
@@ -5637,6 +5947,24 @@
      ]
     },
     "source": "uk"
+   }
+  ],
+  "Reaktor": [
+   {
+    "match": "exact",
+    "names": {
+     "Reaktor B.V.": "68654626"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Reaktor": [
+      "abhi-jha gist: Amsterdam, Netherlands"
+     ]
+    },
+    "source": "lists"
    }
   ],
   "Recorded Future": [
@@ -6531,6 +6859,44 @@
     "source": "uk"
    }
   ],
+  "SquareSpace": [
+   {
+    "match": "exact",
+    "names": {
+     "Squarespace UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Squarespace Netherlands B.V.": "84406720"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Squarespace Ireland Limited": {
+      "2025": 8,
+      "2026": 3
+     }
+    },
+    "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SquareSpace": [
+      "abhi-jha gist: Dublin, Ireland"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
   "Squarepoint Capital": [
    {
     "match": "exact",
@@ -6647,6 +7013,45 @@
     "source": "uk"
    }
   ],
+  "SumUp": [
+   {
+    "match": "loose",
+    "names": {
+     "SumUp Payments Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SumUp Limited": "70199841"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SumUp Limited": {
+      "2026": 1
+     }
+    },
+    "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SumUp": [
+      "abhi-jha gist: London",
+      "abhi-jha gist: Berlin, Germany",
+      "abhi-jha gist: Amsterdam, Netherlands"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
   "Surveymonkey": [
    {
     "match": "exact",
@@ -6680,6 +7085,17 @@
      ]
     },
     "source": "uk"
+   }
+  ],
+  "Swisscom": [
+   {
+    "match": "exact",
+    "names": {
+     "Swisscom": [
+      "abhi-jha gist: Riga, Lativa"
+     ]
+    },
+    "source": "lists"
    }
   ],
   "Sycurio": [
@@ -6952,6 +7368,17 @@
     "source": "uk"
    }
   ],
+  "Tipico": [
+   {
+    "match": "exact",
+    "names": {
+     "Tipico": [
+      "abhi-jha gist: Berlin, Germany"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
   "Tjx": [
    {
     "match": "exact",
@@ -6995,6 +7422,26 @@
     "source": "uk"
    }
   ],
+  "Trainline": [
+   {
+    "match": "exact",
+    "names": {
+     "Trainline.com Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Trainline": [
+      "abhi-jha gist: London"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
   "Transmit Security": [
    {
     "match": "exact",
@@ -7029,6 +7476,18 @@
      ]
     },
     "source": "uk"
+   }
+  ],
+  "Trivago": [
+   {
+    "match": "exact",
+    "names": {
+     "Trivago": [
+      "abhi-jha gist: Berlin, Germany",
+      "shubheksha list: Dusseldorf, DE"
+     ]
+    },
+    "source": "lists"
    }
   ],
   "Trm Labs": [

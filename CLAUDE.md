@@ -27,7 +27,7 @@ autopilot schedule on [--at HH:MM] | off | status   # the daily scan by itself: 
 ./run_daily.sh              # runner: timestamps into data/scan.log; min_score comes from config.json (default 70, T05)
 autopilot harvest --out /tmp/x.json   # rebuilds a list from india.yml + LinkedIn cache; refuses to overwrite an existing file without --force (T43); prefer discover
 autopilot validate          # prunes companies.json in place (accepts empty boards) — prefer discover
-autopilot discover --seeds scripts/company_seeds.txt --report /tmp/r.csv --out /tmp/v.json [--merge companies.json]
+autopilot discover --seeds scripts/company_seeds.txt --report /tmp/r.csv --out /tmp/v.json [--merge companies.json] [--places "UK, Germany"]
                             # verify company names against ATS boards; --merge re-checks existing entries too
 python scripts/check_filter.py "Java Developer" "Pune, India" [--remote]   # KEPT or REJECTED + the reason, for one job (T80)
 python scripts/measure_prefilter.py --jobs saved.json   # pre-filter survivors + what each exclusion word costs (--save fetches all, ~9 min)
@@ -148,7 +148,8 @@ After: `git fetch && { git diff --quiet origin/main -- :/companies.json :/job_hu
 paste names into a file in any format and run
 `autopilot discover --add-file paste.txt --report /tmp/r.csv --out /tmp/v.json --merge companies.json`
 (or `--add "A, B, C"`). New names are appended to `scripts/company_seeds.txt`; Workday tenants go
-in as `Name | workday | tenant | dc | site` lines and Eightfold sites as `Name | eightfold | host | domain`. Back up `companies.json` and read the report first. Accepted only with live jobs, confirmed identity, ≥1 India job and
+in as `Name | workday | tenant | dc | site` lines and Eightfold sites as `Name | eightfold | host | domain`. Back up `companies.json` and read the report first. Accepted only with live jobs, confirmed identity, ≥1 India job (with `--places` / `candidate.countries`: ≥1 job there; the entry then
+carries `"places"`, the recheck checks it against them and a scan fetches it only for those countries, T139) and
 a posting ≤180 days old (abandoned SmartRecruiters boards from 2015–2020 exist). Custom portals
 (Google, Flipkart, Swiggy careers sites, Darwinbox/Freshteam/Zoho Recruit…) are not reachable.
 
@@ -170,7 +171,7 @@ sponsors, the Dutch IND register, Ireland's permits-issued-to-companies files or
 counts only when accepted in `scripts/visa_sponsor_review.json`, which also holds the rejections: after a rebuild, read the report's
 `unreviewed` rows. Why: 85–100% of engineering postings outside India never state a visa policy (measured 2026-10-21,
 `scripts/measure_visa_wording.py`); and 17 of the 44 UK companies whose postings refuse sponsorship are licensed, so a posting's own refusal wins.
-The scan does not read it yet (T108). Guide: `docs/04-companies-and-scanning.md`, "Visa sponsorship".
+The scan writes it per job abroad as the CSV's Visa column (`job_hunt/visa.py`, T138). Guide: `docs/04-companies-and-scanning.md`, "Visa sponsorship".
 
 **`companies.json` is curated — do not blindly overwrite it with `autopilot harvest`.**
 Harvest into a scratch file (`--out /tmp/x.json`) and diff. Boards removed on evidence

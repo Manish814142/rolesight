@@ -35,7 +35,7 @@ from job_hunt.llm_utils import (
 from job_hunt.log import get_logger
 from job_hunt.models import job_key
 from job_hunt.notifier import is_telegram_configured, send_telegram
-from job_hunt.places import configure_places
+from job_hunt.places import configure_places, listed_for
 from job_hunt.prefilter import (
     TitleRulesError,
     configure_titles,
@@ -364,8 +364,14 @@ def _by_model(scored_by: Counter) -> str:
 
 def run_scan(config: dict, companies: list[dict]) -> None:
     scan_start = time.time()
+    places = configure_places(config)      # T136: before the fetch, which searches them (T137)
+    listed = [c for c in companies if listed_for(c, places)]   # T139: entries accepted only for other countries are not fetched
+    not_yours = len(companies) - len(listed)
+    companies = listed
     total = len(companies)
     logger.info(f"=== Scan started — {total} companies to check ===")
+    if not_yours:
+        logger.info(f"{not_yours} companies in companies.json are listed only for other countries (their \"places\") and are not fetched")
     logger.info(f"Candidate: {config.get('candidate', {}).get('name', 'unknown')}")
     logger.info(f"Min score: {min_score_of(config)} | Top N: {config.get('candidate', {}).get('top_n', 5)}")
     provider = config.get("llm_provider") or "gemini"
@@ -423,7 +429,6 @@ def run_scan(config: dict, companies: list[dict]) -> None:
         logger.info(f"Posted-date filter: last {max_age} day(s) only (jobs without a posted date are kept)")
     too_old = 0
     cities = cities_of(config)
-    places = configure_places(config)      # T136: before the fetch, which searches them (T137)
     if not places.india_only():
         logger.info(f"Location filter: {places.label()}{' (cities: ' + ', '.join(cities) + ')' if cities else ''}, the regions "
                     f"that include them, and remote jobs that name no other place (candidate.countries); you live in "

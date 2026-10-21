@@ -9,6 +9,18 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Added (2026-10-21, T139: T108 part 4, discover checks your places; 27 employers that hire abroad)
+- `autopilot discover --places "United Kingdom, Germany"` (default: `config.json`'s `candidate.countries`, else India): a board needs
+  a job there instead of in India. An entry accepted for other countries records them (`"places": [...]` in `companies.json`); the
+  monthly recheck checks every entry against its own places (each in its own worker thread, `places.using`), and a scan fetches an
+  entry with `places` only when your countries include one of them, so **an India scan fetches exactly the 1,589 it fetched before**.
+  The Workday light check runs one first page per search term until one shows a job there. The report's `india_jobs` column is now
+  `place_jobs`; the India verdict is still `no India jobs`.
+- **27 employers joined the list**: T135's 111 community-list names checked for the UK, Germany, the Netherlands, Ireland, the UAE
+  and Singapore: Monzo, N26, HelloFresh, Delivery Hero, SumUp, Plaid, Palantir, Trainline, Miro, Algolia, Ninja Van, Qonto, Raisin,
+  Tipico, Trivago, GoCardless and others (1,589 → 1,616; every accepted row read; the 1,589 entries unchanged). The visa record was
+  rebuilt for them: 561 of 1,616 companies (3 new loose matches read and accepted).
+
 ### Added (2026-10-21, T138: T108 part 3, scoring and a Visa column for your countries)
 - **The rubric follows your countries.** With `candidate.countries` other than India alone, rule 1 ("cap 30 for on-site work outside
   India…") becomes: cap 30 for on-site or hybrid work outside your countries, and for a posting that cannot sponsor a visa or asks

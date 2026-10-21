@@ -9,8 +9,10 @@ cities, the codes boards write (Amazon's "Dubai, ARE", SmartRecruiters' "Berlin,
 from __future__ import annotations
 
 import re
+import threading
+from contextlib import contextmanager
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, Iterator, List, Optional, Tuple, Union
 
 from job_hunt.settings import countries_of, home_country_of
 
@@ -202,6 +204,7 @@ def places_from_config(config: dict) -> Places:
 
 
 _ACTIVE = INDIA
+_LOCAL = threading.local()
 
 
 def configure_places(source: Union[dict, Places]) -> Places:
@@ -212,4 +215,30 @@ def configure_places(source: Union[dict, Places]) -> Places:
 
 
 def active_places() -> Places:
-    return _ACTIVE
+    """This thread's places (`using`), else the configured ones."""
+    return getattr(_LOCAL, "places", None) or _ACTIVE
+
+
+@contextmanager
+def using(places: Places) -> Iterator[Places]:
+    """Within the block, this thread's connectors and filter use `places` (T139: discover checks each company.json entry
+    against the places it was accepted for). Each worker thread sets its own."""
+    before = getattr(_LOCAL, "places", None)
+    _LOCAL.places = places
+    try:
+        yield places
+    finally:
+        _LOCAL.places = before
+
+
+# companies.json entries accepted for countries other than India carry "places": [names] (T139); the others were accepted for India.
+def entry_places(entry: Dict[str, Any], home: str = "India") -> Places:
+    names = entry.get("places") or []
+    return Places(tuple(country(n) for n in names), home) if names else INDIA
+
+
+def listed_for(entry: Dict[str, Any], places: Places) -> bool:
+    """Whether a scan for `places` fetches this entry: an India entry always (big employers hire in many countries), an
+    entry accepted for other countries only when it shares one with `places`."""
+    names = entry.get("places")
+    return not names or bool({country(n).name for n in names} & set(places.search_names()))

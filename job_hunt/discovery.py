@@ -3,7 +3,7 @@
 A company is added only when a board is proven to be (1) live — at least one open job,
 (2) the right employer — board name matches, or the company is named in its job
 descriptions, or the slug came from the company's own careers URL, and (3) hiring in
-India — at least one job located in India. This avoids the failure modes seen before:
+India — at least one job located in India (or in the countries of --places / config.json's candidate.countries, T139). This avoids the failure modes seen before:
 empty boards, and same-slug boards that belong to a different company (Navi, Bounce).
 
 Usage:
@@ -32,7 +32,9 @@ Seeds file, one company per line ('#' comments allowed):
 
 Options: --report FILE, --out FILE, --merge FILE (add the verified entries to it), --no-recheck (do not re-check the
 entries already in the --merge file), --workers N (parallel probes, default 40; use 3 for Workable and Recruitee seeds,
-which refuse bursts). Run it from the repository folder (the paths are relative); no API key is needed.
+which refuse bursts), --places "United Kingdom, Germany" (the countries a board needs a job in; default config.json's
+candidate.countries, else India; an entry accepted for other countries records them as "places", T139). Run it from the
+repository folder (the paths are relative); no API key is needed.
 Guide: docs/04-companies-and-scanning.md, "Growing the list".
 """
 from __future__ import annotations
@@ -62,6 +64,14 @@ from job_hunt.adapters.workday import (
 from job_hunt.company_builder import CORPORATE_SUFFIX_RE, load_linkedin_cache, match_headcount
 from job_hunt.harvester import ATS_PROBES, _probe, default_linkedin_cache
 from job_hunt.models import JobPosting
+from job_hunt.places import (
+    Places,
+    active_places,
+    configure_places,
+    entry_places,
+    places_from_config,
+    using,
+)
 from job_hunt.prefilter import (
     LOCATION_INDIA_COUNTRY_CODE,
     LOCATION_INDIA_PATTERN,
@@ -87,7 +97,7 @@ MAX_NEWEST_AGE_DAYS = 180
 WORKDAY_DETAIL_CALLS = 8
 
 REPORT_FIELDS = [
-    "seed", "verdict", "ats", "board", "jobs", "india_jobs", "prefilter_pass", "newest_age_days",
+    "seed", "verdict", "ats", "board", "jobs", "place_jobs", "prefilter_pass", "newest_age_days",
     "identity", "sample_titles",
 ]
 
@@ -265,7 +275,7 @@ def newest_age_days(jobs: List[JobPosting], now: Optional[datetime] = None) -> O
 
 
 def accept_board(
-    ats: str, slug: str, jobs: int, india_jobs: int, identity_ok: bool,
+    ats: str, slug: str, jobs: int, place_jobs: int, identity_ok: bool,
     newest_age_days: Optional[int] = None,
 ) -> Tuple[bool, str]:
     if (ats, slug.lower()) in KNOWN_BAD_BOARDS:
@@ -276,8 +286,9 @@ def accept_board(
         return False, f"stale board (newest posting {newest_age_days} days old)"
     if not identity_ok:
         return False, "identity not confirmed"
-    if india_jobs <= 0:
-        return False, "no India jobs"
+    if place_jobs <= 0:
+        places = active_places()
+        return False, "no India jobs" if places.india_only() else f"no jobs in {places.label()}"
     return True, "verified"
 
 
@@ -327,6 +338,12 @@ def _is_india(location: str) -> bool:
     return bool(LOCATION_INDIA_PATTERN.search(text) or LOCATION_INDIA_COUNTRY_CODE.search(text))
 
 
+def _in_places(location: str) -> bool:
+    """A job in the places being checked (T139): India alone counts as before; other countries by their packs."""
+    places = active_places()
+    return _is_india(location) if places.india_only() else places.names_place(location)
+
+
 # ── network checks ────────────────────────────────────────────────────────────
 
 def _board_name(ats: str, slug: str) -> Optional[str]:
@@ -365,14 +382,14 @@ def _identity(seed_name: str, ats: str, slug: str, jobs: List[JobPosting], from_
 
 def evaluate_board(seed_name: str, ats: str, slug: str, from_url: bool = False) -> Dict[str, Any]:
     jobs = fetch_company_jobs({"name": seed_name, "ats": ats, "slug": slug})
-    india = sum(1 for j in jobs if _is_india(j.location))
+    india = sum(1 for j in jobs if _in_places(j.location))
     passing = [j for j in jobs if should_evaluate_job(j)[0]]
     identity_ok, how = _identity(seed_name, ats, slug, jobs, from_url) if jobs else (False, "no jobs")
     age = newest_age_days(jobs)
     ok, verdict = accept_board(ats, slug, len(jobs), india, identity_ok, age)
     return {
         "seed": seed_name, "verdict": verdict, "accepted": ok, "ats": ats, "board": slug,
-        "jobs": len(jobs), "india_jobs": india, "prefilter_pass": len(passing),
+        "jobs": len(jobs), "place_jobs": india, "prefilter_pass": len(passing),
         "newest_age_days": "" if age is None else age, "identity": how,
         "sample_titles": "; ".join(j.title[:50] for j in passing[:3]),
     }
@@ -382,14 +399,14 @@ def evaluate_entry(seed_name: str, entry: Dict[str, Any]) -> Dict[str, Any]:
     """Verify a board that needs no slug probing (Oracle HCM, Amazon, ...) through its real
     adapter. Identity is trusted: the entry came from the company's own careers URL."""
     jobs = fetch_company_jobs({**entry, "name": seed_name})
-    india = sum(1 for j in jobs if _is_india(j.location))
+    india = sum(1 for j in jobs if _in_places(j.location))
     passing = [j for j in jobs if should_evaluate_job(j)[0]]
     age = newest_age_days(jobs)
     ident = _board_ident(entry)
     ok, verdict = accept_board(entry["ats"], ident, len(jobs), india, True, age)
     return {
         "seed": seed_name, "verdict": verdict, "accepted": ok, "ats": entry["ats"], "board": ident,
-        "jobs": len(jobs), "india_jobs": india, "prefilter_pass": len(passing),
+        "jobs": len(jobs), "place_jobs": india, "prefilter_pass": len(passing),
         "newest_age_days": "" if age is None else age, "identity": "careers URL / curated entry",
         "sample_titles": "; ".join(j.title[:50] for j in passing[:3]),
         "entry": {"name": seed_name, **entry},
@@ -404,21 +421,28 @@ def evaluate_workday(seed_name: str, tenant: str, dc: str, site: str) -> Dict[st
     url = f"{cxs_base}/jobs"
     row: Dict[str, Any] = {"seed": seed_name, "ats": "workday", "board": f"{tenant}.{dc}/{site}",
                            "identity": "curated tenant", "sample_titles": ""}
-    try:
-        r = requests.post(url, json={"appliedFacets": {}, "limit": 20, "offset": 0, "searchText": "India"},
-                          headers=DEFAULT_HEADERS, timeout=15)
-        away = redirected_away(r, f"{tenant}.{dc}.myworkdayjobs.com")
-        if away:        # Workday's maintenance page: the board is not dead, it cannot be read right now (T113)
-            row.update({"verdict": f"error: Workday answered with a redirect to {away}, not with jobs (maintenance?)",
-                        "accepted": False, "jobs": 0, "india_jobs": 0, "prefilter_pass": 0})
-            return row
-        posts = r.json().get("jobPostings", []) if r.status_code == 200 else []
-        status = f"HTTP {r.status_code}"
-    except Exception as e:
-        posts, status = [], str(e)[:60]
+    posts: List[Dict[str, Any]] = []
+    status = ""
+    for term in active_places().workday_terms():     # "India" alone unless other places are checked (T139)
+        try:
+            r = requests.post(url, json={"appliedFacets": {}, "limit": 20, "offset": 0, "searchText": term},
+                              headers=DEFAULT_HEADERS, timeout=15)
+            away = redirected_away(r, f"{tenant}.{dc}.myworkdayjobs.com")
+            if away:        # Workday's maintenance page: the board is not dead, it cannot be read right now (T113)
+                row.update({"verdict": f"error: Workday answered with a redirect to {away}, not with jobs (maintenance?)",
+                            "accepted": False, "jobs": 0, "place_jobs": 0, "prefilter_pass": 0})
+                return row
+            page = r.json().get("jobPostings", []) if r.status_code == 200 else []
+            status = f"HTTP {r.status_code}"
+        except Exception as e:
+            page, status = [], str(e)[:60]
+        known = {q.get("externalPath") for q in posts}
+        posts += [q for q in page if not q.get("externalPath") or q.get("externalPath") not in known]
+        if any(_in_places(item_location(q)) for q in page):
+            break
     jobs = [JobPosting("", "workday", seed_name, p.get("title", ""), item_location(p), False, "")
             for p in posts]
-    india = sum(1 for j in jobs if _is_india(j.location))
+    india = sum(1 for j in jobs if _in_places(j.location))
     if not india:
         asked = 0
         for p, job in zip(posts, jobs):
@@ -427,13 +451,13 @@ def evaluate_workday(seed_name: str, tenant: str, dc: str, site: str) -> Dict[st
             if p.get("externalPath") and is_multi_location(job.location):
                 asked += 1
                 job.location = fetch_detail_locations(cxs_base, p["externalPath"]) or job.location
-                if _is_india(job.location):
+                if _in_places(job.location):
                     india = 1
                     break
     passing = [j for j in jobs if should_evaluate_job(j)[0]]
     ok, verdict = accept_board("workday", f"{tenant}:{dc}:{site}", len(jobs), india, True)
     row.update({"verdict": verdict if posts else f"{verdict} ({status})", "accepted": ok, "jobs": len(jobs),
-                "india_jobs": india, "prefilter_pass": len(passing),
+                "place_jobs": india, "prefilter_pass": len(passing),
                 "sample_titles": "; ".join(j.title[:50] for j in passing[:3]),
                 "entry": {"name": seed_name, "ats": "workday", "tenant": tenant, "dc": dc, "site": site}})
     return row
@@ -476,8 +500,18 @@ def _or_error(fn: Any, seed_name: str, ats: str, board: str, *args: Any, **kwarg
                 "board": board}
 
 
-def discover(seeds: List[Dict[str, Any]], workers: int = 40) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
-    """Return (verified companies.json entries, report rows for every seed)."""
+def _under(places: Places, fn: Any, *args: Any) -> Any:
+    """Run `fn` in this worker thread with `places` as its places (`places.using`)."""
+    with using(places):
+        return fn(*args)
+
+
+def discover(seeds: List[Dict[str, Any]], workers: int = 40,
+             places: Optional[Places] = None) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
+    """Return (verified companies.json entries, report rows for every seed). A board is accepted for `places` (default the
+    active ones, India unless configured): it needs a job there, and its entry records them when they are not India (T139)."""
+    places = places or active_places()
+    tag = {} if places.india_only() else {"places": places.search_names()}
     board_seeds = [s for s in seeds if not {"workday", "oracle_hcm", "eightfold", "phenom"} & s.keys()]
     tasks = [(s, ats, slug, fu) for s in board_seeds for ats, slug, fu in _probe_pairs(s)]
     print(f"Phase 1/3 — probing {len(tasks)} (ATS, slug) pairs for {len(board_seeds)} companies...")
@@ -485,9 +519,10 @@ def discover(seeds: List[Dict[str, Any]], workers: int = 40) -> Tuple[List[Dict[
         hits = [h for h in ex.map(_probe_one, tasks) if h]
     print(f"  {len(hits)} live board(s) found")
 
-    print("Phase 2/3 — verifying live boards (jobs, identity, India presence)...")
+    print(f"Phase 2/3 — verifying live boards (jobs, identity, {places.label()} presence)...")
     with ThreadPoolExecutor(max_workers=max(1, min(12, workers))) as ex:     # --workers bounds this phase too (T111)
-        evaluated = list(ex.map(lambda h: _or_error(evaluate_board, h[0]["name"], h[1], h[2], h[0]["name"], h[1], h[2], h[3]), hits))
+        evaluated = list(ex.map(lambda h: _under(places, _or_error, evaluate_board, h[0]["name"], h[1], h[2], h[0]["name"],
+                                                 h[1], h[2], h[3]), hits))
 
     wd_seeds = [s for s in seeds if "workday" in s]
     oracle_seeds = [s for s in seeds if "oracle_hcm" in s]
@@ -496,11 +531,12 @@ def discover(seeds: List[Dict[str, Any]], workers: int = 40) -> Tuple[List[Dict[
     print(f"Phase 3/3 — checking {len(wd_seeds)} Workday tenants, {len(oracle_seeds)} Oracle HCM sites, "
           f"{len(eightfold_seeds)} Eightfold sites and {len(phenom_seeds)} Phenom sites...")
     with ThreadPoolExecutor(max_workers=8) as ex:
-        wd_rows = list(ex.map(lambda s: _or_error(evaluate_workday, s["name"], "workday", s["workday"]["tenant"],
-                                                  s["name"], **s["workday"]), wd_seeds))
+        wd_rows = list(ex.map(lambda s: _under(places, _or_error, evaluate_workday, s["name"], "workday", s["workday"]["tenant"],
+                                               s["name"], s["workday"]["tenant"], s["workday"]["dc"], s["workday"]["site"]),
+                              wd_seeds))
         for ats, group in (("oracle_hcm", oracle_seeds), ("eightfold", eightfold_seeds), ("phenom", phenom_seeds)):
-            wd_rows += list(ex.map(lambda s, a=ats: _or_error(evaluate_entry, s["name"], a, str(s[a].get("host", "")), s["name"],
-                                                              {"ats": a, **s[a]}), group))
+            wd_rows += list(ex.map(lambda s, a=ats: _under(places, _or_error, evaluate_entry, s["name"], a,
+                                                           str(s[a].get("host", "")), s["name"], {"ats": a, **s[a]}), group))
 
     company_cache, slug_cache = load_linkedin_cache(default_linkedin_cache())
     verified: List[Dict[str, Any]] = []
@@ -518,20 +554,20 @@ def discover(seeds: List[Dict[str, Any]], workers: int = 40) -> Tuple[List[Dict[
         if not cands:
             rows.append({"seed": seed["name"], "verdict": "no live board on supported ATSs", "accepted": False})
         if good:
-            best = max(good, key=lambda r: (r["identity"].startswith("slug from"), r["india_jobs"], r["prefilter_pass"]))
+            best = max(good, key=lambda r: (r["identity"].startswith("slug from"), r["place_jobs"], r["prefilter_pass"]))
             name = display_name(seed["name"])
             if seed.get("exact"):         # the board's own name where the ATS publishes one, else the label we gave it
                 name = _tidy_name(_board_name(best["ats"], best["board"]) or name)
             verified.append({
                 "name": name, "ats": best["ats"], "slug": best["board"],
-                "headcount": match_headcount(seed["name"], best["board"], company_cache, slug_cache),
+                "headcount": match_headcount(seed["name"], best["board"], company_cache, slug_cache), **tag,
             })
     rows.extend(wd_rows)
     # A tenant may have several sites (Careers, Campus, ...) and merge_companies keeps one entry per company, the first it
     # meets: put the site with the most India jobs first (a stable sort, so ties keep the seed order). T111.
-    for r in sorted((r for r in wd_rows if r["accepted"]), key=lambda r: -(r.get("india_jobs") or 0)):
+    for r in sorted((r for r in wd_rows if r["accepted"]), key=lambda r: -(r.get("place_jobs") or 0)):
         ident = r["entry"].get("tenant") or r["entry"].get("host", "").split(".")[0]
-        verified.append({**r["entry"], "headcount": match_headcount(r["seed"], ident, company_cache, slug_cache)})
+        verified.append({**r["entry"], "headcount": match_headcount(r["seed"], ident, company_cache, slug_cache), **tag})
     return verified, rows
 
 
@@ -550,7 +586,8 @@ def reverify_existing(entries: List[Dict[str, Any]], workers: int = 12) -> Tuple
 
     def check(c: Dict[str, Any]) -> Dict[str, Any]:
         # A board that makes our fetch raise is not known to be dead: keep it and say so, never crash the monthly check (T111).
-        row = _or_error(check_one, c["name"], c.get("ats", ""), _board_ident(c), c)
+        # Each entry is checked against the places it was accepted for: India, or its "places" (T139).
+        row = _under(entry_places(c, active_places().home), _or_error, check_one, c["name"], c.get("ats", ""), _board_ident(c), c)
         if str(row.get("verdict", "")).startswith("error"):
             row["accepted"] = True
         return row
@@ -596,7 +633,15 @@ def recheck_companies(entries: List[Dict[str, Any]]) -> Tuple[List[Dict[str, Any
     """
     kept, rows = reverify_existing(entries)
     failed = [(c, r) for c, r in zip(entries, rows) if not r["accepted"]]
-    found, disc_rows = discover([{"name": c["name"]} for c, _ in failed]) if failed else ([], [])
+    found: List[Dict[str, Any]] = []
+    disc_rows: List[Dict[str, Any]] = []
+    groups: Dict[Tuple[str, ...], List[Dict[str, Any]]] = {}
+    for c, _ in failed:                   # re-discovered for the places each was accepted for (T139)
+        groups.setdefault(tuple(c.get("places") or ()), []).append(c)
+    for names, group in groups.items():
+        f, d = discover([{"name": c["name"]} for c in group], places=entry_places({"places": list(names)}, active_places().home))
+        found += f
+        disc_rows += d
     by_name = {f["name"].lower(): f for f in found}
     replacements: List[Dict[str, Any]] = []
     summary: List[Dict[str, Any]] = []
@@ -778,7 +823,7 @@ def append_seeds(seeds_path: Path, pasted: List[Tuple[str, str]], raw_lines: Opt
 def main(argv: Optional[List[str]] = None) -> None:
     argv = list(sys.argv[1:] if argv is None else argv)
     opts = {"--seeds": "scripts/company_seeds.txt", "--report": "discovery_report.csv",
-            "--out": "verified_companies.json", "--merge": "", "--workers": "40",
+            "--out": "verified_companies.json", "--merge": "", "--workers": "40", "--places": "",
             "--add": "", "--add-file": ""}
     # Unknown arguments used to be ignored, so `--help` or a mistyped flag ran a full discovery of every seed (T67).
     if "-h" in argv or "--help" in argv:
@@ -797,6 +842,19 @@ def main(argv: Optional[List[str]] = None) -> None:
         if a in opts and i + 1 < len(argv):
             opts[a] = argv[i + 1]
     recheck = "--no-recheck" not in argv
+    config = {}
+    if Path("config.json").is_file():
+        try:
+            config = json.loads(Path("config.json").read_text(encoding="utf-8"))
+        except ValueError:
+            config = {}
+    candidate = dict(config.get("candidate") or {})
+    if opts["--places"]:
+        candidate["countries"] = opts["--places"]
+    places = configure_places(places_from_config({"candidate": candidate}))
+    if not places.india_only():
+        print(f"Places: a board needs a job in {places.label()} (new entries record them; existing ones are checked against "
+              f"their own)")
 
     if "--census" in argv:
         path = argv[argv.index("--census") + 1]
