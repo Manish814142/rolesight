@@ -264,6 +264,9 @@ _ENDS = re.compile(r"\s*(\([^)]*\))?\s*")
 _NOT_A_PREFIX = frozenset({"NA", "IT", "AM", "PM"})     # "NA - Remote" is North America (or n/a), not Namibia
 _ISO2_SUFFIX = re.compile(r",\s*([a-z]{2})\s*$")
 _CODE_AFTER_COMMA = re.compile(r",\s*([A-Z]{2,3})\b")
+# Country codes that boards also write as a department after the office (Personio: "Hannover, IT"), T147: Italy, Croatia, Qatar,
+# Puerto Rico, Anguilla, Burundi.
+_DEPARTMENT_CODES = frozenset({"IT", "HR", "QA", "PR", "AI", "BI"})
 # T146: "London, On", "Dublin, Oh": a state or province code written in mixed case at the end; only codes that are no
 # country's ("De" could be Germany).
 _TITLE_CODE_END = re.compile(r",\s*([A-Z][a-z])\s*(?:\([^)]*\))?\s*$")
@@ -304,7 +307,9 @@ def _codes_after_comma(part: str) -> Set[str]:
         owners = set(_CODE_OWNERS.get(code, set()))
         # A country code ends the location ("Munich, DE"); one in the middle is a region's ("St. Gallen, SG, ch" is a canton).
         last = bool(_ENDS.fullmatch(part[m.end():]))
-        if code in iso2 and last and (not owners or _has_city_of(code, before)):
+        # A code that is also a department or a state ("Hannover, IT", "Berlin, HR", "Gurugram, HR") is the country only after
+        # one of its cities (T147); any other country code ends the location as it is ("Paris, FR", "Valencia, ES").
+        if code in iso2 and last and (_has_city_of(code, before) or (not owners and code not in _DEPARTMENT_CODES)):
             found.add(code)
             continue
         if len(owners) > 1:

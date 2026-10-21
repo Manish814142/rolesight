@@ -186,3 +186,16 @@ def test_the_builder_keeps_a_citys_longer_foreign_namesakes_out():
     assert out["PT"]["not_followed_by"] == {"Porto": ["alegre"]} and "not_followed_by" not in out["ES"]
     assert "brasil" in out["BR"]["aliases"]
     assert "gulf" not in bc.REGIONS["gcc"][0].split("|") and "SEA" not in bc.REGIONS["sea"][0]
+
+
+# ── T147: a department written like a country code (Personio: "office, department") ─────────────────────────────
+
+@pytest.mark.parametrize("location, expected", [
+    ("Hannover, IT", ["Germany"]), ("Gräfelfing, IT", []), ("Berlin, HR", ["Germany"]), ("Munich, QA", ["Germany"]),
+    ("Gurugram, HR", []), ("Rome, IT", ["Italy"]), ("Milan, IT (Hybrid)", ["Italy"]), ("Zagreb, HR", ["Croatia"]),
+    ("Doha, QA", ["Qatar"]), ("Hannover, PR", ["Germany"]), ("Hannover, AI", ["Germany"]), ("Hannover, BI", ["Germany"]), ("Paris, FR", ["France"]), ("Valencia, ES", ["Spain"]),        # other codes still end a location
+    ("Bergamo, it", ["Italy"]), ("Hannover, Italy", ["Italy"]),
+])
+def test_a_department_is_not_a_country_code(location, expected):
+    p = pl.places_from_config({"candidate": {"countries": ["Germany", "Italy", "Croatia", "Qatar", "France", "Spain"]}})
+    assert sorted(c.name for c in p.countries_in(location)) == sorted(expected)
