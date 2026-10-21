@@ -238,16 +238,25 @@ What changes:
 4. **A Visa column** in the CSV for every job outside your home country: what the posting says, then what public records
    say about the company there, e.g. `Not stated; UK licensed sponsor`
    ([docs/05](05-outputs-and-notifications.md); the records: [docs/04](04-companies-and-scanning.md#visa-sponsorship-which-companies-can-sponsor)).
-   Most postings never say: 85-100% of engineering postings in these six countries (measured 2026-10-21).
+   Most postings never say: 85-100% of engineering postings in these six countries, and 84-95% in the USA, Canada and
+   Australia (measured 2026-10-21).
 5. **Companies.** All 1,589 India companies are scanned (many big employers hire in your countries too: 457 of 989
    described boards had UK jobs on 2026-10-21), plus 27 that hire abroad and not in India (Monzo, N26, HelloFresh, SumUp,
    Plaid, …). `rolesight discover --add-file names.txt --merge companies.json` adds more: it checks your countries (or
    `--places "…"`).
 
-Limits: postings in another language (Japanese or German titles) do not match the English title words; Germany, the UAE and
-Singapore publish no sponsor register, so their Visa notes give the country's own rule instead (in the UAE and Singapore the
-employer applies for the visa; Germany needs no sponsor licence: [docs/04](04-companies-and-scanning.md#germany-the-uae-and-singapore-t141)); a board that answers
-"too many requests" (Accenture did) stops early and is counted as incomplete.
+Limits: postings in another language (Japanese or German titles) do not match the English title words; Germany, the UAE,
+Singapore, Australia and New Zealand publish no sponsor register to download, so their Visa notes give the country's own rule
+instead (in the UAE and Singapore the employer applies for the visa; Germany needs no sponsor licence:
+[docs/04](04-companies-and-scanning.md#germany-the-uae-and-singapore-t141)); a board that answers "too many requests"
+(Accenture did) stops early and is counted as incomplete.
+
+**The USA from India** ([docs/04](04-companies-and-scanning.md#the-usa-canada-australia-and-new-zealand-t143)): a direct
+hire is possible but rare. The employer must enter you in the yearly H-1B lottery (March; work from October at the earliest),
+and a $100,000 payment for petitions for people abroad is being fought in court. The usual way in is L-1: work a year for the
+company's office in India, then transfer, with no lottery. So a US job at a company that also hires in India (most of the
+list) is worth a look for both routes. The Visa note says the company's H-1B record ("H-1B FY2024: 32 new, 233 extended") and
+the rule. Canada is different: you can apply for permanent residence yourself (Express Entry), job offer or not.
 
 ### Pre-filter patterns
 

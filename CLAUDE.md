@@ -166,9 +166,10 @@ host is a customer code (`cbcz.fa.us2…`), so the script names each site from i
 host, its busiest site, named by that site's own title (T117). The full guide for people: `docs/04-companies-and-scanning.md`, "Growing the list".
 
 **Visa-sponsor evidence (T133):** `job_hunt/data/visa_sponsors.json` lists the companies on the list that appear on the UK register of licensed
-sponsors, the Dutch IND register, Ireland's permits-issued-to-companies files or three community lists (incl. relocate.me's CC0 one, T141;
-a list entry counts only for its places), each with the source's own entry; Germany, the UAE and Singapore get their official rule in
-the note instead (`visa.COUNTRY_RULE`). Built by
+sponsors, the Dutch IND register, Ireland's permits-issued-to-companies files, the USCIS H-1B approvals (FY2024 via the JohnBroberg/H1B_Hub copy,
+uscis.gov refuses scripts; `--us-h1b FILE` for a newer export) and Canada's positive LMIA employers (T143), or three community lists (incl.
+relocate.me's CC0 one, T141; a list entry counts only for its places), each with the source's own entry; the UAE, Singapore, Germany, the
+USA, Canada, Australia and New Zealand also get their official rule in the note unless the posting refuses (`visa.COUNTRY_RULE`). Built by
 `scripts/build_visa_sponsors.py` (downloads into `data/visa_sources/`; `--offline` reuses them). A loose name match (generic words dropped)
 counts only when accepted in `scripts/visa_sponsor_review.json`, which also holds the rejections: after a rebuild, read the report's
 `unreviewed` rows. Why: 85–100% of engineering postings outside India never state a visa policy (measured 2026-10-21,

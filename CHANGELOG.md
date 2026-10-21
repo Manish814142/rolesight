@@ -9,6 +9,24 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Added (2026-10-21, T143: visa evidence for the USA, Canada, Australia and New Zealand)
+- Manish: "for the USA i think direct apply from india is not allowed ... if possible then cover USA also". It is possible but
+  rare, and the note now says why, from USCIS's own pages: `USA: from abroad, H-1B is a yearly lottery the employer enters (a
+  $100,000 fee for it is in court); L-1 after a year with the company abroad`. Canada, Australia and New Zealand get their rule
+  too (LMIA or Express Entry; approved sponsor; accredited employer and job check). Every rule now follows any posting that does
+  not refuse, so an offer of US sponsorship still shows the lottery.
+- Two new record sources: USCIS H-1B approvals per employer (FY2024, public domain; uscis.gov refuses scripts, so the build reads
+  JohnBroberg/H1B_Hub's copy, checked against USCIS's totals to within one unnamed row; `--us-h1b FILE` takes a newer export
+  saved in a browser) and Canada's positive LMIA employers (the last four quarters, Open Government Licence – Canada, with the
+  positions in software occupations). Name matching learnt the H-1B file's "D B A" trade names, "L L C" and PBC/OPCO; "Canada"
+  is a country word. All 749 candidate matches were read (USA 92 and Canada 12 rejected). Record: 798 of 1,647 companies (USA
+  551, Canada 61); the UK, Dutch and Irish matches did not change.
+- US wording: refusals written with "U.S." ("must be a U.S. citizen", "unrestricted U.S. work authorization") were missed
+  because of the dots; 151 postings now read as refusals, every distinct sentence read; "Visa Ventures" (an investor) is no
+  visa. Measured on 3,786 US engineering postings: 84.0% say nothing, 3.6% offer, 5.2% refuse.
+- A community-list entry counts for any country it names (not only the hand-made packs), and relocate.me's flags all become
+  country names.
+
 ### Added (2026-10-21, T142: every country)
 - Manish: "australia, canada and other countries also basically all the countries in the world". **Every country has a pack now.**
   Hand-made for the USA, Canada and Australia (tech-hub cities, states and provinces by name and code: "Austin, TX", "Toronto, ON",

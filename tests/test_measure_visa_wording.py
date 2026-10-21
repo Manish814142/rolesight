@@ -13,9 +13,10 @@ SPEC.loader.exec_module(mvw)
     ("London, UK", ["UK"]), ("Belfast, Northern Ireland", ["UK"]), ("Dublin, Ireland", ["Ireland"]), ("Berlin", ["Germany"]),
     ("München, Germany", ["Germany"]), ("Amsterdam, North Holland, Netherlands", ["Netherlands"]), ("Dubai, UAE", ["UAE"]),
     ("Singapore", ["Singapore"]), ("Remote - EMEA", ["Europe"]), ("Bengaluru, India", []),
-    # a North American twin counts only when the country's own name is there too
-    ("London, Ontario", []), ("Cambridge, MA", []), ("Dublin, OH", []), ("Reading, PA", []),
-    ("Remote - USA; London, United Kingdom", ["UK"]), ("New York, NY 10001; Berlin, Germany", ["Germany"]),
+    # a North American twin counts only when the country's own name is there too; since T143 it counts for its own country
+    ("London, Ontario", ["Canada"]), ("Cambridge, MA", ["USA"]), ("Dublin, OH", ["USA"]), ("Reading, PA", ["USA"]),
+    ("Remote - USA; London, United Kingdom", ["UK", "USA"]), ("New York, NY 10001; Berlin, Germany", ["Germany", "USA"]),
+    ("Perth, WA", ["Australia"]), ("Auckland, New Zealand", ["New Zealand"]), ("Toronto, ON", ["Canada"]),
 ])
 def test_countries_reads_the_target_places_and_skips_north_american_twins(location, expected):
     assert mvw.countries(location) == expected

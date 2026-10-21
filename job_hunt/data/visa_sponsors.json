@@ -12,6 +12,32 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "TP US OPERATIONS INC DBA 1GLOBAL": {
+      "2024": [
+       1,
+       0
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "66degrees": [
+   {
+    "match": "exact",
+    "names": {
+     "66DEGREES LLC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "ACI Worldwide": [
@@ -31,6 +57,18 @@
      "ACI Worldwide B.V.": "29041088"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ACI WORLDWIDE CORP": {
+      "2024": [
+       4,
+       11
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "AECOM": [
@@ -60,6 +98,18 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "AECOM": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "AFRY": [
@@ -78,6 +128,35 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "AFRY Canada Inc.": {
+      "2025Q2": {
+       "positions": 1,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 0
+      },
+      "2025Q4": {
+       "positions": 1,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 0
+      },
+      "2026Q1": {
+       "positions": 1,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 0
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "AKQA": [
@@ -97,6 +176,18 @@
      "AKQA B.V.": "34275347"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "AKQA INC": {
+      "2024": [
+       3,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "APLL": [
@@ -121,6 +212,32 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "AST SPACEMOBILE SERVICES LLC": {
+      "2024": [
+       1,
+       0
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Abacus Insights": [
+   {
+    "match": "exact",
+    "names": {
+     "ABACUS INSIGHTS INC": {
+      "2024": [
+       0,
+       2
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Abb": [
@@ -151,6 +268,18 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ABB INC": {
+      "2024": [
+       17,
+       31
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "AbbVie": [
@@ -179,6 +308,24 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ABBVIE INC": {
+      "2024": [
+       39,
+       93
+      ]
+     },
+     "ABBVIE US LLC": {
+      "2024": [
+       3,
+       18
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Accelleron": [
@@ -192,6 +339,20 @@
     "source": "uk"
    }
   ],
+  "Accellor": [
+   {
+    "match": "exact",
+    "names": {
+     "ACCELLOR INC": {
+      "2024": [
+       0,
+       2
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "Accelya": [
    {
     "match": "loose",
@@ -201,6 +362,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ACCELYA US INC": {
+      "2024": [
+       0,
+       3
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Accenture": [
@@ -230,6 +403,47 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ACCENTURE LLP": {
+      "2024": [
+       832,
+       1325
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Accenture Inc.": {
+      "2025Q2": {
+       "positions": 2,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 2
+      },
+      "2025Q3": {
+       "positions": 1,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 1
+      },
+      "2026Q1": {
+       "positions": 2,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 2
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "Acumatica": [
@@ -253,6 +467,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ADDEPAR INC": {
+      "2024": [
+       5,
+       15
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Adjust": [
@@ -289,6 +515,18 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ADOBE INC": {
+      "2024": [
+       186,
+       601
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Adtran": [
@@ -301,6 +539,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ADTRAN INC": {
+      "2024": [
+       0,
+       2
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Adyen": [
@@ -321,6 +571,18 @@
      "Adyen Netherlands B.V.": "98924397"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ADYEN N V": {
+      "2024": [
+       0,
+       4
+      ]
+     }
+    },
+    "source": "us"
    },
    {
     "match": "exact",
@@ -349,6 +611,18 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "AGILENT TECHNOLOGIES INC": {
+      "2024": [
+       11,
+       24
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Agilisys": [
@@ -394,6 +668,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "AIDASH INC": {
+      "2024": [
+       1,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Aidence": [
@@ -431,6 +717,33 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "AIRBNB INC": {
+      "2024": [
+       15,
+       143
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Airbnb Canada Inc": {
+      "2026Q1": {
+       "positions": 1,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 1
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "Airwallex": [
@@ -450,6 +763,18 @@
      "Airwallex (Netherlands) B.V.": "77519256"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "AIRWALLEX US LLC": {
+      "2024": [
+       4,
+       3
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Akamai": [
@@ -478,6 +803,18 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "AKAMAI TECHNOLOGIES INC": {
+      "2024": [
+       34,
+       108
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Aleph": [
@@ -503,6 +840,24 @@
    {
     "match": "exact",
     "names": {
+     "ALGOLIA INC": {
+      "2024": [
+       1,
+       1
+      ]
+     },
+     "ALGOLIA, INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
      "Algolia": [
       "abhi-jha gist: London"
      ]
@@ -521,6 +876,20 @@
      ]
     },
     "source": "uk"
+   }
+  ],
+  "Alkami": [
+   {
+    "match": "loose",
+    "names": {
+     "ALKAMI TECHNOLOGY INC": {
+      "2024": [
+       0,
+       2
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Allegis Global Solutions": [
@@ -550,6 +919,18 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ALLEGIS GLOBAL SOLUTIONS INC": {
+      "2024": [
+       1,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Allica Bank": [
@@ -585,6 +966,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ALPHASENSE INC": {
+      "2024": [
+       0,
+       3
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Alphonso": [
@@ -596,6 +989,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ALPHONSO INC": {
+      "2024": [
+       1,
+       27
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Alteryx": [
@@ -608,6 +1013,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ALTERYX INC": {
+      "2024": [
+       3,
+       8
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Amadeus": [
@@ -650,6 +1067,24 @@
     "source": "ie"
    },
    {
+    "match": "loose",
+    "names": {
+     "AMAZON PAYMENTS INC": {
+      "2024": [
+       2,
+       4
+      ]
+     },
+     "AMAZON.COM SERVICES LLC": {
+      "2024": [
+       346,
+       982
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
     "match": "exact",
     "names": {
      "Amazon": [
@@ -681,6 +1116,18 @@
      "American Express Europe S.A. (Netherlands branch)": "71660275"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "AMERICAN EXPRESS COMPANY": {
+      "2024": [
+       41,
+       37
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Amgen": [
@@ -711,6 +1158,47 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "AMGEN INC": {
+      "2024": [
+       66,
+       222
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Amplitude": [
+   {
+    "match": "exact",
+    "names": {
+     "AMPLITUDE INC": {
+      "2024": [
+       4,
+       19
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Amplitude Canada Limited": {
+      "2026Q1": {
+       "positions": 1,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 1
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "Analog Devices": [
@@ -732,6 +1220,18 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ANALOG DEVICES INC": {
+      "2024": [
+       88,
+       52
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Anaplan": [
@@ -751,6 +1251,18 @@
      "Anaplan Nederland B.V.": "59187352"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ANAPLAN INC": {
+      "2024": [
+       7,
+       19
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Anthropic": [
@@ -772,6 +1284,18 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ANTHROPIC PBC D B A ANTHROPIC INC": {
+      "2024": [
+       12,
+       23
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Anton Paar": [
@@ -790,6 +1314,32 @@
      "Anton Paar Netherlands B.V.": "87790408"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ANTON PAAR USA INC": {
+      "2024": [
+       1,
+       0
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Anyscale": [
+   {
+    "match": "exact",
+    "names": {
+     "ANYSCALE INC": {
+      "2024": [
+       5,
+       7
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "AppViewX": [
@@ -802,6 +1352,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "APPVIEWX INC": {
+      "2024": [
+       0,
+       2
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Appen": [
@@ -825,6 +1387,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "APPIAN CORPORATION": {
+      "2024": [
+       8,
+       17
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Applied Materials": [
@@ -854,6 +1428,18 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "APPLIED MATERIALS INC": {
+      "2024": [
+       197,
+       321
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Applike Group": [
@@ -867,6 +1453,20 @@
     "source": "lists"
    }
   ],
+  "Apps Associates": [
+   {
+    "match": "exact",
+    "names": {
+     "APPS ASSOCIATES LLC": {
+      "2024": [
+       15,
+       35
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "AppsFlyer": [
    {
     "match": "exact",
@@ -877,6 +1477,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "APPSFLYER INC": {
+      "2024": [
+       1,
+       0
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Appzen": [
@@ -889,6 +1501,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "APPZEN INC": {
+      "2024": [
+       1,
+       3
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Aptos": [
@@ -901,6 +1525,32 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "APTOS LLC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Arcana Analytics": [
+   {
+    "match": "exact",
+    "names": {
+     "ARCANA ANALYTICS INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Arcesium LLC": [
@@ -913,6 +1563,53 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ARCESIUM LLC": {
+      "2024": [
+       3,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Argano": [
+   {
+    "match": "exact",
+    "names": {
+     "ARGANO LLC": {
+      "2024": [
+       1,
+       8
+      ]
+     },
+     "CSS INTERNATIONAL LLC D B A ARGANO": {
+      "2024": [
+       0,
+       13
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Argano Canada, Inc.": {
+      "2026Q1": {
+       "positions": 1,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 1
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "Arista Networks": [
@@ -935,6 +1632,75 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ARISTA NETWORKS INC": {
+      "2024": [
+       55,
+       76
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Arista Networks": {
+      "2025Q2": {
+       "positions": 1,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 1
+      },
+      "2025Q3": {
+       "positions": 2,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 2
+      },
+      "2025Q4": {
+       "positions": 1,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 1
+      }
+     }
+    },
+    "source": "ca"
+   }
+  ],
+  "Arkose Labs": [
+   {
+    "match": "exact",
+    "names": {
+     "ARKOSE LABS INC": {
+      "2024": [
+       1,
+       4
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Armada": [
+   {
+    "match": "loose",
+    "names": {
+     "ARMADA SYSTEMS INC": {
+      "2024": [
+       1,
+       2
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Artefact": [
@@ -967,6 +1733,47 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ASHOKA": {
+      "2024": [
+       0,
+       3
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Astera Labs": [
+   {
+    "match": "exact",
+    "names": {
+     "ASTERA LABS INC": {
+      "2024": [
+       9,
+       30
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ASTERA LABS CANADA INC.": {
+      "2025Q2": {
+       "positions": 1,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 1
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "AstraZeneca": [
@@ -998,6 +1805,40 @@
     "source": "ie"
    }
   ],
+  "Astronomer": [
+   {
+    "match": "exact",
+    "names": {
+     "ASTRONOMER INC": {
+      "2024": [
+       0,
+       1
+      ]
+     },
+     "ASTRONOMER, INC.": {
+      "2024": [
+       1,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Atlan": [
+   {
+    "match": "exact",
+    "names": {
+     "ATLAN INC": {
+      "2024": [
+       1,
+       5
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "Autodesk": [
    {
     "match": "exact",
@@ -1025,6 +1866,55 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "AUTODESK INC": {
+      "2024": [
+       52,
+       164
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Autodesk Canada Co.": {
+      "2025Q2": {
+       "positions": 4,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 4
+      },
+      "2025Q3": {
+       "positions": 6,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 6
+      },
+      "2025Q4": {
+       "positions": 4,
+       "streams": [
+        "High Wage",
+        "Global Talent Stream"
+       ],
+       "tech": 4
+      },
+      "2026Q1": {
+       "positions": 13,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 13
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "Avaloq": [
@@ -1037,6 +1927,20 @@
      ]
     },
     "source": "uk"
+   }
+  ],
+  "Avery Dennison": [
+   {
+    "match": "exact",
+    "names": {
+     "AVERY DENNISON CORPORATION": {
+      "2024": [
+       4,
+       6
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Aveva": [
@@ -1056,6 +1960,18 @@
      "AVEVA Software Netherlands B.V.": "68293747"
     },
     "source": "nl"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "AVEVA SOFTWARE LLC": {
+      "2024": [
+       1,
+       21
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Aviagen": [
@@ -1079,6 +1995,60 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "AVIATRIX SYSTEMS INC": {
+      "2024": [
+       3,
+       21
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Avient": [
+   {
+    "match": "exact",
+    "names": {
+     "AVIENT CORPORATION": {
+      "2024": [
+       1,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Axiado": [
+   {
+    "match": "exact",
+    "names": {
+     "AXIADO CORPORATION": {
+      "2024": [
+       2,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Azul": [
+   {
+    "match": "loose",
+    "names": {
+     "AZUL SYSTEMS INC": {
+      "2024": [
+       3,
+       0
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Azurity Pharmaceuticals - India": [
@@ -1090,6 +2060,32 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "AZURITY PHARMACEUTICALS INC": {
+      "2024": [
+       0,
+       2
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "B12": [
+   {
+    "match": "exact",
+    "names": {
+     "UNLIMITED LABS INC DBA B12": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "BCG": [
@@ -1114,6 +2110,33 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "BEUMER CORPORATION": {
+      "2024": [
+       2,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "BEUMER Group Canada Corporation": {
+      "2026Q1": {
+       "positions": 1,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 0
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "Babbel": [
@@ -1137,6 +2160,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "BACK MARKET INC": {
+      "2024": [
+       1,
+       0
+      ]
+     }
+    },
+    "source": "us"
    },
    {
     "match": "exact",
@@ -1166,6 +2201,18 @@
      "Backbase Europe B.V.": "34274514"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "BACKBASE USA INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Baker Hughes": [
@@ -1177,6 +2224,18 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "BAKER HUGHES COMPANY": {
+      "2024": [
+       3,
+       8
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Barclays": [
@@ -1211,6 +2270,30 @@
     "source": "ie"
    },
    {
+    "match": "loose",
+    "names": {
+     "BARCLAYS BANK PLC": {
+      "2024": [
+       0,
+       2
+      ]
+     },
+     "BARCLAYS SERVICES CORP": {
+      "2024": [
+       179,
+       213
+      ]
+     },
+     "BARCLAYS SERVICES LLC": {
+      "2024": [
+       37,
+       66
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
     "match": "exact",
     "names": {
      "Barclays": [
@@ -1230,6 +2313,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "BAYA SYSTEMS INC": {
+      "2024": [
+       1,
+       2
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Bazaarvoice": [
@@ -1242,6 +2337,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "BAZAARVOICE INC": {
+      "2024": [
+       0,
+       2
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Becton Dickinson": [
@@ -1251,6 +2358,32 @@
      "Becton Dickinson": "28065261"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "BECTON DICKINSON AND COMPANY": {
+      "2024": [
+       22,
+       88
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "BestEx Research": [
+   {
+    "match": "loose",
+    "names": {
+     "BESTEX RESEARCH GROUP LLC": {
+      "2024": [
+       1,
+       0
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Betsson Group": [
@@ -1258,10 +2391,24 @@
     "match": "exact",
     "names": {
      "Betsson Group": [
-      "relocate.me list: Ta' Xbiex (Malta), MT"
+      "relocate.me list: Ta' Xbiex (Malta), Malta"
      ]
     },
     "source": "lists"
+   }
+  ],
+  "Better": [
+   {
+    "match": "exact",
+    "names": {
+     "BETTER MORTGAGE CORPORATION A BETTER HOLDCO INC COMPANY DBA BETTER": {
+      "2024": [
+       1,
+       0
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Billups": [
@@ -1273,6 +2420,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "BILLUPS LLC": {
+      "2024": [
+       1,
+       0
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Binance": [
@@ -1296,13 +2455,70 @@
     "source": "ie"
    }
   ],
+  "Biorasi, LLC": [
+   {
+    "match": "exact",
+    "names": {
+     "BIORASI LLC": {
+      "2024": [
+       1,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "BitGo": [
+   {
+    "match": "exact",
+    "names": {
+     "BITGO INC": {
+      "2024": [
+       1,
+       3
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "BitGo Canada, Inc.": {
+      "2025Q3": {
+       "positions": 1,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 1
+      },
+      "2025Q4": {
+       "positions": 1,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 1
+      },
+      "2026Q1": {
+       "positions": 1,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 1
+      }
+     }
+    },
+    "source": "ca"
+   }
+  ],
   "BlaBlaCar": [
    {
     "match": "exact",
     "names": {
      "BlaBlaCar": [
       "abhi-jha gist: Paris",
-      "relocate.me list: Paris, FR"
+      "relocate.me list: Paris, France"
      ]
     },
     "source": "lists"
@@ -1325,6 +2541,33 @@
      "BlackBerry Netherlands B.V.": "17044288"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "BLACKBERRY CORPORATION": {
+      "2024": [
+       1,
+       3
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "BlackBerry Limited": {
+      "2026Q1": {
+       "positions": 1,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 1
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "BlackRock": [
@@ -1334,6 +2577,18 @@
      "BlackRock (Netherlands) B.V.": "17068311"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "BLACKROCK CORPORATION US INC": {
+      "2024": [
+       7,
+       19
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Blackline": [
@@ -1353,6 +2608,18 @@
      "BlackLine International B.V.": "52094030"
     },
     "source": "nl"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "BLACKLINE SYSTEMS INC": {
+      "2024": [
+       3,
+       17
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Blend360": [
@@ -1365,6 +2632,32 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "BLEND360 LLC": {
+      "2024": [
+       12,
+       10
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Blink Health": [
+   {
+    "match": "loose",
+    "names": {
+     "BLINK HEALTH GROUP LLC": {
+      "2024": [
+       2,
+       10
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Bloomreach": [
@@ -1384,6 +2677,32 @@
      "BloomReach B.V.": "34239916"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "BLOOMREACH INC": {
+      "2024": [
+       2,
+       5
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Blue Altair": [
+   {
+    "match": "exact",
+    "names": {
+     "BLUE ALTAIR, LLC": {
+      "2024": [
+       1,
+       0
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "BlueConic": [
@@ -1405,6 +2724,34 @@
      ]
     },
     "source": "uk"
+   }
+  ],
+  "Bluevine - India": [
+   {
+    "match": "exact",
+    "names": {
+     "BLUEVINE INC D B A BLUEVINE": {
+      "2024": [
+       2,
+       0
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Boku": [
+   {
+    "match": "exact",
+    "names": {
+     "BOKU INC": {
+      "2024": [
+       0,
+       4
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Bol.com": [
@@ -1447,6 +2794,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "BOTTOMLINE TECHNOLOGIES INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Branch Metrics": [
@@ -1459,6 +2818,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "BRANCH METRICS INC": {
+      "2024": [
+       0,
+       4
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Brandtech+": [
@@ -1471,6 +2842,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "BRANDTECH INC": {
+      "2024": [
+       1,
+       0
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Brave": [
@@ -1483,6 +2866,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "BRAVE SOFTWARE INC": {
+      "2024": [
+       1,
+       0
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "BreachLock": [
@@ -1510,6 +2905,34 @@
      "Brenntag Nederland B.V.": "30112931"
     },
     "source": "nl"
+   }
+  ],
+  "Bridge33 Capital": [
+   {
+    "match": "exact",
+    "names": {
+     "BRIDGE33 CAPITAL LLC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Bristlecone": [
+   {
+    "match": "exact",
+    "names": {
+     "BRISTLECONE INC": {
+      "2024": [
+       5,
+       11
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "British Asian Trust": [
@@ -1540,6 +2963,18 @@
      "Broadcom Netherlands B.V.": "30154873"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "BROADCOM CORPORATION": {
+      "2024": [
+       6,
+       89
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Broadridge": [
@@ -1588,6 +3023,48 @@
     "source": "uk"
    }
   ],
+  "Buspatrol": [
+   {
+    "match": "exact",
+    "names": {
+     "BUSPATROL AMERICA LLC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "C3 AI": [
+   {
+    "match": "exact",
+    "names": {
+     "C3 AI INC": {
+      "2024": [
+       44,
+       22
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Cambridge Mobile Telematics": [
+   {
+    "match": "exact",
+    "names": {
+     "CAMBRIDGE MOBILE TELEMATICS INC": {
+      "2024": [
+       4,
+       9
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "Canva": [
    {
     "match": "loose",
@@ -1598,6 +3075,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "CANVA US INC": {
+      "2024": [
+       0,
+       3
+      ]
+     }
+    },
+    "source": "us"
    },
    {
     "match": "exact",
@@ -1620,6 +3109,34 @@
     "source": "lists"
    }
   ],
+  "Carrier": [
+   {
+    "match": "exact",
+    "names": {
+     "CARRIER CORPORATION": {
+      "2024": [
+       5,
+       3
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Cast AI": [
+   {
+    "match": "loose",
+    "names": {
+     "CAST AI GROUP INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "Catawiki": [
    {
     "match": "exact",
@@ -1633,7 +3150,7 @@
     "names": {
      "Catawiki": [
       "relocate.me list: Amsterdam, Netherlands",
-      "relocate.me list: Lisbon, PT"
+      "relocate.me list: Lisbon, Portugal"
      ]
     },
     "source": "lists"
@@ -1648,6 +3165,32 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "CAXTON ASSOCIATES LP": {
+      "2024": [
+       0,
+       2
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Cdpq": [
+   {
+    "match": "exact",
+    "names": {
+     "CDPQ US INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Cdw": [
@@ -1660,6 +3203,32 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "CDW LLC": {
+      "2024": [
+       4,
+       18
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Celigo": [
+   {
+    "match": "exact",
+    "names": {
+     "CELIGO INC": {
+      "2024": [
+       2,
+       3
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Celonis": [
@@ -1679,6 +3248,18 @@
      "Celonis B.V.": "67121780"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "CELONIS INC": {
+      "2024": [
+       7,
+       2
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Celus": [
@@ -1692,6 +3273,26 @@
     "source": "lists"
    }
   ],
+  "Centific": [
+   {
+    "match": "loose",
+    "names": {
+     "CENTIFIC GLOBAL SOLUTIONS INC": {
+      "2024": [
+       2,
+       17
+      ]
+     },
+     "CENTIFIC TECHNOLOGIES INC": {
+      "2024": [
+       6,
+       12
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "Centrient Pharmaceuticals Netherlands": [
    {
     "match": "exact",
@@ -1699,6 +3300,42 @@
      "Centrient Pharmaceuticals Netherlands B.V.": "14090826"
     },
     "source": "nl"
+   }
+  ],
+  "Cerebras": [
+   {
+    "match": "loose",
+    "names": {
+     "CEREBRAS SYSTEMS INC": {
+      "2024": [
+       2,
+       13
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Cerebras Systems": {
+      "2025Q2": {
+       "positions": 1,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 1
+      },
+      "2026Q1": {
+       "positions": 1,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 1
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "Cgg": [
@@ -1711,6 +3348,60 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "CGG SERVICES U S INC": {
+      "2024": [
+       20,
+       12
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Chabez Tech": [
+   {
+    "match": "exact",
+    "names": {
+     "CHABEZ TECH LLC": {
+      "2024": [
+       4,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Chainguard": [
+   {
+    "match": "exact",
+    "names": {
+     "CHAINGUARD INC": {
+      "2024": [
+       1,
+       0
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "ChargePoint": [
+   {
+    "match": "exact",
+    "names": {
+     "CHARGEPOINT INC": {
+      "2024": [
+       6,
+       23
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Ciena": [
@@ -1723,6 +3414,55 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "CIENA CORPORATION": {
+      "2024": [
+       3,
+       16
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Ciena Corp": {
+      "2025Q2": {
+       "positions": 1,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 1
+      },
+      "2025Q3": {
+       "positions": 1,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 1
+      },
+      "2025Q4": {
+       "positions": 1,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 1
+      },
+      "2026Q1": {
+       "positions": 2,
+       "streams": [
+        "Global Talent Stream",
+        "High Wage"
+       ],
+       "tech": 2
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "Cint": [
@@ -1734,6 +3474,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "CINT USA INC": {
+      "2024": [
+       1,
+       4
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Cisco": [
@@ -1764,6 +3516,18 @@
     "source": "ie"
    },
    {
+    "match": "loose",
+    "names": {
+     "CISCO SYSTEMS INC": {
+      "2024": [
+       213,
+       1117
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
     "match": "exact",
     "names": {
      "Cisco": [
@@ -1783,6 +3547,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "CISION US INC": {
+      "2024": [
+       0,
+       3
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Citi": [
@@ -1811,6 +3587,20 @@
     "source": "uk"
    }
   ],
+  "Claritypay": [
+   {
+    "match": "exact",
+    "names": {
+     "CLARITYPAY INC": {
+      "2024": [
+       0,
+       2
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "ClearView Healthcare Partners": [
    {
     "match": "exact",
@@ -1821,6 +3611,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "CLEARVIEW HEALTHCARE PARTNERS LLC": {
+      "2024": [
+       12,
+       6
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Clickhouse": [
@@ -1830,6 +3632,18 @@
      "ClickHouse B.V.": "83934162"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "CLICKHOUSE INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Clifford Chance": [
@@ -1850,6 +3664,18 @@
      "Clifford Chance LLP": "34360401"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "CLIFFORD CHANCE US LLP": {
+      "2024": [
+       5,
+       3
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "ClinChoice": [
@@ -1862,6 +3688,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "CLINCHOICE INC": {
+      "2024": [
+       4,
+       12
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Cloudera": [
@@ -1884,6 +3722,18 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "CLOUDERA INC": {
+      "2024": [
+       15,
+       57
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Cloudflare": [
@@ -1903,6 +3753,18 @@
      "Cloudflare Netherlands B.V.": "82497060"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "CLOUDFLARE INC": {
+      "2024": [
+       11,
+       67
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Cochlear": [
@@ -1927,6 +3789,46 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "COCKROACH LABS INC": {
+      "2024": [
+       4,
+       4
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Coderabbit": [
+   {
+    "match": "exact",
+    "names": {
+     "CODERABBIT INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Cohere Health": [
+   {
+    "match": "exact",
+    "names": {
+     "COHERE HEALTH INC": {
+      "2024": [
+       5,
+       15
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Coinbase": [
@@ -1938,6 +3840,33 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "COINBASE INC": {
+      "2024": [
+       16,
+       61
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Coinbase": {
+      "2025Q2": {
+       "positions": 3,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 3
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "Collibra": [
@@ -1954,11 +3883,37 @@
    {
     "match": "exact",
     "names": {
+     "COLLIBRA INC": {
+      "2024": [
+       2,
+       5
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
      "Collibra": [
       "abhi-jha gist: London"
      ]
     },
     "source": "lists"
+   }
+  ],
+  "Commure": [
+   {
+    "match": "exact",
+    "names": {
+     "COMMURE INC": {
+      "2024": [
+       9,
+       7
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Commvault": [
@@ -1971,6 +3926,32 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "COMMVAULT SYSTEMS INC": {
+      "2024": [
+       3,
+       23
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Computershare": [
+   {
+    "match": "exact",
+    "names": {
+     "COMPUTERSHARE INC": {
+      "2024": [
+       1,
+       4
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Conduent": [
@@ -1992,6 +3973,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "CONFLUENT INC": {
+      "2024": [
+       34,
+       63
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Conga": [
@@ -2016,6 +4009,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "CONNECTWISE LLC": {
+      "2024": [
+       0,
+       3
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Contentful": [
@@ -2027,6 +4032,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "CONTENTFUL INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    },
    {
     "match": "exact",
@@ -2050,6 +4067,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "CONTROL RISKS GROUP LLC": {
+      "2024": [
+       1,
+       0
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Convera": [
@@ -2062,6 +4091,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "CONVERA USA LLC": {
+      "2024": [
+       1,
+       8
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Conviva": [
@@ -2074,6 +4115,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "CONVIVA INC": {
+      "2024": [
+       2,
+       6
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Coolblue": [
@@ -2103,6 +4156,74 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "COPART INC": {
+      "2024": [
+       29,
+       53
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Copeland": [
+   {
+    "match": "exact",
+    "names": {
+     "COPELAND LP": {
+      "2024": [
+       1,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Coram Ai": [
+   {
+    "match": "exact",
+    "names": {
+     "CORAM AI INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Corpay": [
+   {
+    "match": "exact",
+    "names": {
+     "CORPAY": {
+      "2024": [
+       1,
+       17
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Corrohealth": [
+   {
+    "match": "exact",
+    "names": {
+     "CORROHEALTH INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Couchbase, Inc.": [
@@ -2115,6 +4236,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "COUCHBASE INC": {
+      "2024": [
+       4,
+       8
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Coupa": [
@@ -2137,6 +4270,32 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "COUPA SOFTWARE INC": {
+      "2024": [
+       7,
+       28
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Coupang": [
+   {
+    "match": "loose",
+    "names": {
+     "COUPANG GLOBAL LLC": {
+      "2024": [
+       13,
+       95
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Coursera": [
@@ -2149,6 +4308,33 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "COURSERA INC": {
+      "2024": [
+       2,
+       4
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Coursera Canada Ltd.": {
+      "2025Q2": {
+       "positions": 1,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 1
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "Cowbell Cyber Inc.": [
@@ -2161,6 +4347,32 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "COWBELL CYBER INC": {
+      "2024": [
+       2,
+       4
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Cppib": [
+   {
+    "match": "exact",
+    "names": {
+     "CPPIB AMERICA INC": {
+      "2024": [
+       2,
+       2
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Cprime": [
@@ -2172,6 +4384,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "CPRIME INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Creative Fabrica": [
@@ -2218,6 +4442,18 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "CROWDSTRIKE INC": {
+      "2024": [
+       11,
+       51
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Crunchyroll, LLC": [
@@ -2229,6 +4465,32 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "CRUNCHYROLL LLC": {
+      "2024": [
+       2,
+       10
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Crypto": [
+   {
+    "match": "exact",
+    "names": {
+     "FORIS INC DBA CRYPTO.COM": {
+      "2024": [
+       1,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Cummins": [
@@ -2259,6 +4521,91 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "CUMMINS INC": {
+      "2024": [
+       150,
+       549
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Customized Energy Solutions": [
+   {
+    "match": "exact",
+    "names": {
+     "CUSTOMIZED ENERGY SOLUTIONS LTD": {
+      "2024": [
+       0,
+       3
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Cyberhaven": [
+   {
+    "match": "exact",
+    "names": {
+     "CYBERHAVEN INC": {
+      "2024": [
+       1,
+       0
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Cyderes": [
+   {
+    "match": "exact",
+    "names": {
+     "Cyderes Inc.": {
+      "2025Q3": {
+       "positions": 1,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 1
+      }
+     }
+    },
+    "source": "ca"
+   }
+  ],
+  "Cytel": [
+   {
+    "match": "exact",
+    "names": {
+     "CYTEL INC": {
+      "2024": [
+       2,
+       46
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "D Matrix": [
+   {
+    "match": "exact",
+    "names": {
+     "D-MATRIX CORPORATION": {
+      "2024": [
+       3,
+       9
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "DBS": [
@@ -2342,6 +4689,20 @@
     "source": "uk"
    }
   ],
+  "Danaher": [
+   {
+    "match": "exact",
+    "names": {
+     "DANAHER CORPORATION": {
+      "2024": [
+       0,
+       4
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "Databricks": [
    {
     "match": "exact",
@@ -2359,6 +4720,18 @@
      "Databricks": "51208121"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "DATABRICKS INC": {
+      "2024": [
+       81,
+       202
+      ]
+     }
+    },
+    "source": "us"
    },
    {
     "match": "exact",
@@ -2401,6 +4774,18 @@
    {
     "match": "exact",
     "names": {
+     "DATADOG INC": {
+      "2024": [
+       11,
+       43
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
      "DataDog": [
       "abhi-jha gist: Dublin, Ireland",
       "abhi-jha gist: Paris"
@@ -2411,6 +4796,48 @@
      ]
     },
     "source": "lists"
+   }
+  ],
+  "Datavail": [
+   {
+    "match": "exact",
+    "names": {
+     "DATAVAIL CORPORATION": {
+      "2024": [
+       1,
+       14
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "DeepIntent": [
+   {
+    "match": "exact",
+    "names": {
+     "DEEPINTENT INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Definitive Healthcare, India": [
+   {
+    "match": "exact",
+    "names": {
+     "DEFINITIVE HEALTHCARE LLC": {
+      "2024": [
+       0,
+       5
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Deliveroo": [
@@ -2453,6 +4880,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "DEMANDBASE INC": {
+      "2024": [
+       1,
+       6
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Deutsche Bank": [
@@ -2462,6 +4901,20 @@
      "Deutsche Bank": "33304583"
     },
     "source": "nl"
+   }
+  ],
+  "DevRev": [
+   {
+    "match": "exact",
+    "names": {
+     "DEVREV INC": {
+      "2024": [
+       1,
+       2
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Dexcom": [
@@ -2476,6 +4929,18 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "DEXCOM INC": {
+      "2024": [
+       10,
+       30
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Dialpad": [
@@ -2488,6 +4953,33 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "DIALPAD INC": {
+      "2024": [
+       1,
+       2
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Dialpad Canada": {
+      "2025Q2": {
+       "positions": 1,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 1
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "Diebold Nixdorf": [
@@ -2507,6 +4999,18 @@
      "Diebold Nixdorf Global Solutions B.V.": "58379401"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "DIEBOLD NIXDORF INCORPORATED": {
+      "2024": [
+       0,
+       3
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "DigiCert": [
@@ -2519,6 +5023,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "DIGICERT INC": {
+      "2024": [
+       0,
+       9
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "DigitalOcean": [
@@ -2528,6 +5044,63 @@
      "DigitalOcean EU B.V.": "60912006"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "DIGITALOCEAN LLC": {
+      "2024": [
+       2,
+       5
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Diligent Corporation": [
+   {
+    "match": "exact",
+    "names": {
+     "Diligent Canada Inc.": {
+      "2025Q3": {
+       "positions": 1,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 1
+      }
+     }
+    },
+    "source": "ca"
+   }
+  ],
+  "Disney": [
+   {
+    "match": "loose",
+    "names": {
+     "DISNEY WORLDWIDE SERVICES INC": {
+      "2024": [
+       2,
+       3
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Disqo": [
+   {
+    "match": "exact",
+    "names": {
+     "DISQO INC": {
+      "2024": [
+       0,
+       6
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Dnb": [
@@ -2542,6 +5115,34 @@
     "source": "uk"
    }
   ],
+  "Docyt": [
+   {
+    "match": "exact",
+    "names": {
+     "DOCYT INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Donaldson": [
+   {
+    "match": "exact",
+    "names": {
+     "DONALDSON COMPANY INC": {
+      "2024": [
+       0,
+       2
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "DoorDash India": [
    {
     "match": "loose",
@@ -2552,6 +5153,54 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "DOORDASH INC": {
+      "2024": [
+       81,
+       346
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "DoorDash Technologies Canada Inc.": {
+      "2025Q2": {
+       "positions": 3,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 3
+      },
+      "2025Q3": {
+       "positions": 1,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 1
+      },
+      "2025Q4": {
+       "positions": 1,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 1
+      },
+      "2026Q1": {
+       "positions": 1,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 1
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "Dover": [
@@ -2563,6 +5212,32 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "DOVER CORPORATION": {
+      "2024": [
+       0,
+       2
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Doxel": [
+   {
+    "match": "exact",
+    "names": {
+     "DOXEL INC": {
+      "2024": [
+       0,
+       2
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Dr Reddy's Laboratories Limited": [
@@ -2579,6 +5254,46 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "DR REDDYS LABORATORIES INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "DriveWealth": [
+   {
+    "match": "exact",
+    "names": {
+     "DRIVEWEALTH LLC": {
+      "2024": [
+       1,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Druva": [
+   {
+    "match": "exact",
+    "names": {
+     "DRUVA INC": {
+      "2024": [
+       3,
+       6
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Dscout": [
@@ -2603,6 +5318,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "DUOLINGO INC": {
+      "2024": [
+       21,
+       10
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Dynata": [
@@ -2622,6 +5349,18 @@
      "Dynata Europe B.V.": "24326088"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "DYNATA LLC": {
+      "2024": [
+       1,
+       3
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "EVERSANA": [
@@ -2646,6 +5385,93 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "EXL Service Canada Inc.": {
+      "2025Q3": {
+       "positions": 2,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 2
+      }
+     }
+    },
+    "source": "ca"
+   }
+  ],
+  "EarnIn": [
+   {
+    "match": "exact",
+    "names": {
+     "ACTIVEHOURS INC DBA EARNIN": {
+      "2024": [
+       0,
+       17
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Egen": [
+   {
+    "match": "loose",
+    "names": {
+     "EGEN SOLUTIONS INC": {
+      "2024": [
+       5,
+       7
+      ]
+     },
+     "EGEN SOLUTIONS LLC": {
+      "2024": [
+       9,
+       14
+      ]
+     },
+     "SPRINGML, INC. DBA EGEN SOLUTIONS": {
+      "2024": [
+       7,
+       3
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Egis Group": [
+   {
+    "match": "loose",
+    "names": {
+     "Egis Canada Ltd.": {
+      "2025Q3": {
+       "positions": 1,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 0
+      },
+      "2025Q4": {
+       "positions": 3,
+       "streams": [
+        "High Wage",
+        "Global Talent Stream"
+       ],
+       "tech": 0
+      },
+      "2026Q1": {
+       "positions": 1,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 0
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "Elements": [
@@ -2659,6 +5485,49 @@
     "source": "lists"
    }
   ],
+  "Eltropy Inc.": [
+   {
+    "match": "exact",
+    "names": {
+     "ELTROPY INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "EnCharge AI": [
+   {
+    "match": "exact",
+    "names": {
+     "ENCHARGE AI INC": {
+      "2024": [
+       1,
+       0
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "EnCharge AI, Inc.": {
+      "2026Q1": {
+       "positions": 1,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 1
+      }
+     }
+    },
+    "source": "ca"
+   }
+  ],
   "Encora": [
    {
     "match": "loose",
@@ -2669,6 +5538,39 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "ENCORA DIGITAL LLC": {
+      "2024": [
+       0,
+       4
+      ]
+     },
+     "ENCORA TECHNOLOGIES INC": {
+      "2024": [
+       2,
+       5
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Encora Canada Inc.": {
+      "2025Q4": {
+       "positions": 1,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 1
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "Endava": [
@@ -2683,6 +5585,20 @@
     "source": "uk"
    }
   ],
+  "Endor Labs": [
+   {
+    "match": "exact",
+    "names": {
+     "ENDOR LABS INC": {
+      "2024": [
+       0,
+       2
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "Energy Exemplar": [
    {
     "match": "exact",
@@ -2693,6 +5609,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ENERGY EXEMPLAR LLC": {
+      "2024": [
+       1,
+       3
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Enermech": [
@@ -2707,6 +5635,20 @@
     "source": "uk"
    }
   ],
+  "Enovix": [
+   {
+    "match": "exact",
+    "names": {
+     "ENOVIX CORPORATION": {
+      "2024": [
+       4,
+       6
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "Ensono": [
    {
     "match": "exact",
@@ -2717,6 +5659,66 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ENSONO INC": {
+      "2024": [
+       4,
+       3
+      ]
+     },
+     "ENSONO LLC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Entegris": [
+   {
+    "match": "exact",
+    "names": {
+     "ENTEGRIS INC": {
+      "2024": [
+       11,
+       15
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Entrata": [
+   {
+    "match": "exact",
+    "names": {
+     "ENTRATA INC": {
+      "2024": [
+       2,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Envoy Global, Inc.": [
+   {
+    "match": "exact",
+    "names": {
+     "ENVOY GLOBAL INC": {
+      "2024": [
+       1,
+       6
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Episode Six": [
@@ -2796,6 +5798,18 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "EQUINIX INC": {
+      "2024": [
+       11,
+       105
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Equisoft": [
@@ -2808,6 +5822,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "EQUISOFT INC": {
+      "2024": [
+       0,
+       8
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Ergomed": [
@@ -2871,6 +5897,32 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "EUROMONITOR INTERNATIONAL INC": {
+      "2024": [
+       1,
+       0
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Euronet": [
+   {
+    "match": "loose",
+    "names": {
+     "EURONET WORLDWIDE INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Everbridge": [
@@ -2883,6 +5935,32 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "EVERBRIDGE INC": {
+      "2024": [
+       1,
+       4
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Evolver": [
+   {
+    "match": "exact",
+    "names": {
+     "EVOLVER LLC": {
+      "2024": [
+       1,
+       3
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Exfo": [
@@ -2895,6 +5973,21 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "EXFO": {
+      "2026Q1": {
+       "positions": 1,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 1
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "Expedia": [
@@ -2907,6 +6000,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "EXPEDIA INC": {
+      "2024": [
+       110,
+       221
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Expeditors": [
@@ -2955,6 +6060,18 @@
      "Experian Nederland B.V.": "30103666"
     },
     "source": "nl"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "EXPERIAN SERVICES CORPORATION": {
+      "2024": [
+       11,
+       4
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Extreme Networks": [
@@ -2974,6 +6091,32 @@
      "Extreme Networks B.V.": "30106897"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "EXTREME NETWORKS INC": {
+      "2024": [
+       10,
+       13
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "F5": [
+   {
+    "match": "exact",
+    "names": {
+     "F5 INC": {
+      "2024": [
+       33,
+       57
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "FINN": [
@@ -2999,6 +6142,20 @@
     "source": "uk"
    }
   ],
+  "FalconX": [
+   {
+    "match": "exact",
+    "names": {
+     "WARP DRIVE INC DBA FALCONX": {
+      "2024": [
+       2,
+       10
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "Fastly": [
    {
     "match": "exact",
@@ -3009,6 +6166,62 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "FASTLY INC": {
+      "2024": [
+       1,
+       4
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Fidelity Investments": [
+   {
+    "match": "exact",
+    "names": {
+     "FIDELITY INVESTMENTS": {
+      "2024": [
+       235,
+       1536
+      ]
+     },
+     "FMR LLC D B A FIDELITY INVESTMENTS": {
+      "2024": [
+       12,
+       25
+      ]
+     },
+     "FMR LLC D/B/A FIDELITY INVESTMENTS": {
+      "2024": [
+       0,
+       1
+      ]
+     },
+     "FMR LLC DBA FIDELITY INVESTMENTS": {
+      "2024": [
+       0,
+       8
+      ]
+     },
+     "NATIONAL CHARITABLE SERVICES LLC D/B/A FIDELITY INVESTMENTS": {
+      "2024": [
+       0,
+       2
+      ]
+     },
+     "NATIONAL FINANCIAL SERVICES LLC D/B/A FIDELITY INVESTMENTS": {
+      "2024": [
+       4,
+       16
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Figma": [
@@ -3030,6 +6243,18 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "FIGMA INC": {
+      "2024": [
+       5,
+       18
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Finastra": [
@@ -3051,6 +6276,32 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "FINASTRA TECHNOLOGY INC": {
+      "2024": [
+       1,
+       4
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Findem": [
+   {
+    "match": "exact",
+    "names": {
+     "FINDEM INC": {
+      "2024": [
+       2,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Firemon": [
@@ -3063,6 +6314,20 @@
      ]
     },
     "source": "uk"
+   }
+  ],
+  "First Solar": [
+   {
+    "match": "exact",
+    "names": {
+     "FIRST SOLAR INC": {
+      "2024": [
+       16,
+       15
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Fiserv": [
@@ -3085,6 +6350,18 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "FISERV SOLUTIONS LLC": {
+      "2024": [
+       47,
+       356
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Five9": [
@@ -3097,6 +6374,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "FIVE9 INC": {
+      "2024": [
+       1,
+       14
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Fivetran": [
@@ -3108,6 +6397,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "FIVETRAN INC": {
+      "2024": [
+       0,
+       8
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Flaconi": [
@@ -3139,6 +6440,18 @@
      "Flexport International B.V.": "80033946"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "FLEXPORT INC": {
+      "2024": [
+       6,
+       16
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Flextrade": [
@@ -3151,6 +6464,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "FLEXTRADE SYSTEMS INC": {
+      "2024": [
+       8,
+       6
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Floqast": [
@@ -3185,9 +6510,27 @@
    {
     "match": "exact",
     "names": {
+     "FLOW TRADERS U S LLC": {
+      "2024": [
+       2,
+       0
+      ]
+     },
+     "FLOW TRADERS US LLC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
      "Flow Traders": [
       "relocate.me list: Amsterdam, Netherlands",
-      "relocate.me list: Hong Kong, HK"
+      "relocate.me list: Hong Kong, Hong Kong"
      ]
     },
     "source": "lists"
@@ -3210,6 +6553,32 @@
      "Flowserve B.V.": "20052878"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "FLOWSERVE US INC": {
+      "2024": [
+       3,
+       5
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Fmc": [
+   {
+    "match": "exact",
+    "names": {
+     "FMC CORPORATION": {
+      "2024": [
+       3,
+       9
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Forto": [
@@ -3230,6 +6599,18 @@
      "Fortrea Netherlands B.V.": "88689824"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "FORTREA INC": {
+      "2024": [
+       2,
+       7
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Fospha": [
@@ -3280,6 +6661,18 @@
      "Freshworks Technologies B.V.": "73582166"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "FRESHWORKS INC": {
+      "2024": [
+       5,
+       13
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Fusion Consulting": [
@@ -3298,10 +6691,24 @@
     "match": "exact",
     "names": {
      "FxPro": [
-      "relocate.me list: Limassol, CY"
+      "relocate.me list: Limassol, Cyprus"
      ]
     },
     "source": "lists"
+   }
+  ],
+  "G2": [
+   {
+    "match": "exact",
+    "names": {
+     "G2.COM INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "GSK": [
@@ -3346,6 +6753,20 @@
     "source": "uk"
    }
   ],
+  "Gallup": [
+   {
+    "match": "exact",
+    "names": {
+     "GALLUP INC": {
+      "2024": [
+       15,
+       13
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "Gartner": [
    {
     "match": "exact",
@@ -3372,6 +6793,60 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "GARTNER INC": {
+      "2024": [
+       9,
+       34
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Gather AI": [
+   {
+    "match": "exact",
+    "names": {
+     "GATHER AI": {
+      "2024": [
+       1,
+       0
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Gen Digital": [
+   {
+    "match": "exact",
+    "names": {
+     "GEN DIGITAL INC": {
+      "2024": [
+       3,
+       22
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "GenScript": [
+   {
+    "match": "exact",
+    "names": {
+     "GENSCRIPT USA INC": {
+      "2024": [
+       10,
+       10
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Genpact": [
@@ -3394,6 +6869,33 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "GENPACT LLC": {
+      "2024": [
+       81,
+       168
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Genpact Canada Services Company": {
+      "2025Q2": {
+       "positions": 2,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 2
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "Girl Effect": [
@@ -3427,6 +6929,20 @@
     "source": "ie"
    }
   ],
+  "Glean": [
+   {
+    "match": "loose",
+    "names": {
+     "GLEAN TECHNOLOGIES INC": {
+      "2024": [
+       6,
+       8
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "GlobalFoundries": [
    {
     "match": "exact",
@@ -3436,6 +6952,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "GLOBALFOUNDRIES US INC": {
+      "2024": [
+       26,
+       54
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "GoCardless": [
@@ -3459,6 +6987,20 @@
     "source": "lists"
    }
   ],
+  "GoGuardian": [
+   {
+    "match": "exact",
+    "names": {
+     "LIMINEX INC DBA GOGUARDIAN": {
+      "2024": [
+       2,
+       9
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "Gojek": [
    {
     "match": "exact",
@@ -3470,7 +7012,33 @@
     "source": "lists"
    }
   ],
+  "Goken": [
+   {
+    "match": "exact",
+    "names": {
+     "GOKEN AMERICA LLC": {
+      "2024": [
+       13,
+       27
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "Grab": [
+   {
+    "match": "loose",
+    "names": {
+     "GRAB TECHNOLOGY LLC": {
+      "2024": [
+       0,
+       2
+      ]
+     }
+    },
+    "source": "us"
+   },
    {
     "match": "exact",
     "names": {
@@ -3498,6 +7066,32 @@
      "Grafana Labs Netherlands B.V.": "86435027"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "RAINTANK INC DBA GRAFANA LABS": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Grantek Systems Integration": [
+   {
+    "match": "exact",
+    "names": {
+     "GRANTEK SYSTEMS INTEGRATION CORP": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Graphcore": [
@@ -3512,6 +7106,20 @@
     "source": "uk"
    }
   ],
+  "Groundtruth": [
+   {
+    "match": "exact",
+    "names": {
+     "XAD INC DBA GROUNDTRUTH": {
+      "2024": [
+       0,
+       5
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "Groupon": [
    {
     "match": "exact",
@@ -3519,6 +7127,18 @@
      "Groupon Netherlands B.V.": "14130545"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "GROUPON INC": {
+      "2024": [
+       2,
+       8
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Guidehouse": [
@@ -3538,6 +7158,18 @@
      "Guidehouse Netherlands B.V.": "30161191"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "GUIDEHOUSE INC": {
+      "2024": [
+       8,
+       12
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Guidepoint": [
@@ -3550,6 +7182,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "GUIDEPOINT GLOBAL LLC": {
+      "2024": [
+       0,
+       2
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Gunnebo Entrance Control": [
@@ -3580,6 +7224,32 @@
      "Netherlands Hexaware Technologies": "34233511"
     },
     "source": "nl"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "HEXAWARE TECHNOLOGIES INC": {
+      "2024": [
+       185,
+       316
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "HG Insights": [
+   {
+    "match": "exact",
+    "names": {
+     "HG INSIGHTS INC": {
+      "2024": [
+       0,
+       2
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "HP Inc": [
@@ -3608,6 +7278,18 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "HP INC": {
+      "2024": [
+       39,
+       92
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "HackerRank": [
@@ -3620,6 +7302,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "INTERVIEWSTREET INC DBA HACKERRANK": {
+      "2024": [
+       2,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Hackerone": [
@@ -3642,6 +7336,18 @@
      "HackerOne B.V.": "58601325"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "HACKERONE INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Halma": [
@@ -3667,6 +7373,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "STRYDER CORPORATION DBA HANDSHAKE": {
+      "2024": [
+       3,
+       8
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Hapag-Lloyd": [
@@ -3678,6 +7396,47 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "HAPAG-LLOYD AMERICA LLC": {
+      "2024": [
+       3,
+       0
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Hapag-Lloyd (Canada) Inc.": {
+      "2025Q2": {
+       "positions": 1,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 0
+      }
+     }
+    },
+    "source": "ca"
+   }
+  ],
+  "Harness": [
+   {
+    "match": "exact",
+    "names": {
+     "HARNESS INC": {
+      "2024": [
+       2,
+       16
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Hasbro": [
@@ -3690,6 +7449,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "HASBRO INC": {
+      "2024": [
+       1,
+       0
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Headout": [
@@ -3704,6 +7475,18 @@
    }
   ],
   "HelloFresh": [
+   {
+    "match": "exact",
+    "names": {
+     "GROCERY DELIVERY E SERVICES USA INC DBA HELLOFRESH": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   },
    {
     "match": "exact",
     "names": {
@@ -3724,6 +7507,18 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "HEWLETT PACKARD ENTERPRISE COMPANY": {
+      "2024": [
+       118,
+       284
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "HighRadius": [
@@ -3743,6 +7538,18 @@
      "HighRadius B.V.": "75050943"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "HIGHRADIUS CORPORATION": {
+      "2024": [
+       0,
+       8
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Hilton": [
@@ -3752,6 +7559,20 @@
      "Hilton International Nederland B.V.": "33107232"
     },
     "source": "nl"
+   }
+  ],
+  "Hinge Health": [
+   {
+    "match": "exact",
+    "names": {
+     "HINGE HEALTH INC": {
+      "2024": [
+       1,
+       10
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Hitachi Solutions": [
@@ -3765,6 +7586,21 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Hitachi Solutions Canada, LTD": {
+      "2025Q3": {
+       "positions": 1,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 1
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "Honeywell": [
@@ -3784,6 +7620,18 @@
      "Honeywell B.V.": "33044803"
     },
     "source": "nl"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "HONEYWELL INTERNATIONAL INC": {
+      "2024": [
+       60,
+       91
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Horizontal Digital": [
@@ -3844,6 +7692,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "HUDSON RIVER TRADING LLC": {
+      "2024": [
+       6,
+       10
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Huhtamaki": [
@@ -3893,6 +7753,30 @@
     "source": "nl"
    }
   ],
+  "IFS": [
+   {
+    "match": "exact",
+    "names": {
+     "IFS Canada Inc": {
+      "2025Q4": {
+       "positions": 1,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 1
+      },
+      "2026Q1": {
+       "positions": 1,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 1
+      }
+     }
+    },
+    "source": "ca"
+   }
+  ],
   "IMC": [
    {
     "match": "exact",
@@ -3930,6 +7814,32 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ICERTIS INC": {
+      "2024": [
+       2,
+       2
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Idmworks": [
+   {
+    "match": "exact",
+    "names": {
+     "IDMWORKS LLC": {
+      "2024": [
+       0,
+       4
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "InMobi": [
@@ -3942,6 +7852,32 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "INMOBI INC": {
+      "2024": [
+       2,
+       6
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Incorta": [
+   {
+    "match": "exact",
+    "names": {
+     "INCORTA INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Infios": [
@@ -3973,6 +7909,33 @@
      "Infoblox Netherlands B.V.": "57864578"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "INFOBLOX INC": {
+      "2024": [
+       5,
+       9
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Infoblox Canada Ltd.": {
+      "2025Q2": {
+       "positions": 2,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 2
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "Informa Group Plc.": [
@@ -3985,6 +7948,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "INFORMA TECH LLC": {
+      "2024": [
+       2,
+       0
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Inizio": [
@@ -4011,6 +7986,26 @@
     "source": "uk"
    }
   ],
+  "Instawork": [
+   {
+    "match": "exact",
+    "names": {
+     "GARUDA LABS INC D B A INSTAWORK": {
+      "2024": [
+       1,
+       2
+      ]
+     },
+     "GARUDA LABS INC DBA INSTAWORK": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "Insurity India": [
    {
     "match": "exact",
@@ -4021,6 +8016,32 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "INSURITY LLC": {
+      "2024": [
+       0,
+       5
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "IntegriChain": [
+   {
+    "match": "exact",
+    "names": {
+     "INTEGRICHAIN INC": {
+      "2024": [
+       1,
+       8
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Intel": [
@@ -4050,6 +8071,18 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "INTEL CORPORATION": {
+      "2024": [
+       842,
+       1678
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Intertek": [
@@ -4069,6 +8102,18 @@
      "Intertek Nederland B.V.": "24069423"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "INTERTEK USA INC": {
+      "2024": [
+       1,
+       2
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Intropic": [
@@ -4101,6 +8146,33 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "INVESCO GROUP SERVICES INC": {
+      "2024": [
+       13,
+       39
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Invesco": {
+      "2026Q1": {
+       "positions": 1,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 1
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "Itron": [
@@ -4110,6 +8182,18 @@
      "Itron Nederland B.V.": "23044232"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ITRON INC": {
+      "2024": [
+       9,
+       21
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Ivalua": [
@@ -4122,6 +8206,40 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "IVALUA INC": {
+      "2024": [
+       5,
+       4
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Ivalua": {
+      "2025Q2": {
+       "positions": 3,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 0
+      },
+      "2026Q1": {
+       "positions": 1,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 1
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "Ivanti": [
@@ -4141,6 +8259,18 @@
      "Ivanti Software B.V.": "32090058"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "IVANTI INC": {
+      "2024": [
+       4,
+       6
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "J.S. Held LLC": [
@@ -4153,6 +8283,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "J S HELD LLC": {
+      "2024": [
+       1,
+       2
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "JFrog": [
@@ -4165,9 +8307,53 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "JFROG INC": {
+      "2024": [
+       3,
+       6
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "JPMorgan Chase": [
+   {
+    "match": "exact",
+    "names": {
+     "JPMORGAN CHASE AND CO": {
+      "2024": [
+       447,
+       1272
+      ]
+     },
+     "JPMORGAN CHASE CO": {
+      "2024": [
+       21,
+       250
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Jam City": [
+   {
+    "match": "exact",
+    "names": {
+     "JAM CITY, INC.": {
+      "2024": [
+       1,
+       3
+      ]
+     }
+    },
+    "source": "us"
+   },
    {
     "match": "exact",
     "names": {
@@ -4201,6 +8387,34 @@
     "source": "uk"
    }
   ],
+  "Jensen Hughes": [
+   {
+    "match": "exact",
+    "names": {
+     "JENSEN HUGHES INC": {
+      "2024": [
+       1,
+       0
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Jitterbit": [
+   {
+    "match": "exact",
+    "names": {
+     "JITTERBIT INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "Johnson Controls": [
    {
     "match": "loose",
@@ -4218,6 +8432,18 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "JOHNSON CONTROLS INC": {
+      "2024": [
+       15,
+       30
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Jumio": [
@@ -4250,6 +8476,20 @@
     "source": "nl"
    }
   ],
+  "Jumpcloud": [
+   {
+    "match": "exact",
+    "names": {
+     "JUMPCLOUD INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "Just Global": [
    {
     "match": "exact",
@@ -4272,6 +8512,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "KLA CORPORATION": {
+      "2024": [
+       65,
+       119
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "KLDiscovery": [
@@ -4310,6 +8562,50 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "KPMG LLP": {
+      "2024": [
+       183,
+       264
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "KPMG LLP": {
+      "2025Q2": {
+       "positions": 7,
+       "streams": [
+        "Global Talent Stream",
+        "High Wage"
+       ],
+       "tech": 4
+      },
+      "2025Q3": {
+       "positions": 4,
+       "streams": [
+        "Global Talent Stream",
+        "High Wage"
+       ],
+       "tech": 3
+      },
+      "2025Q4": {
+       "positions": 2,
+       "streams": [
+        "High Wage",
+        "Global Talent Stream"
+       ],
+       "tech": 2
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "KRAFTON INDIA": [
@@ -4338,6 +8634,21 @@
      "Keyloop (Nederland) B.V.": "61370398"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Keyloop Canada Ltd": {
+      "2025Q4": {
+       "positions": 2,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 2
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "KnowBe4": [
@@ -4349,6 +8660,46 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "KNOWBE4 INC": {
+      "2024": [
+       4,
+       4
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Kognitos": [
+   {
+    "match": "exact",
+    "names": {
+     "KOGNITOS INC": {
+      "2024": [
+       2,
+       2
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Komodo Health": [
+   {
+    "match": "exact",
+    "names": {
+     "KOMODO HEALTH INC": {
+      "2024": [
+       0,
+       16
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Konecranes": [
@@ -4358,6 +8709,32 @@
      "Konecranes B.V.": "36048659"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "KONECRANES INC": {
+      "2024": [
+       1,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Kong": [
+   {
+    "match": "exact",
+    "names": {
+     "KONG INC": {
+      "2024": [
+       0,
+       5
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Konrad": [
@@ -4436,6 +8813,18 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "LAM RESEARCH CORPORATION": {
+      "2024": [
+       78,
+       154
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "LaunchDarkly": [
@@ -4448,6 +8837,46 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "LAUNCHDARKLY": {
+      "2024": [
+       0,
+       3
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Learneo": [
+   {
+    "match": "exact",
+    "names": {
+     "LEARNEO INC": {
+      "2024": [
+       1,
+       6
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Legion": [
+   {
+    "match": "loose",
+    "names": {
+     "LEGION TECHNOLOGIES INC": {
+      "2024": [
+       1,
+       3
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Lemonade": [
@@ -4457,6 +8886,18 @@
      "Lemonade B.V.": "73233293"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "LEMONADE INC": {
+      "2024": [
+       1,
+       1
+      ]
+     }
+    },
+    "source": "us"
    },
    {
     "match": "exact",
@@ -4490,6 +8931,20 @@
     "source": "uk"
    }
   ],
+  "Lilly": [
+   {
+    "match": "exact",
+    "names": {
+     "LILLY USA LLC": {
+      "2024": [
+       5,
+       2
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "LinkedIn": [
    {
     "match": "loose",
@@ -4517,6 +8972,18 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "LINKEDIN CORPORATION": {
+      "2024": [
+       166,
+       804
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "LogicMonitor": [
@@ -4529,6 +8996,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "LOGICMONITOR INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Logitech": [
@@ -4561,6 +9040,18 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "LOGITECH INC": {
+      "2024": [
+       2,
+       4
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Loram": [
@@ -4572,6 +9063,32 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "LORAM TECHNOLOGIES INC": {
+      "2024": [
+       1,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Louis Dreyfus Company": [
+   {
+    "match": "exact",
+    "names": {
+     "LOUIS DREYFUS COMPANY LLC": {
+      "2024": [
+       2,
+       3
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "MSX International": [
@@ -4602,6 +9119,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "MADISON LOGIC INC": {
+      "2024": [
+       1,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Manychat": [
@@ -4609,8 +9138,8 @@
     "match": "exact",
     "names": {
      "Manychat": [
-      "relocate.me list: Barcelona, ES",
-      "relocate.me list: Yerevan, AM"
+      "relocate.me list: Barcelona, Spain",
+      "relocate.me list: Yerevan, Armenia"
      ]
     },
     "source": "lists"
@@ -4626,6 +9155,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "MAPBOX INC": {
+      "2024": [
+       1,
+       10
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "MariaDB plc": [
@@ -4659,6 +9200,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "MASTERCONTROL INC": {
+      "2024": [
+       0,
+       4
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Mastercard": [
@@ -4680,6 +9233,24 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "MASTERCARD INTERNATIONAL INCORPORATED": {
+      "2024": [
+       38,
+       153
+      ]
+     },
+     "MASTERCARD TECHNOLOGIES LLC": {
+      "2024": [
+       20,
+       233
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Matillion": [
@@ -4710,6 +9281,18 @@
      "Mattel Europe Holdings B.V.": "33297748"
     },
     "source": "nl"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "MATTEL HQ INC": {
+      "2024": [
+       9,
+       14
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "McDermott": [
@@ -4719,6 +9302,32 @@
      "McDermott Nederland B.V.": "27049906"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "MCDERMOTT INC": {
+      "2024": [
+       1,
+       4
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Medable": [
+   {
+    "match": "exact",
+    "names": {
+     "MEDABLE, INC.": {
+      "2024": [
+       1,
+       0
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Medline": [
@@ -4765,6 +9374,18 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "MEDTRONIC INC": {
+      "2024": [
+       49,
+       260
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Megaport": [
@@ -4793,6 +9414,18 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "MEGAPORT USA INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "MerQube Inc": [
@@ -4805,6 +9438,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "MERQUBE INC": {
+      "2024": [
+       3,
+       5
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Merative": [
@@ -4817,18 +9462,56 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "MERATIVE US LP": {
+      "2024": [
+       0,
+       6
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Mercari": [
    {
     "match": "exact",
     "names": {
+     "MERCARI INC": {
+      "2024": [
+       0,
+       4
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
      "Mercari": [
       "abhi-jha gist: Japan",
-      "relocate.me list: Tokyo, JP"
+      "relocate.me list: Tokyo, Japan"
      ]
     },
     "source": "lists"
+   }
+  ],
+  "Meter": [
+   {
+    "match": "exact",
+    "names": {
+     "METER INC": {
+      "2024": [
+       1,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "MiQ Digital": [
@@ -4841,6 +9524,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "MIQ DIGITAL USA INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "MicroStrategy": [
@@ -4853,6 +9548,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "MICROSTRATEGY INCORPORATED": {
+      "2024": [
+       7,
+       17
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Microchip Technology": [
@@ -4875,6 +9582,18 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "MICROCHIP TECHNOLOGY INC": {
+      "2024": [
+       58,
+       46
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Micron": [
@@ -4887,6 +9606,46 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "MICRON TECHNOLOGY INC": {
+      "2024": [
+       141,
+       217
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Millerknoll": [
+   {
+    "match": "exact",
+    "names": {
+     "MILLERKNOLL INC": {
+      "2024": [
+       1,
+       2
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "MinIO": [
+   {
+    "match": "exact",
+    "names": {
+     "MINIO INC": {
+      "2024": [
+       0,
+       4
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Mintel": [
@@ -4899,6 +9658,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "MINTEL GROUP LTD": {
+      "2024": [
+       1,
+       0
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Mirantis": [
@@ -4911,6 +9682,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "MIRANTIS INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Miratech": [
@@ -4938,6 +9721,18 @@
    {
     "match": "exact",
     "names": {
+     "REALTIMEBOARD INC DBA MIRO": {
+      "2024": [
+       0,
+       4
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
      "Miro": [
       "abhi-jha gist: Amsterdam, Netherlands"
      ]
@@ -4955,6 +9750,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "MITRATECH HOLDINGS INC": {
+      "2024": [
+       0,
+       2
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Mixpanel": [
@@ -4967,6 +9774,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "MIXPANEL INC": {
+      "2024": [
+       1,
+       10
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Modaxo": [
@@ -5015,7 +9834,7 @@
     "names": {
      "Mollie": [
       "relocate.me list: Amsterdam, Netherlands",
-      "relocate.me list: Lisbon, PT"
+      "relocate.me list: Lisbon, Portugal"
      ]
     },
     "source": "lists"
@@ -5048,6 +9867,18 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "MONGODB INC": {
+      "2024": [
+       16,
+       51
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Moniepoint": [
@@ -5080,6 +9911,24 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "MONSTER ENERGY COMPANY": {
+      "2024": [
+       0,
+       2
+      ]
+     },
+     "MONSTER ENERGY US LLC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Monzo": [
@@ -5111,6 +9960,18 @@
      "Moog B.V.": "28075621"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "MOOG INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Moonpay": [
@@ -5129,6 +9990,18 @@
      "MoonPay Europe B.V.": "93501153"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "MOONPAY USA LLC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Morgan Stanley": [
@@ -5141,6 +10014,60 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "MORGAN STANLEY AND CO LLC": {
+      "2024": [
+       93,
+       42
+      ]
+     },
+     "MORGAN STANLEY CO LLC": {
+      "2024": [
+       3,
+       7
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Morgan Stanley Services Canada Corp": {
+      "2025Q2": {
+       "positions": 5,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 5
+      },
+      "2025Q3": {
+       "positions": 9,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 9
+      },
+      "2025Q4": {
+       "positions": 3,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 3
+      },
+      "2026Q1": {
+       "positions": 7,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 7
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "Motorola Solutions": [
@@ -5172,6 +10099,18 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "MOTOROLA SOLUTIONS INC": {
+      "2024": [
+       28,
+       76
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Mujin": [
@@ -5185,8 +10124,20 @@
    {
     "match": "exact",
     "names": {
+     "MUJIN CORP": {
+      "2024": [
+       2,
+       6
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
      "Mujin": [
-      "relocate.me list: Tokyo, JP"
+      "relocate.me list: Tokyo, Japan"
      ]
     },
     "source": "lists"
@@ -5208,6 +10159,18 @@
      "Munters Netherlands B.V.": "50307177"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "MUNTERS CORPORATION": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Murex": [
@@ -5220,6 +10183,20 @@
      ]
     },
     "source": "uk"
+   }
+  ],
+  "Myers-Holum": [
+   {
+    "match": "exact",
+    "names": {
+     "MYERS-HOLUM INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "N26": [
@@ -5259,6 +10236,18 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "NCR CORPORATION": {
+      "2024": [
+       2,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "NICE": [
@@ -5301,6 +10290,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "NAGARRO INC": {
+      "2024": [
+       138,
+       85
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Narvar": [
@@ -5313,6 +10314,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "NARVAR INC": {
+      "2024": [
+       0,
+       3
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Nasdaq": [
@@ -5325,6 +10338,33 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "NASDAQ INC": {
+      "2024": [
+       2,
+       6
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Nasdaq Canada Inc.": {
+      "2025Q4": {
+       "positions": 1,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 1
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "National Instruments": [
@@ -5344,6 +10384,18 @@
      "National Instruments Netherlands B.V.": "30116813"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "NATIONAL INSTRUMENTS CORPORATION": {
+      "2024": [
+       3,
+       9
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Navan": [
@@ -5363,6 +10415,18 @@
      "Navan Netherlands B.V.": "71801375"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "NAVAN INC": {
+      "2024": [
+       3,
+       15
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Navvis": [
@@ -5418,6 +10482,32 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "NEO4J INC": {
+      "2024": [
+       2,
+       2
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "NetBrain": [
+   {
+    "match": "loose",
+    "names": {
+     "NETBRAIN TECHNOLOGIES INC": {
+      "2024": [
+       1,
+       7
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "NetDocuments": [
@@ -5430,6 +10520,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "NETDOCUMENTS SOFTWARE INC": {
+      "2024": [
+       1,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Netflix": [
@@ -5449,6 +10551,18 @@
      "Netflix International B.V.": "62266519"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "NETFLIX INC": {
+      "2024": [
+       45,
+       201
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Netgear": [
@@ -5458,6 +10572,32 @@
      "Netgear Netherlands B.V.": "24360451"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "NETGEAR INC": {
+      "2024": [
+       0,
+       6
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Netradyne": [
+   {
+    "match": "exact",
+    "names": {
+     "NETRADYNE  INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Netskope": [
@@ -5470,6 +10610,32 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "NETSKOPE INC": {
+      "2024": [
+       3,
+       53
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "New Era Technology": [
+   {
+    "match": "exact",
+    "names": {
+     "NEW ERA TECHNOLOGY INC": {
+      "2024": [
+       2,
+       11
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "New Relic": [
@@ -5491,6 +10657,18 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "NEW RELIC INC": {
+      "2024": [
+       0,
+       3
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "NewRocket": [
@@ -5516,6 +10694,20 @@
     "source": "uk"
    }
   ],
+  "Nexla": [
+   {
+    "match": "exact",
+    "names": {
+     "NEXLA INC.": {
+      "2024": [
+       1,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "Nexthink": [
    {
     "match": "exact",
@@ -5526,6 +10718,68 @@
      ]
     },
     "source": "uk"
+   }
+  ],
+  "Nextiva": [
+   {
+    "match": "exact",
+    "names": {
+     "NEXTIVA INC": {
+      "2024": [
+       2,
+       2
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Nextracker": [
+   {
+    "match": "exact",
+    "names": {
+     "NEXTRACKER LLC": {
+      "2024": [
+       8,
+       15
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "NielsenIQ": [
+   {
+    "match": "exact",
+    "names": {
+     "NIELSEN CONSUMER LLC DBA NIELSENIQ": {
+      "2024": [
+       0,
+       26
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Nike": [
+   {
+    "match": "exact",
+    "names": {
+     "NIKE INC": {
+      "2024": [
+       26,
+       221
+      ]
+     },
+     "NIKE USA INC": {
+      "2024": [
+       4,
+       36
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Ninja Van": [
@@ -5546,6 +10800,18 @@
      "Nium Europe B.V.": "88844889"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "NIUM INC": {
+      "2024": [
+       5,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Nokia": [
@@ -5558,6 +10824,57 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Nokia": {
+      "2025Q2": {
+       "positions": 5,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 5
+      },
+      "2025Q3": {
+       "positions": 11,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 10
+      },
+      "2025Q4": {
+       "positions": 12,
+       "streams": [
+        "High Wage",
+        "Global Talent Stream"
+       ],
+       "tech": 12
+      },
+      "2026Q1": {
+       "positions": 4,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 4
+      }
+     }
+    },
+    "source": "ca"
+   }
+  ],
+  "Northern Trust": [
+   {
+    "match": "exact",
+    "names": {
+     "THE NORTHERN TRUST COMPANY": {
+      "2024": [
+       17,
+       122
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Notion": [
@@ -5570,6 +10887,18 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "NOTION LABS INC": {
+      "2024": [
+       2,
+       15
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Novartis": [
@@ -5589,6 +10918,32 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "NOVARTIS SERVICES INC": {
+      "2024": [
+       3,
+       8
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Novotech": [
+   {
+    "match": "exact",
+    "names": {
+     "NOVOTECH INC": {
+      "2024": [
+       1,
+       0
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Numerix": [
@@ -5600,6 +10955,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "NUMERIX LLC": {
+      "2024": [
+       5,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Nvidia": [
@@ -5612,6 +10979,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "NVIDIA CORPORATION": {
+      "2024": [
+       376,
+       1143
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "O2h": [
@@ -5623,6 +11002,20 @@
      ]
     },
     "source": "uk"
+   }
+  ],
+  "OPSWAT": [
+   {
+    "match": "exact",
+    "names": {
+     "OPSWAT INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Oaknorth": [
@@ -5646,6 +11039,32 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "OCEANEERING INTERNATIONAL INC": {
+      "2024": [
+       1,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Ocrolus Inc.": [
+   {
+    "match": "exact",
+    "names": {
+     "OCROLUS INC": {
+      "2024": [
+       1,
+       0
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Okta": [
@@ -5658,6 +11077,47 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "OKTA INC": {
+      "2024": [
+       12,
+       101
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Okta": {
+      "2025Q4": {
+       "positions": 2,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 2
+      }
+     }
+    },
+    "source": "ca"
+   }
+  ],
+  "Omnicom Media": [
+   {
+    "match": "loose",
+    "names": {
+     "OMNICOM MEDIA GROUP HOLDINGS INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "OneTrust": [
@@ -5679,6 +11139,20 @@
     "source": "nl"
    }
   ],
+  "Ontologize": [
+   {
+    "match": "exact",
+    "names": {
+     "ONTOLOGIZE INC": {
+      "2024": [
+       1,
+       0
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "OpenAI": [
    {
     "match": "exact",
@@ -5698,6 +11172,24 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "OPENAI L L C": {
+      "2024": [
+       0,
+       1
+      ]
+     },
+     "OPENAI OPCO LLC": {
+      "2024": [
+       17,
+       57
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "OpenTable": [
@@ -5710,6 +11202,32 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "OPENTABLE INC": {
+      "2024": [
+       0,
+       8
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Opengov": [
+   {
+    "match": "exact",
+    "names": {
+     "OPENGOV INC": {
+      "2024": [
+       0,
+       4
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Optiver": [
@@ -5732,6 +11250,18 @@
     "source": "nl"
    },
    {
+    "match": "loose",
+    "names": {
+     "OPTIVER SERVICES US LLC": {
+      "2024": [
+       8,
+       9
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
     "match": "exact",
     "names": {
      "Optiver": [
@@ -5750,6 +11280,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ORCA SECURITY INC": {
+      "2024": [
+       1,
+       0
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Orion Innovation": [
@@ -5761,6 +11303,20 @@
      ]
     },
     "source": "uk"
+   }
+  ],
+  "Oscilar": [
+   {
+    "match": "exact",
+    "names": {
+     "OSCILAR INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Otis": [
@@ -5780,6 +11336,21 @@
      "Otis B.V.": "33076048"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Otis Canada, Inc.": {
+      "2025Q2": {
+       "positions": 1,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 0
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "Outpost VFX": [
@@ -5803,6 +11374,32 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "OUTREACH CORPORATION": {
+      "2024": [
+       0,
+       8
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Ownwell": [
+   {
+    "match": "exact",
+    "names": {
+     "OWNWELL INC": {
+      "2024": [
+       1,
+       0
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "PSI CRO": [
@@ -5831,6 +11428,18 @@
    {
     "match": "exact",
     "names": {
+     "PALANTIR TECHNOLOGIES INC": {
+      "2024": [
+       39,
+       39
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
      "Palantir Technologies": [
       "abhi-jha gist: London"
      ]
@@ -5855,6 +11464,60 @@
      "Palo Alto Networks (Netherlands) B.V.": "54620074"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "PALO ALTO NETWORKS INC": {
+      "2024": [
+       71,
+       393
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Particle41": [
+   {
+    "match": "exact",
+    "names": {
+     "PARTICLE41 LLC": {
+      "2024": [
+       1,
+       0
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Path": [
+   {
+    "match": "exact",
+    "names": {
+     "PATH": {
+      "2024": [
+       0,
+       2
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Pattern": [
+   {
+    "match": "exact",
+    "names": {
+     "PATTERN INC.": {
+      "2024": [
+       0,
+       6
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Paxos": [
@@ -5867,6 +11530,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "PAXOS TECHNOLOGY SOLUTIONS LLC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "PayPal": [
@@ -5900,6 +11575,33 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "PAYPAL INC": {
+      "2024": [
+       108,
+       471
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "PayPal Canada Co.": {
+      "2025Q3": {
+       "positions": 1,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 1
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "PayPay India": [
@@ -5907,10 +11609,24 @@
     "match": "exact",
     "names": {
      "PayPay": [
-      "relocate.me list: Tokyo, JP"
+      "relocate.me list: Tokyo, Japan"
      ]
     },
     "source": "lists"
+   }
+  ],
+  "Payjoy": [
+   {
+    "match": "exact",
+    "names": {
+     "PAYJOY INC": {
+      "2024": [
+       2,
+       2
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Payoneer": [
@@ -5947,6 +11663,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "PERFICIENT INC": {
+      "2024": [
+       9,
+       115
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Perforce": [
@@ -5959,6 +11687,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "PERFORCE SOFTWARE INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Pfizer": [
@@ -5978,6 +11718,18 @@
      "Pfizer B.V.": "34087728"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "PFIZER INC": {
+      "2024": [
+       11,
+       49
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Philips": [
@@ -5989,12 +11741,26 @@
     "source": "nl"
    }
   ],
+  "Phinia": [
+   {
+    "match": "exact",
+    "names": {
+     "PHINIA INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "PhotoRoom": [
    {
     "match": "exact",
     "names": {
      "PhotoRoom": [
-      "relocate.me list: Paris, FR"
+      "relocate.me list: Paris, France"
      ]
     },
     "source": "lists"
@@ -6010,6 +11776,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "PING IDENTITY CORPORATION": {
+      "2024": [
+       0,
+       2
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Plaid": [
@@ -6023,12 +11801,69 @@
    {
     "match": "exact",
     "names": {
+     "PLAID INC": {
+      "2024": [
+       2,
+       26
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
      "Plaid": [
       "abhi-jha gist: London",
       "abhi-jha gist: Amsterdam, Netherlands"
      ]
     },
     "source": "lists"
+   }
+  ],
+  "Platform Science": [
+   {
+    "match": "exact",
+    "names": {
+     "PLATFORM SCIENCE INC": {
+      "2024": [
+       1,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Plative": [
+   {
+    "match": "exact",
+    "names": {
+     "PLATIVE INC": {
+      "2024": [
+       0,
+       2
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Plooto": [
+   {
+    "match": "exact",
+    "names": {
+     "Plooto": {
+      "2025Q2": {
+       "positions": 1,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 1
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "Point72": [
@@ -6041,6 +11876,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "POINT72 LP": {
+      "2024": [
+       11,
+       31
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Popsockets": [
@@ -6050,6 +11897,48 @@
      "PopSockets Europe": "66735963"
     },
     "source": "nl"
+   }
+  ],
+  "Poshmark": [
+   {
+    "match": "exact",
+    "names": {
+     "POSHMARK INC": {
+      "2024": [
+       0,
+       8
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Precision Medicine Group": [
+   {
+    "match": "exact",
+    "names": {
+     "PRECISION MEDICINE GROUP LLC": {
+      "2024": [
+       2,
+       4
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Precision for Medicine": [
+   {
+    "match": "exact",
+    "names": {
+     "PRECISION FOR MEDICINE INC": {
+      "2024": [
+       1,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Prodege": [
@@ -6062,6 +11951,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "PRODEGE LLC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Protegrity": [
@@ -6074,6 +11975,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "PROTEGRITY USA INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Protolabs": [
@@ -6095,6 +12008,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "PUBMATIC INC": {
+      "2024": [
+       1,
+       17
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "QAD, Inc.": [
@@ -6114,6 +12039,18 @@
      "QAD Netherlands B.V.": "30152748"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "QAD INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "QIMA": [
@@ -6125,6 +12062,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "QIMA US LLC": {
+      "2024": [
+       0,
+       4
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Qiagen": [
@@ -6144,6 +12093,18 @@
      "Qiagen N.V.": "12036979"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "QIAGEN LLC": {
+      "2024": [
+       0,
+       2
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Qonto": [
@@ -6174,6 +12135,40 @@
      "Qualcomm Technologies Netherlands B.V.": "56169841"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "QUALCOMM INCORPORATED": {
+      "2024": [
+       7,
+       16
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Qualcomm Canada ULC": {
+      "2025Q2": {
+       "positions": 1,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 1
+      },
+      "2025Q3": {
+       "positions": 1,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 1
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "Qualys": [
@@ -6192,6 +12187,18 @@
      "Qualys Netherlands B.V.": "67815294"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "QUALYS INC": {
+      "2024": [
+       14,
+       31
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Quantcast": [
@@ -6204,6 +12211,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "QUANTCAST CORPORATION": {
+      "2024": [
+       2,
+       7
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Quantiphi": [
@@ -6223,6 +12242,18 @@
      "Quantiphi Netherlands B.V.": "82820465"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "QUANTIPHI INC": {
+      "2024": [
+       8,
+       40
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Quantium": [
@@ -6248,6 +12279,20 @@
     "source": "uk"
    }
   ],
+  "REDICA Systems": [
+   {
+    "match": "exact",
+    "names": {
+     "REDICA SYSTEMS INC": {
+      "2024": [
+       0,
+       2
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "REXEL": [
    {
     "match": "exact",
@@ -6258,6 +12303,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "REXEL USA INC": {
+      "2024": [
+       1,
+       3
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Raisin": [
@@ -6307,7 +12364,7 @@
      "Reaktor": [
       "abhi-jha gist: Amsterdam, Netherlands",
       "relocate.me list: Amsterdam, Netherlands",
-      "relocate.me list: Lisbon, PT"
+      "relocate.me list: Lisbon, Portugal"
      ]
     },
     "source": "lists"
@@ -6323,6 +12380,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "RECORDED FUTURE INC": {
+      "2024": [
+       1,
+       0
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Red Bull": [
@@ -6370,6 +12439,18 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "RED HAT INC": {
+      "2024": [
+       32,
+       95
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Redis": [
@@ -6411,6 +12492,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "RELTIO INC": {
+      "2024": [
+       0,
+       7
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Renesas Electronics": [
@@ -6423,6 +12516,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "RENESAS ELECTRONICS AMERICA INC": {
+      "2024": [
+       21,
+       39
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Resilinc": [
@@ -6462,6 +12567,18 @@
      "Revinate B.V.": "57292094"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "REVINATE LLC": {
+      "2024": [
+       0,
+       3
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Revvity": [
@@ -6481,6 +12598,38 @@
      "Revvity Nederland B.V.": "20078200"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "REVVITY INC": {
+      "2024": [
+       0,
+       3
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Rhombus Power, Inc.": [
+   {
+    "match": "exact",
+    "names": {
+     "RHOMBUS POWER INC": {
+      "2024": [
+       0,
+       1
+      ]
+     },
+     "RHOMBUS POWER, INC.": {
+      "2024": [
+       4,
+       5
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Roblox": [
@@ -6492,6 +12641,40 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ROBLOX CORPORATION": {
+      "2024": [
+       16,
+       83
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Roblox Canada": {
+      "2025Q3": {
+       "positions": 1,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 1
+      },
+      "2025Q4": {
+       "positions": 1,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 1
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "Rockstar Games": [
@@ -6504,6 +12687,58 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ROCKSTAR GAMES INC": {
+      "2024": [
+       4,
+       7
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Rodeo FX": [
+   {
+    "match": "exact",
+    "names": {
+     "Rodeo Fx": {
+      "2025Q2": {
+       "positions": 5,
+       "streams": [
+        "Global Talent Stream",
+        "High Wage"
+       ],
+       "tech": 0
+      },
+      "2025Q3": {
+       "positions": 5,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 0
+      },
+      "2025Q4": {
+       "positions": 4,
+       "streams": [
+        "High Wage",
+        "Global Talent Stream"
+       ],
+       "tech": 0
+      },
+      "2026Q1": {
+       "positions": 1,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 0
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "Rohlig": [
@@ -6536,6 +12771,32 @@
      "Roku International B.V.": "75604450"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ROKU INC": {
+      "2024": [
+       11,
+       109
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Rox Data Corp": [
+   {
+    "match": "exact",
+    "names": {
+     "ROX DATA CORP": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Rsm": [
@@ -6554,6 +12815,33 @@
      "RSM Netherlands Holding N.V.": "34255762"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "RSM US LLP": {
+      "2024": [
+       26,
+       35
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "RSM Canada Operations ULC": {
+      "2025Q4": {
+       "positions": 1,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 1
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "Rubrik": [
@@ -6572,6 +12860,18 @@
      "Rubrik The Netherlands B.V.": "70358966"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "RUBRIK INC": {
+      "2024": [
+       32,
+       49
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Rws": [
@@ -6599,6 +12899,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "S AND P GLOBAL INC": {
+      "2024": [
+       10,
+       17
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "SGS": [
@@ -6632,6 +12944,20 @@
     "source": "uk"
    }
   ],
+  "Sagility": [
+   {
+    "match": "exact",
+    "names": {
+     "SAGILITY LLC": {
+      "2024": [
+       1,
+       0
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "Salary Finance": [
    {
     "match": "exact",
@@ -6654,6 +12980,54 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SALESFORCE INC": {
+      "2024": [
+       240,
+       1285
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Salesforce.com Canada Corp.": {
+      "2025Q2": {
+       "positions": 5,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 5
+      },
+      "2025Q3": {
+       "positions": 1,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 1
+      },
+      "2025Q4": {
+       "positions": 2,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 2
+      },
+      "2026Q1": {
+       "positions": 4,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 4
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "Salesloft": [
@@ -6666,6 +13040,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SALESLOFT INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "SambaNova": [
@@ -6678,6 +13064,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "SAMBANOVA SYSTEMS INC": {
+      "2024": [
+       9,
+       20
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Samsara": [
@@ -6687,6 +13085,18 @@
      "Samsara Nederland B.V.": "84377577"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SAMSARA INC": {
+      "2024": [
+       7,
+       40
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Samsonite": [
@@ -6698,6 +13108,35 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SAMSONITE LLC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Sapsol Technologies Inc": [
+   {
+    "match": "exact",
+    "names": {
+     "SAPSOL Technologies Inc.": {
+      "2025Q3": {
+       "positions": 1,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 1
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "Saviynt": [
@@ -6710,6 +13149,32 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SAVIYNT INC": {
+      "2024": [
+       9,
+       53
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Savvymoney": [
+   {
+    "match": "exact",
+    "names": {
+     "SAVVYMONEY INC": {
+      "2024": [
+       1,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Scale AI": [
@@ -6722,6 +13187,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SCALE AI INC": {
+      "2024": [
+       18,
+       24
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Schrödinger": [
@@ -6734,6 +13211,32 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SCHRODINGER INC": {
+      "2024": [
+       9,
+       9
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Sciencelogic": [
+   {
+    "match": "exact",
+    "names": {
+     "SCIENCELOGIC INC": {
+      "2024": [
+       0,
+       2
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Scopely": [
@@ -6746,6 +13249,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SCOPELY INC": {
+      "2024": [
+       4,
+       9
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Scout24": [
@@ -6759,6 +13274,20 @@
     "source": "lists"
    }
   ],
+  "Securly": [
+   {
+    "match": "exact",
+    "names": {
+     "SECURLY INC": {
+      "2024": [
+       2,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "Sensor Tower": [
    {
     "match": "exact",
@@ -6769,6 +13298,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SENSOR TOWER INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "SentinelOne": [
@@ -6778,6 +13319,18 @@
      "SentinelOne B.V.": "78312949"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SENTINELONE INC": {
+      "2024": [
+       1,
+       12
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "ServiceNow": [
@@ -6807,6 +13360,33 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SERVICENOW INC": {
+      "2024": [
+       155,
+       423
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SERVICENOW CANADA INC.": {
+      "2025Q2": {
+       "positions": 1,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 1
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "Servify": [
@@ -6819,6 +13399,32 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SERVIFY US INC.": {
+      "2024": [
+       1,
+       0
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Sezzle": [
+   {
+    "match": "exact",
+    "names": {
+     "SEZZLE INC": {
+      "2024": [
+       7,
+       3
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Shell": [
@@ -6839,6 +13445,18 @@
      "Shell Nederland B.V.": "24098177"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "EQUILON ENTERPRISES LLC DBA SHELL": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "ShipBob, Inc.": [
@@ -6851,6 +13469,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SHIPBOB INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Showpad": [
@@ -6886,6 +13516,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SIFIVE INC": {
+      "2024": [
+       1,
+       5
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Sigmoid": [
@@ -6936,6 +13578,33 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SIKA CORPORATION": {
+      "2024": [
+       1,
+       2
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Sika Canada inc.": {
+      "2025Q4": {
+       "positions": 1,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 0
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "Silvaco": [
@@ -6948,6 +13617,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SILVACO INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Simpplr": [
@@ -6960,6 +13641,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SIMPPLR, INC.": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Sinch": [
@@ -6984,6 +13677,38 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SINGLESTORE INC": {
+      "2024": [
+       1,
+       0
+      ]
+     },
+     "SINGLESTORE, INC.": {
+      "2024": [
+       2,
+       5
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Singular": [
+   {
+    "match": "loose",
+    "names": {
+     "SINGULAR LABS, INC.": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Skechers": [
@@ -6995,6 +13720,74 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SKECHERS USA INC": {
+      "2024": [
+       1,
+       8
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Skillsoft": [
+   {
+    "match": "exact",
+    "names": {
+     "SKILLSOFT CORPORATION": {
+      "2024": [
+       1,
+       0
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Skillz Inc": [
+   {
+    "match": "loose",
+    "names": {
+     "SKILLZ PLATFORM INC": {
+      "2024": [
+       2,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Skyflow": [
+   {
+    "match": "exact",
+    "names": {
+     "SKYFLOW INC": {
+      "2024": [
+       0,
+       2
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Skylo": [
+   {
+    "match": "loose",
+    "names": {
+     "SKYLO TECHNOLOGIES INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Smarsh": [
@@ -7007,6 +13800,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SMARSH INC": {
+      "2024": [
+       0,
+       4
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Smart Working Solutions": [
@@ -7020,12 +13825,38 @@
     "source": "uk"
    }
   ],
+  "SmartBear": [
+   {
+    "match": "loose",
+    "names": {
+     "SMARTBEAR SOFTWARE INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "SmartNews": [
+   {
+    "match": "loose",
+    "names": {
+     "SMARTNEWS INTERNATIONAL INC": {
+      "2024": [
+       1,
+       2
+      ]
+     }
+    },
+    "source": "us"
+   },
    {
     "match": "exact",
     "names": {
      "SmartNews": [
-      "relocate.me list: Tokyo, JP"
+      "relocate.me list: Tokyo, Japan"
      ]
     },
     "source": "lists"
@@ -7053,7 +13884,7 @@
     "match": "exact",
     "names": {
      "Smartly.io": [
-      "relocate.me list: Helsinki, FI"
+      "relocate.me list: Helsinki, Finland"
      ]
     },
     "source": "lists"
@@ -7069,6 +13900,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SMARTSHEET INC": {
+      "2024": [
+       9,
+       35
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Snap": [
@@ -7081,6 +13924,46 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SNAP INC": {
+      "2024": [
+       67,
+       191
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Snowflake": [
+   {
+    "match": "exact",
+    "names": {
+     "SNOWFLAKE INC": {
+      "2024": [
+       60,
+       225
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Socure": [
+   {
+    "match": "exact",
+    "names": {
+     "SOCURE INC": {
+      "2024": [
+       2,
+       6
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Soho House & Co.": [
@@ -7102,6 +13985,32 @@
      "Solenis Netherlands B.V.": "60529075"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SOLENIS LLC": {
+      "2024": [
+       1,
+       6
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Solvd": [
+   {
+    "match": "exact",
+    "names": {
+     "SOLVD INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Sonatus": [
@@ -7114,6 +14023,18 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SONATUS INC": {
+      "2024": [
+       2,
+       2
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Sonatype": [
@@ -7137,6 +14058,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SONICWALL INC": {
+      "2024": [
+       1,
+       15
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Sophos": [
@@ -7149,6 +14082,33 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SOPHOS INC": {
+      "2024": [
+       5,
+       26
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Sophos Inc": {
+      "2026Q1": {
+       "positions": 1,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 1
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "Sopra Steria": [
@@ -7170,6 +14130,20 @@
     "source": "nl"
    }
   ],
+  "Spaulding Ridge": [
+   {
+    "match": "exact",
+    "names": {
+     "SPAULDING RIDGE LLC": {
+      "2024": [
+       0,
+       2
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "Sphera": [
    {
     "match": "loose",
@@ -7187,6 +14161,32 @@
      "Sphera Solutions": "66233089"
     },
     "source": "nl"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "SPHERA SOLUTIONS INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Spinnaker Support": [
+   {
+    "match": "exact",
+    "names": {
+     "SPINNAKER SUPPORT LLC": {
+      "2024": [
+       1,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Spotify": [
@@ -7220,6 +14220,18 @@
    {
     "match": "exact",
     "names": {
+     "SPOTIFY USA INC": {
+      "2024": [
+       41,
+       60
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
      "Spotify": [
       "abhi-jha gist: London",
       "abhi-jha gist: Sweden, Stockholm",
@@ -7240,6 +14252,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SPREETAIL LLC": {
+      "2024": [
+       3,
+       4
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Sprinklr": [
@@ -7253,6 +14277,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SPRINKLR INC": {
+      "2024": [
+       2,
+       4
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "SquareSpace": [
@@ -7286,6 +14322,18 @@
    {
     "match": "exact",
     "names": {
+     "SQUARESPACE INC": {
+      "2024": [
+       0,
+       13
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
      "SquareSpace": [
       "abhi-jha gist: Dublin, Ireland"
      ]
@@ -7314,6 +14362,20 @@
      ]
     },
     "source": "uk"
+   }
+  ],
+  "StarTree": [
+   {
+    "match": "exact",
+    "names": {
+     "STARTREE INC": {
+      "2024": [
+       1,
+       3
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Startek®": [
@@ -7350,6 +14412,20 @@
      }
     },
     "source": "ie"
+   }
+  ],
+  "StockX": [
+   {
+    "match": "exact",
+    "names": {
+     "STOCKX LLC": {
+      "2024": [
+       0,
+       5
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Stream": [
@@ -7408,6 +14484,56 @@
    {
     "match": "exact",
     "names": {
+     "STRIPE INC": {
+      "2024": [
+       32,
+       233
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Stripe": {
+      "2025Q2": {
+       "positions": 6,
+       "streams": [
+        "Global Talent Stream",
+        "High Wage"
+       ],
+       "tech": 6
+      },
+      "2025Q3": {
+       "positions": 2,
+       "streams": [
+        "Global Talent Stream",
+        "High Wage"
+       ],
+       "tech": 2
+      },
+      "2025Q4": {
+       "positions": 3,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 3
+      },
+      "2026Q1": {
+       "positions": 2,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 2
+      }
+     }
+    },
+    "source": "ca"
+   },
+   {
+    "match": "exact",
+    "names": {
      "Stripe": [
       "shubheksha list: London, UK",
       "shubheksha list: Dublin, IE"
@@ -7457,6 +14583,18 @@
    {
     "match": "exact",
     "names": {
+     "SUMUP INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
      "SumUp": [
       "abhi-jha gist: London",
       "abhi-jha gist: Berlin, Germany",
@@ -7464,6 +14602,48 @@
      ]
     },
     "source": "lists"
+   }
+  ],
+  "Sumo Logic": [
+   {
+    "match": "exact",
+    "names": {
+     "SUMO LOGIC INC": {
+      "2024": [
+       1,
+       14
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "SupplyHouse.com": [
+   {
+    "match": "exact",
+    "names": {
+     "SUPPLYHOUSE LLC DBA SUPPLYHOUSE CO": {
+      "2024": [
+       0,
+       3
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Sureify": [
+   {
+    "match": "loose",
+    "names": {
+     "SUREIFY LABS INC": {
+      "2024": [
+       1,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Surveymonkey": [
@@ -7482,6 +14662,18 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SURVEYMONKEY INC": {
+      "2024": [
+       1,
+       9
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Sutherland": [
@@ -7499,6 +14691,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "SUTHERLAND GLOBAL SERVICES INC": {
+      "2024": [
+       0,
+       2
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Swisscom": [
@@ -7524,6 +14728,20 @@
     "source": "uk"
    }
   ],
+  "Synchrony": [
+   {
+    "match": "loose",
+    "names": {
+     "SYNCHRONY BANK": {
+      "2024": [
+       9,
+       57
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "Syndigo": [
    {
     "match": "exact",
@@ -7534,6 +14752,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SYNDIGO LLC": {
+      "2024": [
+       5,
+       4
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Synechron": [
@@ -7546,6 +14776,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SYNECHRON INC": {
+      "2024": [
+       123,
+       297
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Syngenta Group": [
@@ -7579,6 +14821,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "TABOOLA INC": {
+      "2024": [
+       0,
+       2
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Tactile Games": [
@@ -7595,7 +14849,7 @@
     "match": "exact",
     "names": {
      "Tactile Games": [
-      "relocate.me list: Copenhagen, DK"
+      "relocate.me list: Copenhagen, Denmark"
      ]
     },
     "source": "lists"
@@ -7611,6 +14865,60 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "TAKE TWO INTERACTIVE SOFTWARE INC": {
+      "2024": [
+       0,
+       1
+      ]
+     },
+     "TAKE-TWO INTERACTIVE SOFTWARE INC": {
+      "2024": [
+       3,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "TAKE-TWO INTERACTIVE CANADA, INC.": {
+      "2025Q2": {
+       "positions": 1,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 1
+      },
+      "2025Q3": {
+       "positions": 1,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 0
+      }
+     }
+    },
+    "source": "ca"
+   }
+  ],
+  "Takraf": [
+   {
+    "match": "exact",
+    "names": {
+     "TAKRAF USA INC": {
+      "2024": [
+       1,
+       0
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Talon.One": [
@@ -7646,6 +14954,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "TEKION CORP": {
+      "2024": [
+       4,
+       5
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Telefonica Tech": [
@@ -7658,6 +14978,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "TELEFONICA TECH INC": {
+      "2024": [
+       0,
+       2
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Telnyx": [
@@ -7686,6 +15018,18 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "TELNYX LLC": {
+      "2024": [
+       3,
+       2
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Telus Digital": [
@@ -7697,6 +15041,68 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "TELUS INTERNATIONAL U S CORP": {
+      "2024": [
+       1,
+       8
+      ]
+     },
+     "TELUS INTERNATIONAL US CORP": {
+      "2024": [
+       4,
+       9
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "TELUS": {
+      "2026Q1": {
+       "positions": 2,
+       "streams": [
+        "Global Talent Stream",
+        "High Wage"
+       ],
+       "tech": 2
+      }
+     }
+    },
+    "source": "ca"
+   }
+  ],
+  "Temporal": [
+   {
+    "match": "loose",
+    "names": {
+     "TEMPORAL TECHNOLOGIES INC": {
+      "2024": [
+       0,
+       3
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Tenstorrent": [
+   {
+    "match": "exact",
+    "names": {
+     "TENSTORRENT USA INC": {
+      "2024": [
+       6,
+       25
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Terex": [
@@ -7729,6 +15135,18 @@
      "Texas Instruments Holland B.V.": "06022045"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "TEXAS INSTRUMENTS INCORPORATED": {
+      "2024": [
+       94,
+       98
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Tgs": [
@@ -7771,6 +15189,46 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "THE HACKETT GROUP INC": {
+      "2024": [
+       1,
+       10
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "The Knot Worldwide": [
+   {
+    "match": "exact",
+    "names": {
+     "THE KNOT WORLDWIDE INC": {
+      "2024": [
+       0,
+       2
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "The Nielsen Company": [
+   {
+    "match": "exact",
+    "names": {
+     "THE NIELSEN COMPANY US LLC": {
+      "2024": [
+       3,
+       32
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Thoughtworks": [
@@ -7790,6 +15248,18 @@
      "Thoughtworks Netherlands B.V.": "72270616"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "THOUGHTWORKS INC": {
+      "2024": [
+       9,
+       42
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Threecolts": [
@@ -7826,6 +15296,20 @@
     "source": "uk"
    }
   ],
+  "Toast": [
+   {
+    "match": "exact",
+    "names": {
+     "TOAST INC": {
+      "2024": [
+       2,
+       16
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "Tower Research Capital": [
    {
     "match": "exact",
@@ -7843,6 +15327,47 @@
      "Tower Research Capital Europe B.V.": "71179569"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "TOWER RESEARCH CAPITAL LLC": {
+      "2024": [
+       11,
+       12
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Tower Research Capital": {
+      "2025Q3": {
+       "positions": 1,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 1
+      },
+      "2025Q4": {
+       "positions": 1,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 1
+      },
+      "2026Q1": {
+       "positions": 1,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 1
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "TraceLink, Inc": [
@@ -7855,6 +15380,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "TRACELINK INC": {
+      "2024": [
+       4,
+       11
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Tractable": [
@@ -7872,7 +15409,7 @@
     "names": {
      "Tractable": [
       "relocate.me list: London, United Kingdom",
-      "relocate.me list: Tokyo, JP"
+      "relocate.me list: Tokyo, Japan"
      ]
     },
     "source": "lists"
@@ -7908,6 +15445,68 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "TRANSMIT SECURITY, INC.": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Transperfect": [
+   {
+    "match": "exact",
+    "names": {
+     "TRANSPERFECT INC": {
+      "2024": [
+       0,
+       2
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Transperfect": {
+      "2025Q3": {
+       "positions": 1,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 1
+      },
+      "2026Q1": {
+       "positions": 2,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 2
+      }
+     }
+    },
+    "source": "ca"
+   }
+  ],
+  "TriNet": [
+   {
+    "match": "exact",
+    "names": {
+     "TRINET USA INC": {
+      "2024": [
+       7,
+       59
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Trintech": [
@@ -7955,6 +15554,46 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "TRM LABS INC": {
+      "2024": [
+       0,
+       4
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Truveta": [
+   {
+    "match": "exact",
+    "names": {
+     "TRUVETA INC": {
+      "2024": [
+       6,
+       5
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Turing": [
+   {
+    "match": "loose",
+    "names": {
+     "TURING ENTERPRISES INC": {
+      "2024": [
+       0,
+       5
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Turner & Townsend": [
@@ -7986,6 +15625,39 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "TURNER AND TOWNSEND INC": {
+      "2024": [
+       9,
+       16
+      ]
+     },
+     "TURNER TOWNSEND INC": {
+      "2024": [
+       0,
+       6
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Turner & Townsend Canada Inc.": {
+      "2025Q2": {
+       "positions": 1,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 0
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "Turnitin, LLC": [
@@ -7998,6 +15670,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "TURNITIN LLC": {
+      "2024": [
+       0,
+       3
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Twilio": [
@@ -8031,11 +15715,37 @@
    {
     "match": "exact",
     "names": {
+     "TWILIO INC": {
+      "2024": [
+       13,
+       98
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
      "Twilio": [
       "shubheksha list: London, UK"
      ]
     },
     "source": "lists"
+   }
+  ],
+  "Twin Health": [
+   {
+    "match": "exact",
+    "names": {
+     "TWIN HEALTH INC": {
+      "2024": [
+       0,
+       3
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "UKG": [
@@ -8048,9 +15758,47 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "UKG INC": {
+      "2024": [
+       1,
+       16
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "UWorld, LLC": [
+   {
+    "match": "exact",
+    "names": {
+     "UWORLD LLC": {
+      "2024": [
+       13,
+       8
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Ubisoft": [
+   {
+    "match": "exact",
+    "names": {
+     "UBISOFT INC": {
+      "2024": [
+       4,
+       4
+      ]
+     }
+    },
+    "source": "us"
+   },
    {
     "match": "exact",
     "names": {
@@ -8070,6 +15818,33 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "UIPATH INC": {
+      "2024": [
+       6,
+       25
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "UiPath Canada Operations Ltd.": {
+      "2026Q1": {
+       "positions": 1,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 1
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "Uniphore": [
@@ -8119,6 +15894,18 @@
      "Unisys Nederland N.V.": "33000201"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "UNISYS CORPORATION": {
+      "2024": [
+       3,
+       26
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "UnitedLex": [
@@ -8131,6 +15918,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "UNITEDLEX CORPORATION": {
+      "2024": [
+       4,
+       7
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Unlimit": [
@@ -8161,6 +15960,18 @@
      "VML Netherlands B.V.": "32092788"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "VML LLC": {
+      "2024": [
+       3,
+       5
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Valeo": [
@@ -8192,6 +16003,18 @@
      "Valmet B.V.": "62681532"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "VALMET INC": {
+      "2024": [
+       0,
+       4
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Valtech": [
@@ -8210,6 +16033,54 @@
      "Valtech B.V.": "24300177"
     },
     "source": "nl"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "VALTECH SOLUTIONS LLC": {
+      "2024": [
+       2,
+       7
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Valtech Canada Inc.": {
+      "2025Q4": {
+       "positions": 1,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 1
+      },
+      "2026Q1": {
+       "positions": 1,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 1
+      }
+     }
+    },
+    "source": "ca"
+   }
+  ],
+  "Vantiva": [
+   {
+    "match": "exact",
+    "names": {
+     "VANTIVA USA LLC": {
+      "2024": [
+       0,
+       5
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Vantive": [
@@ -8240,6 +16111,33 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "VAYNERMEDIA LLC": {
+      "2024": [
+       3,
+       0
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "VaynerMedia Canada Inc.": {
+      "2025Q2": {
+       "positions": 2,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 0
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "Veeam Software": [
@@ -8271,6 +16169,32 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "VENDAVO INC": {
+      "2024": [
+       1,
+       2
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Veradigm": [
+   {
+    "match": "exact",
+    "names": {
+     "VERADIGM LLC": {
+      "2024": [
+       1,
+       7
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Vercel": [
@@ -8282,6 +16206,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "VERCEL, INC.": {
+      "2024": [
+       2,
+       0
+      ]
+     }
+    },
+    "source": "us"
    },
    {
     "match": "exact",
@@ -8324,6 +16260,18 @@
      "Verifone Payments B.V.": "34246766"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "VERIFONE INC": {
+      "2024": [
+       0,
+       4
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Verint": [
@@ -8336,6 +16284,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "VERINT SYSTEMS INC": {
+      "2024": [
+       0,
+       5
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Veripark": [
@@ -8375,6 +16335,18 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "VERIZON SERVICES CORP": {
+      "2024": [
+       0,
+       2
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Version 1": [
@@ -8421,6 +16393,24 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "VERTIV CORPORATION": {
+      "2024": [
+       0,
+       1
+      ]
+     },
+     "VERTIV INC": {
+      "2024": [
+       1,
+       2
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Visa": [
@@ -8444,6 +16434,18 @@
      "Visa Europe (Netherlands) B.V.": "34304949"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "VISA U S A INC": {
+      "2024": [
+       64,
+       181
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Vishay": [
@@ -8456,6 +16458,20 @@
      ]
     },
     "source": "uk"
+   }
+  ],
+  "Vonage": [
+   {
+    "match": "exact",
+    "names": {
+     "VONAGE AMERICA LLC": {
+      "2024": [
+       0,
+       8
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "WNS Global Services": [
@@ -8475,6 +16491,20 @@
      "WNS Global Services Netherlands B.V.": "34272863"
     },
     "source": "nl"
+   }
+  ],
+  "WPP": [
+   {
+    "match": "loose",
+    "names": {
+     "WPP GROUP USA INC": {
+      "2024": [
+       1,
+       0
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "WPP Media": [
@@ -8506,6 +16536,24 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "NORDCO INC DBA WABTEC CORPORATION": {
+      "2024": [
+       1,
+       0
+      ]
+     },
+     "WABTEC US RAIL INC DBA WABTEC CORPORATION": {
+      "2024": [
+       9,
+       22
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Wallapop": [
@@ -8513,7 +16561,7 @@
     "match": "exact",
     "names": {
      "Wallapop": [
-      "relocate.me list: Barcelona, ES"
+      "relocate.me list: Barcelona, Spain"
      ]
     },
     "source": "lists"
@@ -8528,6 +16576,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "WAYVE TECHNOLOGIES INC": {
+      "2024": [
+       0,
+       3
+      ]
+     }
+    },
+    "source": "us"
    },
    {
     "match": "exact",
@@ -8593,8 +16653,8 @@
     "match": "exact",
     "names": {
      "Welltech": [
-      "relocate.me list: Limassol, CY",
-      "relocate.me list: Warsaw, PL"
+      "relocate.me list: Limassol, Cyprus",
+      "relocate.me list: Warsaw, Poland"
      ]
     },
     "source": "lists"
@@ -8610,6 +16670,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "WESTERN DIGITAL TECHNOLOGIES INC": {
+      "2024": [
+       39,
+       126
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Wise": [
@@ -8621,6 +16693,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "WISE US INC": {
+      "2024": [
+       3,
+       1
+      ]
+     }
+    },
+    "source": "us"
    },
    {
     "match": "exact",
@@ -8641,6 +16725,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "WIZ INC": {
+      "2024": [
+       0,
+       4
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Wolters Kluwer": [
@@ -8673,6 +16769,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "WORKATO INC": {
+      "2024": [
+       1,
+       2
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Workday": [
@@ -8702,15 +16810,39 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "WORKDAY INC": {
+      "2024": [
+       41,
+       306
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "WorldQuant": [
    {
     "match": "exact",
     "names": {
+     "WORLDQUANT LLC": {
+      "2024": [
+       10,
+       6
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
      "WorldQuant": [
-      "relocate.me list: Yerevan, AM",
-      "relocate.me list: Budapest, HU"
+      "relocate.me list: Yerevan, Armenia",
+      "relocate.me list: Budapest, Hungary"
      ]
     },
     "source": "lists"
@@ -8736,6 +16868,34 @@
      ]
     },
     "source": "uk"
+   }
+  ],
+  "XO Health Inc.": [
+   {
+    "match": "exact",
+    "names": {
+     "XO HEALTH INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "XP Power": [
+   {
+    "match": "exact",
+    "names": {
+     "XP POWER LLC": {
+      "2024": [
+       1,
+       3
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Xometry": [
@@ -8767,6 +16927,24 @@
      "XPEL B.V.": "65627555"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "XPEL INC": {
+      "2024": [
+       0,
+       1
+      ]
+     },
+     "XPEL INC.": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Yext": [
@@ -8779,6 +16957,49 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "YEXT INC": {
+      "2024": [
+       4,
+       7
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Yieldmo": [
+   {
+    "match": "exact",
+    "names": {
+     "YIELDMO INC": {
+      "2024": [
+       1,
+       2
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Yugabyte": [
+   {
+    "match": "exact",
+    "names": {
+     "Yugabyte": {
+      "2025Q3": {
+       "positions": 1,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 1
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "Zafin": [
@@ -8810,6 +17031,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ZEECO INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Zeller": [
@@ -8834,6 +17067,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "ZENSAR TECHNOLOGIES INC": {
+      "2024": [
+       43,
+       110
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Zeta Global": [
@@ -8845,6 +17090,32 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ZETA GLOBAL CORP": {
+      "2024": [
+       4,
+       11
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Zimperium": [
+   {
+    "match": "exact",
+    "names": {
+     "ZIMPERIUM INC": {
+      "2024": [
+       2,
+       2
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Zinnov": [
@@ -8857,6 +17128,32 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ZINNOV LLC": {
+      "2024": [
+       3,
+       2
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Zocdoc": [
+   {
+    "match": "exact",
+    "names": {
+     "ZOCDOC INC": {
+      "2024": [
+       1,
+       2
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "ZoomInfo Technologies LLC": [
@@ -8878,6 +17175,18 @@
      }
     },
     "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ZOOMINFO TECHNOLOGIES LLC": {
+      "2024": [
+       1,
+       6
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Zscaler": [
@@ -8897,6 +17206,33 @@
      "Zscaler Netherlands B.V.": "67202829"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ZSCALER INC": {
+      "2024": [
+       20,
+       152
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Zscaler Canada, Inc": {
+      "2025Q2": {
+       "positions": 1,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 1
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "Zuora": [
@@ -8909,6 +17245,18 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ZUORA INC": {
+      "2024": [
+       2,
+       23
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Zuru": [
@@ -8920,6 +17268,32 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ZURU LLC": {
+      "2024": [
+       0,
+       2
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "Zynga": [
+   {
+    "match": "exact",
+    "names": {
+     "ZYNGA INC": {
+      "2024": [
+       5,
+       10
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "dunnhumby": [
@@ -8932,6 +17306,33 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "DUNNHUMBY INC": {
+      "2024": [
+       2,
+       3
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "dunnhumby Canada Limited": {
+      "2025Q2": {
+       "positions": 1,
+       "streams": [
+        "Global Talent Stream"
+       ],
+       "tech": 1
+      }
+     }
+    },
+    "source": "ca"
    }
   ],
   "eClerx": [
@@ -8951,6 +17352,46 @@
      "eClerx B.V.": "77976207"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ECLERX LLC": {
+      "2024": [
+       1,
+       6
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "eClinical Solutions": [
+   {
+    "match": "exact",
+    "names": {
+     "ECLINICAL SOLUTIONS LLC": {
+      "2024": [
+       2,
+       2
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
+  "ePlus Technology, inc.": [
+   {
+    "match": "exact",
+    "names": {
+     "EPLUS TECHNOLOGY INC": {
+      "2024": [
+       0,
+       5
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "ib vogt GmbH": [
@@ -8976,6 +17417,20 @@
     "source": "lists"
    }
   ],
+  "phData": [
+   {
+    "match": "exact",
+    "names": {
+     "PHDATA INC": {
+      "2024": [
+       1,
+       9
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "project44": [
    {
     "match": "exact",
@@ -8983,6 +17438,18 @@
      "Project44 B.V.": "81471068"
     },
     "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "PROJECT44 LLC": {
+      "2024": [
+       0,
+       2
+      ]
+     }
+    },
+    "source": "us"
    },
    {
     "match": "exact",
@@ -9007,6 +17474,19 @@
   ]
  },
  "sources": {
+  "ca": {
+   "downloaded": "2026-10-21",
+   "entries": 31843,
+   "licence": "Open Government Licence - Canada",
+   "page": "https://open.canada.ca/data/en/dataset/90fed587-1364-4f33-a9ee-208181dc0b97",
+   "quarters": [
+    "2025Q2",
+    "2025Q3",
+    "2025Q4",
+    "2026Q1"
+   ],
+   "title": "ESDC Temporary Foreign Worker Program: positive LMIA employers list"
+  },
   "ie": {
    "downloaded": "2026-10-21",
    "entries": 12715,
@@ -9045,6 +17525,18 @@
    "page": "https://www.gov.uk/government/publications/register-of-licensed-sponsors-workers",
    "published": "2026-10-21",
    "title": "Register of licensed sponsors: workers"
+  },
+  "us": {
+   "copy": "https://github.com/JohnBroberg/H1B_Hub (MIT; the hub's export, unchanged)",
+   "downloaded": "2026-10-21",
+   "entries": 51839,
+   "file": "https://raw.githubusercontent.com/JohnBroberg/H1B_Hub/main/data/Employer_Information_2024.csv",
+   "licence": "US government work (public domain)",
+   "page": "https://www.uscis.gov/tools/reports-and-studies/h-1b-employer-data-hub",
+   "title": "USCIS H-1B Employer Data Hub (H-1B petitions approved per employer)",
+   "years": [
+    "2024"
+   ]
   }
  }
 }

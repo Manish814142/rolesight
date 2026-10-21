@@ -143,7 +143,8 @@ GULF = {"Acme": [{"source": "lists", "match": "exact", "names": {"Acme": ["reloc
     ("Acme", "Dubai", "", "Not stated; UAE: the employer applies for the work visa"),      # its list entry is Berlin
     ("Globex", "Singapore", "", "Not stated; on a relocation list; Singapore: the employer applies for the Employment Pass"),
     ("Nobody", "Dubai", "Emirati National required.", "Posting: no visa sponsorship"),      # the rule is no promise for this job
-    ("Nobody", "Singapore", "We offer visa sponsorship.", "Posting: offers visa sponsorship"),
+    ("Nobody", "Singapore", "We offer visa sponsorship.",                   # T143: the rule unless the posting says no
+     "Posting: offers visa sponsorship; Singapore: the employer applies for the Employment Pass"),
 ])
 def test_the_country_rule_follows_a_silent_posting(monkeypatch, company, location, text, expected):
     monkeypatch.setattr(visa, "_records", lambda: GULF)
@@ -191,3 +192,58 @@ def test_export_from_the_database_writes_the_note_from_the_stored_description(re
     assert job_from_db_row(db_row, 70)["visa"] == ""                       # India alone
     pl.configure_places(pl.places_from_config(_cfg("UK")))
     assert job_from_db_row(db_row, 70)["visa"] == "Posting: no visa sponsorship; UK licensed sponsor; on a relocation list"
+
+
+# ── T143: the USA, Canada, Australia, New Zealand ────────────────────────────
+
+FAR = {"Stripe": [{"source": "us", "match": "exact", "names": {"STRIPE INC": {"2024": [32, 233]}}},
+                  {"source": "ca", "match": "loose", "names": {"Stripe Canada Inc": {
+                      "2025Q4": {"positions": 2, "tech": 2, "streams": ["Global Talent Stream"]},
+                      "2026Q1": {"positions": 1, "tech": 0, "streams": ["High Wage"]}}}}],
+       "Renewals": [{"source": "us", "match": "exact", "names": {"RENEWALS INC": {"2024": [0, 5]}}}],
+       "Lisboa": [{"source": "lists", "match": "exact", "names": {"Lisboa": ["relocate.me list: Lisbon, Portugal"]}}]}
+US_RULE = visa.COUNTRY_RULE["United States"]
+
+
+@pytest.mark.parametrize("company, location, text, expected", [
+    ("Stripe", "Seattle, WA", "", f"Not stated; H-1B FY2024: 32 new, 233 extended; {US_RULE}"),
+    ("Stripe", "Toronto, ON", "", "Not stated; positive LMIA 2025Q4-2026Q1: 3 positions, 2 in software; "
+                                  "Canada: the employer usually needs an LMIA, or you apply for PR yourself (Express Entry)"),
+    ("Renewals", "Austin, TX", "We sponsor visas for the right candidate.",              # an offer is still the lottery
+     f"Posting: offers visa sponsorship; H-1B FY2024: 0 new, 5 extended; {US_RULE}"),
+    ("Stripe", "New York, NY", "Must be a U.S. Citizen.", "Posting: no visa sponsorship; H-1B FY2024: 32 new, 233 extended"),
+    ("Nobody", "Sydney, NSW", "", "Not stated; Australia: the employer must be an approved sponsor (Skills in Demand visa)"),
+    ("Nobody", "Auckland, New Zealand", "",
+     "Not stated; New Zealand: the employer must be accredited and pass a job check (AEWV)"),
+])
+def test_the_new_countries_records_and_rules(monkeypatch, company, location, text, expected):
+    monkeypatch.setattr(visa, "_records", lambda: FAR)
+    p = pl.places_from_config(_cfg("United States", "Canada", "Australia", "New Zealand"))
+    assert visa.note(company, location, text, p) == expected
+
+
+def test_a_list_entry_counts_for_any_country():                 # not only the hand-made packs (T142)
+    assert visa._list_covers(["relocate.me list: Lisbon, Portugal"], "Portugal")
+    assert not visa._list_covers(["relocate.me list: Lisbon, Portugal"], "Spain")
+
+
+def test_the_us_rule_names_the_lottery_the_fee_and_the_transfer():
+    assert "lottery" in US_RULE and "$100,000" in US_RULE and "in court" in US_RULE and "L-1 after a year" in US_RULE
+
+
+@pytest.mark.parametrize("text, kind", [
+    # read in the 2026-10-21 fetch (T143): a dotted "U.S." hid these from the word gaps
+    ("This role is not open to visa sponsorship or transfers.", "refused"),
+    ("Candidates must already have unrestricted U.S. work authorization.", "refused"),
+    ("Must be a U.S. Citizen - Must hold or be eligible for a U.S. Secret security clearance", "refused"),
+    ("this position requires U.S. citizenship.", "refused"),
+    ("Investors include General Catalyst, Bain & Company, Visa Ventures, and others.", "silent"),
+    ("Visa transfers, including OPT and H1B transfers, are supported.", "mentioned"),       # helps someone already there
+])
+def test_us_wording(text, kind):
+    assert visa.wording(text)[0] == kind
+
+
+def test_the_shipped_us_and_canada_records_are_read():
+    assert visa.record("Stripe", "United States").startswith("H-1B FY2024: ")
+    assert visa.record("Cerebras", "Canada").startswith("positive LMIA ")

@@ -2,6 +2,8 @@
 
     python scripts/build_visa_sponsors.py                       # download the sources, write job_hunt/data/visa_sponsors.json
     python scripts/build_visa_sponsors.py --offline             # rebuild from the files downloaded last time (no network)
+    python scripts/build_visa_sponsors.py --offline --us-h1b "$HOME/Downloads/Employer Information.csv"
+                                                                # a newer H-1B hub export saved in a browser (T143)
     python scripts/build_visa_sponsors.py --report /tmp/m.csv   # also every match with the source's own name, to read by hand
     python scripts/build_visa_sponsors.py --emit-seeds /tmp/s.txt   # community-list names not on the list yet (for discover --add-file)
 
@@ -11,10 +13,14 @@ public record says instead:
   uk     GOV.UK register of licensed sponsors: workers (Skilled Worker, Global Business Mobility, Scale-up routes)
   nl     IND public register "Work": recognised sponsors for regular labour and highly skilled migrants
   ie     DETE "employment permits issued to companies", this year and last (permits actually granted)
+  us     USCIS H-1B Employer Data Hub: H-1B petitions approved per employer in a fiscal year (T143). uscis.gov answers scripts
+         with HTTP 403, so the download is JohnBroberg/H1B_Hub's copy of the hub's own export (FY2024, the newest there), or a
+         newer export saved from the hub in a browser and passed with --us-h1b FILE
+  ca     ESDC positive LMIA employers list, the last four quarters (Open Government Licence - Canada; T143)
   lists  community lists of companies that hire from India with visa and relocation (abhi-jha's gist, shubheksha's repo) and
          relocate.me's hand-checked list of companies hiring internationally (CC0-1.0; T141), each entry with its places
-Germany, the UAE and Singapore publish no register: their rules make one unnecessary (job_hunt/visa.py COUNTRY_RULE, T141), and
-the lists name companies there. A register says the employer can sponsor, not that a given job does.
+Germany, the UAE, Singapore, Australia and New Zealand publish no register to download: the rule of each is in job_hunt/visa.py
+COUNTRY_RULE (T141, T143), and the lists name companies there. A register says the employer can sponsor, not that a given job does.
 
 A match is "exact" when the names agree once legal suffixes and country words are dropped ("Google (UK) Limited" is Google),
 "loose" when they agree only once generic words are dropped too ("Atlassian (UK) Operations Limited" is Atlassian). Only
@@ -31,6 +37,7 @@ import json
 import re
 import sys
 import unicodedata
+from functools import lru_cache
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Tuple
 
@@ -47,6 +54,12 @@ SHUBHEKSHA_RAW = "https://raw.githubusercontent.com/shubheksha/companies-sponsor
 SHUBHEKSHA_PAGE = "https://github.com/shubheksha/companies-sponsoring-visas"
 RELOCATE_RAW = "https://raw.githubusercontent.com/AndrewStetsenko/tech-jobs-with-relocation/main/README.md"
 RELOCATE_PAGE = "https://github.com/AndrewStetsenko/tech-jobs-with-relocation"   # relocate.me's list, CC0-1.0 (T141)
+US_HUB = "https://www.uscis.gov/tools/reports-and-studies/h-1b-employer-data-hub"
+US_MIRROR = "https://raw.githubusercontent.com/JohnBroberg/H1B_Hub/main/data/Employer_Information_{year}.csv"
+US_MIRROR_PAGE = "https://github.com/JohnBroberg/H1B_Hub"
+CA_API = "https://open.canada.ca/data/api/action/package_show?id=90fed587-1364-4f33-a9ee-208181dc0b97"
+CA_PAGE = "https://open.canada.ca/data/en/dataset/90fed587-1364-4f33-a9ee-208181dc0b97"
+CA_QUARTERS = 4
 
 UK_ROUTES = ("Skilled Worker", "Global Business Mobility: Senior or Specialist Worker", "Scale-up",
              "Global Business Mobility: UK Expansion Worker", "Global Business Mobility: Graduate Trainee")
@@ -55,10 +68,11 @@ UK_ROUTES = ("Skilled Worker", "Global Business Mobility: Senior or Specialist W
 
 LEGAL = {"limited", "ltd", "llp", "lp", "plc", "inc", "incorporated", "corp", "corporation", "co", "company", "llc", "gmbh",
          "ag", "se", "bv", "nv", "sa", "sas", "sarl", "srl", "spa", "ab", "as", "asa", "oy", "oyj", "pte", "pty", "pvt",
-         "private", "kg", "dac", "uc", "ulc", "unlimited", "branch", "the", "and"}
+         "private", "kg", "dac", "uc", "ulc", "unlimited", "branch", "the", "and",
+         "pbc", "opco", "pc", "pllc"}           # US: public benefit corp ("ANTHROPIC PBC"), operating company ("OPENAI OPCO LLC")
 PLACE = {"uk", "gb", "britain", "great", "england", "scotland", "wales", "ireland", "irl", "nederland", "netherlands",
          "holland", "europe", "european", "emea", "eu", "india", "germany", "deutschland", "us", "usa", "america", "singapore",
-         "asia", "apac", "uae", "dubai"}     # no city names: "Brave London Ltd" is not Brave
+         "asia", "apac", "uae", "dubai", "canada"}   # no city names: "Brave London Ltd" is not Brave; "Google Canada" is Google
 GENERIC = {"services", "service", "operations", "technologies", "technology", "tech", "solutions", "software", "systems",
            "labs", "lab", "digital", "global", "international", "holdings", "holding", "group", "payments", "bank",
            "platforms", "platform", "ventures", "enterprises", "worldwide", "hq"}
@@ -68,7 +82,9 @@ def _tokens(name: str) -> List[str]:
     t = unicodedata.normalize("NFKD", name or "").encode("ascii", "ignore").decode().lower()
     t = re.sub(r"\.(com|io|ai|co)\b", "", t)            # "Booking.com B.V." and "Booking.com" are both "booking"
     t = t.replace("&", " and ").replace(".", "").replace("'", "")
-    return re.sub(r"[^a-z0-9]+", " ", t).split()
+    t = re.sub(r"\b([a-z]) (?=[a-z]\b)", r"\1", re.sub(r"[^a-z0-9]+", " ", t))   # the H-1B file's "L L C", "D B A": "llc", "dba"
+    words = t.split()
+    return words[words.index("dba") + 1:] if "dba" in words[1:-1] else words   # "X D B A Y": the trade name Y
 
 
 def exact_key(name: str) -> str:
@@ -151,6 +167,62 @@ def parse_ie(path: Path) -> Dict[str, int]:
     return out
 
 
+def _int(text: str) -> int:
+    return int(text.replace(",", "").strip() or 0)        # the hub writes "1,305"
+
+
+def parse_us(path: Path) -> Dict[str, Dict[str, List[int]]]:
+    """Employer -> {fiscal year: [initial approvals, continuing approvals]}, from an H-1B Employer Data Hub export (tab
+    separated, UTF-16 as the hub writes it, or UTF-8); one employer's rows (one per tax id and city) are added up. "Initial"
+    is new employment (a cap petition, or a worker changing employer); "continuing" is an extension for a worker already there."""
+    raw = path.read_bytes()
+    text = raw.decode("utf-16") if raw[:2] in (b"\xff\xfe", b"\xfe\xff") else raw.decode("utf-8-sig")
+    rows = csv.reader(text.splitlines(), delimiter="\t")
+    head = [h.strip() for h in next(rows, [])]
+    col = {h: i for i, h in enumerate(head)}
+    out: Dict[str, Dict[str, List[int]]] = {}
+    for r in rows:
+        if len(r) < len(head):
+            continue
+        name, year = r[col["Employer (Petitioner) Name"]].strip(), r[col["Fiscal Year"]].strip()
+        if not name:
+            continue
+        counts = out.setdefault(name, {}).setdefault(year, [0, 0])
+        counts[0] += _int(r[col["Initial Approval"]])
+        counts[1] += _int(r[col["Continuing Approval"]])
+    return {n: years for n, years in out.items() if any(sum(c) for c in years.values())}     # denials only: no record
+
+
+# NOC 2021 occupations of software work (21210-21234 computer and information systems, 21311 computer engineers, 20012 their
+# managers): an LMIA for one says more about a software job than one for a cook.
+_TECH_NOC = re.compile(r"^(212\d\d|21311|20012)\b")
+
+
+def parse_ca(path: Path) -> Dict[str, Dict[str, Any]]:
+    """Employer -> {"positions", "tech" (positions in software occupations), "streams"} for one quarter's positive LMIA list."""
+    import openpyxl
+    ws = openpyxl.load_workbook(path, read_only=True, data_only=True).worksheets[0]
+    out: Dict[str, Dict[str, Any]] = {}
+    col: Dict[str, int] = {}
+    for row in ws.iter_rows(values_only=True):
+        cells = [str(v).strip() if v is not None else "" for v in row]
+        if not col:
+            if "Employer" in cells and "Approved Positions" in cells:
+                col = {h: i for i, h in enumerate(cells)}
+            continue
+        name = cells[col["Employer"]] if col["Employer"] < len(cells) else ""
+        n = row[col["Approved Positions"]] if col["Approved Positions"] < len(row) else None
+        if not name or not isinstance(n, (int, float)):          # the notes under the table
+            continue
+        e = out.setdefault(name, {"positions": 0, "tech": 0, "streams": []})
+        e["positions"] += int(n)
+        e["tech"] += int(n) if _TECH_NOC.match(cells[col["Occupation"]]) else 0
+        stream = cells[col["Program Stream"]]
+        if stream and stream not in e["streams"]:
+            e["streams"].append(stream)
+    return out
+
+
 def parse_gist(text: str) -> Dict[str, List[str]]:
     """Company -> the city headings it is listed under ("**London**" then "* [Google](...)")."""
     md = next(iter(json.loads(text)["files"].values()))["content"]
@@ -195,12 +267,25 @@ def parse_relocate(text: str) -> Dict[str, List[str]]:
 
 _FLAG_NAMES = {"DE": "Germany", "NL": "Netherlands", "GB": "United Kingdom", "IE": "Ireland", "AE": "United Arab Emirates",
                "SG": "Singapore", "IN": "India"}
+_COUNTRIES = ROOT / "job_hunt" / "data" / "countries.json"
+
+
+@lru_cache(maxsize=1)
+def _country_names() -> Dict[str, str]:
+    """ISO2 code -> country name: the names above, else the place data the scanner reads (T142), so every flag gets one (T143)."""
+    try:
+        names = {code: c["name"] for code, c in json.loads(_COUNTRIES.read_text(encoding="utf-8"))["countries"].items()}
+    except (OSError, ValueError, KeyError):
+        names = {}
+    return {**names, **_FLAG_NAMES}
 
 
 def _flags_to_names(text: str) -> str:
+    names = _country_names()
+
     def name(m: "re.Match[str]") -> str:
         code = "".join(chr(ord(ch) - 0x1F1E6 + 65) for ch in m.group(1))
-        return ", " + _FLAG_NAMES.get(code, code)
+        return ", " + names.get(code, code)
     return re.sub(r"\s*([\U0001F1E6-\U0001F1FF]{2})", name, text).replace("🌍", "").strip(" ,")
 
 
@@ -213,7 +298,43 @@ def _get(url: str, timeout: int = 120):
     return r
 
 
-def download(dest: Path) -> Dict[str, Dict[str, Any]]:
+def _download_us(dest: Path, us_file: Optional[Path]) -> Dict[str, Any]:
+    """The H-1B hub export: `us_file` when given (saved from the hub in a browser), else the newest year of the mirror."""
+    meta = {"title": "USCIS H-1B Employer Data Hub (H-1B petitions approved per employer)", "page": US_HUB,
+            "licence": "US government work (public domain)", "files": ["us_h1b.csv"]}
+    if us_file:
+        (dest / "us_h1b.csv").write_bytes(us_file.read_bytes())
+        meta["file"] = str(us_file.name)
+    else:
+        for year in range(dt.date.today().year, 2020, -1):          # the newest year the copy has (2024 on 2026-10-21)
+            try:
+                content = _get(US_MIRROR.format(year=year), timeout=300).content
+            except Exception:                                       # 404: not there yet
+                continue
+            (dest / "us_h1b.csv").write_bytes(content)
+            meta.update(file=US_MIRROR.format(year=year), copy=US_MIRROR_PAGE + " (MIT; the hub's export, unchanged)")
+            break
+        else:
+            raise RuntimeError("no H-1B hub export found on the mirror; save one from the hub and pass --us-h1b FILE")
+    meta["years"] = sorted({y for counts in parse_us(dest / "us_h1b.csv").values() for y in counts})
+    return meta
+
+
+def _download_ca(dest: Path) -> Dict[str, Any]:
+    """The last CA_QUARTERS quarters of the positive LMIA employers list (English xlsx files, found with the CKAN API)."""
+    res = _get(CA_API).json()["result"]["resources"]
+    quarters = sorted(((m.group(1), r["url"]) for r in res if r.get("format", "").upper().startswith("XLS")
+                       and "en" in (r.get("language") or ["en"]) and (m := re.match(r"(\d{4}Q[1-4])\b", r.get("name", "")))))
+    files = []
+    for q, url in quarters[-CA_QUARTERS:]:
+        (dest / f"ca_lmia_{q}.xlsx").write_bytes(_get(url).content)
+        files.append(f"ca_lmia_{q}.xlsx")
+    return {"title": "ESDC Temporary Foreign Worker Program: positive LMIA employers list", "page": CA_PAGE,
+            "quarters": [q for q, _ in quarters[-CA_QUARTERS:]], "licence": "Open Government Licence - Canada",
+            "files": files}
+
+
+def download(dest: Path, us_file: Optional[Path] = None) -> Dict[str, Dict[str, Any]]:
     """Fetch every source into `dest`; returns what each one is (url, date, licence, file)."""
     dest.mkdir(parents=True, exist_ok=True)
     meta: Dict[str, Dict[str, Any]] = {}
@@ -245,6 +366,9 @@ def download(dest: Path) -> Dict[str, Dict[str, Any]]:
                   "licence": "Government of Ireland copyright: reuse with the source and copyright acknowledged",
                   "files": files}
 
+    meta["us"] = _download_us(dest, us_file)
+    meta["ca"] = _download_ca(dest)
+
     (dest / "gist.json").write_text(_get(GIST_API).text, encoding="utf-8")
     (dest / "shubheksha.md").write_text(_get(SHUBHEKSHA_RAW).text, encoding="utf-8")
     (dest / "relocate.md").write_text(_get(RELOCATE_RAW).text, encoding="utf-8")
@@ -274,9 +398,18 @@ def load_sources(src: Path) -> Dict[str, Index]:
     for label, parsed in parsed_lists:
         for company, where in parsed.items():
             lists.setdefault(company, []).extend(f"{label}: {w}" for w in where or [""])
-    return {"uk": Index(parse_uk(src / "uk_register.csv")),
-            "nl": Index(parse_nl((src / "nl_register.html").read_text(encoding="utf-8"))),
-            "ie": Index(ie), "lists": Index(lists)}
+    out = {"uk": Index(parse_uk(src / "uk_register.csv")),
+           "nl": Index(parse_nl((src / "nl_register.html").read_text(encoding="utf-8"))), "ie": Index(ie)}
+    if "us" in meta:                                # added in T143: an older download has neither
+        out["us"] = Index(parse_us(src / "us_h1b.csv"))
+    if "ca" in meta:
+        ca: Dict[str, Dict[str, Any]] = {}
+        for name, quarter in zip(meta["ca"]["files"], meta["ca"]["quarters"]):
+            for emp, e in parse_ca(src / name).items():
+                ca.setdefault(emp, {})[quarter] = e
+        out["ca"] = Index(ca)
+    out["lists"] = Index(lists)
+    return out
 
 
 Candidate = Tuple[str, str, str, str, Any]      # company, source, "exact" | "loose", the source's name, its detail
@@ -361,6 +494,8 @@ def main(argv=None) -> int:
     ap.add_argument("--out", default="job_hunt/data/visa_sponsors.json")
     ap.add_argument("--sources", default="data/visa_sources", help="where the downloads go (default data/visa_sources)")
     ap.add_argument("--offline", action="store_true", help="use the files downloaded last time")
+    ap.add_argument("--us-h1b", help="an H-1B Employer Data Hub export saved in a browser (uscis.gov refuses scripts); "
+                                     "default: the newest year on the JohnBroberg/H1B_Hub copy")
     ap.add_argument("--review", default=str(ROOT / "scripts" / "visa_sponsor_review.json"),
                     help="matches accepted / rejected by hand (default scripts/visa_sponsor_review.json)")
     ap.add_argument("--report", help="CSV of every match with its status (kept, rejected, unreviewed), to read by hand")
@@ -370,8 +505,12 @@ def main(argv=None) -> int:
     if args.offline:
         if not (src / "sources.json").exists():
             sys.exit(f"build_visa_sponsors: nothing downloaded in {src} yet; run once without --offline")
+        if args.us_h1b:                             # a newer hub export replaces the stored one; nothing else is fetched
+            meta = json.loads((src / "sources.json").read_text(encoding="utf-8"))
+            meta["us"] = dict(_download_us(src, Path(args.us_h1b)), downloaded=dt.date.today().isoformat())
+            (src / "sources.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
     else:
-        download(src)
+        download(src, Path(args.us_h1b) if args.us_h1b else None)
     companies = json.loads(Path(args.companies).read_text(encoding="utf-8"))
     review = load_review(Path(args.review))
     data, cands = build(src, companies, review)

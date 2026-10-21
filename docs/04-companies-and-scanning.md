@@ -272,6 +272,8 @@ So the employer's public record is used instead: **`job_hunt/data/visa_sponsors.
 | Ireland: DETE [employment permits issued to companies](https://enterprise.gov.ie/en/what-we-do/workplace-and-skills/employment-permits/statistics/), 2025 and Jan–Sep 2026 | permits actually granted, with the count per year | 12,715 employers | Government of Ireland copyright: reuse with the source acknowledged |
 | Community lists: [abhi-jha's gist](https://gist.github.com/abhi-jha/5225e0dcc912174dda6b7f01e8a24156), [shubheksha's list](https://github.com/shubheksha/companies-sponsoring-visas) | named as hiring from India with visa and relocation | 130 names | none stated |
 | [relocate.me's list](https://github.com/AndrewStetsenko/tech-jobs-with-relocation) (T141) | hand-checked: the company's postings or careers page offer visa or relocation help; each entry with its places | 95 companies (Germany 23, Netherlands 17, UK 9, Singapore 1) | CC0-1.0 |
+| USA: USCIS [H-1B Employer Data Hub](https://www.uscis.gov/tools/reports-and-studies/h-1b-employer-data-hub), FY2024 (T143) | H-1B petitions approved for the employer that year: new employment and extensions | 51,839 employers with at least one approval | US government work (public domain) |
+| Canada: ESDC [positive LMIA employers list](https://open.canada.ca/data/en/dataset/90fed587-1364-4f33-a9ee-208181dc0b97), 2025Q2–2026Q1 (T143) | a positive Labour Market Impact Assessment, the approval most employer work permits need; positions per quarter and how many are software occupations | 31,843 employers | Open Government Licence – Canada |
 
 A community list counts only for the places its entry names (T141): the gist's "Berlin, Germany" says nothing about the
 company's jobs in Dubai; an entry for "Remote" or "Global" counts everywhere. The file holds only companies on `companies.json`,
@@ -348,6 +350,83 @@ evidence. Singapore's Tech@SG programme endorses companies' Employment Pass appl
 firms, not the companies. A company's other postings in the same country: on the 2026-10-21 fetch, 0 of 232 silent engineering
 postings in these three countries were at a company whose other postings there offer sponsorship (UK: 24 of 301), so it was not
 built. No Dubai-specific list was found.
+
+### The USA, Canada, Australia and New Zealand (T143)
+
+**Can someone in India be hired straight into a US job?** Yes, but rarely, and never quickly. Read on the official pages on
+2026-10-21:
+
+- **H-1B** is the usual work visa, and the employer applies for it. Each March the employer registers the person, and USCIS
+  draws among the registrations ("a weighted selection", by the wage level offered) for 65,000 places plus 20,000 for US
+  master's graduates. Only someone selected can be petitioned for; work starts on 1 October at the earliest. The FY2027 cap is
+  reached ([USCIS, H-1B electronic registration](https://www.uscis.gov/working-in-the-united-states/temporary-workers/h-1b-specialty-occupations-and-fashion-models/h-1b-electronic-registration-process),
+  updated 09/21/2026).
+- **The $100,000 payment.** A presidential proclamation of September 2025 added it to new H-1B petitions for people
+  *outside* the United States, which is exactly a hire from India. A Massachusetts court vacated USCIS's guidance for it on
+  8 June 2026 (California v. Mullin); DHS appealed and says it will still collect the payment if the order is lifted
+  ([USCIS, H-1B FAQ](https://www.uscis.gov/newsroom/alerts/h-1b-faq), read through a web search: uscis.gov refuses
+  scripts). News reports (CUPA-HR, JURIST) add that a Washington DC court upheld the proclamation in December 2025, appeal
+  pending, and that the First Circuit refused DHS a stay in July 2026; neither was read on an official page. A USCIS news
+  release also proposes a separate $103,265 fee for all cap petitions, not final. However the courts decide, an employer weighs
+  that cost before choosing a candidate abroad over one already in the country.
+- **L-1** moves an employee from the company's office abroad to its US office. The person must "generally have been working
+  for a qualifying organization abroad for one continuous year" in the three years before
+  ([USCIS, L-1A](https://www.uscis.gov/working-in-the-united-states/temporary-workers/l-1a-intracompany-transferee-executive-or-manager),
+  updated 08/31/2026; L-1B is the same for specialised knowledge). There is no lottery. For someone in India this is the
+  realistic way in: join the company's India office, then transfer. 534 of the 551 companies with a US record below are on
+  the list because they have India jobs (the list's own rule), so most have the office for it. Whether a given India entity
+  is a "qualifying organization" is the company's legal question, not something the list can tell.
+
+| Country | The rule | Source | Visa note (unless the posting refuses) |
+|---|---|---|---|
+| USA | as above | USCIS pages above | `USA: from abroad, H-1B is a yearly lottery the employer enters (a $100,000 fee for it is in court); L-1 after a year with the company abroad` |
+| Canada | an employer that needs an LMIA hires through the Temporary Foreign Worker Program (its Global Talent Stream aims to decide in 10 business days); some permits need none (an intra-company transfer, for one); a Federal Skilled Worker needs no job offer for permanent residence through Express Entry, which the person applies for (after an invitation) | [ESDC, hire through the Global Talent Stream](https://www.canada.ca/en/employment-social-development/services/foreign-workers/global-talent.html); [IRCC, Federal Skilled Worker Program](https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/express-entry/who-can-apply/federal-skilled-workers.html) | `Canada: the employer usually needs an LMIA, or you apply for PR yourself (Express Entry)` |
+| Australia | "Apply to become an approved sponsor, nominate the role you need to fill, then nominate the person you wish to employ" (Skills in Demand visa, subclass 482, since 7 Dec 2024); no public list of sponsors | [Home Affairs, becoming a sponsor](https://immi.homeaffairs.gov.au/visas/employing-and-sponsoring-someone/sponsoring-workers/becoming-a-sponsor) (quoted through a web search: the page refuses scripts) | `Australia: the employer must be an approved sponsor (Skills in Demand visa)` |
+| New Zealand | the employer must be accredited, advertise the job, and pass a job check (declined if a suitable New Zealander was available) before the person applies for the Accredited Employer Work Visa | [INZ, AEWV accreditation and job check](https://www.immigration.govt.nz/work/for-employers/getting-accreditation-or-approval-to-hire/employer-accreditation-for-the-aewv/aewv-employer-accreditation-and-job-check-process/) | `New Zealand: the employer must be accredited and pass a job check (AEWV)` |
+
+Since T143 a country's rule is added unless the posting refuses, so also after "Posting: offers visa sponsorship": a US
+posting that sponsors H-1B still means the lottery for someone abroad.
+
+**The two downloads.** *USA:* uscis.gov answers scripts with HTTP 403, so the builder takes
+[JohnBroberg/H1B_Hub](https://github.com/JohnBroberg/H1B_Hub)'s copy of the hub's own yearly export (MIT; FY2024 is the newest
+there). Checked against the official totals: the copy's FY2024 approvals add up to 141,206 new and 258,195 extended, against
+the 141,207 and 258,196 that Pew Research quotes from USCIS; the difference is one row with no employer name, which is left
+out. A newer year saved from the hub in a browser goes in with
+`python scripts/build_visa_sponsors.py --offline --us-h1b "$HOME/Downloads/Employer Information.csv"`, which replaces only
+that file. "New" approvals are new employment: a cap petition, *or* a worker already in the US changing employer, so the count
+says the company sponsors, not how many it hires from abroad. *Canada:* the last four quarters, found through the open-data
+portal's API. A position is an approved vacancy, not a person who came; the list leaves out employers named after a person.
+
+**Matching** works as for the UK (exact names, loose ones read by hand), with the US file's own ways handled: a trade name
+after "D B A" ("RAINTANK INC DBA GRAFANA LABS" is Grafana Labs, "INTERVIEWSTREET INC DBA HACKERRANK" is HackerRank), letters
+written apart ("OPENAI L L C", "ADYEN N V") and the suffixes PBC and OPCO ("ANTHROPIC PBC", "OPENAI OPCO LLC"); "Canada" is a
+country word like "UK" ("Autodesk Canada Co." is Autodesk). All 749 candidate matches were read on 2026-10-21: USA 584 kept
+(497 exact, 87 loose accepted) and 92 rejected (19 of them exact: "PEARL INC" is not the Pearl of JustAnswer, "OBSERVE INC" is
+not Observe.AI, "A52 LLC D B A ELASTIC" is a design studio, "S. A. MIRO, INC." is an engineering firm); Canada 61 kept and 12
+rejected ("Vyn Inc." with 18 farm positions). Where unsure, the board's own jobs were read (Azul's Prague and Bangalore jobs say
+Azul Systems; Ashoka's Arlington, VA jobs say the non-profit), else rejected. The UK, Dutch and Irish matches came out the same
+as before. **Record rebuilt: 798 of 1,647 companies** (UK 486, Netherlands 199, Ireland 86, lists 80, USA 551, Canada 61).
+
+**Australia and New Zealand have no list to download.** Australia publishes no register of approved sponsors. New Zealand's
+accredited-employer lookup is a search for one name, which an employer can opt out of; it was not used.
+
+**How US and Canadian postings word it** (`scripts/measure_visa_wording.py`, 2026-10-21 fetch of the 1,044 boards whose list
+API carries the description, titles with an include word):
+
+| Country | Engineering jobs | Offers | Refuses | No clear answer | Says nothing |
+|---|---|---|---|---|---|
+| USA | 3,786 | 138 (3.6%) | 196 (5.2%) | 270 (7.1%) | 3,182 (84.0%) |
+| Canada | 459 | 1 | 8 (1.7%) | 15 (3.3%) | 435 (94.8%) |
+| Australia | 122 | 1 | 2 | 3 | 116 (95.1%) |
+| New Zealand | 12 | 0 | 0 | 0 | 12 |
+
+Read by hand, 12 random US "offers" and 12 "refuses" were all right. The first reading of 12 "no clear answer" found
+refusals the patterns missed because "U.S." has dots in it ("must already have unrestricted U.S. work authorization",
+"must be a U.S. citizen" for a security clearance), and one company's investor "Visa Ventures". After the fix 151 postings
+became refusals, every distinct sentence read (citizenship for clearance, ITAR and FedRAMP work; work authorization), and 71
+"Visa Ventures" ones became silent; the six earlier countries' counts did not move. Still counted as no clear answer:
+"Visa transfers, including OPT and H1B transfers, are supported" (it helps someone already in the US, not someone abroad) and
+Roblox's "may not be able to ... support future H-1B sponsorship".
 
 **The scan uses it** (T138): with `candidate.countries` set, every job outside your home country gets a **Visa** column in
 the CSV: what the posting says, then this record for its country ([docs/05](05-outputs-and-notifications.md)).

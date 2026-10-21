@@ -19,7 +19,7 @@ hire abroad, listed for those countries). See the [user guide](00-user-guide.md#
 still limited: since T142 every country has a pack, but a GeoNames one knows only the country's 8 biggest cities (a job that
 names only a smaller city needs the country in its location, or the city in `candidate.cities`), and a name some other country's
 bigger city also has is left to its country word ("Valencia"); postings in
-another language do not match the English title words; Germany, the UAE and Singapore have no sponsor register (the Visa note gives their rule instead, T141); a scan for
+another language do not match the English title words; Germany, the UAE, Singapore, Australia and New Zealand have no sponsor register to download (the Visa note gives their rule instead, T141, T143); the US H-1B record is FY2024, the newest year scripts can download (uscis.gov refuses them: save a newer export in a browser and pass `--us-h1b`), and its "new" approvals include workers changing employer inside the US, not only hires from abroad; a scan for
 several countries makes more requests. The rest of this section describes the state before T136, kept for the record.
 
 Before T136, India was built into six places:

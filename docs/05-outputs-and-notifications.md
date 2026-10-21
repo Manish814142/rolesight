@@ -67,10 +67,14 @@ scorer) and, with `scoring_mode: structured`, **Stack fit**, **Role fit**, **Sen
 **Visa** first says what the posting itself says: "Posting: no visa sponsorship", "Posting: offers visa sponsorship",
 "Posting: unclear" (it mentions a visa or the right to work without a clear answer) or "Not stated". Then, after "; ", what
 public records say about the company for that country, when they say anything: "UK licensed sponsor" (GOV.UK register),
-"Dutch recognised sponsor" (IND register), "N Irish work permits 2025-2026" (DETE), "on a relocation list" (two community
-lists, each counting only for the places its entry names), or, in the UAE, Singapore and Germany, which have no register, that
-country's rule (T141): `UAE: the employer applies for the work visa`, `Singapore: the employer applies for the Employment Pass`,
-`Germany: no sponsor licence needed (EU Blue Card)`. Example: `Not stated; UK licensed sponsor`. The posting's own words come first because a licence is not a promise:
+"Dutch recognised sponsor" (IND register), "N Irish work permits 2025-2026" (DETE), "H-1B FY2024: N new, M extended" (USCIS
+approvals, T143), "positive LMIA 2025Q2-2026Q1: N positions, M in software" (Canada, T143), "on a relocation list" (community
+lists, each counting only for the places its entry names). Last, unless the posting refuses, the country's own rule where one is
+written down (T141, T143): `UAE: the employer applies for the work visa`, `Singapore: the employer applies for the Employment Pass`,
+`Germany: no sponsor licence needed (EU Blue Card)`, `USA: from abroad, H-1B is a yearly lottery the employer enters (a $100,000
+fee for it is in court); L-1 after a year with the company abroad`, `Canada: the employer usually needs an LMIA, or you apply
+for PR yourself (Express Entry)`, `Australia: the employer must be an approved sponsor (Skills in Demand visa)`, `New Zealand:
+the employer must be accredited and pass a job check (AEWV)`. Example: `Not stated; UK licensed sponsor`. The posting's own words come first because a licence is not a promise:
 17 of the 44 UK companies whose postings refuse sponsorship are licensed (T133). The posting's words are read by patterns
 (in T133's hand-read samples "refused" was right 12 of 12, "offered" 10 of 12); Gemini reads the whole posting for the score.
 **Model** (T71) appears when some job in the file was scored by a model other than the default primary

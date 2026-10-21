@@ -22,6 +22,11 @@ SPEC.loader.exec_module(bvs)
     ("Amazon EU SARL, Dutch Branch", "amazon", "amazon"),
     ("BRAVE LONDON LTD", "brave london", "brave london"),         # a city alone stays: "Brave London Ltd" is not Brave
     ("Stripe Partners", "stripe partners", "stripe partners"),
+    # the H-1B file's ways (T143): a trade name after "D B A", letters spaced out, US suffixes
+    ("ANTHROPIC PBC D B A ANTHROPIC INC", "anthropic", "anthropic"), ("RAINTANK INC DBA GRAFANA LABS", "grafana labs", "grafana"),
+    ("OPENAI L L C", "openai", "openai"), ("OPENAI OPCO LLC", "openai", "openai"), ("ADYEN N V", "adyen", "adyen"),
+    ("DBA LIMITED", "dba", "dba"),                                # a name that is only "DBA" keeps it
+    ("Google Canada Corporation", "google", "google"),
 ])
 def test_name_keys(name, exact, loose):
     assert bvs.exact_key(name) == exact
@@ -187,6 +192,12 @@ def test_download_finds_each_file_from_its_page(tmp_path, monkeypatch):
         if url.endswith("statistics-2025.html") or url.endswith("statistics-2026.html"):
             return _Resp(text='<a href="/en/publications/publication-files/by-county.xlsx"></a>'
                               '<a href="/en/publications/publication-files/permits-issued-to-companies.xlsx"></a>')
+        if "H1B_Hub" in url:                                   # the copy has no year newer than 2024
+            if "_2024.csv" not in url:
+                raise RuntimeError("404 Not Found")
+            return _Resp(content=H1B.encode("utf-16"))
+        if url == bvs.CA_API:
+            return _Resp(data={"result": {"resources": CKAN}})
         return _Resp(text="{}", content=b"bytes")
 
     monkeypatch.setattr(bvs, "_get", fake_get)
@@ -194,16 +205,20 @@ def test_download_finds_each_file_from_its_page(tmp_path, monkeypatch):
     assert "https://x/register.csv" in calls and "https://x/a.pdf" not in calls
     assert meta["uk"]["published"] == "2026-10-20" and meta["uk"]["licence"] == "Open Government Licence v3.0"
     assert meta["nl"]["published"] == "2026-10-05"
-    assert meta["ie"]["years"] == [2025, 2026] and not any("2024" in c for c in calls)
-    assert sorted(p.name for p in tmp_path.iterdir()) == ["gist.json", "ie_companies_2025.xlsx", "ie_companies_2026.xlsx",
-                                                          "nl_register.html", "relocate.md", "shubheksha.md", "sources.json",
-                                                          "uk_register.csv"]
+    assert meta["ie"]["years"] == [2025, 2026] and not any("statistics-2024" in c for c in calls)
+    assert sorted(p.name for p in tmp_path.iterdir()) == [
+        "ca_lmia_2025Q3.xlsx", "ca_lmia_2025Q4.xlsx", "ca_lmia_2026Q1.xlsx", "ca_lmia_2026Q2.xlsx", "gist.json",
+        "ie_companies_2025.xlsx", "ie_companies_2026.xlsx", "nl_register.html", "relocate.md", "shubheksha.md", "sources.json",
+        "uk_register.csv", "us_h1b.csv"]
     assert bvs.RELOCATE_RAW in calls and "CC0-1.0" in meta["lists"]["licence"]
+    assert meta["us"]["years"] == ["2024"] and meta["us"]["file"].endswith("Employer_Information_2024.csv")
+    assert meta["ca"]["quarters"] == ["2025Q3", "2025Q4", "2026Q1", "2026Q2"]           # the last four, French files left out
+    assert not any("fr.xlsx" in c or "2025q2" in c for c in calls)
 
 
 def test_the_shipped_dataset_and_review_file_are_well_formed():
     data = json.loads((ROOT / "job_hunt" / "data" / "visa_sponsors.json").read_text(encoding="utf-8"))
-    assert set(data["sources"]) == {"uk", "nl", "ie", "lists"}
+    assert set(data["sources"]) == {"uk", "nl", "ie", "us", "ca", "lists"}
     assert data["companies"] and all(e["source"] in data["sources"] and e["match"] in ("exact", "loose") and e["names"]
                                      for ev in data["companies"].values() for e in ev)
     review = json.loads((ROOT / "scripts" / "visa_sponsor_review.json").read_text(encoding="utf-8"))
@@ -230,7 +245,7 @@ RELOCATE = """# Intro
 
 
 def test_parse_relocate_reads_the_company_table_with_its_flags_as_countries():
-    assert bvs.parse_relocate(RELOCATE) == {"Applike Group": ["Hamburg, Germany"], "Byborg Enterprises": ["Luxembourg, LU", "Budapest, HU"],
+    assert bvs.parse_relocate(RELOCATE) == {"Applike Group": ["Hamburg, Germany"], "Byborg Enterprises": ["Luxembourg, Luxembourg", "Budapest, Hungary"],
                                             "CloudLinux": ["Remote"], "BandLab": ["Singapore, Singapore"]}
 
 
@@ -238,3 +253,83 @@ def test_an_older_download_without_the_relocate_file_still_builds(tmp_path):
     data, _ = bvs.build(_sources(tmp_path / "src"), COMPANIES, {"accepted": {}, "rejected": {}})
     assert data["companies"]["Stripe"][0]["source"] == "lists"
 
+
+
+# ── T143: the USA's H-1B approvals and Canada's positive LMIA employers ───────
+
+H1B = ("Line by line\tFiscal Year   \tEmployer (Petitioner) Name\tTax ID\tIndustry (NAICS) Code\tPetitioner City\t"
+       "Petitioner State\tPetitioner Zip Code\tInitial Approval\tInitial Denial\tContinuing Approval\tContinuing Denial\n"
+       "1\t2024\t\t3581\t54\tLAFAYETTE\tCA\t94549\t0\t0\t1\t0\n"                       # no name: left out
+       "2\t2024\tSTRIPE INC\t1\t54\tSOUTH SAN FRANCISCO\tCA\t94080\t30\t1\t1,205\t0\n"
+       "3\t2024\tSTRIPE INC\t2\t54\tSEATTLE\tWA\t98101\t2\t0\t3\t0\n"                   # another tax id: added up
+       "4\t2024\tDENIED ONLY LLC\t3\t54\tAUSTIN\tTX\t78701\t0\t4\t0\t2\n")              # no approval: no record
+
+CKAN = [{"name": f"{q}-Employers Who Were Issued a Positive LMIA", "format": "XLSX", "language": [lang],
+         "url": f"https://x/{q.lower()}_{lang}.xlsx"}
+        for q in ("2025Q2", "2025Q3", "2025Q4", "2026Q1", "2026Q2") for lang in ("en", "fr")] + [
+        {"name": "2016-Employers ...", "format": "CSV", "language": ["en"], "url": "https://x/2016.csv"}]
+
+
+def test_parse_us_adds_up_an_employers_rows_in_either_encoding(tmp_path):
+    want = {"STRIPE INC": {"2024": [32, 1208]}}
+    (tmp_path / "a.csv").write_bytes(H1B.encode("utf-16"))           # what the hub writes
+    (tmp_path / "b.csv").write_text(H1B, encoding="utf-8")
+    assert bvs.parse_us(tmp_path / "a.csv") == want and bvs.parse_us(tmp_path / "b.csv") == want
+
+
+def _lmia(path, rows):
+    _xlsx(path, [("Employers Who Were Issued a Positive LMIA, January to March 2026",),
+                 ("Province/Territory", "Program Stream", "Employer", "Address", "Occupation", "Incorporate Status",
+                  "Approved LMIAs", "Approved Positions"), *rows,
+                 ("1. The source for all information in this report is ESDC's LMIA System.",)])
+
+
+def test_parse_ca_counts_positions_and_the_software_ones(tmp_path):
+    _lmia(tmp_path / "q.xlsx", [
+        ("Ontario      ", "Global Talent Stream  ", "Shopify Inc.", "Ottawa, ON", "21231-Software engineers and designers", "Yes", 1, 3),
+        ("Ontario", "High Wage          ", "Shopify Inc.", "Toronto, ON", "10010-Financial managers", "Yes", 1, 1),
+        ("Ontario", "High Wage", "Shopify Inc.", "Toronto, ON", "21211-Data scientists", "Yes", 1, 2),
+        ("Ontario", "High Wage", "Shopify Inc.", "Toronto, ON", "20012-Computer and information systems managers", "Yes", 1, 1),
+        ("Quebec", "Low Wage", "Restaurant ABC", "Laval, QC", "65201-Food counter attendants", "Unknown", 1, 4)])
+    assert bvs.parse_ca(tmp_path / "q.xlsx") == {
+        "Shopify Inc.": {"positions": 7, "tech": 6, "streams": ["Global Talent Stream", "High Wage"]},
+        "Restaurant ABC": {"positions": 4, "tech": 0, "streams": ["Low Wage"]}}
+
+
+def _sources_t143(d: Path) -> Path:
+    _sources(d)
+    (d / "us_h1b.csv").write_bytes(H1B.encode("utf-16"))
+    _lmia(d / "ca_lmia_2026Q1.xlsx", [("Ontario", "Global Talent Stream", "Stripe Canada Inc", "Toronto, ON",
+                                       "21232-Software developers and programmers", "Yes", 1, 2)])
+    meta = json.loads((d / "sources.json").read_text(encoding="utf-8"))
+    meta["us"] = {"title": "us", "years": ["2024"], "files": ["us_h1b.csv"]}
+    meta["ca"] = {"title": "ca", "quarters": ["2026Q1"], "files": ["ca_lmia_2026Q1.xlsx"]}
+    (d / "sources.json").write_text(json.dumps(meta), encoding="utf-8")
+    return d
+
+
+def test_build_records_h1b_approvals_and_positive_lmias(tmp_path):
+    data, _ = bvs.build(_sources_t143(tmp_path / "src"), COMPANIES, {"accepted": {}, "rejected": {}})
+    stripe = {e["source"]: e for e in data["companies"]["Stripe"]}
+    assert stripe["us"] == {"source": "us", "match": "exact", "names": {"STRIPE INC": {"2024": [32, 1208]}}}
+    assert stripe["ca"] == {"source": "ca", "match": "exact",      # "Canada" is a country word, like "UK"
+                            "names": {"Stripe Canada Inc": {"2026Q1": {"positions": 2, "tech": 2, "streams": ["Global Talent Stream"]}}}}
+    assert data["sources"]["us"]["entries"] == 1 and data["sources"]["ca"]["entries"] == 1
+
+
+def test_offline_with_a_newer_hub_export_replaces_only_the_us_file(tmp_path, capsys):
+    src = _sources_t143(tmp_path / "src")
+    newer = tmp_path / "Employer Information.csv"
+    newer.write_bytes(H1B.replace("\t2024\t", "\t2025\t").encode("utf-16"))
+    (tmp_path / "companies.json").write_text(json.dumps(COMPANIES), encoding="utf-8")
+    out = tmp_path / "out.json"
+    assert bvs.main(["--offline", "--us-h1b", str(newer), "--sources", str(src), "--companies", str(tmp_path / "companies.json"),
+                     "--out", str(out), "--review", str(tmp_path / "none.json")]) == 0
+    meta = json.loads((src / "sources.json").read_text(encoding="utf-8"))
+    assert meta["us"]["years"] == ["2025"] and meta["us"]["file"] == "Employer Information.csv" and meta["ca"]["quarters"] == ["2026Q1"]
+    stripe = {e["source"]: e["names"] for e in json.loads(out.read_text(encoding="utf-8"))["companies"]["Stripe"]}
+    assert stripe["us"] == {"STRIPE INC": {"2025": [32, 1208]}}
+
+
+def test_every_flag_gets_its_countrys_name():
+    assert bvs._flags_to_names("Toronto 🇨🇦") == "Toronto, Canada" and bvs._flags_to_names("Lisbon 🇵🇹") == "Lisbon, Portugal"

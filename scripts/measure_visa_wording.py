@@ -3,7 +3,8 @@
     python scripts/measure_visa_wording.py --save /tmp/visa_fetch.json   # fetch the boards whose list API carries descriptions (3.5 min on 2026-10-21)
     python scripts/measure_visa_wording.py --jobs /tmp/visa_fetch.json [--sample 8]   # analyse a saved fetch (no network)
 
-For jobs in the UK, Germany, the Netherlands, Ireland, the UAE, Singapore, or "Europe/EMEA" with no country, counts how
+For jobs in the UK, Germany, the Netherlands, Ireland, the UAE, Singapore, or "Europe/EMEA" with no country (T133), and in
+the USA, Canada, Australia and New Zealand (T143, read with job_hunt/places.py), counts how
 many descriptions offer visa sponsorship, refuse it, mention it without a clear answer, or say nothing; separately,
 relocation help and "must already live here" wording. Each is a regex count: `--sample` prints matched sentences to
 read by hand. Greenhouse, Lever, Ashby, Workable, Recruitee and Personio only (their list call carries the
@@ -22,6 +23,7 @@ from typing import Any, Dict, List
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from job_hunt.places import Places, country  # noqa: E402
 from job_hunt.prefilter import title_included  # noqa: E402
 from job_hunt.visa import (  # noqa: E402,F401  (the classifier lives in job_hunt/visa.py, T138)
     relocation_wording,
@@ -51,7 +53,9 @@ COUNTRY_NAMES: Dict[str, re.Pattern] = {
     "Ireland": re.compile(r"(?<!northern )\bireland\b", re.I),
 }
 EUROPE_REGION = re.compile(r"\b(europe|european union|eu|emea|eea)\b", re.I)
-
+# T143: these four are read by the scanner's own place reader, so "London, Ontario" is Canada and "Perth, WA" Australia.
+FAR = {"USA": "United States", "Canada": "Canada", "Australia": "Australia", "New Zealand": "New Zealand"}
+_FAR_PLACES = Places(tuple(country(n) for n in FAR.values()))
 
 
 def countries(location: str) -> List[str]:
@@ -61,8 +65,9 @@ def countries(location: str) -> List[str]:
     if found and _NOT_NORTH_AMERICA.search(loc):   # "London, Ontario", "Dublin, OH": only the country's own name counts
         found = [c for c in found if c in ("UAE", "Singapore", "Netherlands") or COUNTRY_NAMES[c].search(loc)]
     if not found and EUROPE_REGION.search(loc):
-        return ["Europe"]
-    return found
+        found = ["Europe"]
+    names = {c.name for c in _FAR_PLACES.countries_in(loc)}
+    return found + [label for label, name in FAR.items() if name in names]
 
 
 def analyse(rows: List[Dict[str, Any]], titles_only: bool = False) -> Dict[str, Dict[str, Any]]:
@@ -99,7 +104,7 @@ def report(stats: Dict[str, Dict[str, Any]], heading: str) -> None:
     print(f"\n{heading}")
     print(f"{'place':12} {'jobs':>6} {'offered':>14} {'refused':>14} {'unclear':>14} {'silent':>14} {'reloc. help':>14} "
           f"{'live-here':>14} {'cos':>5} {'cos offering':>12}")
-    for c in [*COUNTRIES, "Europe"]:
+    for c in [*COUNTRIES, "Europe", *FAR]:
         if c not in stats:
             continue
         o, n = stats[c], stats[c]["jobs"]
