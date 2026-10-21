@@ -582,6 +582,7 @@ can run `python scripts/import_json_history.py --apply`. The old `state/*.json` 
 | T138 | T108 part 3: the rubric's location rule (rules 1 and 5) from the person's places, with the visa rule; a Visa column (`job_hunt/visa.py`: the posting's own words, then the company record of T133) | review · claude · 65a8eaf | claude | M | T136, T133 |
 | T139 | T108 part 4: `discover` checks the person's places (`--places`); entries carry `places`; the scan skips entries for other places; the abroad employers of T135 join the list | review · claude · 14af574 | claude | M | T136, T137 |
 | T140 | T108 part 5: `init --countries`, the example configs, the guide ("Looking for jobs outside India"), docs; the end-to-end check (fresh init with Singapore, real scan) | review · claude · f2cb953, edd76e7 | claude | S | T136–T139 |
+| T141 | Visa evidence for Germany, the UAE and Singapore, which publish no sponsor register (Manish 2026-10-21: "use internet, github or public sites so that a person can target these country jobs also"): each country's own rule from official pages in the Visa note (UAE and Singapore: the employer applies for the visa; Germany: no employer licence, EU Blue Card); "nationals only" wording as a refusal; relocate.me's CC0 list of companies hiring internationally as a record source; list evidence per country; that list's companies through `discover --places` | doing · claude · 2026-10-21 | claude | M | T133, T138 |
 | T133 | Visa-sponsor evidence per company (groundwork for T108): how postings outside India word visas, measured; which companies on the list are on the UK, Dutch and Irish sponsor records or on community relocation lists, matched by name and read by hand (Manish 2026-10-21: the people are in India and need the company to sponsor the visa) | review · claude · 925b980, 399ffea | claude | M | — |
 | T135 | The community relocation lists' 111 names not on the list (T133's `--emit-seeds`) through `discover --add-file`: the ones with a reachable board and India jobs join `companies.json`, and the count kept out by the India gate is measured for T108 (Manish 2026-10-21: "make our companies.json based on the public datasets") | review · claude · a031ae8 | claude | S | T133 |
 
@@ -645,7 +646,7 @@ Which terms would you add?
 
 ## Inbox
 
-New findings go here with the next free ID (next: **T141**), an evidence tag and the
+New findings go here with the next free ID (next: **T142**), an evidence tag and the
 file:line. Manish or the triaging agent moves each one into a priority table.
 
 | ID | Finding | Evidence | Added by |
