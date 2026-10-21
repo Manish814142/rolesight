@@ -96,6 +96,7 @@ def test_needs_visa_outside_the_home_country():
     ("Bengaluru, India", False, False), ("Remote - India", True, False), ("London, UK", False, False),
     ("Remote - EMEA", True, True), ("Remote - APAC", True, True), ("Remote", True, True), ("Worldwide", False, True),
     ("Remote - US", True, False), ("Remote, Germany", True, False), ("San Francisco, CA", False, False), ("", False, False),
+    ("Remote", False, True),          # review: "Remote" written in the location, the board's flag off (India keeps it too)
 ])
 def test_should_evaluate_job_with_uae_and_singapore(location, remote, kept):
     p = _places("UAE", "Singapore")
@@ -126,6 +127,8 @@ def test_cities_narrow_a_country_as_they_do_india():
     assert not should_evaluate_job(_job("Leeds, United Kingdom"), cities=["Manchester"], places=p)[0]
     assert should_evaluate_job(_job("Remote, United Kingdom", remote=True), cities=["Manchester"], places=p)[0]
     assert should_evaluate_job(_job("United Kingdom"), cities=["Manchester"], places=p)[0]   # no city named
+    # review: a remote job in another of its cities stays, as "Remote - Pune, India" does for India with cities ["Bengaluru"]
+    assert should_evaluate_job(_job("Remote - Leeds, UK", remote=True), cities=["Manchester"], places=p)[0]
 
 
 def test_india_with_another_country_keeps_india_jobs():

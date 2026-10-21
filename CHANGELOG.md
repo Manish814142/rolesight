@@ -22,6 +22,11 @@ reconstructed from git history.
 - docs/04: **34** of the 111 names have a live board but no India job (3,141 jobs), not 35 (3,184): Qonto's Lever and Ashby
   boards carry the same 44 jobs (both fetched) and were counted twice. The other counts are report rows, not names.
 
+### Tests added in review (2026-10-21, T136)
+- Two rules of the location filter abroad had no test (two mutants survived): "Remote" written only in the location, with the
+  board's remote flag off, is kept; a remote job in another city of your country is kept when `candidate.cities` is set. Both
+  as for India; `tests/test_places.py`.
+
 ### Added (2026-10-21, T143: visa evidence for the USA, Canada, Australia and New Zealand)
 - Manish: "for the USA i think direct apply from india is not allowed ... if possible then cover USA also". It is possible but
   rare, and the note now says why, from USCIS's own pages: `USA: from abroad, H-1B is a yearly lottery the employer enters (a
