@@ -377,7 +377,7 @@ T11, T12, T14, T15, T16, T17 and T18 were verified 2026-10-07, T66 and T67 on 20
 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
-| T134 | A normal (non-editable) install ships no `job_hunt/data/`: `.gitignore`'s `data/` also matches `job_hunt/data/`, and the wheel builder (hatchling) leaves out what `.gitignore` matches, so `autopilot init` fails with `No module named 'job_hunt.data'` (found in T133) | doing · claude · 2026-10-21 | claude | XS | — |
+| T134 | A normal (non-editable) install ships no `job_hunt/data/`: `.gitignore`'s `data/` also matches `job_hunt/data/`, and the wheel builder (hatchling) leaves out what `.gitignore` matches, so `autopilot init` fails with `No module named 'job_hunt.data'` (found in T133) | review · claude · 99f2612 | claude | XS | — |
 
 **T134 · finding (claude, while doing T133):** **`pip install .` (or a wheel) gives a program whose `init` cannot run.** Measured 2026-10-21: `pip wheel . --no-deps` builds `rolesight-0.4.4-py3-none-any.whl` with **no** file under `job_hunt/data/` (not `companies.json`, `config.example.json`, `env_example`, `resume_template.md` or `__init__.py`); installed into a fresh venv, `autopilot init --yes` stops with `ModuleNotFoundError: No module named 'job_hunt.data'`. Cause: `.gitignore` line 15 `data/` (meant for the root `data/`) matches every folder named `data`, and hatchling skips files `.gitignore` matches; `include = ["job_hunt/data/**"]` does not override that. The tracked files stay tracked, so git, the tests and `pip install -e .` (what the guide and CI use) never showed it; a new file there (T133's `visa_sponsors.json`) is silently left out of `git status`. *Done when:* a wheel built from the tree holds every file of `job_hunt/data/`, `autopilot init --yes` from that wheel in a fresh venv writes its files, and a test fails if `.gitignore` ignores `job_hunt/data/` again.
 
@@ -656,6 +656,7 @@ The implementer adds a row when a task reaches `review`; the verifier removes it
 
 | ID | Commit(s) | Implementer | Evidence (command → result) |
 |---|---|---|---|
+| T134 | 99f2612 | claude | `git check-ignore --no-index job_hunt/data/*` before the fix → all 5 files (+ a new one) ignored; the new test `test_git_does_not_ignore_what_the_wheel_ships` red before, green after. `python -m pip wheel . --no-deps` → the wheel's `job_hunt/data/` files: before **none**, after `__init__.py`, `companies.json`, `config.example.json`, `env_example`, `resume_template.md` (+ T133's uncommitted `visa_sponsors.json`, which was in the tree). That wheel in a fresh venv, `autopilot init --yes` in an empty folder: before `ModuleNotFoundError: No module named 'job_hunt.data'`; after exit 0, writes `companies.json` (1,589), `config.json`, `.env`, `rubric.md`, `resume/`. `git check-ignore -v data/jobs.db` → still ignored by `/data/`. Gates: `pytest --cov=job_hunt` 1,868 passed, 93.38%; ruff and mypy clean (the run included T133's uncommitted test files) |
 
 ---
 
