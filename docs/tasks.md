@@ -576,7 +576,12 @@ can run `python scripts/import_json_history.py --apply`. The old `state/*.json` 
 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
-| T108 | Location is the person's own, not India: countries, cities and a remote policy in `config.json` (Manish 2026-10-14: senior people he knows want Europe, Singapore, Dubai) | decision | — | L | T103 |
+| T108 | Location is the person's own, not India: countries, cities and a remote policy in `config.json` (Manish 2026-10-14: senior people he knows want Europe, Singapore, Dubai) | doing · claude · 2026-10-21 (decided by Manish 2026-10-21: build it, all parts; parts T136–T140, plan `docs/superpowers/plans/2026-10-21-international-job-search.md`) | claude | L | T103 |
+| T136 | T108 part 1: `candidate.countries` / `home_country` → `job_hunt/places.py` (country packs: UK, Germany, Netherlands, Ireland, UAE, Singapore, India); the pre-filter and `check-filter --countries` use them; India-only decides as today | doing · claude · 2026-10-21 | claude | M | T108 |
+| T137 | T108 part 2: Workday, Eightfold, Phenom, Oracle HCM and Amazon search the person's countries (measured terms), not India only; India sends the same requests | todo | claude | M | T136 |
+| T138 | T108 part 3: the rubric's location rule (rules 1 and 5) from the person's places, with the visa rule; a Visa column (`job_hunt/visa.py`: the posting's own words, then the company record of T133) | todo | claude | M | T136, T133 |
+| T139 | T108 part 4: `discover` checks the person's places (`--places`); entries carry `places`; the scan skips entries for other places; the abroad employers of T135 join the list | todo | claude | M | T136, T137 |
+| T140 | T108 part 5: `init --countries`, the example configs, the guide ("Looking for jobs outside India"), docs; the end-to-end check (fresh init with Singapore, real scan) | todo | claude | S | T136–T139 |
 | T133 | Visa-sponsor evidence per company (groundwork for T108): how postings outside India word visas, measured; which companies on the list are on the UK, Dutch and Irish sponsor records or on community relocation lists, matched by name and read by hand (Manish 2026-10-21: the people are in India and need the company to sponsor the visa) | review · claude · 925b980, 399ffea | claude | M | — |
 | T135 | The community relocation lists' 111 names not on the list (T133's `--emit-seeds`) through `discover --add-file`: the ones with a reachable board and India jobs join `companies.json`, and the count kept out by the India gate is measured for T108 (Manish 2026-10-21: "make our companies.json based on the public datasets") | review · claude · a031ae8 | claude | S | T133 |
 
@@ -640,7 +645,7 @@ Which terms would you add?
 
 ## Inbox
 
-New findings go here with the next free ID (next: **T136**), an evidence tag and the
+New findings go here with the next free ID (next: **T141**), an evidence tag and the
 file:line. Manish or the triaging agent moves each one into a priority table.
 
 | ID | Finding | Evidence | Added by |
