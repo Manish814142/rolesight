@@ -76,7 +76,10 @@ fee for it is in court); L-1 after a year with the company abroad`, `Canada: the
 for PR yourself (Express Entry)`, `Australia: the employer must be an approved sponsor (Skills in Demand visa)`, `New Zealand:
 the employer must be accredited and pass a job check (AEWV)`. Example: `Not stated; UK licensed sponsor`. The posting's own words come first because a licence is not a promise:
 17 of the 44 UK companies whose postings refuse sponsorship are licensed (T133). The posting's words are read by patterns
-(in T133's hand-read samples "refused" was right 12 of 12, "offered" 10 of 12); Gemini reads the whole posting for the score.
+(in T133's hand-read samples "refused" was right 12 of 12, "offered" 10 of 12; in the review's own sample, one per company,
+9 of 10 and 5 of 6: "Company sponsorship may be available" read as a refusal, "prioritizing applicants who … do not require
+sponsorship" as an offer, and some bare requirements such as "Existing work authorisation for the United Kingdom" land in
+"unclear"); Gemini reads the whole posting for the score.
 **Model** (T71) appears when some job in the file was scored by a model other than the default primary
 `gemini-3.5-flash-lite`, i.e. the fallback answered (primary failed or out of quota) or `gemini_model` is set to another
 model. The models score differently (T70: `gemini-3.1-flash-lite` gives weak fits ~7 points more), so compare scores
