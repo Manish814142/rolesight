@@ -586,6 +586,7 @@ can run `python scripts/import_json_history.py --apply`. The old `state/*.json` 
 | T142 | Every country (Manish 2026-10-21: "australia, canada and other countries also basically all the countries in the world"): packs for the USA, Canada and Australia (states, provinces, their codes), every other country generated from GeoNames (CC BY 4.0: names, ISO codes, main cities) with its regions; a location resolved part by part so a city counts only when no other country is named; the community lists' companies through `discover --places` | review · claude · b138715 | claude | L | T136, T141 |
 | T143 | Visa evidence for the USA, Canada, Australia and New Zealand: USCIS H-1B employer data (public domain), Canada's positive LMIA employers (Open Government Licence – Canada), each country's rule from official pages (H-1B lottery and the contested $100,000 fee for hires from abroad, L-1 after a year with the company abroad; LMIA; Australia's approved sponsors; New Zealand's accredited employers) | review · claude · ac1a4d6 | claude | M | T142 |
 | T144 | More employers that hire abroad (Manish 2026-10-21: "add more companies so make the bigger list ... it can help to the internation job seeker"): the archive's job boards (`harvest_board_urls.py`) checked by `discover --places` for Europe's main relocation countries, Singapore and the UAE, read for the T116/T115 traps, merged with `places`; India's scan fetches what it fetched before | doing · claude · 2026-10-21 | claude | L | T139, T142 |
+| T146 | Place reading misreads found by T144 (24 of 864 Greenhouse boards accepted for Europe only on a US or Brazilian place): "Gulf Shores, AL" as the Gulf, a street name in an address ("4900 Florence Street, Denver, CO"), "New London" / "New Holland" / "New Britain", "SEA" for Seattle, "Porto Alegre" as Porto, "London, On" (Ontario); India's decisions unchanged | doing · claude · 2026-10-21 | claude | M | T142 |
 | T133 | Visa-sponsor evidence per company (groundwork for T108): how postings outside India word visas, measured; which companies on the list are on the UK, Dutch and Irish sponsor records or on community relocation lists, matched by name and read by hand (Manish 2026-10-21: the people are in India and need the company to sponsor the visa) | review · claude · 925b980, 399ffea | claude | M | — |
 | T135 | The community relocation lists' 111 names not on the list (T133's `--emit-seeds`) through `discover --add-file`: the ones with a reachable board and India jobs join `companies.json`, and the count kept out by the India gate is measured for T108 (Manish 2026-10-21: "make our companies.json based on the public datasets") | review · claude · a031ae8 | claude | S | T133 |
 
@@ -649,7 +650,7 @@ Which terms would you add?
 
 ## Inbox
 
-New findings go here with the next free ID (next: **T146**), an evidence tag and the
+New findings go here with the next free ID (next: **T147**), an evidence tag and the
 file:line. Manish or the triaging agent moves each one into a priority table.
 
 | ID | Finding | Evidence | Added by |
