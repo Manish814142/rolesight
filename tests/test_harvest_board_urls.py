@@ -135,6 +135,38 @@ def test_a_chunk_that_never_answers_is_named_and_the_others_are_kept(monkeypatch
     assert sorted(e.value.urls) == ["https://jobs.lever.co/acme", "https://jobs.lever.co/cog"]
 
 
+class YearSession:
+    """The whole chunk is too big (504); asked one year at a time (`from`/`to`), it answers; 2020 never does for `bad_year`."""
+    def __init__(self, bad_year=None):
+        self.calls, self.bad_year = [], bad_year
+
+    def get(self, url, params=None, timeout=None):
+        self.calls.append(dict(params))
+        year = params.get("from")
+        if year is None or year == self.bad_year:
+            return type("R", (), {"status_code": 504, "text": "x"})()
+        return type("R", (), {"status_code": 200, "text": f"https://jobs.lever.co/co{year}\nhttps://jobs.lever.co/always\n"})()
+
+
+def test_a_chunk_too_big_for_one_answer_is_asked_one_year_at_a_time(monkeypatch):
+    monkeypatch.setattr(hb.time, "sleep", lambda s: None)
+    q = {**hb.ARCHIVE_QUERIES["lever"], "split": ["jobs.lever.co/a"]}
+    session = YearSession()
+    got = hb.fetch_urls(q, session=session)
+    assert "https://jobs.lever.co/co2014" in got and "https://jobs.lever.co/co2026" in got and "https://jobs.lever.co/always" in got
+    assert {c["from"] for c in session.calls if "from" in c} == {str(y) for y in hb.YEARS}
+    assert all(c["from"] == c["to"] for c in session.calls if "from" in c)
+    lines = hb.board_seeds(got, [])
+    assert sum("Always" in ln for ln in lines) == 1                       # captured in 13 years, one seed
+
+
+def test_a_chunk_with_one_year_that_never_answers_fails_and_keeps_the_other_chunks(monkeypatch):
+    monkeypatch.setattr(hb.time, "sleep", lambda s: None)
+    q = {**hb.ARCHIVE_QUERIES["lever"], "split": ["jobs.lever.co/a"]}
+    with pytest.raises(hb.ArchiveError, match=r"1 of 1 chunks"):
+        hb.fetch_urls(q, session=YearSession(bad_year="2020"))
+
+
 def test_main_writes_the_seeds_of_the_chunks_that_answered_and_exits_3(tmp_path, monkeypatch, capsys):
     def fetch(query, session=None):
         raise hb.ArchiveError("the Internet Archive did not answer for lever: 1 of 36 chunks (jobs.lever.co/q)", ["https://jobs.lever.co/acme"])

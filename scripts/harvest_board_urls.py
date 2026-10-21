@@ -97,9 +97,14 @@ class ArchiveError(RuntimeError):
         self.urls = urls or []
 
 
+YEARS = list(range(2014, 2027))       # a chunk that still fails is asked again one year of captures at a time
+
+
 def _fetch_one(query: Dict[str, Any], session: Any) -> List[str]:
     params = {"url": query["url"], "matchType": query["matchType"], "collapse": "urlkey", "fl": "original", "output": "text",
               "filter": ["statuscode:200", f"original:{query['regex']}"]}
+    if query.get("year"):
+        params["from"] = params["to"] = str(query["year"])
     for attempt in range(TRIES):
         try:
             resp = session.get(CDX, params=params, timeout=900)
@@ -122,7 +127,16 @@ def fetch_urls(query: Dict[str, Any], session: Any = None, workers: int = 3) -> 
         try:
             return url, _fetch_one({**query, "url": url}, session)
         except ArchiveError:
-            return url, None
+            pass
+        # Too big for one answer (wd1, wd3, wd5, Lever's commonest letters, 2026-10-21): one year of captures at a time. A board
+        # captured in several years is listed once by `board_seeds`. The chunk fails only if one of its years does.
+        got: List[str] = []
+        for year in YEARS:
+            try:
+                got += _fetch_one({**query, "url": url, "year": year}, session)
+            except ArchiveError:
+                return url, None
+        return url, got
 
     with ThreadPoolExecutor(max_workers=workers) as ex:
         done = list(ex.map(chunk, query["split"]))
