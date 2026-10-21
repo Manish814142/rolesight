@@ -12,7 +12,7 @@ config.json
 
 # Runtime state — personal data
 state/*.json
-data/
+/data/
 output/
 !output/.gitkeep
 scan.log

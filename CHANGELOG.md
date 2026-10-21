@@ -9,6 +9,16 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed (2026-10-21, T134)
+- **T134:** a normal install (`pip install .`, or a wheel) now ships `job_hunt/data/`, so `autopilot init` works without `-e`.
+  `.gitignore`'s `data/`, meant for the root `data/` folder, also matched `job_hunt/data/`, and the wheel builder (hatchling) leaves
+  out what `.gitignore` matches: the 0.4.4 wheel built from the tree held none of `companies.json`, `config.example.json`,
+  `env_example`, `resume_template.md` or `__init__.py`, and `autopilot init --yes` stopped with `No module named 'job_hunt.data'`
+  (measured in a fresh venv). The rule is now `/data/`: the wheel holds all five, and `init` from it writes `companies.json` (1,589
+  companies), `config.json`, `.env`, `rubric.md` and the resume template. The guide
+  and CI use `pip install -e .`, which reads this folder, so neither showed it. A test asks git whether anything in `job_hunt/data/`
+  is ignored.
+
 ### Fixed (2026-10-18, T132 and two review follow-ups)
 - **T132:** `discover --add-file FILE` or `--add TEXT` with no company name in it (an empty file, blank lines, comments, `--add ","`,
   or an explicitly empty value such as `--add "$NAMES"` with an unset variable) now stops ("holds no company name", exit 1). Before,

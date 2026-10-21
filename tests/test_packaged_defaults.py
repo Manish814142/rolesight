@@ -1,6 +1,10 @@
 """What `autopilot init` ships must work for a new user without TinyFish or OpenRouter (T50)."""
 import json
+import shutil
+import subprocess
 from pathlib import Path
+
+import pytest
 
 DATA = Path("job_hunt/data")
 
@@ -30,3 +34,15 @@ def test_config_examples_are_identical_and_valid_json():
     cfg = json.loads(a)
     assert cfg["llm_provider"] == "gemini" and "gemini_api_key" in cfg
     assert "search_keywords" not in cfg["candidate"]            # TinyFish-search-only fields
+
+
+def test_git_does_not_ignore_what_the_wheel_ships():
+    """T134: hatchling leaves out of the wheel whatever .gitignore matches. `data/` once matched job_hunt/data/ too, so a
+    non-editable install had none of these files and `autopilot init` failed (`No module named 'job_hunt.data'`). git's own
+    matcher decides here; the root data/ (personal state) must stay ignored."""
+    if shutil.which("git") is None or not Path(".git").exists():
+        pytest.skip("needs git and the repository")
+    paths = sorted(str(f) for f in DATA.iterdir() if f.is_file()) + [str(DATA / "a_new_file.json")]
+    r = subprocess.run(["git", "check-ignore", "--no-index", *paths], capture_output=True, text=True)
+    assert r.stdout == "", f"ignored by .gitignore, so left out of the wheel:\n{r.stdout}"
+    assert subprocess.run(["git", "check-ignore", "--no-index", "-q", "data/jobs.db"]).returncode == 0
