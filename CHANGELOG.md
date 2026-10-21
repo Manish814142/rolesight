@@ -9,6 +9,16 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Added (2026-10-21, T137: T108 part 2, the connectors search your countries)
+- Workday, Eightfold, Phenom, Oracle HCM and Amazon answer only for the country they are asked about; with `candidate.countries`
+  they now ask for yours. Workday: one full-text search per term (UK: "United Kingdom" and "UK", UAE: "United Arab Emirates" and
+  "Dubai", measured: the spellings find different jobs), sharing the seen-job set and the 600 s budget; a failed term keeps what the
+  others returned. Eightfold: one search per country. Phenom: the list of countries. Amazon: one search per country code. Oracle HCM:
+  one read per country facet; when a country has no facet on the site (sites list only their biggest locations), one read without a
+  facet, newest first, stopped by the posted-date window. **India alone sends the same requests as before** (the existing adapter
+  tests, unchanged, still pass). Measured for UK + Singapore on 15 real boards: every connector returned jobs there (Amazon 759 UK
+  and 134 Singapore; Phenom 92 UK; Workday up to 132 UK at Accenture, whose fetch was cut by HTTP 429 at offset 120).
+
 ### Added (2026-10-21, T136: T108 part 1, your countries in the pre-filter)
 - **`candidate.countries`** (default India) and **`candidate.home_country`** (default India, where you live) in `config.json`. New
   `job_hunt/places.py` holds a pack per country: United Kingdom, Germany, Netherlands, Ireland, United Arab Emirates, Singapore and

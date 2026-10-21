@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import logging
 import re
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from job_hunt.adapters.base import (
     DEFAULT_HEADERS,
@@ -19,6 +19,7 @@ from job_hunt.adapters.base import (
     strip_html,
 )
 from job_hunt.models import JobPosting
+from job_hunt.places import active_places
 
 logger = logging.getLogger(__name__)
 
@@ -31,15 +32,23 @@ def _api(host: str) -> str:
 
 
 def _india_facet_id(host: str, site: str) -> Optional[int]:
+    return _location_facets(host, site).get("india")
+
+
+def _location_facets(host: str, site: str) -> Dict[str, int]:
+    """The site's location facets, lower-case name -> id. Measured 2026-10-21 (T137): sites list only their biggest
+    locations (10 on ACI Worldwide, American Express, Akamai, Adani; 50 on APLL), so a country can be missing."""
     params = {"onlyData": "true", "expand": "locationsFacet",
               "finder": f"findReqs;siteNumber={site},facetsList=LOCATIONS,limit=1"}
     resp = http_get(_api(host), headers=DEFAULT_HEADERS, params=params, timeout=20)
     resp.raise_for_status()
     items = resp.json().get("items") or [{}]
+    facets: Dict[str, int] = {}
     for loc in items[0].get("locationsFacet") or []:
-        if (loc.get("Name") or "").strip().lower() == "india":
-            return loc.get("Id")
-    return None
+        name = (loc.get("Name") or "").strip().lower()
+        if name and name not in facets:
+            facets[name] = loc.get("Id")
+    return facets
 
 
 _JOB_URL_RE = re.compile(r"https://([^/]+)/hcmUI/CandidateExperience/[^/]+/sites/([^/]+)/job/([^/?#]+)")
@@ -78,20 +87,37 @@ def fetch_description(job: JobPosting) -> str:
 
 
 def fetch_oracle_hcm(host: str, site: str, company: str = "") -> List[JobPosting]:
-    """India requisitions of one Oracle HCM career site (all jobs if no India facet)."""
+    """Requisitions of one Oracle HCM career site in the person's countries (T137). India alone: the India facet, or
+    nothing when the site has none (as before). Other countries: one read per country facet; when one of them has no facet
+    on the site, a single read without a facet instead, newest first, which the posted-date window stops."""
+    places = active_places()
     try:
-        india = _india_facet_id(host, site)
+        if places.india_only():
+            india = _india_facet_id(host, site)
+            if india is None:
+                logger.debug("Oracle HCM %s/%s has no India location facet", host, site)
+                return []
+            facet_ids: List[Optional[int]] = [india]
+        else:
+            facets = _location_facets(host, site)
+            ids = [facets.get(name.lower()) for name in places.search_names()]
+            facet_ids = list(ids) if all(i is not None for i in ids) else [None]
     except Exception as e:
         logger.warning("Oracle HCM facet lookup failed for %s/%s: %s", host, site, e)
         return []
-    if india is None:
-        logger.debug("Oracle HCM %s/%s has no India location facet", host, site)
-        return []
-
     jobs: List[JobPosting] = []
+    seen: set = set()
+    for facet in facet_ids:
+        _read(host, site, company, facet, jobs, seen if len(facet_ids) > 1 else None)
+    return jobs
+
+
+def _read(host: str, site: str, company: str, facet: Optional[int], jobs: List[JobPosting], seen: Optional[set]) -> None:
+    """Page through one facet (None: the whole site), newest first; `seen` skips requisitions an earlier facet returned."""
     offset = 0
     while offset < MAX_JOBS:
-        finder = (f"findReqs;siteNumber={site},selectedLocationsFacet={india},"
+        where = f"selectedLocationsFacet={facet}," if facet is not None else ""
+        finder = (f"findReqs;siteNumber={site},{where}"
                   f"limit={PAGE_SIZE},offset={offset},sortBy=POSTING_DATES_DESC")
         try:
             resp = http_get(_api(host), headers=DEFAULT_HEADERS, timeout=20,
@@ -105,6 +131,10 @@ def fetch_oracle_hcm(host: str, site: str, company: str = "") -> List[JobPosting
             break
         page = item.get("requisitionList") or []
         for req in page:
+            if seen is not None:
+                if req.get("Id") in seen:
+                    continue
+                seen.add(req.get("Id"))
             location = req.get("PrimaryLocation") or "Not specified"
             jobs.append(JobPosting(
                 global_id=f"oracle_hcm:{host}:{req.get('Id')}",
@@ -120,8 +150,7 @@ def fetch_oracle_hcm(host: str, site: str, company: str = "") -> List[JobPosting
         offset += PAGE_SIZE
         if len(page) < PAGE_SIZE or offset >= int(item.get("TotalJobsCount") or 0):
             break
-        if stop_at_window(j.posted_at for j in jobs[-len(page):]):   # sortBy=POSTING_DATES_DESC (T02)
+        if stop_at_window(req.get("PostedDate") or "" for req in page):   # sortBy=POSTING_DATES_DESC (T02)
             break
     else:  # stopped at MAX_JOBS with more requisitions left
         mark_incomplete(f"cap {MAX_JOBS}")
-    return jobs

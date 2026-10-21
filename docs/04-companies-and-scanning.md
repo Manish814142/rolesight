@@ -345,21 +345,32 @@ The pre-filter and scoring rules are spelled out in [07](07-config-and-scoring.m
 | Lever | `api.lever.co/v0/postings/{slug}?mode=json` | whole board | yes | `createdAt` |
 | Ashby | `api.ashbyhq.com/posting-api/job-board/{slug}` | whole board | yes | `publishedAt` |
 | SmartRecruiters | `api.smartrecruiters.com/v1/companies/{slug}/postings` | 100/page, ≤2,000 | no → enriched | `releasedDate` |
-| Workday | `POST {tenant}.{dc}.myworkdayjobs.com/wday/cxs/{tenant}/{site}/jobs`, `searchText="India"` | 20/page, ≤2,000, 600 s/tenant | no → enriched | "Posted N Days Ago" text |
-| Oracle HCM | `{host}/hcmRestApi/resources/latest/recruitingCEJobRequisitions`, India location facet | 100/page, ≤2,000 | short only → enriched | `PostedDate` |
-| Eightfold | `{host}/api/pcsx/search?domain={domain}&location=India`, details from `/api/pcsx/position_details` | 10/page, ≤1,000, 600 s/board; 429 → retry after 3–48 s | no → enriched | `postedTs` (epoch) |
-| Phenom | `POST {host}/widgets` (`refineSearch`, country India), details from the job page's JSON-LD | 100/page, ≤1,000 | no → enriched | `postedDate` |
-| Amazon | `www.amazon.jobs/en/search.json?country=IND` | 100/page, ≤4,000 | yes | `posted_date` |
+| Workday | `POST {tenant}.{dc}.myworkdayjobs.com/wday/cxs/{tenant}/{site}/jobs`, `searchText="India"` (per country, see below) | 20/page, ≤2,000, 600 s/tenant | no → enriched | "Posted N Days Ago" text |
+| Oracle HCM | `{host}/hcmRestApi/resources/latest/recruitingCEJobRequisitions`, India location facet (per country) | 100/page, ≤2,000 | short only → enriched | `PostedDate` |
+| Eightfold | `{host}/api/pcsx/search?domain={domain}&location=India` (per country), details from `/api/pcsx/position_details` | 10/page, ≤1,000, 600 s/board; 429 → retry after 3–48 s | no → enriched | `postedTs` (epoch) |
+| Phenom | `POST {host}/widgets` (`refineSearch`, country India, or the list of your countries), details from the job page's JSON-LD | 100/page, ≤1,000 | no → enriched | `postedDate` |
+| Amazon | `www.amazon.jobs/en/search.json?country=IND` (per country code) | 100/page, ≤4,000 | yes | `posted_date` |
 | Workable | `apply.workable.com/api/v1/widget/accounts/{slug}?details=true` | whole board | yes | `published_on` |
 | Recruitee | `{slug}.recruitee.com/api/offers` | whole board | yes | `published_at` |
 | Personio | `{slug}.jobs.personio.de/xml?language=en` | whole board | yes | `createdAt` |
+
+**Your countries (T137).** Five ATSs answer only for the country they are asked about. With `candidate.countries` set (T136),
+each asks for yours instead of India: Workday runs one full-text search per term ("United Kingdom" and "UK"; "United Arab Emirates"
+and "Dubai"; the country name for the others, because the spellings find different jobs: at ABB "United Kingdom" found 37 and
+"UK" 60, measured 2026-10-21), all terms sharing one 600 s budget; Eightfold one search per country name; Phenom one search
+with the list; Amazon one per country code (GBR, DEU, NLD, IRL, ARE, SGP); Oracle HCM one read per country facet. An Oracle site
+lists only its biggest locations as facets (10 on most), so when one of your countries has none, the site is read once without a
+facet, newest first, and the posted-date window stops it. India alone sends exactly the requests above. Measured on 15 boards for
+UK + Singapore (7-day window, 324 s): Workday 13–132 UK jobs per tenant, Eightfold Qualcomm 20 + 20, Phenom (BCG) 92 UK, Amazon 759
+UK and 134 Singapore, Oracle (the facet-less read) American Express 45 UK. Searching several terms means more requests: Accenture
+answered HTTP 429 to some, and its fetch stopped at offset 120 with 384 jobs (counted as incomplete, so nothing is marked closed).
 
 **Rate limits.** An HTTP 429 ("too many requests") is asked again after 2, 5 and 12 s on every adapter (T114); Eightfold keeps
 its own longer retry (3–48 s). A Workable board still refused after that is logged by name and its fetch counts as
 incomplete, so its stored jobs are not marked closed.
 
 **Workday caveats**
-- **India search.** Only jobs that Workday's search matches for "India" are fetched.
+- **India search.** Only jobs that Workday's search matches for "India" (or your countries' terms, above) are fetched.
   Postings listed as "N Locations" get one detail call each during the fetch, to read
   their real locations, unless their title already fails the title pre-filter (T23): that job is
   rejected whatever its locations, so it keeps "N Locations" and the scan log's `India` count

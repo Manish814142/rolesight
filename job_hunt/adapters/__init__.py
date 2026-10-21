@@ -5,7 +5,7 @@ import logging
 import re
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
-from job_hunt.adapters.amazon import fetch_amazon
+from job_hunt.adapters.amazon import fetch_amazon, fetch_amazon_places
 from job_hunt.adapters.ashby import fetch_ashby
 from job_hunt.adapters.eightfold import fetch_description as eightfold_description
 from job_hunt.adapters.eightfold import fetch_eightfold
@@ -120,7 +120,7 @@ def fetch_company_jobs(company_info: Dict[str, Any]) -> List[JobPosting]:
         return []
 
     if ats == "amazon":
-        return fetch_amazon()
+        return fetch_amazon_places()
     if ats == "eightfold":
         host, domain = company_info.get("host"), company_info.get("domain")
         return fetch_eightfold(host, domain, company=company_name) if host and domain else []

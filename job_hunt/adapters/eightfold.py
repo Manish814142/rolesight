@@ -1,6 +1,6 @@
 """Eightfold careers-site adapter (the PCSX endpoints the careers page itself calls).
 
-  GET https://{host}/api/pcsx/search?domain={domain}&query=&location=India&start={n}&sort_by=timestamp
+  GET https://{host}/api/pcsx/search?domain={domain}&query=&location=India&start={n}&sort_by=timestamp   (one per country, T137)
       -> data.count, data.positions (10 per page: id, name, locations, postedTs, positionUrl, ...)
   GET https://{host}/api/pcsx/position_details?position_id={id}&domain={domain}&hl=en
       -> data.jobDescription (HTML)
@@ -27,12 +27,12 @@ from job_hunt.adapters.base import (
     strip_html,
 )
 from job_hunt.models import JobPosting
+from job_hunt.places import active_places
 
 logger = logging.getLogger(__name__)
 
 PAGE_SIZE = 10
 MAX_JOBS = 1000
-SEARCH_LOCATION = "India"
 # Not "relevance": that order shifts between requests, so pages overlap and some positions are never served
 # (Qualcomm: 583 of 594 ids; a time-sorted traversal returned all 594, 2026-10-06).
 SORT_BY = "timestamp"
@@ -62,18 +62,28 @@ def _posted(epoch: Any) -> str:
 
 
 def fetch_eightfold(host: str, domain: str, company: str = "") -> List[JobPosting]:
-    """India positions of one Eightfold careers site (the search is scoped server-side to India)."""
+    """Positions of one Eightfold careers site in the person's countries: one search per country name (the search is
+    scoped server-side; "India" alone unless config.json names others, T137), sharing the seen set and the budget."""
     url = f"https://{host}/api/pcsx/search"
     jobs: List[JobPosting] = []
     seen: set = set()
-    start = 0
     began = time.monotonic()
+    for location in active_places().search_names():
+        if not _search_location(location, url, host, domain, company, began, jobs, seen):
+            break
+    return jobs
+
+
+def _search_location(location_name: str, url: str, host: str, domain: str, company: str, began: float,
+                     jobs: List[JobPosting], seen: set) -> bool:
+    """Page through one location's search, appending new positions; False once the budget is spent."""
+    start = 0
     while start < MAX_JOBS:
         if time.monotonic() - began > BOARD_BUDGET_SECONDS:
             logger.warning("Eightfold %s: %.0fs budget spent, stopping at %d jobs", host, BOARD_BUDGET_SECONDS, len(jobs))
             mark_incomplete(f"budget {BOARD_BUDGET_SECONDS:.0f}s spent at {len(jobs)} jobs")
-            break
-        params: Dict[str, Any] = {"domain": domain, "query": "", "location": SEARCH_LOCATION,
+            return False
+        params: Dict[str, Any] = {"domain": domain, "query": "", "location": location_name,
                                   "start": start, "sort_by": SORT_BY}
         try:
             resp = _get(url, params)
@@ -113,7 +123,7 @@ def fetch_eightfold(host: str, domain: str, company: str = "") -> List[JobPostin
         time.sleep(PAGE_PAUSE)
     else:  # stopped at MAX_JOBS with more positions left
         mark_incomplete(f"cap {MAX_JOBS}")
-    return jobs
+    return True
 
 
 def fetch_description(job: JobPosting) -> str:

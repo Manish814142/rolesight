@@ -52,7 +52,8 @@ Tests must make **no network calls** — stub `send_telegram`, adapters, and Gem
 2. `adapters.fetch_company_jobs` → `JobPosting`s from public ATS JSON APIs, fetched in parallel
    (`fetch_workers`, 8) with a 900 s total deadline per HTTP call and 600 s per Workday tenant
    (greenhouse, lever, ashby, smartrecruiters, workday, recruitee, personio, workable, oracle_hcm,
-   eightfold, amazon). Oracle HCM entries carry `host` + `site`; Eightfold entries `host` + `domain`
+   eightfold, amazon). Workday, Eightfold, Phenom, Oracle HCM and Amazon ask the board for the person's countries (`places.Places`
+   `workday_terms` / `search_names` / `amazon_codes`; India alone = the old "India" / `IND` requests, T137). Oracle HCM entries carry `host` + `site`; Eightfold entries `host` + `domain`
    (PCSX search, 10/page, retried on HTTP 429); Amazon is `{"ats": "amazon"}`.
 3. Dedupe by `(ats, global_id)` (the ATS's own job id) in `data/jobs.db`; `canonical_hash` is the
    fallback for rows without an id.

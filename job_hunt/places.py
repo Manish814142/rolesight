@@ -166,6 +166,20 @@ class Places:
     def names_place(self, location: str) -> bool:
         return bool(self.countries_in(location) or self.region_in(location))
 
+    # What the connectors that ask a board for one country send (T137). India alone gives exactly what they sent before:
+    # Workday "India", Eightfold and Phenom "India", Oracle HCM the "India" facet, Amazon "IND".
+    def search_names(self) -> List[str]:
+        return [c.name for c in self.countries]
+
+    def workday_terms(self) -> List[str]:
+        terms: List[str] = []
+        for c in self.countries:
+            terms += [t for t in c.workday_terms if t not in terms]
+        return terms
+
+    def amazon_codes(self) -> List[str]:
+        return [c.iso3 for c in self.countries if c.iso3]
+
     def needs_visa(self, location: str) -> bool:
         """True when the job is in one of your countries (or its region) other than home, and not also at home."""
         named = self.countries_in(location)

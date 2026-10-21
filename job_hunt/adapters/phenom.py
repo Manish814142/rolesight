@@ -20,12 +20,12 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from job_hunt.adapters.base import DEFAULT_HEADERS, http_get, http_post, mark_incomplete, strip_html
 from job_hunt.models import JobPosting
+from job_hunt.places import active_places
 
 logger = logging.getLogger(__name__)
 
 PAGE_SIZE = 100          # the widget honours sizes up to 100 (BCG, 2026-10-10)
 MAX_JOBS = 1000
-SEARCH_COUNTRY = "India"
 
 _LD_JSON_RE = re.compile(r"<script[^>]*type=[\"']application/ld\+json[\"'][^>]*>(.*?)</script>", re.DOTALL | re.IGNORECASE)
 
@@ -43,7 +43,7 @@ def _payload(country: str, lang: str, start: int) -> Dict[str, Any]:
             "counts": True, "all_fields": ["category", "country", "state", "city", "type"], "size": PAGE_SIZE,
             "clearAll": False, "jdsource": "facets", "isSliderEnable": False, "pageId": "page11",
             "siteType": "external", "keywords": "", "global": True,
-            "selected_fields": {"country": [SEARCH_COUNTRY]}, "locationData": {}}
+            "selected_fields": {"country": active_places().search_names()}, "locationData": {}}
 
 
 def _location(item: Dict[str, Any]) -> str:
@@ -60,7 +60,8 @@ def _location(item: Dict[str, Any]) -> str:
 
 
 def fetch_phenom(host: str, locale: str, company: str = "") -> List[JobPosting]:
-    """India jobs of one Phenom careers site (the search is scoped to India server-side)."""
+    """Jobs of one Phenom careers site in the person's countries (scoped server-side; one search with the list of names,
+    ["India"] unless config.json names others, T137)."""
     parsed = _country_and_lang(locale)
     if parsed is None:
         logger.warning("Phenom %s: locale %r is not 'country/lang' (e.g. global/en)", host, locale)

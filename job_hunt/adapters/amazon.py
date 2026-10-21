@@ -7,6 +7,7 @@ from typing import List
 
 from job_hunt.adapters.base import DEFAULT_HEADERS, http_get, mark_incomplete, strip_html
 from job_hunt.models import JobPosting
+from job_hunt.places import active_places
 
 logger = logging.getLogger(__name__)
 
@@ -64,4 +65,23 @@ def fetch_amazon(country: str = "IND") -> List[JobPosting]:
         # first all-older page (page 18 of 24 for a 7-day window) would have lost 3 jobs of a 14-day window.
     else:  # stopped at MAX_JOBS with more hits left
         mark_incomplete(f"cap {MAX_JOBS}")
+    return jobs
+
+
+def fetch_amazon_places() -> List[JobPosting]:
+    """Amazon roles in the person's countries: one search per country code (measured 2026-10-21, T137: GBR 759, DEU 663,
+    NLD 34, IRL 227, ARE 64, SGP 134 open roles), "IND" alone unless config.json names other countries. A country with
+    no built-in code (one matched by its name only) is skipped."""
+    codes = active_places().amazon_codes()
+    if len(codes) == 1:
+        return fetch_amazon(codes[0])
+    if not codes:
+        logger.debug("Amazon: none of your countries has a country code, nothing to search")
+    jobs: List[JobPosting] = []
+    seen: set = set()
+    for code in codes:
+        for job in fetch_amazon(code):
+            if job.global_id not in seen:
+                seen.add(job.global_id)
+                jobs.append(job)
     return jobs

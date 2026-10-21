@@ -17,15 +17,16 @@ from job_hunt.adapters.base import (
     strip_html,
 )
 from job_hunt.models import JobPosting
+from job_hunt.places import active_places
 from job_hunt.prefilter import title_is_candidate
 
 logger = logging.getLogger(__name__)
 
 # Workday caps a page at 20. Unfiltered, big tenants return their newest ~20 global
-# (mostly US) postings, so we full-text search for India and page up to MAX_JOBS.
+# (mostly US) postings, so we full-text search for the person's countries (India unless config.json names others: T137,
+# `places.Places.workday_terms`) and page up to MAX_JOBS per search term.
 PAGE_SIZE = 20
 MAX_JOBS = 2000  # Accenture has 2,000 India-search results, in arbitrary order (2026-10-06); Target had 302, Nvidia 276
-SEARCH_TEXT = "India"
 
 # Per-tenant wall-clock budget. Paging and the detail calls (only for "N Locations" jobs whose title can pass
 # the pre-filter, T23) count against it; once spent, remaining multi-location items keep their list text and paging stops.
@@ -157,7 +158,9 @@ def fetch_description(job: JobPosting) -> str:
 
 
 def fetch_workday(tenant: str, dc: str, site: str, budget: float = BOARD_BUDGET_SECONDS) -> List[JobPosting]:
-    """Fetch open India-matching jobs from Workday JSON CXS endpoint.
+    """Fetch open jobs in the person's countries from Workday JSON CXS endpoint: one full-text search per term of
+    `active_places().workday_terms()` ("India" alone unless config.json names other countries), all terms sharing the
+    seen-job set, the per-term MAX_JOBS cap and one `budget`. A failed term keeps what the others returned (T137).
 
     Endpoint: POST https://{tenant}.{dc}.myworkdayjobs.com/wday/cxs/{tenant}/{site}/jobs
     """
@@ -168,6 +171,15 @@ def fetch_workday(tenant: str, dc: str, site: str, budget: float = BOARD_BUDGET_
 
     jobs: List[JobPosting] = []
     seen_paths: set[str] = set()
+    for term in active_places().workday_terms():
+        if not _search_term(term, url, cxs_base, base_domain, tenant, site, start, budget, jobs, seen_paths):
+            break
+    return jobs
+
+
+def _search_term(term: str, url: str, cxs_base: str, base_domain: str, tenant: str, site: str, start: float, budget: float,
+                 jobs: List[JobPosting], seen_paths: set) -> bool:
+    """Page through one search term, appending new jobs; False when the whole board is done (404, redirect, budget)."""
     total: int | None = None
 
     for offset in range(0, MAX_JOBS, PAGE_SIZE):
@@ -176,22 +188,22 @@ def fetch_workday(tenant: str, dc: str, site: str, budget: float = BOARD_BUDGET_
         if time.monotonic() - start > budget:
             logger.warning("Workday %s/%s: %.0fs budget spent, stopping at %d jobs", tenant, site, budget, len(jobs))
             mark_incomplete(f"budget {budget:.0f}s spent at {len(jobs)} jobs")
-            break
+            return False
         payload: dict[str, Any] = {
             "appliedFacets": {},
             "limit": PAGE_SIZE,
             "offset": offset,
-            "searchText": SEARCH_TEXT,
+            "searchText": term,
         }
         try:
             resp = http_post(url, headers=DEFAULT_HEADERS, json=payload, timeout=15)
             if resp.status_code == 404:
                 logger.debug("Workday board not found for %s/%s (HTTP 404)", tenant, site)
-                break
+                return False
             away = _redirected_away(resp, base_domain)
             if away:
                 mark_incomplete(_report_redirect(tenant, site, away))
-                break
+                return False
             resp.raise_for_status()
             data = resp.json()
             if total is None and "total" in data:
@@ -201,7 +213,7 @@ def fetch_workday(tenant: str, dc: str, site: str, budget: float = BOARD_BUDGET_
                     total = None
             postings = data.get("jobPostings", [])
         except Exception as e:
-            # Keep whatever earlier pages returned.
+            # Keep whatever earlier pages (and terms) returned.
             logger.warning("Workday fetch failed for %s/%s at offset %d: %s", tenant, site, offset, e)
             mark_incomplete(f"page failed at offset {offset}")
             break
@@ -259,4 +271,4 @@ def fetch_workday(tenant: str, dc: str, site: str, budget: float = BOARD_BUDGET_
             break
     else:  # ran to MAX_JOBS without reaching the end: the tenant has more (Accenture, in arbitrary order)
         mark_incomplete(f"cap {MAX_JOBS}")
-    return jobs
+    return True
