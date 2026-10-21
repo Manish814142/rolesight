@@ -12,7 +12,8 @@ public record says instead:
   nl     IND public register "Work": recognised sponsors for regular labour and highly skilled migrants
   ie     DETE "employment permits issued to companies", this year and last (permits actually granted)
   lists  community lists of companies that hire from India with visa and relocation (abhi-jha's gist, shubheksha's repo)
-Germany, the UAE and Singapore publish no such register. A register says the employer can sponsor, not that a given job does.
+Germany, the UAE and Singapore are not covered (no such list is known for them; not searched for). A register says the employer
+can sponsor, not that a given job does.
 
 A match is "exact" when the names agree once legal suffixes and country words are dropped ("Google (UK) Limited" is Google),
 "loose" when they agree only once generic words are dropped too ("Atlassian (UK) Operations Limited" is Atlassian). Only

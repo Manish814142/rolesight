@@ -268,7 +268,8 @@ So the employer's public record is used instead: **`job_hunt/data/visa_sponsors.
 | Ireland: DETE [employment permits issued to companies](https://enterprise.gov.ie/en/what-we-do/workplace-and-skills/employment-permits/statistics/), 2025 and Jan–Sep 2026 | permits actually granted, with the count per year | 12,715 employers | Government of Ireland copyright: reuse with the source acknowledged |
 | Community lists: [abhi-jha's gist](https://gist.github.com/abhi-jha/5225e0dcc912174dda6b7f01e8a24156), [shubheksha's list](https://github.com/shubheksha/companies-sponsoring-visas) | named as hiring from India with visa and relocation | 130 names | none stated |
 
-Germany, the UAE and Singapore publish no list of sponsoring employers. The file holds only companies on `companies.json`,
+Germany, the UAE and Singapore are not covered: no public list of sponsoring employers is known for them (not searched for
+beyond these sources). The file holds only companies on `companies.json`,
 each with the source's own entry (Canva: "CANVA UK OPERATIONS LIMITED" with its two UK routes, and the gist's "London"; an
 Irish employer's permit counts per year), never a copy of a register. **2026-10-21: 534 of the 1,589 companies have evidence** (UK 467, Netherlands 185, Ireland 84, lists 18).
 
