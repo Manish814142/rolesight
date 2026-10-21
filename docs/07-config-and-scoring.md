@@ -120,6 +120,14 @@ They are applied in this order (the default lists):
      (…)`. Measured on the 2026-10-21 and 2026-10-13 fetches (13,015 distinct locations): India's decisions are unchanged on
      111,106 saved jobs; for the six countries of T136, 40 locations changed, all read: US and Australian places that had passed
      as British ("Aberdeen, MD", "Glasgow, Delaware", "Cardiff, NSW") and city lists that now count ("New York, London").
+     T146 (found by T144's bulk check: 24 of 864 Greenhouse boards had been accepted for Europe only on a US or Brazilian place)
+     added: nothing is a city or country right after "New " ("New London", "New Britain, CT", "New Holland, PA"; "New York" and
+     "New Zealand" still match from their first word); a segment that is a street address names no city ("4900 Florence Street,
+     Denver"); a mixed-case state code at the end is read ("London, On" is Ontario, "Dublin, Oh" Ohio); a city is not read
+     when a longer city of another country starts with it ("Porto Alegre" is Brazil's, "Santiago de Querétaro" Mexico's);
+     "Brasil" is Brazil; "Gulf Shores, AL" is no Gulf region (only "Persian/Arabian Gulf", "Gulf region", "GCC"), and "SEA" is
+     Seattle, not South-East Asia ("Southeast Asia" still counts). Measured: 41 of 13,428 saved locations read differently, all
+     read; India's decisions unchanged on 118,330 saved jobs.
    - **Optional city filter** (`candidate.cities`, e.g. `["Pune", "Hyderabad"]`; empty = all of India or of your countries). A job in an Indian city
      or state that is not one of them is rejected, unless it is remote or names no city (just "India"). Usual alternative names
      match (Bangalore = Bengaluru, Gurgaon = Gurugram), and `"Delhi NCR"` means Delhi, New Delhi, Noida, Greater Noida, Gurugram,

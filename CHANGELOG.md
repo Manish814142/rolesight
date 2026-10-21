@@ -9,6 +9,14 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed (2026-10-21, T146: place misreads found by T144's bulk check)
+- Reading T144's first bulk run (Greenhouse, 864 boards accepted for 22 European, Gulf and Singapore places), 24 boards were accepted
+  only on a US or Brazilian place. Fixed in `job_hunt/places.py` and `scripts/build_countries.py`: nothing counts right after
+  "New " ("New London", "New Britain, CT"); a street address names no city; "London, On" / "Dublin, Oh" are Ontario and Ohio;
+  a city followed by a word that makes it another country's city is not read ("Porto Alegre", "Santiago de Querétaro",
+  "Bergen op Zoom"); "Brasil" is Brazil; "Gulf Shores, AL" is no Gulf region and "SEA" is Seattle. 41 of 13,428 saved
+  locations read differently, all read; India's decisions unchanged on 118,330 saved jobs.
+
 ### Added (2026-10-21, T143: visa evidence for the USA, Canada, Australia and New Zealand)
 - Manish: "for the USA i think direct apply from india is not allowed ... if possible then cover USA also". It is possible but
   rare, and the note now says why, from USCIS's own pages: `USA: from abroad, H-1B is a yearly lottery the employer enters (a

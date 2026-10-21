@@ -162,6 +162,11 @@
 "continent": "AF",
 "iso3": "AGO",
 "name": "Angola",
+"not_followed_by": {
+"Viana": [
+"do"
+]
+},
 "regions": [
 "emea",
 "africa"
@@ -192,6 +197,17 @@
 "continent": "SA",
 "iso3": "ARG",
 "name": "Argentina",
+"not_followed_by": {
+"Rosario": [
+"do",
+"oeste"
+],
+"Santa Fe": [
+"de",
+"do",
+"springs"
+]
+},
 "regions": [
 "latam",
 "south america",
@@ -248,6 +264,15 @@
 "continent": "OC",
 "iso3": "AUS",
 "name": "Australia",
+"not_followed_by": {
+"Newcastle": [
+"under",
+"upon"
+],
+"Perth": [
+"amboy"
+]
+},
 "regions": [
 "apac",
 "anz"
@@ -549,6 +574,11 @@
 "continent": "SA",
 "iso3": "BOL",
 "name": "Bolivia",
+"not_followed_by": {
+"La Paz": [
+"centro"
+]
+},
 "regions": [
 "latam",
 "south america",
@@ -568,7 +598,9 @@
 ]
 },
 "BR": {
-"aliases": [],
+"aliases": [
+"brasil"
+],
 "cities": [
 "São Paulo",
 "Sao Paulo",
@@ -584,6 +616,14 @@
 "continent": "SA",
 "iso3": "BRA",
 "name": "Brazil",
+"not_followed_by": {
+"Sao Paulo": [
+"de"
+],
+"São Paulo": [
+"de"
+]
+},
 "regions": [
 "latam",
 "south america",
@@ -665,6 +705,11 @@
 "continent": "EU",
 "iso3": "BLR",
 "name": "Belarus",
+"not_followed_by": {
+"Minsk": [
+"mazowiecki"
+]
+},
 "regions": [
 "europe",
 "emea"
@@ -681,6 +726,11 @@
 "continent": "NA",
 "iso3": "BLZ",
 "name": "Belize",
+"not_followed_by": {
+"San Ignacio": [
+"de"
+]
+},
 "regions": [
 "latam",
 "americas"
@@ -865,6 +915,27 @@
 "continent": "SA",
 "iso3": "CHL",
 "name": "Chile",
+"not_followed_by": {
+"Santiago": [
+"atitlan",
+"de",
+"del",
+"ixcuintla",
+"momoxpan",
+"papasquiaro",
+"sacatepequez",
+"teyahualco",
+"tlacotepec",
+"tulantepec",
+"tuxtla"
+],
+"Valparaiso": [
+"de"
+],
+"Valparaíso": [
+"de"
+]
+},
 "regions": [
 "latam",
 "south america",
@@ -931,6 +1002,13 @@
 "continent": "SA",
 "iso3": "COL",
 "name": "Colombia",
+"not_followed_by": {
+"Kennedy": [
+"park",
+"street",
+"town"
+]
+},
 "regions": [
 "latam",
 "south america",
@@ -986,6 +1064,11 @@
 "continent": "NA",
 "iso3": "CUB",
 "name": "Cuba",
+"not_followed_by": {
+"Santa Clara": [
+"del"
+]
+},
 "regions": [
 "latam",
 "americas"
@@ -1004,6 +1087,11 @@
 "continent": "AF",
 "iso3": "CPV",
 "name": "Cabo Verde",
+"not_followed_by": {
+"Praia": [
+"grande"
+]
+},
 "regions": [
 "emea",
 "africa"
@@ -1179,6 +1267,12 @@
 "continent": "NA",
 "iso3": "DOM",
 "name": "Dominican Republic",
+"not_followed_by": {
+"Santo Domingo": [
+"de",
+"tehuantepec"
+]
+},
 "regions": [
 "latam",
 "americas"
@@ -1220,6 +1314,11 @@
 "continent": "SA",
 "iso3": "ECU",
 "name": "Ecuador",
+"not_followed_by": {
+"Ambato": [
+"boeny"
+]
+},
 "regions": [
 "latam",
 "south america",
@@ -1326,6 +1425,12 @@
 "continent": "EU",
 "iso3": "ESP",
 "name": "Spain",
+"not_followed_by": {
+"Palma": [
+"di",
+"soriano"
+]
+},
 "regions": [
 "europe",
 "eu",
@@ -1392,6 +1497,11 @@
 "continent": "OC",
 "iso3": "FJI",
 "name": "Fiji",
+"not_followed_by": {
+"Suva": [
+"reka"
+]
+},
 "regions": [
 "apac"
 ]
@@ -1828,6 +1938,13 @@
 "continent": "AS",
 "iso3": "HKG",
 "name": "Hong Kong",
+"not_followed_by": {
+"Victoria": [
+"de",
+"falls",
+"village"
+]
+},
 "regions": [
 "apac",
 "asia"
@@ -2025,6 +2142,11 @@
 "continent": "AS",
 "iso3": "IND",
 "name": "India",
+"not_followed_by": {
+"Surat": [
+"thani"
+]
+},
 "regions": [
 "apac",
 "asia",
@@ -2162,6 +2284,11 @@
 "continent": "NA",
 "iso3": "JAM",
 "name": "Jamaica",
+"not_followed_by": {
+"Kingston": [
+"upon"
+]
+},
 "regions": [
 "latam",
 "americas"
@@ -2728,6 +2855,11 @@
 "continent": "EU",
 "iso3": "MNE",
 "name": "Montenegro",
+"not_followed_by": {
+"Bar": [
+"bigha"
+]
+},
 "regions": [
 "europe",
 "emea",
@@ -2841,6 +2973,11 @@
 "continent": "AS",
 "iso3": "MMR",
 "name": "Myanmar",
+"not_followed_by": {
+"Bago": [
+"city"
+]
+},
 "regions": [
 "apac",
 "asia",
@@ -2934,6 +3071,19 @@
 "continent": "AF",
 "iso3": "MRT",
 "name": "Mauritania",
+"not_followed_by": {
+"Ksar": [
+"chellala",
+"el",
+"hellal"
+],
+"Nema": [
+"kunku"
+],
+"Néma": [
+"kunku"
+]
+},
 "regions": [
 "emea",
 "africa"
@@ -3175,6 +3325,11 @@
 "continent": "AF",
 "iso3": "NGA",
 "name": "Nigeria",
+"not_followed_by": {
+"Lagos": [
+"de"
+]
+},
 "regions": [
 "emea",
 "africa"
@@ -3197,6 +3352,14 @@
 "continent": "NA",
 "iso3": "NIC",
 "name": "Nicaragua",
+"not_followed_by": {
+"Leon": [
+"de"
+],
+"León": [
+"de"
+]
+},
 "regions": [
 "latam",
 "americas"
@@ -3243,6 +3406,11 @@
 "continent": "EU",
 "iso3": "NOR",
 "name": "Norway",
+"not_followed_by": {
+"Bergen": [
+"op"
+]
+},
 "regions": [
 "europe",
 "eea",
@@ -3381,6 +3549,14 @@
 "continent": "SA",
 "iso3": "PER",
 "name": "Peru",
+"not_followed_by": {
+"Lima": [
+"duarte"
+],
+"Trujillo": [
+"alto"
+]
+},
 "regions": [
 "latam",
 "south america",
@@ -3528,6 +3704,18 @@
 "continent": "NA",
 "iso3": "PRI",
 "name": "Puerto Rico",
+"not_followed_by": {
+"San Juan": [
+"bautista",
+"capistrano",
+"de",
+"del",
+"ixtayopan",
+"nepomuceno",
+"sacatepequez",
+"zitlaltepec"
+]
+},
 "regions": [
 "latam",
 "americas"
@@ -3577,6 +3765,30 @@
 "continent": "EU",
 "iso3": "PRT",
 "name": "Portugal",
+"not_followed_by": {
+"Porto": [
+"acre",
+"alegre",
+"amboim",
+"belo",
+"calvo",
+"da",
+"de",
+"empedocle",
+"feliz",
+"ferreira",
+"franco",
+"grande",
+"nacional",
+"real",
+"san",
+"sant'elpidio",
+"seguro",
+"torres",
+"uniao",
+"velho"
+]
+},
 "regions": [
 "europe",
 "eu",
@@ -3614,6 +3826,18 @@
 "continent": "SA",
 "iso3": "PRY",
 "name": "Paraguay",
+"not_followed_by": {
+"Asuncion": [
+"mita"
+],
+"Asunción": [
+"mita"
+],
+"San Lorenzo": [
+"acopilco",
+"de"
+]
+},
 "regions": [
 "latam",
 "south america",
@@ -4095,6 +4319,22 @@
 "continent": "NA",
 "iso3": "SLV",
 "name": "El Salvador",
+"not_followed_by": {
+"San Miguel": [
+"ajusco",
+"coatlinchan",
+"de",
+"del",
+"el",
+"topilejo"
+],
+"San Salvador": [
+"atenco",
+"de",
+"el",
+"tizatlalli"
+]
+},
 "regions": [
 "latam",
 "americas"
@@ -4219,6 +4459,11 @@
 "continent": "AF",
 "iso3": "TGO",
 "name": "Togo",
+"not_followed_by": {
+"Kara": [
+"suu"
+]
+},
 "regions": [
 "emea",
 "africa"
@@ -4854,13 +5099,13 @@
 "emea": "emea",
 "eu": "eu|european\\s+union",
 "europe": "europe|european",
-"gcc": "gcc|gulf",
+"gcc": "gcc|persian\\s+gulf|arabian\\s+gulf|gulf\\s+region|gulf\\s+countries",
 "latam": "latam|latin\\s+america",
 "mena": "mena",
 "middle east": "middle\\s+east",
 "nordics": "nordics?|scandinavia",
 "north america": "north\\s+america",
-"sea": "southeast\\s+asia|south\\s+east\\s+asia|(?-i:SEA)",
+"sea": "southeast\\s+asia|south\\s+east\\s+asia",
 "south america": "south\\s+america",
 "south asia": "south\\s+asia",
 "uk&i": "uk\\s*&\\s*i|uki"
