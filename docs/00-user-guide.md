@@ -115,6 +115,8 @@ uses the default. A name that is not in the tables below is ignored without any 
 | `candidate.titles` | the default word lists | Which job titles are scored at all: `include`, `exclude`, `exceptions`, `generic_engineer_titles`. Section 5 |
 | `candidate.rubric_file` | built-in rubric | The file with your scoring rubric, e.g. `"rubric.md"`. Without this line the built-in rubric is used. See [the scoring rubric](#the-scoring-rubric-rubricmd) |
 | `candidate.cities` | `[]` | Leave empty to look at **all of India** (and remote jobs from India). To look only at some cities, list them: `["Pune", "Hyderabad", "Delhi NCR"]`. Usual alternative names match (Bangalore = Bengaluru, Gurgaon = Gurugram); remote jobs and jobs that name no city (just "India") are always kept |
+| `candidate.countries` | India | Where to look, e.g. `["United Kingdom", "Germany"]` (or `"UK, Germany"`). Built-in: India, United Kingdom, Germany, Netherlands, Ireland, United Arab Emirates, Singapore ("UK", "UAE", "Holland" … work too); another country is matched by its name. Jobs that name one of them, a region that includes them ("Remote - EMEA", "Europe") with no other place, or remote jobs with no place pass. `candidate.cities` then means cities of these countries. `rolesight check-filter "Backend Engineer" "Berlin" --countries Germany` tries one job |
+| `candidate.home_country` | India | Where you live. A job in another country needs a work visa: the rubric and the Visa column use this |
 | `llm_provider` | `gemini` | Leave as `gemini` |
 | `gemini_api_key` | — | Your key; usually put in `.env` instead (`GEMINI_API_KEY`) |
 | `gemini_model` | `gemini-3.5-flash-lite` | Which Gemini model scores. Don't change without a reason: scores differ between models |

@@ -7,6 +7,7 @@ from datetime import date, datetime, timedelta, timezone
 from typing import Optional, Tuple
 
 from job_hunt.models import JobPosting
+from job_hunt.places import Places, active_places
 
 # ── Title rules (T103) ─────────────────────────────────────────────────────────────────────────────────────────────────
 # What a job title must and must not contain, as plain words and phrases: config.json candidate.titles, or these defaults
@@ -439,11 +440,13 @@ def title_is_candidate(title: str) -> bool:
     return not _title_rejection(title or "")
 
 
-def should_evaluate_job(job: JobPosting, cities=None) -> Tuple[bool, str]:
+def should_evaluate_job(job: JobPosting, cities=None, places: Optional["Places"] = None) -> Tuple[bool, str]:
     """Evaluate whether a job posting matches candidate criteria.
 
     `cities` (config.json candidate.cities, T84) narrows India to those cities: a job in an Indian city or state that is not one
     of them is rejected, unless it is remote or names no city (just "India"). None or empty means all of India.
+    `places` (T136): the person's countries (`job_hunt.places`); None means the active ones, India unless configured. India
+    alone takes the rules below unchanged; other countries, `_in_your_places`.
 
     Returns:
         (True, "passed") if the job passes all criteria.
@@ -457,9 +460,13 @@ def should_evaluate_job(job: JobPosting, cities=None) -> Tuple[bool, str]:
     if reason:
         return False, reason
 
+    chosen = [c.strip() for c in (cities or []) if str(c).strip()]
+    places = places or active_places()
+    if not places.india_only():
+        return _in_your_places(job, location, chosen, places)
+
     # 3. Location: India anywhere in the string wins; otherwise another region
     #    excludes; otherwise accept explicit worldwide/global or plain remote.
-    chosen = [c.strip() for c in (cities or []) if str(c).strip()]
     if chosen and city_matches(location, chosen):
         return True, "passed"            # a chosen city counts as India even where the lists above do not know it
     if location_is_india(location):
@@ -482,3 +489,38 @@ def should_evaluate_job(job: JobPosting, cities=None) -> Tuple[bool, str]:
         return True, "passed"
 
     return False, f"Location '{location[:80]}' does not match target locations"
+
+
+def _named_words(location: str) -> str:
+    """The words of a location that name a place (filler removed, like `named_place`), Indian places included: for a
+    person who is not looking in India, "Remote - India" names a place. "APAC"/"Asia" count as places here."""
+    text = location or ""
+    words = re.findall(r"[^\W\d_]+", _LOCATION_FILLER_PATTERN.sub(" ", text))
+    if re.search(r"\b(apac|asia)\b", text, re.IGNORECASE):
+        words.append("APAC")
+    return " ".join(words)
+
+
+def _in_your_places(job: JobPosting, location: str, chosen: list, places: Places) -> Tuple[bool, str]:
+    """The location rule for countries other than India alone (T136), mirroring India's: a chosen city passes; a location
+    that names one of your countries passes (with cities chosen, an on-site job in another of its cities does not); a region
+    of one of your countries passes when it names no other place ("Remote - EMEA" for Germany, not "EMEA - UK" or "Novi Sad,
+    Serbia, EMEA": measured on the 2026-10-21 fetch); worldwide/anywhere/global passes; a remote job that names no place
+    passes. Anything else is not in your places."""
+    remote = job.is_remote or bool(REMOTE_PATTERN.search(location))
+    if chosen and city_matches(location, chosen):
+        return True, "passed"
+    named = places.countries_in(location)
+    if named:
+        if chosen and not remote and any(c.names_city(location) for c in named):
+            return False, f"Location '{location[:80]}' is in {named[0].name} but not in your cities ({', '.join(chosen)})"
+        return True, "passed"
+    region = places.region_in(location)
+    if region and not _named_words(region.without_regions(location)):
+        return True, "passed"
+    if LOCATION_GLOBAL_PATTERN.search(location):
+        return True, "passed"
+    if remote and not _named_words(location):
+        return True, "passed"
+    return False, f"Location '{location[:80]}' is not in your places ({places.label()})"
+

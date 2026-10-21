@@ -528,24 +528,32 @@ def configure_titles_or_exit(config: Dict[str, Any]) -> TitleRules:
 
 
 def check_filter_command(argv: List[str]) -> None:
-    """`rolesight check-filter TITLE [LOCATION] [--remote] [--cities "Pune, Mumbai"]`: KEPT or REJECTED with the reason,
-    using config.json's title filter and cities when there is one. Local: no network, no key."""
+    """`rolesight check-filter TITLE [LOCATION] [--remote] [--cities "Pune, Mumbai"] [--countries "UK, Germany"]`: KEPT or
+    REJECTED with the reason, using config.json's title filter, cities and countries when there is one. Local: no network, no key."""
     ap = argparse.ArgumentParser(prog="rolesight check-filter", description="Show what the pre-filter does with one job.")
     ap.add_argument("title", help='job title, e.g. "Java Developer"')
     ap.add_argument("location", nargs="?", default="", help='location as the board shows it, e.g. "Pune, India"')
     ap.add_argument("--remote", action="store_true", help="the board flags the job as remote")
-    ap.add_argument("--cities", default=None, help='only these Indian cities, comma separated (default: config.json\'s cities)')
+    ap.add_argument("--cities", default=None, help='only these cities, comma separated (default: config.json\'s cities)')
+    ap.add_argument("--countries", default=None,
+                    help='look in these countries, comma separated, e.g. "United Kingdom, Germany" (default: config.json\'s, else India)')
     args = ap.parse_args(argv)
+    from job_hunt.places import places_from_config
     from job_hunt.settings import cities_of
     config = optional_config()
+    candidate = dict(config.get("candidate") or {})
+    if args.countries is not None:
+        candidate["countries"] = args.countries
+    places = places_from_config({"candidate": candidate})
     rules = configure_titles_or_exit(config)
     cities = [c.strip() for c in args.cities.split(",") if c.strip()] if args.cities is not None else cities_of(config)
     job = JobPosting(global_id="check:1", ats="check", company="check", title=args.title, location=args.location,
                      is_remote=args.remote, url="https://example.com/check")
-    kept, reason = should_evaluate_job(job, cities=cities)
+    kept, reason = should_evaluate_job(job, cities=cities, places=places)
     print("KEPT" if kept else f"REJECTED — {reason}")
     for warning in rules.warnings():                      # T104: on stderr, stdout stays one line for scripts
         print(f"  note: {warning}", file=sys.stderr)
     source = "config.json candidate.titles" if (config.get("candidate") or {}).get("titles") is not None else "the default title words"
     print(f"  (titles: {source}, {len(rules.include)} include / {len(rules.exclude)} exclude"
-          f"{'; cities: ' + ', '.join(cities) if cities else ''})", file=sys.stderr)   # stdout stays one line for scripts
+          f"{'; cities: ' + ', '.join(cities) if cities else ''}"
+          f"{'; countries: ' + places.label() if not places.india_only() else ''})", file=sys.stderr)   # stdout stays one line

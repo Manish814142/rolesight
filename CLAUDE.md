@@ -57,7 +57,8 @@ Tests must make **no network calls** — stub `send_telegram`, adapters, and Gem
 3. Dedupe by `(ats, global_id)` (the ATS's own job id) in `data/jobs.db`; `canonical_hash` is the
    fallback for rows without an id.
 4. `prefilter.should_evaluate_job` — title include/exclude word lists (`config.json` `candidate.titles`, else `prefilter.DEFAULT_TITLE_*`;
-   `prefilter.configure_titles` at scan start, T103) + India location regex; then
+   `prefilter.configure_titles` at scan start, T103) + the location rule: India's regexes when `candidate.countries` is absent or India alone
+   (unchanged, 0 of 111,106 saved jobs decided differently), else `job_hunt/places.py`'s country packs (`configure_places` at scan start, T136); then
    `prefilter.is_too_old` (`candidate.max_posted_age_days`, default 7 — T02; `--posted-within N|all` overrides). The window also
    reaches the adapters: no Workday detail call for an older job, and newest-first lists (Oracle HCM, Eightfold, SmartRecruiters) stop paging.
 5. Enrich: `adapters.enrich_job` fetches the full description for survivors whose ATS list API

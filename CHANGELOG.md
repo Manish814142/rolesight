@@ -9,6 +9,22 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Added (2026-10-21, T136: T108 part 1, your countries in the pre-filter)
+- **`candidate.countries`** (default India) and **`candidate.home_country`** (default India, where you live) in `config.json`. New
+  `job_hunt/places.py` holds a pack per country: United Kingdom, Germany, Netherlands, Ireland, United Arab Emirates, Singapore and
+  India (its names, cities, the codes boards write: Amazon's "Dubai, ARE" and "SGP", SmartRecruiters' "Berlin, de", and the regions
+  that include it). "UK", "UAE", "Holland", "Deutschland" and the like resolve; another country is matched by its name, with a
+  warning in the scan log. A city that also exists in North America ("London, Ontario", "Dublin, OH", "US-CA-Dublin") does not count.
+- The pre-filter: **India alone keeps its rules unchanged** (your config through the old and the new filter, both saved fetches:
+  0 of 111,106 decisions or reasons differ). For other countries: a location naming one of them passes, a region of one of them passes
+  when it names no other place ("Remote - EMEA", not "EMEA - UK"), worldwide and remote-with-no-place pass, the rest is rejected
+  ("not in your places"). Measured on the 2026-10-21 fetch with the six countries and Manish's title filter: 1,027 jobs pass
+  (UK 366, Singapore 107, Germany 93, Ireland 73, Netherlands 66, UAE 27, a region 15, remote with no place 278); for a UAE config
+  no job with a passing title and a Dubai/UAE location was rejected.
+- `rolesight check-filter … --countries "UK, Germany"` (default: config.json's). The scan log names the countries, and the funnel
+  says "In your places N" instead of "India N" when they are not India alone.
+- The connectors still ask Workday, Eightfold, Phenom, Oracle HCM and Amazon for India jobs (T137 next).
+
 ### Added (2026-10-21, T133: visa-sponsor evidence per company, groundwork for T108)
 - Manish: the people he has in mind are in India and will relocate, so "company should provide visa as well"; most postings
   will not say, so use public datasets of which companies sponsor.

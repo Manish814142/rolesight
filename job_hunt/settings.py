@@ -48,14 +48,27 @@ def max_posted_age_of(config: dict) -> int | None:
 # Optional (T84): config.json candidate.cities narrows the India location check to these cities. Absent or empty means all of
 # India, which is what Manish uses (2026-10-14). A list, or one comma-separated string.
 def cities_of(config: dict) -> list[str]:
-    candidate = config.get("candidate") or {}
-    value = candidate.get("cities")
+    return _names((config.get("candidate") or {}).get("cities"))
+
+
+def _names(value) -> list[str]:
+    """A list, or one comma-separated string, as distinct trimmed names (case-insensitive)."""
     if not value:
         return []
     items = value.split(",") if isinstance(value, str) else list(value)
-    cities: list[str] = []
+    names: list[str] = []
     for item in items:
         name = str(item).strip()
-        if name and name.lower() not in {c.lower() for c in cities}:
-            cities.append(name)
-    return cities
+        if name and name.lower() not in {c.lower() for c in names}:
+            names.append(name)
+    return names
+
+
+# T136 (T108): config.json candidate.countries, where to look (default India alone: the original rules), and
+# candidate.home_country, where the person lives (default India): a job in another country needs a work visa.
+def countries_of(config: dict) -> list[str]:
+    return _names((config.get("candidate") or {}).get("countries"))
+
+
+def home_country_of(config: dict) -> str:
+    return str((config.get("candidate") or {}).get("home_country") or "").strip() or "India"

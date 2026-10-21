@@ -35,6 +35,7 @@ from job_hunt.llm_utils import (
 from job_hunt.log import get_logger
 from job_hunt.models import job_key
 from job_hunt.notifier import is_telegram_configured, send_telegram
+from job_hunt.places import configure_places
 from job_hunt.prefilter import (
     TitleRulesError,
     configure_titles,
@@ -421,7 +422,15 @@ def run_scan(config: dict, companies: list[dict]) -> None:
         logger.info(f"Posted-date filter: last {max_age} day(s) only (jobs without a posted date are kept)")
     too_old = 0
     cities = cities_of(config)
-    if cities:
+    places = configure_places(config)      # T136: before the fetch, which searches them (T137)
+    if not places.india_only():
+        logger.info(f"Location filter: {places.label()}{' (cities: ' + ', '.join(cities) + ')' if cities else ''}, the regions "
+                    f"that include them, and remote jobs that name no other place (candidate.countries); you live in "
+                    f"{places.home}, so a job elsewhere needs a work visa")
+        for name in places.unknown():
+            logger.warning(f"candidate.countries: '{name}' has no built-in place list: its jobs are matched by its name "
+                           f"(and candidate.cities) only")
+    elif cities:
         logger.info(f"City filter: jobs in {', '.join(cities)}, or remote, or in India with no city named (candidate.cities)")
     else:
         logger.info("Location filter: all of India, and remote jobs from India")
@@ -455,7 +464,8 @@ def run_scan(config: dict, companies: list[dict]) -> None:
                     queued = 0
                     fetched_total += len(direct_jobs)
                     for job in direct_jobs:
-                        india_total += location_is_india(job.location)
+                        india_total += (location_is_india(job.location) if places.india_only()
+                                        else places.names_place(job.location))
                         j_key = job_key(job)
                         # Only scored/notified rows are final. 'skipped' rows are re-run
                         # through the (cheap, local) pre-filter so filter fixes apply to
@@ -470,7 +480,7 @@ def run_scan(config: dict, companies: list[dict]) -> None:
                                 fill_missing_details(j_key, location=job.location, posted_at=posted_date_iso(job.posted_at))
                             continue
 
-                        passed, reason = should_evaluate_job(job, cities=cities)
+                        passed, reason = should_evaluate_job(job, cities=cities, places=places)
                         if not passed:
                             logger.debug(f"  Pre-filter skipped: {job.title} ({reason})")
                             prefilter_rejected += 1
@@ -656,7 +666,7 @@ def run_scan(config: dict, companies: list[dict]) -> None:
 
     elapsed = time.time() - scan_start
     logger.info(
-        f"Funnel: fetched {fetched_total} | India {india_total} | already scored {already_scored} | "
+        f"Funnel: fetched {fetched_total} | {'India' if places.india_only() else 'In your places'} {india_total} | already scored {already_scored} | "
         f"pre-filter rejected {prefilter_rejected} | too old {too_old} | queued {queued_total} | "
         f"scored {scored_ok}{_by_model(scored_by)} | failed {scoring_failures} | left for next scan {queued_total - scored_ok}"
     )
