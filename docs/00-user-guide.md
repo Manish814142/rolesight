@@ -192,8 +192,51 @@ it can never pass, the scan says so at its start (`Title filter: include entry �
 
 ### Places: `job_hunt/prefilter.py`
 
-The location rules are for jobs **in India** (the company list is built for India) and live in the code. To look
+The location rules are for jobs **in India** unless you name other countries (next section), and live in the code. To look
 only at some cities, use `candidate.cities` (section 4) instead of editing them.
+
+### Looking for jobs outside India
+
+Name the countries in `config.json`, or in a new folder run `rolesight init --countries "United Kingdom, Germany"`:
+
+```json
+"countries": ["United Kingdom", "Germany"],
+"home_country": "India"
+```
+
+- **Built in:** India, United Kingdom, Germany, Netherlands, Ireland, United Arab Emirates and Singapore, written however
+  you like ("UK", "UAE", "Holland", "Deutschland"). Another country, say "Canada", works by its name: a job that names it
+  passes (check its cities with `check-filter`), the scan log says it has no built-in list, and Amazon is not searched for it.
+- **`home_country`** is where you live (default India). A job in any other of your countries needs a work visa.
+- India with others (`["India", "Germany"]`) works: Indian jobs pass as they always did.
+
+What changes:
+
+1. **Which jobs pass the filter.** A job that names one of your countries or one of its cities; a region that includes one
+   of them when it names no other place ("Remote - EMEA" and "Europe" for Germany, "APAC" for Singapore, not "EMEA - UK");
+   worldwide or anywhere; a remote job that names no place. "London, Ontario" and "Dublin, OH" are not the UK and Ireland.
+   Try a job: `rolesight check-filter "Backend Engineer" "Berlin" --countries Germany` (KEPT).
+2. **What is fetched.** Workday, Eightfold, Phenom, Oracle HCM and Amazon search your countries; the other job sites return
+   every location anyway. Measured 2026-10-21: a Singapore scan of 6 boards (Thoughtworks, Databricks, Airwallex, Nvidia,
+   Qualcomm, Salesforce) fetched 1,618 jobs, 249 of them in Singapore, in 1.5 minutes. More countries mean more requests:
+   Workday is searched once per term ("United Kingdom" and "UK" find different jobs).
+3. **How Gemini scores.** Rule 1 of the rubric now caps on-site work outside your countries, and a posting that refuses visa
+   sponsorship or asks for citizenship, permanent residence or an existing right to work there. A posting that says nothing
+   about visas is not capped. **Rewrite `candidate.seeking` in your own words**, e.g. "Backend roles in Berlin or London; I
+   need visa sponsorship and relocation". `init --countries` replaces the example's text, which names Bengaluru: left in, it
+   made Gemini mark a Singapore office job down "for the Bengaluru preference" (the end-to-end run, T140).
+4. **A Visa column** in the CSV for every job outside your home country: what the posting says, then what public records
+   say about the company there, e.g. `Not stated; UK licensed sponsor`
+   ([docs/05](05-outputs-and-notifications.md); the records: [docs/04](04-companies-and-scanning.md#visa-sponsorship-which-companies-can-sponsor)).
+   Most postings never say: 85-100% of engineering postings in these six countries (measured 2026-10-21).
+5. **Companies.** All 1,589 India companies are scanned (many big employers hire in your countries too: 457 of 989
+   described boards had UK jobs on 2026-10-21), plus 27 that hire abroad and not in India (Monzo, N26, HelloFresh, SumUp,
+   Plaid, …). `rolesight discover --add-file names.txt --merge companies.json` adds more: it checks your countries (or
+   `--places "…"`).
+
+Limits: postings in another language (Japanese or German titles) do not match the English title words; Germany, the UAE and
+Singapore publish no sponsor register, so their Visa notes rest on the posting and the community lists; a board that answers
+"too many requests" (Accenture did) stops early and is counted as incomplete.
 
 ### Pre-filter patterns
 

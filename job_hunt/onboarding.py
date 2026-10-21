@@ -475,9 +475,11 @@ def _summary(settings: Dict[str, Any], resume_path: str, notes: List[str], bak: 
     print("  rolesight scan --limit 5                                            # a first small scan")
 
 
-def init_project(resume: Optional[str] = None, yes: bool = False) -> None:
+def init_project(resume: Optional[str] = None, yes: bool = False, countries: Optional[str] = None) -> None:
     cwd = Path.cwd()
     created = _scaffold(cwd)
+    if countries:
+        set_countries(cwd, countries)
     if resume:
         personalize(cwd, Path(resume).expanduser(), created, yes)
         return
@@ -492,8 +494,35 @@ def parse_init_args(argv: List[str]) -> Dict[str, Any]:
     ap = argparse.ArgumentParser(prog="rolesight init", description="Set up this directory; --resume drafts your settings.")
     ap.add_argument("--resume", help="your resume (.pdf, .md or .txt): drafts config.json's candidate part and rubric.md")
     ap.add_argument("--yes", action="store_true", help="replace existing candidate settings without asking (.bak copies kept)")
+    ap.add_argument("--countries", help='where to look, comma separated, e.g. "United Kingdom, Germany" (config.json '
+                                        'candidate.countries; default India)')
     args = ap.parse_args(argv)
-    return {k: v for k, v in (("resume", args.resume), ("yes", args.yes)) if v}
+    return {k: v for k, v in (("resume", args.resume), ("yes", args.yes), ("countries", args.countries)) if v}
+
+
+def set_countries(cwd: Path, countries: str) -> None:
+    """Write candidate.countries into config.json as the built-in names (T140); the rest of the file is kept."""
+    from job_hunt.places import places_from_config
+    path = cwd / "config.json"
+    cfg = json.loads(path.read_text(encoding="utf-8"))
+    places = places_from_config({"candidate": {"countries": countries}})
+    candidate = cfg.setdefault("candidate", {})
+    candidate["countries"] = places.search_names()
+    home = candidate.get("home_country") or "India"
+    # The example's `seeking` ("Remote, or hybrid in Bengaluru") told Gemini to mark a Singapore office job down (T140, the
+    # end-to-end run): replaced while it is still the example's text, never once you wrote your own.
+    replaced = candidate.get("seeking") == _template_candidate().get("seeking") and not places.india_only()
+    if replaced:
+        names = places.search_names()
+        where = names[0] if len(names) == 1 else ", ".join(names[:-1]) + " or " + names[-1]
+        candidate["seeking"] = (f"Backend or platform roles in {where}. I live in {home}; for a role outside {home} I need the "
+                                f"employer to sponsor my work visa and relocation")
+    write_private(path, json.dumps(cfg, indent=2, ensure_ascii=False) + "\n")
+    print(f"✓ config.json: looking in {places.label()} (candidate.countries); you live in {home} (candidate.home_country)")
+    if replaced:
+        print(f"  candidate.seeking now says so too (the example's text named Bengaluru): \"{candidate['seeking']}\". Put it in your words")
+    for name in places.unknown():
+        print(f"  note: '{name}' has no built-in place list: its jobs are matched by its name (and candidate.cities) only")
 
 
 # -- the settings a command reads when config.json is optional -----------------------------------------------------------

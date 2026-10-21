@@ -21,6 +21,10 @@
     "top_n": 5,
     "max_posted_age_days": 7,
     "cities": [],
+    "countries": [
+      "India"
+    ],
+    "home_country": "India",
     "titles": {
       "include": [
         "back end",

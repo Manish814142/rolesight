@@ -9,6 +9,22 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Added (2026-10-21, T140: T108 part 5, init --countries, the guide, the end-to-end run)
+- `rolesight init --countries "United Kingdom, Germany"` writes `candidate.countries` (as the built-in names) into `config.json` and
+  keeps the rest; while `candidate.seeking` is still the example's text (it names Bengaluru) it is replaced with one naming your
+  countries and the visa you need. Both example configs carry `"countries": ["India"]` and `"home_country": "India"` (the same as
+  leaving them out). The user guide's new section **Looking for jobs outside India**; `docs/07`, `docs/10`, the README.
+- **The end-to-end run (T108's Done when).** A fresh folder, `init --yes --countries Singapore`, six boards (Thoughtworks, Databricks,
+  Airwallex, Nvidia, Qualcomm, Salesforce), a real `scan` with Gemini: 1,618 jobs fetched, 249 in Singapore; Workday (Salesforce: 32
+  Singapore jobs) and Eightfold (Qualcomm, Lam Research) searched for Singapore; 18 jobs scored by Gemini over three runs, incl.
+  Salesforce's (Workday) and Qualcomm's (Eightfold) with `--posted-within 30`; the CSV's Visa column filled.
+- Two fixes from that run. (1) The Visa column said "Not stated" for Thoughtworks Singapore postings that "require the successful
+  candidate to be a Singapore Citizen or PR", which Gemini capped: citizenship and residence requirements are now refusals (on T133's
+  fetch, 23 of 9,884 described postings change class, all read: real requirements, e.g. GitLab "Must be a Singapore Citizen"; one
+  false hit, Deliveroo's broken word "pr ocess", fixed by reading "PR" in upper case only). (2) The example's `seeking` ("Remote, or
+  hybrid in Bengaluru") made Gemini mark an Airwallex Singapore office job down to 25 "for the Bengaluru preference"; with the
+  replaced text the same job scored 45 on its real gap (a JVM language).
+
 ### Added (2026-10-21, T139: T108 part 4, discover checks your places; 27 employers that hire abroad)
 - `autopilot discover --places "United Kingdom, Germany"` (default: `config.json`'s `candidate.countries`, else India): a board needs
   a job there instead of in India. An entry accepted for other countries records them (`"places": [...]` in `companies.json`); the

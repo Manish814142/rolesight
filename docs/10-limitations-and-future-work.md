@@ -10,10 +10,17 @@ them from anyone's resume). What follows is what is still fixed.
 
 ## 1. What is fixed today
 
-### Location: India only
+### Location: India by default; six other countries built in (T108, 2026-10-21)
 
-This is the biggest limit. A person looking in Dubai, Singapore or Europe cannot use RoleSight as it is, because
-India is built into six places:
+**Update 2026-10-21 (T136–T140): this is a setting now.** `candidate.countries` (e.g. `["United Kingdom", "Germany"]`) and
+`candidate.home_country` change all six places below: the filter (country packs in `job_hunt/places.py`), the five
+connectors' searches, rule 1 (with the visa rule), `discover --places`, the summary line, and the list (27 companies that
+hire abroad, listed for those countries). See the [user guide](00-user-guide.md#looking-for-jobs-outside-india). What is
+still limited: a country without a built-in pack is matched by its name only (no cities, no codes, no Amazon); postings in
+another language do not match the English title words; Germany, the UAE and Singapore have no sponsor register; a scan for
+several countries makes more requests. The rest of this section describes the state before T136, kept for the record.
+
+Before T136, India was built into six places:
 
 | Where | What it does | File |
 |---|---|---|
@@ -32,10 +39,10 @@ already return every location: the saved fetch of 2026-10-13 holds 41 jobs in Du
 in the UK, Germany, the Netherlands, France, Ireland, Spain and Poland. The filter rejects them unless the job also
 names an Indian place (5 of the 41 Dubai jobs do, e.g. "Bangalore, Dubai, Geneva, …").
 
-**How it could be extended:** task **T108** on the board has a design: `candidate.locations` in `config.json`
-(countries, cities, a remote policy), built-in place lists per country (India's = today's rules, so nothing changes
-for an India user), and the same setting for the four adapters, rule 1 and `discover`. Start with the filter (no
-network needed, measurable on a saved fetch), then the adapters.
+**How it was extended (T136–T140):** as the T108 design said, with `candidate.countries` instead of `candidate.locations`
+and no remote-policy setting (remote rules are India's: a remote job passes when it names one of your places or none).
+More countries: add a `Country` pack to `job_hunt/places.py` (names, cities, the cities that also exist in North America,
+the codes boards write, regions, Workday search terms measured on real tenants) and a test in `tests/test_places.py`.
 
 ### Which companies can be scanned
 

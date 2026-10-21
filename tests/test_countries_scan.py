@@ -92,3 +92,43 @@ def test_a_uk_scan_writes_a_visa_column_and_an_india_scan_does_not(env, tmp_path
     places.configure_places(places.INDIA)
     _scan(env, [_job(2, "Pune, India")])
     assert "Visa" not in open(tmp_path / "output" / "last_scan.csv", encoding="utf-8").readline()
+
+
+def test_init_countries_writes_the_built_in_names_and_keeps_the_rest(tmp_path, monkeypatch, capsys):
+    import json
+
+    from job_hunt.main import init_project
+    from job_hunt.onboarding import parse_init_args
+    assert parse_init_args(["--countries", "UK, Dubai"]) == {"countries": "UK, Dubai"}
+    monkeypatch.chdir(tmp_path)
+    init_project(**parse_init_args(["--countries", "uk, Dubai, Canada"]))
+    cfg = json.loads((tmp_path / "config.json").read_text())
+    assert cfg["candidate"]["countries"] == ["United Kingdom", "United Arab Emirates", "Canada"]
+    assert cfg["candidate"]["home_country"] == "India" and cfg["llm_provider"] == "gemini"
+    assert (tmp_path / "config.json").stat().st_mode & 0o777 == 0o600
+    out = capsys.readouterr().out
+    assert "looking in United Kingdom, United Arab Emirates, Canada" in out and "'Canada' has no built-in place list" in out
+    assert cfg["candidate"]["seeking"] == ("Backend or platform roles in United Kingdom, United Arab Emirates or Canada. I live in "
+                                           "India; for a role outside India I need the employer to sponsor my work visa and relocation")
+    assert "Bengaluru" not in json.dumps(cfg["candidate"]["seeking"])
+
+
+def test_init_countries_keeps_a_seeking_you_wrote(tmp_path, monkeypatch):
+    import json
+
+    from job_hunt.onboarding import set_countries
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "config.json").write_text(json.dumps({"candidate": {"seeking": "Staff roles in Berlin"}}))
+    set_countries(tmp_path, "Germany")
+    cand = json.loads((tmp_path / "config.json").read_text())["candidate"]
+    assert cand == {"seeking": "Staff roles in Berlin", "countries": ["Germany"]}
+
+
+def test_the_example_configs_name_india_and_mean_what_no_setting_means():
+    import json
+
+    from job_hunt.places import places_from_config
+    for f in ("config.example.json", "job_hunt/data/config.example.json"):
+        cand = json.loads((Path(__file__).resolve().parent.parent / f).read_text())["candidate"]
+        assert cand["countries"] == ["India"] and cand["home_country"] == "India"
+        assert places_from_config({"candidate": cand}) == places_from_config({})

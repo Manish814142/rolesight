@@ -30,6 +30,11 @@ _REFUSED = [
     r"\b(right to work|work authori[sz]ation|work permit)\s+(in\s+(the\s+)?\w+(\s+\w+)?\s+)?(is\s+)?(required|essential|mandatory|a must)",
     r"\bnot\s+eligible\s+for\s+(\w+\s+){0,3}?(visa\s+)?sponsorship",
     r"\b(requires?|requiring)\s+(\w+\s+){0,3}?(to\s+)?(have|hold)\s+(\w+\s+){0,3}?(right to work|work authori[sz]ation|work permit)",
+    # A citizenship or residence requirement (T140, the end-to-end run: Thoughtworks Singapore "requires the successful candidate
+    # to be a Singapore Citizen or PR"; Capco "only Singapore Citizens and Singapore Permanent Residents (PRs) will be considered").
+    r"\b(requires?|required|requiring|must be|must hold|must have|open only to|only open to|limited to|restricted to)\s+"
+    r"(\w+\s+){0,8}?(citizens?|citizenship|permanent residents?|permanent residency|(?-i:PRs?))\b",   # "PR" upper case only: "pr ocess"
+    r"\bonly\s+(\w+\s+){0,3}?(citizens?|permanent residents?)\b",
 ]
 # US-style compliance boilerplate ("must be authorized to work in the country in which they apply"): no answer either way.
 _BOILERPLATE = re.compile(r"authori[sz]ed to work in the country (in which|where) (they|you) (apply|are applying)", re.I)

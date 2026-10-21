@@ -38,6 +38,8 @@ looks, so a value put there was ignored; T80). The step-by-step version of this 
 | `top_n` | `5` | How many matches the digest and the log summary show |
 | `max_posted_age_days` | `7` | Score only jobs posted in the last N days (T02: Manish asked for a window; 7 is Claude's choice until he confirms it). `null` switches the window off; `--posted-within N` / `all` overrides it for one run. Jobs with no posted date are never filtered |
 | `relocation_note` | — | Added to cover-letter drafts |
+| `countries` | `["India"]` | Where to look (T136–T140): the pre-filter's place rule, the five connectors' searches, rubric rule 1, `discover`'s gate and the Visa column. Built in: India, United Kingdom, Germany, Netherlands, Ireland, United Arab Emirates, Singapore (aliases such as "UK", "UAE", "Holland"); another country by its name. India alone = the original rules. [User guide](00-user-guide.md#looking-for-jobs-outside-india) |
+| `home_country` | `"India"` | Where you live: a job in another country needs a visa (rule 1, the Visa column) |
 | `titles` | the defaults below | The title part of the pre-filter: `include`, `exclude`, `exceptions` (word lists) and `generic_engineer_titles` (true/false), T103. No block = the defaults; in a block, a list left out is empty. An unknown key, an empty `include` or an entry with other characters than words and `. + # / & -` stops the scan with a message |
 | `rubric_file` | — (built-in rubric) | A text file with the scoring rubric, read relative to the working directory, e.g. `"rubric.md"` (T103). `init` writes the built-in one there; `init --resume` rewrites its facts for the person. Without the key the built-in rubric is used |
 

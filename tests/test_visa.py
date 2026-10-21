@@ -80,6 +80,23 @@ def test_the_structured_cap_label_names_the_visa_for_other_places():
     assert "no visa sponsorship" in str(llm_utils.combine_subscores(facts))
 
 
+# ── the wording: citizenship and residence requirements (found in the end-to-end run, T140) ──────────────
+
+@pytest.mark.parametrize("text, kind", [
+    ("Due to the nature of the projects and specific client security clearance, this role requires the successful candidate "
+     "to be a Singapore Citizen or PR of Singapore.", "refused"),
+    ("Only Singapore Citizens and Singapore Permanent Residents (PRs) will be considered.", "refused"),
+    ("Applicants must be Singapore Citizens.", "refused"),
+    ("You must hold UK citizenship for this cleared role.", "refused"),
+    ("Must be a European citizen or have a valid and independent working visa for Germany", "refused"),
+    ("We welcome applicants regardless of citizenship or immigration status.", "silent"),
+    ("Applicants will be considered without regard to race, citizenship status or national origin.", "silent"),
+    ("or require any reasonable adjustments during the recruitment pr ocess, let us know", "silent"),   # "pr" is not PR
+])
+def test_citizenship_and_residence_requirements_are_refusals(text, kind):
+    assert visa.wording(text)[0] == kind
+
+
 # ── the visa note ────────────────────────────────────────────────────────────
 
 RECORDS = {

@@ -15,7 +15,7 @@ agents. Follow its Working loop (claim → implement → review queue) or its Ve
 ## Key commands
 
 ```bash
-autopilot init [--resume CV.pdf] [--yes]   # templates; --resume drafts candidate.*, candidate.titles and rubric.md from a resume (T103)
+autopilot init [--resume CV.pdf] [--yes] [--countries "UK, Germany"]   # templates; --resume drafts candidate.*, candidate.titles and rubric.md from a resume (T103); --countries writes candidate.countries (T140)
 autopilot check-filter "Java Developer" "Pune, India"   # KEPT/REJECTED with config.json's title filter and cities (T80, T103)
 autopilot scan              # full scan of companies.json (alias: python -m job_hunt scan)
 autopilot scan --limit 5    # only the first 5 companies

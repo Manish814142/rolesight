@@ -122,10 +122,11 @@ def load_companies() -> list:
     return json.loads(p.read_text())
 
 
-def init_project(resume: str | None = None, yes: bool = False) -> None:
-    """Templates into the working directory; with `resume`, the person's settings drafted from it (T103, job_hunt.onboarding)."""
+def init_project(resume: str | None = None, yes: bool = False, countries: str | None = None) -> None:
+    """Templates into the working directory; with `resume`, the person's settings drafted from it (T103, job_hunt.onboarding);
+    with `countries`, config.json's candidate.countries (T140)."""
     from job_hunt.onboarding import init_project as _init
-    _init(resume=resume, yes=yes)
+    _init(resume=resume, yes=yes, countries=countries)
 
 
 from job_hunt.exporter import (  # noqa: E402

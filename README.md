@@ -128,9 +128,11 @@ one setup, and ideas for extending it, is in [docs/10 — Limitations and future
 - A job that disappears from its board is marked closed after three scans without it.
 
 **Known gaps** (each is a task on the board)
-- **India only.** The location filter, four job-board adapters (Workday, Eightfold, Phenom, Oracle HCM ask the board for
-  India jobs), rubric rule 1 and `discover` are built for India, and so is the company list. Other countries are task T108
-  (a design is on the board).
+- **Other countries are new (T108, 2026-10-21).** `candidate.countries` (or `rolesight init --countries "UK, Germany"`) points
+  the filter, the job-board searches, rubric rule 1 (with visa sponsorship) and `discover` at the UK, Germany, the Netherlands,
+  Ireland, the UAE, Singapore or India; another country works by its name only. A Visa column says what the posting and public
+  records say about sponsorship. Postings in other languages do not match the English title words.
+  [User guide](docs/00-user-guide.md#looking-for-jobs-outside-india).
 - **Not scheduled by default.** Scans run by hand. `autopilot schedule on` turns on a daily scan (a systemd user
   timer on Linux, else cron, which also covers macOS), `autopilot schedule off` turns it off again, and
   `autopilot schedule status` says which it is. Windows has no ready-made scheduler.
