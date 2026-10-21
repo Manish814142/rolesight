@@ -238,7 +238,7 @@ What changes:
 4. **A Visa column** in the CSV for every job outside your home country: what the posting says, then what public records
    say about the company there, e.g. `Not stated; UK licensed sponsor`
    ([docs/05](05-outputs-and-notifications.md); the records: [docs/04](04-companies-and-scanning.md#visa-sponsorship-which-companies-can-sponsor)).
-   Most postings never say: 85-100% of engineering postings in these six countries, and 84-95% in the USA, Canada and
+   Most postings never say: 72-98% of engineering postings in these six countries, and 84-95% in the USA, Canada and
    Australia (measured 2026-10-21).
 5. **Companies.** All 1,589 India companies are scanned (many big employers hire in your countries too: 457 of 989
    described boards had UK jobs on 2026-10-21), plus 27 that hire abroad and not in India (Monzo, N26, HelloFresh, SumUp,

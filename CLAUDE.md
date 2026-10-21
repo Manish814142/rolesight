@@ -172,7 +172,7 @@ relocate.me's CC0 one, T141; a list entry counts only for its places), each with
 USA, Canada, Australia and New Zealand also get their official rule in the note unless the posting refuses (`visa.COUNTRY_RULE`). Built by
 `scripts/build_visa_sponsors.py` (downloads into `data/visa_sources/`; `--offline` reuses them). A loose name match (generic words dropped)
 counts only when accepted in `scripts/visa_sponsor_review.json`, which also holds the rejections: after a rebuild, read the report's
-`unreviewed` rows. Why: 85–100% of engineering postings outside India never state a visa policy (measured 2026-10-21,
+`unreviewed` rows. Why: 72–98% of engineering postings in the UK, DE, NL, IE, UAE and SG never state a visa policy (measured 2026-10-21,
 `scripts/measure_visa_wording.py`); and 17 of the 44 UK companies whose postings refuse sponsorship are licensed, so a posting's own refusal wins.
 The scan writes it per job abroad as the CSV's Visa column (`job_hunt/visa.py`, T138). Guide: `docs/04-companies-and-scanning.md`, "Visa sponsorship".
 

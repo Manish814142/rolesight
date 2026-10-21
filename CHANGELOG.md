@@ -9,6 +9,15 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed in review (2026-10-21, T133)
+- **Tgs had a wrong UK visa record.** The register's "TGS UK LTD" is a coachbuilder in Bristol (Companies House: TGS (UK) LTD,
+  SIC 29201); the Tgs board on the list is TransPerfect's games testing (its postings name TransPerfect; UK jobs in London and
+  Manchester). The exact name match had been kept without a verdict; it is now rejected in `scripts/visa_sponsor_review.json`
+  and the record rebuilt `--offline`: 797 of 1,647 companies (UK 485).
+- **The visa-wording table (docs/04) and "85–100% say nothing" came from a run before the "mentions a visa" pattern was
+  widened**, not from the committed script. Re-run on the same saved fetch (71,121 jobs): 72.0% (Netherlands) to 97.8% (UAE) of
+  engineering postings say nothing; the offered and refused counts were right. docs/04, docs/00 and CLAUDE.md now say so.
+
 ### Added (2026-10-21, T143: visa evidence for the USA, Canada, Australia and New Zealand)
 - Manish: "for the USA i think direct apply from india is not allowed ... if possible then cover USA also". It is possible but
   rare, and the note now says why, from USCIS's own pages: `USA: from abroad, H-1B is a yearly lottery the employer enters (a

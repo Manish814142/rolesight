@@ -249,16 +249,18 @@ Measured on 2026-10-21 (`scripts/measure_visa_wording.py`): every job on the 989
 and Personio boards of the list (71,121 jobs; the other ATSs return India only or need a request per job), titles with an
 include word:
 
-| Place | Jobs | Visa offered | Refused | Says nothing |
-|---|---|---|---|---|
-| UK | 557 | 20 (3.6%) | 56 (10.1%) | 473 (84.9%) |
-| Germany | 157 | 2 (1.3%) | 2 (1.3%) | 147 (93.6%) |
-| Netherlands | 125 | 7 (5.6%) | 0 | 111 (88.8%) |
-| Ireland | 147 | 5 (3.4%) | 5 (3.4%) | 136 (92.5%) |
-| UAE | 46 | 0 | 0 | 46 (100%) |
-| Singapore | 229 | 2 (0.9%) | 2 (0.9%) | 224 (97.8%) |
+| Place | Jobs | Visa offered | Refused | No clear answer | Says nothing |
+|---|---|---|---|---|---|
+| UK | 557 | 20 (3.6%) | 56 (10.1%) | 23 | 458 (82.2%) |
+| Germany | 157 | 2 (1.3%) | 2 (1.3%) | 14 | 139 (88.5%) |
+| Netherlands | 125 | 7 (5.6%) | 0 | 28 | 90 (72.0%) |
+| Ireland | 147 | 5 (3.4%) | 5 (3.4%) | 1 | 136 (92.5%) |
+| UAE | 46 | 0 | 0 | 1 | 45 (97.8%) |
+| Singapore | 229 | 2 (0.9%) | 11 (4.8%) | 3 | 213 (93.0%) |
 
-The rest mention a visa without a clear answer. These are pattern counts. In a sample of one posting per company, read by hand,
+(Re-run in review on the same saved fetch with the script as it is now. The first version of this table, 85–100% saying
+nothing, came from a run before the "mentions a visa" pattern was widened; Singapore's refusals include T141's
+"citizens and PRs only" wording.) These are pattern counts. In a sample of one posting per company, read by hand,
 "refused" was right 12 of 12 and "offered" 10 of 12; a refusal written as a bare requirement ("Right to work in Singapore")
 lands in "no clear answer". The offers come from few companies: 116 offering postings in all places, 79 of them Anthropic's.
 
@@ -285,7 +287,9 @@ Irish employer's permit counts per year), never a copy of a register. **2026-10-
 A name is not proof: "Stripe Partners", "Amazon Filters Ltd" and "Phoenix Software Limited" are other businesses. So a loose
 match counts only when someone has accepted it in **`scripts/visa_sponsor_review.json`**, and any match listed there as
 rejected is dropped. All 890 candidate matches of 2026-10-21 were read: 103 rejected, and the 189 loose ones kept were each
-accepted there (the other 598 kept are exact). The rejected
+accepted there (the other 598 kept are exact). An exact match is not proof either: "TGS UK LTD" on the UK register is
+a Bristol coachbuilder (Companies House), while the list's Tgs board is TransPerfect's games testing; it is rejected in the
+review file (found in review, 2026-10-21). The rejected
 ones are mostly names that are ordinary words (Phoenix, Shift, Mesh, Healthcare, Lighthouse) and other firms with the same
 name ("Pico Technology" is not Pico Quantitative Trading). The verdicts went by name, the company's job-board slug and general
 knowledge, not by company records; unsure ones were rejected. One independent check: every company whose UK, Dutch or Irish
@@ -405,7 +409,7 @@ country word like "UK" ("Autodesk Canada Co." is Autodesk). All 749 candidate ma
 not Observe.AI, "A52 LLC D B A ELASTIC" is a design studio, "S. A. MIRO, INC." is an engineering firm); Canada 61 kept and 12
 rejected ("Vyn Inc." with 18 farm positions). Where unsure, the board's own jobs were read (Azul's Prague and Bangalore jobs say
 Azul Systems; Ashoka's Arlington, VA jobs say the non-profit), else rejected. The UK, Dutch and Irish matches came out the same
-as before. **Record rebuilt: 798 of 1,647 companies** (UK 486, Netherlands 199, Ireland 86, lists 80, USA 551, Canada 61).
+as before. **Record rebuilt: 798 of 1,647 companies** (797 since the review removed Tgs's wrong UK match; UK 486, then 485; Netherlands 199, Ireland 86, lists 80, USA 551, Canada 61).
 
 **Australia and New Zealand have no list to download.** Australia publishes no register of approved sponsors. New Zealand's
 accredited-employer lookup is a search for one name, which an employer can opt out of; it was not used.

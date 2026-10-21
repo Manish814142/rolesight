@@ -15149,17 +15149,6 @@
     "source": "us"
    }
   ],
-  "Tgs": [
-   {
-    "match": "exact",
-    "names": {
-     "TGS UK LTD": [
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
-   }
-  ],
   "The Citco Group Limited": [
    {
     "match": "loose",
