@@ -111,6 +111,8 @@ def test_explicit_countries_reads_one_part():
     assert pl.explicit_countries("Austin, Texas, United States") == {"US"}
     assert pl.explicit_countries("Tbilisi, Georgia") == {"GE"} and pl.explicit_countries("Atlanta, GA") == {"US"}
     assert pl.explicit_countries("Remote - New England") == {"US"} and "GB" not in pl.explicit_countries("Sydney, New South Wales")
+    # review: a mutant that let "NA - Remote" be Namibia passed every test (North America or n/a, not a country code)
+    assert pl.explicit_countries("NA - Remote") == set() and pl.explicit_countries("NA – Remote (US)") == {"US"}
 
 
 # ── the data file and its builder ────────────────────────────────────────────
