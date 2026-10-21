@@ -11,7 +11,7 @@ ruff check job_hunt/ tests/ conftest.py   # the same paths CI lints
 mypy                      # checks job_hunt/
 ```
 
-Last recorded: 2,002 tests passing on Python 3.12 (2026-10-21, after T140), coverage 93.85%, ruff and mypy clean. Python 3.11 and 3.13 were last run on 2026-10-18 (1,808 + 1 skipped, `mcp` 2.3.0); CI runs all three on the next push.
+Last recorded: 2,005 tests passing on Python 3.12 (2026-10-21, after T140 and its follow-up), coverage 93.92%, ruff and mypy clean. Python 3.11 and 3.13 were last run on 2026-10-18 (1,808 + 1 skipped, `mcp` 2.3.0); CI runs all three on the next push.
 
 **Tests must never touch the network.**
 
