@@ -18,6 +18,10 @@ reconstructed from git history.
   widened**, not from the committed script. Re-run on the same saved fetch (71,121 jobs): 72.0% (Netherlands) to 97.8% (UAE) of
   engineering postings say nothing; the offered and refused counts were right. docs/04, docs/00 and CLAUDE.md now say so.
 
+### Fixed in review (2026-10-21, T135)
+- docs/04: **34** of the 111 names have a live board but no India job (3,141 jobs), not 35 (3,184): Qonto's Lever and Ashby
+  boards carry the same 44 jobs (both fetched) and were counted twice. The other counts are report rows, not names.
+
 ### Added (2026-10-21, T143: visa evidence for the USA, Canada, Australia and New Zealand)
 - Manish: "for the USA i think direct apply from india is not allowed ... if possible then cover USA also". It is possible but
   rare, and the note now says why, from USCIS's own pages: `USA: from abroad, H-1B is a yearly lottery the employer enters (a

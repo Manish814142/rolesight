@@ -312,9 +312,10 @@ python scripts/build_visa_sponsors.py --offline --report /tmp/visa.csv  # same d
 It prints how many loose matches are *unreviewed*; those are not used. Read them in the report (Status `unreviewed`), add each
 company's entry to `accepted` or `rejected` in the review file, and run again with `--offline`. `--emit-seeds /tmp/s.txt`
 writes the community-list names that are not on the list yet (111 on 2026-10-21), ready for `discover --add-file`.
-On 2026-10-21 none of the 111 passed (T135). **35 have a live board but no India job**: Monzo, N26, HelloFresh, Delivery
-Hero, SumUp, Plaid, Palantir, Mercari, Ninja Van, Trainline, Miro, Algolia and others, 3,184 jobs in all. 63 have no board
-on a supported ATS (Apple, Bloomberg, Zalando, …), 8 failed the identity check and 9 boards are stale. So the India gate keeps
+On 2026-10-21 none of the 111 passed (T135). **34 have a live board but no India job**: Monzo, N26, HelloFresh, Delivery
+Hero, SumUp, Plaid, Palantir, Mercari, Ninja Van, Trainline, Miro, Algolia and others, 3,141 jobs in all (Qonto's Lever and
+Ashby boards carry the same jobs and were first counted twice). Of the report's other rows (a name can have more than one),
+63 have no board on a supported ATS (Apple, Bloomberg, Zalando, …), 8 failed the identity check and 9 boards are stale. So the India gate keeps
 out exactly the employers that hire people from India to move abroad. **With T139** (`--places` with the six countries) 27
 of them joined the list, each with its `places`: Monzo, N26, HelloFresh, Delivery Hero, SumUp, Plaid, Palantir, Trainline,
 Miro, Algolia, Ninja Van, Qonto, Raisin, Tipico and others. Mercari, BlaBlaCar, Back Market, Jam City, Circles.life and
