@@ -1489,3 +1489,96 @@ Fiserv | workday | fiserv | wd5 | EXT
 
 # ── added via discover --add (2026-10-10) ──
 BCG | phenom | careers.bcg.com | global/en
+
+# ── added via discover --add (2026-10-21) ──
+# T135: the community relocation lists' names (T133). None passed: 35 have a live board but no India job, 63 no board on a
+# supported ATS, 8 identity not confirmed, 9 stale. Re-check them when discover's gate follows the person's places (T108).
+Adidas
+Adnymics
+Agentur loop
+Algolia
+Attest
+Babbel
+Back Market
+Bending spoons
+Bigpoint
+BlaBlaCar
+Blinkist
+Bolt
+Bulb
+Capmo
+Celus
+Circles.life
+Civey GmbH
+Clark
+Collibra
+Container xChange
+Contentful
+Curve
+Deezer
+Delivery Hero
+Deliveryhero
+Diet Doctor
+EF Education First
+Etsy
+Evalan
+Expensify
+Faishon Cloud
+Fastretailing
+Flaconi
+Foodpanda
+Forto
+Free Now
+Getaround
+Getir
+Glovo
+GoCardless
+Google, Munich
+Gorillas
+HelloFresh
+Hive.app
+Immobilienscout24
+InVision
+JPMC
+Jam City
+Kiwi.com
+Klarna
+Marks & Spencer
+Mercari
+Mister Spex
+Mobiquity
+Monzo
+N26
+Navvis
+Ninja Van
+OneFootball
+Palantir Technologies
+PayFit
+Personio
+Picnic Technologies
+Pitch
+Project Plato
+Qonto
+QuantumBlack
+Raisin
+RapidAPI
+Reaktor
+Signavio
+SnapChat
+SoundCloud
+Square
+SquareSpace
+SumUp
+Sunday
+Swisscom
+Taxfix
+The Lego group
+Tipico
+TradeRepublic
+Trainline
+Transferwise
+Verizon Connect
+Wayfair
+Weaveworks
+Zalando
+e-Bot7

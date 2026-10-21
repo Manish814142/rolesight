@@ -300,6 +300,10 @@ python scripts/build_visa_sponsors.py --offline --report /tmp/visa.csv  # same d
 It prints how many loose matches are *unreviewed*; those are not used. Read them in the report (Status `unreviewed`), add each
 company's entry to `accepted` or `rejected` in the review file, and run again with `--offline`. `--emit-seeds /tmp/s.txt`
 writes the community-list names that are not on the list yet (111 on 2026-10-21), ready for `discover --add-file`.
+On 2026-10-21 none of the 111 passed (T135). **35 have a live board but no India job**: Monzo, N26, HelloFresh, Delivery
+Hero, SumUp, Plaid, Palantir, Mercari, Ninja Van, Trainline, Miro, Algolia and others, 3,184 jobs in all. 63 have no board
+on a supported ATS (Apple, Bloomberg, Zalando, …), 8 failed the identity check and 9 boards are stale. So the India gate keeps
+out exactly the employers that hire people from India to move abroad; they wait for T108.
 
 **The scan does not use this yet.** Its pre-filter still keeps India jobs only. Making the location the person's own,
 and showing this evidence per job, is T108 in the [task board](tasks.md).

@@ -28,6 +28,10 @@ reconstructed from git history.
   on that record was found (10 of 10). 17 of the 44 UK companies whose postings refuse sponsorship are licensed: the record says a
   company can sponsor, not that a job is sponsored. `--offline` rebuilds from the downloads; `--emit-seeds` writes the community-list
   names not on the list (111). The scan does not read the file yet (T108). Guide: `docs/04`, "Visa sponsorship".
+- **T135:** those 111 names through `discover --add-file … --no-recheck`: **none passed**, so `companies.json` is unchanged. 35 have a
+  live board for the right employer with no India job (Monzo, N26, HelloFresh, Delivery Hero, SumUp, Plaid, Palantir, Mercari, …;
+  3,184 jobs), 63 no board on a supported ATS, 8 identity not confirmed, 9 stale. The names are recorded in `scripts/company_seeds.txt`
+  for when `discover`'s gate follows the person's places (T108).
 
 ### Fixed (2026-10-21, T134)
 - **T134:** a normal install (`pip install .`, or a wheel) now ships `job_hunt/data/`, so `autopilot init` works without `-e`.
