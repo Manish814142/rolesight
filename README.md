@@ -273,6 +273,11 @@ before a merge, the monthly recheck, what a bigger list costs and where to grow 
 Companies on custom career portals (Google, Flipkart, Swiggy's own site, Darwinbox,
 Zoho Recruit, …) can't be reached. See [docs/04](docs/04-companies-and-scanning.md).
 
+Which of the companies can sponsor a visa (534 of 1,589 are on the UK, Dutch or Irish sponsor records, or on a community
+relocation list) is in `job_hunt/data/visa_sponsors.json`; most postings abroad never say. See
+[docs/04](docs/04-companies-and-scanning.md#visa-sponsorship-which-companies-can-sponsor). The scan itself still looks for
+jobs in India.
+
 ---
 
 ## Project layout

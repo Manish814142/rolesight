@@ -1,0 +1,8048 @@
+{
+ "about": "Companies on companies.json that appear in public visa-sponsor sources (T133). A register means the employer can sponsor a visa, not that a given job does. Each match names the source's own entry; loose name matches are kept only when accepted by hand in scripts/visa_sponsor_review.json. Rebuild: python scripts/build_visa_sponsors.py",
+ "built": "2026-10-21",
+ "companies": {
+  "1GLOBAL": [
+   {
+    "match": "loose",
+    "names": {
+     "1GLOBAL Operations (UK) Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "ACI Worldwide": [
+   {
+    "match": "exact",
+    "names": {
+     "ACI Worldwide (EMEA) Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ACI Worldwide B.V.": "29041088"
+    },
+    "source": "nl"
+   }
+  ],
+  "AECOM": [
+   {
+    "match": "exact",
+    "names": {
+     "AECOM LIMITED": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "AECOM Netherlands B.V.": "27119183"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "AECOM Ireland Limited": {
+      "2025": 10,
+      "2026": 9
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "AFRY": [
+   {
+    "match": "exact",
+    "names": {
+     "AFRY Netherlands B.V.": "88584917"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "AFRY Ireland Ltd": {
+      "2025": 2
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "AKQA": [
+   {
+    "match": "exact",
+    "names": {
+     "AKQA Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "AKQA B.V.": "34275347"
+    },
+    "source": "nl"
+   }
+  ],
+  "APLL": [
+   {
+    "match": "exact",
+    "names": {
+     "APLL UK LTD": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "AST SpaceMobile": [
+   {
+    "match": "exact",
+    "names": {
+     "AST SpaceMobile UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Abb": [
+   {
+    "match": "exact",
+    "names": {
+     "ABB Limited": [
+      "Global Business Mobility: Graduate Trainee",
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ABB B.V.": "83315233"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ABB Limited": {
+      "2025": 4,
+      "2026": 2
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "AbbVie": [
+   {
+    "match": "exact",
+    "names": {
+     "Abbvie Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "AbbVie B.V.": "54914094"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "AbbVie Limited": {
+      "2025": 1
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Accelleron": [
+   {
+    "match": "exact",
+    "names": {
+     "Accelleron UK Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Accelya": [
+   {
+    "match": "loose",
+    "names": {
+     "Accelya Global Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Accenture": [
+   {
+    "match": "exact",
+    "names": {
+     "Accenture (UK) Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Accenture B.V.": "34156015"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Accenture Limited": {
+      "2025": 195,
+      "2026": 128
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Acumatica": [
+   {
+    "match": "exact",
+    "names": {
+     "Acumatica UK Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Addepar": [
+   {
+    "match": "exact",
+    "names": {
+     "ADDEPAR UK LTD": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Adjust": [
+   {
+    "match": "loose",
+    "names": {
+     "Adjust Software Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Adobe India": [
+   {
+    "match": "loose",
+    "names": {
+     "ADOBE GROUP LIMITED": [
+      "Skilled Worker"
+     ],
+     "Adobe Systems Europe Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Adobe Systems Software Ireland Limited": {
+      "2026": 2
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Adtran": [
+   {
+    "match": "exact",
+    "names": {
+     "ADTRAN Europe Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Adyen": [
+   {
+    "match": "exact",
+    "names": {
+     "ADYEN N.V. LONDON BRANCH": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Adyen N.V.": "34259528",
+     "Adyen Netherlands B.V.": "98924397"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Adyen": [
+      "shubheksha list: Amsterdam, NL"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
+  "Agilent": [
+   {
+    "match": "loose",
+    "names": {
+     "Agilent Technologies Netherlands B.V.": "34115690"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Agilent Technologies Ireland Limited": {
+      "2025": 1,
+      "2026": 1
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Agilisys": [
+   {
+    "match": "loose",
+    "names": {
+     "Agilisys Holdings Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Agoda": [
+   {
+    "match": "loose",
+    "names": {
+     "AGODA INTERNATIONAL PTE LTD": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Agoda": [
+      "abhi-jha gist: Bangkok, Thailand"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
+  "AiDASH, Inc.": [
+   {
+    "match": "exact",
+    "names": {
+     "AiDash UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Aidence": [
+   {
+    "match": "exact",
+    "names": {
+     "Aidence B.V.": "64531694"
+    },
+    "source": "nl"
+   }
+  ],
+  "Airbnb": [
+   {
+    "match": "exact",
+    "names": {
+     "Airbnb UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Airbnb Netherlands B.V.": "72077166"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Airbnb Ireland Unlimited Company": {
+      "2025": 1
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Airwallex": [
+   {
+    "match": "exact",
+    "names": {
+     "Airwallex (UK) Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Airwallex (Netherlands) B.V.": "77519256"
+    },
+    "source": "nl"
+   }
+  ],
+  "Akamai": [
+   {
+    "match": "loose",
+    "names": {
+     "Akamai Technologies Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Akamai Technologies Netherlands B.V.": "34153909"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Akamai Technologies Ireland Limited": {
+      "2025": 1
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Aleph": [
+   {
+    "match": "exact",
+    "names": {
+     "Aleph The Netherlands Corporation B.V.": "52636003"
+    },
+    "source": "nl"
+   }
+  ],
+  "Aliaxis": [
+   {
+    "match": "loose",
+    "names": {
+     "Aliaxis Holding UK Limited": [
+      "Global Business Mobility: Graduate Trainee",
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Allegis Global Solutions": [
+   {
+    "match": "loose",
+    "names": {
+     "Allegis Group Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Allegis Group B.V.": "14109133"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Allegis Group Limited": {
+      "2025": 3,
+      "2026": 2
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Allica Bank": [
+   {
+    "match": "exact",
+    "names": {
+     "Allica Bank": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Allucent": [
+   {
+    "match": "loose",
+    "names": {
+     "Allucent Group (UK) Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "AlphaSense": [
+   {
+    "match": "loose",
+    "names": {
+     "AlphaSense Technology Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Alphonso": [
+   {
+    "match": "exact",
+    "names": {
+     "Alphonso UK Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Alteryx": [
+   {
+    "match": "exact",
+    "names": {
+     "Alteryx UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Amadeus": [
+   {
+    "match": "loose",
+    "names": {
+     "Amadeus Software Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Amazon": [
+   {
+    "match": "loose",
+    "names": {
+     "Amazon UK Services Ltd": [
+      "Global Business Mobility: Graduate Trainee",
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Amazon EU SARL, Dutch Branch": "74430661"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Amazon EU Sarl, Irish Branch": {
+      "2026": 3
+     }
+    },
+    "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Amazon": [
+      "abhi-jha gist: London",
+      "abhi-jha gist: Berlin, Germany",
+      "abhi-jha gist: Dublin, Ireland",
+      "abhi-jha gist: Luxembourg",
+      "abhi-jha gist: Canada"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
+  "American Express": [
+   {
+    "match": "loose",
+    "names": {
+     "American Express Services Europe Limited": [
+      "Global Business Mobility: Graduate Trainee",
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "American Express Europe S.A. (Netherlands branch)": "71660275"
+    },
+    "source": "nl"
+   }
+  ],
+  "Amgen": [
+   {
+    "match": "exact",
+    "names": {
+     "Amgen Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Amgen B.V.": "20060763",
+     "Amgen Europe B.V.": "20080576"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Amgen Technology (Ireland) Unlimited Company": {
+      "2025": 6,
+      "2026": 5
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Analog Devices": [
+   {
+    "match": "exact",
+    "names": {
+     "Analog Devices Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Analog Devices International Unlimited Company": {
+      "2025": 77,
+      "2026": 86
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Anaplan": [
+   {
+    "match": "exact",
+    "names": {
+     "Anaplan Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Anaplan Nederland B.V.": "59187352"
+    },
+    "source": "nl"
+   }
+  ],
+  "Anthropic": [
+   {
+    "match": "exact",
+    "names": {
+     "Anthropic Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Anthropic Ireland Limited": {
+      "2026": 3
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Anton Paar": [
+   {
+    "match": "exact",
+    "names": {
+     "Anton Paar (UK) Ltd.": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Anton Paar Netherlands B.V.": "87790408"
+    },
+    "source": "nl"
+   }
+  ],
+  "AppViewX": [
+   {
+    "match": "exact",
+    "names": {
+     "AppviewX Europe Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Appen": [
+   {
+    "match": "exact",
+    "names": {
+     "Appen (Europe) LTD": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Appian Corporation": [
+   {
+    "match": "exact",
+    "names": {
+     "Appian Europe Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Applied Materials": [
+   {
+    "match": "exact",
+    "names": {
+     "Applied Materials UK Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Applied Materials Europe B.V.": "34062769"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Applied Materials Ireland Limited": {
+      "2025": 50,
+      "2026": 96
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "AppsFlyer": [
+   {
+    "match": "exact",
+    "names": {
+     "AppsFlyer UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Appzen": [
+   {
+    "match": "exact",
+    "names": {
+     "Appzen UK LTD": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Aptos": [
+   {
+    "match": "loose",
+    "names": {
+     "Aptos Solutions UK Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Arcesium LLC": [
+   {
+    "match": "exact",
+    "names": {
+     "Arcesium UK LLP": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Arista Networks": [
+   {
+    "match": "exact",
+    "names": {
+     "ARISTA NETWORKS UK LTD": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Arista Networks Limited": {
+      "2025": 3,
+      "2026": 2
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Artefact": [
+   {
+    "match": "exact",
+    "names": {
+     "Artefact UK LTD": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Ashland": [
+   {
+    "match": "loose",
+    "names": {
+     "Ashland Services": "24267865"
+    },
+    "source": "nl"
+   }
+  ],
+  "Ashoka": [
+   {
+    "match": "exact",
+    "names": {
+     "Ashoka UK": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "AstraZeneca": [
+   {
+    "match": "exact",
+    "names": {
+     "AstraZeneca UK Limited": [
+      "Global Business Mobility: Graduate Trainee",
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "AstraZeneca B.V.": "24234576"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "AstraZeneca Ireland Limited": {
+      "2025": 1
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Autodesk": [
+   {
+    "match": "exact",
+    "names": {
+     "Autodesk Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Autodesk B.V.": "24257680"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Autodesk Ireland Operations Unlimited Company": {
+      "2025": 6,
+      "2026": 1
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Avaloq": [
+   {
+    "match": "exact",
+    "names": {
+     "Avaloq UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Aveva": [
+   {
+    "match": "loose",
+    "names": {
+     "AVEVA Solutions Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "AVEVA Software Netherlands B.V.": "68293747"
+    },
+    "source": "nl"
+   }
+  ],
+  "Aviagen": [
+   {
+    "match": "exact",
+    "names": {
+     "AVIAGEN LIMITED": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Aviatrix": [
+   {
+    "match": "loose",
+    "names": {
+     "Aviatrix Systems UK Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Azurity Pharmaceuticals - India": [
+   {
+    "match": "exact",
+    "names": {
+     "Azurity Pharmaceuticals Ireland Limited": {
+      "2025": 1
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "BCG": [
+   {
+    "match": "loose",
+    "names": {
+     "BCG Digital Ventures": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "BEUMER Group": [
+   {
+    "match": "exact",
+    "names": {
+     "BEUMER Group UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Backbase": [
+   {
+    "match": "exact",
+    "names": {
+     "Backbase UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Backbase B.V.": "34192943",
+     "Backbase Europe B.V.": "34274514"
+    },
+    "source": "nl"
+   }
+  ],
+  "Baker Hughes": [
+   {
+    "match": "exact",
+    "names": {
+     "Baker Hughes EMEA Unlimited Company": {
+      "2025": 2
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Barclays": [
+   {
+    "match": "loose",
+    "names": {
+     "Barclays Bank PLC": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ],
+     "Barclays Bank UK PLC": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Barclays Bank Ireland Plc, Netherlands branch": "73040398"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Barclays Bank Ireland PLC": {
+      "2025": 2
+     }
+    },
+    "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Barclays": [
+      "abhi-jha gist: London"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
+  "Baya Systems": [
+   {
+    "match": "exact",
+    "names": {
+     "Baya Systems Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Bazaarvoice": [
+   {
+    "match": "exact",
+    "names": {
+     "Bazaarvoice Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Becton Dickinson": [
+   {
+    "match": "exact",
+    "names": {
+     "Becton Dickinson": "28065261"
+    },
+    "source": "nl"
+   }
+  ],
+  "Billups": [
+   {
+    "match": "exact",
+    "names": {
+     "Billups Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Binance": [
+   {
+    "match": "exact",
+    "names": {
+     "Binance Europe Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Binance (Services) Holdings Ltd": {
+      "2025": 1,
+      "2026": 1
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "BlackBerry": [
+   {
+    "match": "exact",
+    "names": {
+     "BlackBerry UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "BlackBerry Netherlands B.V.": "17044288"
+    },
+    "source": "nl"
+   }
+  ],
+  "BlackRock": [
+   {
+    "match": "exact",
+    "names": {
+     "BlackRock (Netherlands) B.V.": "17068311"
+    },
+    "source": "nl"
+   }
+  ],
+  "Blackline": [
+   {
+    "match": "loose",
+    "names": {
+     "Blackline Systems Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "BlackLine International B.V.": "52094030"
+    },
+    "source": "nl"
+   }
+  ],
+  "Blend360": [
+   {
+    "match": "exact",
+    "names": {
+     "Blend360 UK Ltd.": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Bloomreach": [
+   {
+    "match": "exact",
+    "names": {
+     "BloomReach UK Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "BloomReach B.V.": "34239916"
+    },
+    "source": "nl"
+   }
+  ],
+  "BlueConic": [
+   {
+    "match": "exact",
+    "names": {
+     "BlueConic B.V.": "59800143"
+    },
+    "source": "nl"
+   }
+  ],
+  "BlueOptima": [
+   {
+    "match": "exact",
+    "names": {
+     "BlueOptima Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Bosch": [
+   {
+    "match": "loose",
+    "names": {
+     "Bosch Global Software Technologies Private Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Bottomline": [
+   {
+    "match": "loose",
+    "names": {
+     "Bottomline Technologies Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Branch Metrics": [
+   {
+    "match": "exact",
+    "names": {
+     "Branch Metrics UK Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Brandtech+": [
+   {
+    "match": "loose",
+    "names": {
+     "THE BRANDTECH GROUP LIMITED": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Brave": [
+   {
+    "match": "loose",
+    "names": {
+     "Brave Software Europe Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "BreachLock": [
+   {
+    "match": "exact",
+    "names": {
+     "BreachLock Netherlands B.V.": "74299913"
+    },
+    "source": "nl"
+   }
+  ],
+  "Brenntag": [
+   {
+    "match": "exact",
+    "names": {
+     "Brenntag UK Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Brenntag Nederland B.V.": "30112931"
+    },
+    "source": "nl"
+   }
+  ],
+  "British Asian Trust": [
+   {
+    "match": "exact",
+    "names": {
+     "British Asian Trust": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Broadcom": [
+   {
+    "match": "exact",
+    "names": {
+     "Broadcom Europe Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Broadcom Netherlands B.V.": "30154873"
+    },
+    "source": "nl"
+   }
+  ],
+  "Broadridge": [
+   {
+    "match": "exact",
+    "names": {
+     "Broadridge Ireland Limited": {
+      "2025": 4,
+      "2026": 1
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "BrowserStack": [
+   {
+    "match": "exact",
+    "names": {
+     "BrowserStack UK Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "BrowserStack Limited": {
+      "2025": 1,
+      "2026": 1
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Burson": [
+   {
+    "match": "loose",
+    "names": {
+     "Burson Group Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Canva": [
+   {
+    "match": "loose",
+    "names": {
+     "CANVA UK OPERATIONS LIMITED": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Canva": [
+      "abhi-jha gist: London"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
+  "Catawiki": [
+   {
+    "match": "exact",
+    "names": {
+     "Catawiki B.V.": "01131735"
+    },
+    "source": "nl"
+   }
+  ],
+  "Caxton Associates": [
+   {
+    "match": "exact",
+    "names": {
+     "Caxton Associates LLP": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Cdw": [
+   {
+    "match": "exact",
+    "names": {
+     "CDW Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Celonis": [
+   {
+    "match": "exact",
+    "names": {
+     "Celonis Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Celonis B.V.": "67121780"
+    },
+    "source": "nl"
+   }
+  ],
+  "Centrient Pharmaceuticals Netherlands": [
+   {
+    "match": "exact",
+    "names": {
+     "Centrient Pharmaceuticals Netherlands B.V.": "14090826"
+    },
+    "source": "nl"
+   }
+  ],
+  "Cgg": [
+   {
+    "match": "loose",
+    "names": {
+     "CGG Services (UK) Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Ciena": [
+   {
+    "match": "exact",
+    "names": {
+     "Ciena Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Cint": [
+   {
+    "match": "exact",
+    "names": {
+     "Cint UK Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Cisco": [
+   {
+    "match": "loose",
+    "names": {
+     "Cisco International Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Cisco Netherlands B.V.": "78517273"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Cisco Limited": {
+      "2026": 1
+     }
+    },
+    "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Cisco": [
+      "shubheksha list: London, UK"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
+  "Cision": [
+   {
+    "match": "loose",
+    "names": {
+     "Cision Group Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Citi": [
+   {
+    "match": "loose",
+    "names": {
+     "Citi Group": [
+      "Global Business Mobility: Graduate Trainee",
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Civica": [
+   {
+    "match": "exact",
+    "names": {
+     "Civica UK Ltd": [
+      "Global Business Mobility: Graduate Trainee",
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "ClearView Healthcare Partners": [
+   {
+    "match": "exact",
+    "names": {
+     "Clearview Healthcare Partners (UK) Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Clickhouse": [
+   {
+    "match": "exact",
+    "names": {
+     "ClickHouse B.V.": "83934162"
+    },
+    "source": "nl"
+   }
+  ],
+  "Clifford Chance": [
+   {
+    "match": "exact",
+    "names": {
+     "Clifford Chance LLP": [
+      "Global Business Mobility: Graduate Trainee",
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Clifford Chance LLP": "34360401"
+    },
+    "source": "nl"
+   }
+  ],
+  "ClinChoice": [
+   {
+    "match": "exact",
+    "names": {
+     "CLINCHOICE LIMITED": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Cloudera": [
+   {
+    "match": "exact",
+    "names": {
+     "Cloudera (UK) Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Cloudera International Limited": {
+      "2025": 3,
+      "2026": 3
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Cloudflare": [
+   {
+    "match": "exact",
+    "names": {
+     "Cloudflare Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Cloudflare Netherlands B.V.": "82497060"
+    },
+    "source": "nl"
+   }
+  ],
+  "Cochlear": [
+   {
+    "match": "exact",
+    "names": {
+     "Cochlear Europe Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Cockroach Labs": [
+   {
+    "match": "exact",
+    "names": {
+     "Cockroach Labs UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Coinbase": [
+   {
+    "match": "exact",
+    "names": {
+     "Coinbase Ireland Limited": {
+      "2025": 4
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Commvault": [
+   {
+    "match": "loose",
+    "names": {
+     "Commvault Systems Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Conduent": [
+   {
+    "match": "exact",
+    "names": {
+     "Conduent Netherlands B.V.": "34139814"
+    },
+    "source": "nl"
+   }
+  ],
+  "Confluent": [
+   {
+    "match": "exact",
+    "names": {
+     "Confluent Europe Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Conga": [
+   {
+    "match": "exact",
+    "names": {
+     "CONGA EUROPE LTD": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "ConnectWise": [
+   {
+    "match": "exact",
+    "names": {
+     "ConnectWise Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Control Risks": [
+   {
+    "match": "loose",
+    "names": {
+     "Control Risks Group Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Convera": [
+   {
+    "match": "exact",
+    "names": {
+     "Convera UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Conviva": [
+   {
+    "match": "exact",
+    "names": {
+     "Conviva Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Copart": [
+   {
+    "match": "exact",
+    "names": {
+     "Copart UK Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Couchbase, Inc.": [
+   {
+    "match": "exact",
+    "names": {
+     "Couchbase Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Coupa": [
+   {
+    "match": "loose",
+    "names": {
+     "Coupa Software UK Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Coupa Operations Inc.": {
+      "2025": 3,
+      "2026": 2
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Coursera": [
+   {
+    "match": "exact",
+    "names": {
+     "Coursera UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Cowbell Cyber Inc.": [
+   {
+    "match": "exact",
+    "names": {
+     "Cowbell Cyber Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Cprime": [
+   {
+    "match": "exact",
+    "names": {
+     "CPRIME LIMITED": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "CrowdStrike": [
+   {
+    "match": "exact",
+    "names": {
+     "CrowdStrike UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "CrowdStrike (Netherlands) B.V.": "67285929"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "CrowdStrike Ireland Limited": {
+      "2025": 2
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Crunchyroll, LLC": [
+   {
+    "match": "exact",
+    "names": {
+     "Crunchyroll Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Cummins": [
+   {
+    "match": "exact",
+    "names": {
+     "Cummins Ltd": [
+      "Global Business Mobility: Graduate Trainee",
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Cummins Holland B.V.": "34220850",
+     "Cummins Limited": "65479912"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Cummins Ltd": {
+      "2026": 1
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "DBS": [
+   {
+    "match": "loose",
+    "names": {
+     "DBS Bank Ltd, London Branch": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "DEPT®": [
+   {
+    "match": "loose",
+    "names": {
+     "Dept UK Holding Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Dept Holding B.V.": "63464101"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Dept Digital Ltd": {
+      "2026": 3
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "DNV": [
+   {
+    "match": "exact",
+    "names": {
+     "DNV Netherlands B.V.": "09006404"
+    },
+    "source": "nl"
+   }
+  ],
+  "DTCC": [
+   {
+    "match": "exact",
+    "names": {
+     "DTCC Europe Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Da Vinci Derivatives": [
+   {
+    "match": "exact",
+    "names": {
+     "Da Vinci Derivatives B.V.": "63796473"
+    },
+    "source": "nl"
+   }
+  ],
+  "Daimler Truck": [
+   {
+    "match": "exact",
+    "names": {
+     "Daimler Truck UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Databricks": [
+   {
+    "match": "exact",
+    "names": {
+     "Databricks UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Databricks": "51208121"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Databricks": [
+      "abhi-jha gist: Amsterdam, Netherlands"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
+  "Datadog": [
+   {
+    "match": "exact",
+    "names": {
+     "Datadog Ireland Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Datadog Netherlands B.V.": "77823664"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Datadog Ireland Limited": {
+      "2025": 4,
+      "2026": 3
+     }
+    },
+    "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "DataDog": [
+      "abhi-jha gist: Dublin, Ireland",
+      "abhi-jha gist: Paris"
+     ],
+     "Datadog": [
+      "shubheksha list: Paris, FR",
+      "shubheksha list: London, UK"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
+  "Deliveroo": [
+   {
+    "match": "exact",
+    "names": {
+     "Deliveroo Netherlands B.V.": "63605929"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Deliveroo": [
+      "abhi-jha gist: London",
+      "shubheksha list: London, UK"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
+  "Demandbase": [
+   {
+    "match": "exact",
+    "names": {
+     "Demandbase Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Deutsche Bank": [
+   {
+    "match": "exact",
+    "names": {
+     "Deutsche Bank": "33304583"
+    },
+    "source": "nl"
+   }
+  ],
+  "Dexcom": [
+   {
+    "match": "loose",
+    "names": {
+     "Dexcom International Limited": {
+      "2026": 5
+     },
+     "Dexcom International Ltd.": {
+      "2025": 1
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Dialpad": [
+   {
+    "match": "exact",
+    "names": {
+     "Dialpad UK Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Diebold Nixdorf": [
+   {
+    "match": "exact",
+    "names": {
+     "Diebold Nixdorf (UK) Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Diebold Nixdorf Global Solutions B.V.": "58379401"
+    },
+    "source": "nl"
+   }
+  ],
+  "DigiCert": [
+   {
+    "match": "exact",
+    "names": {
+     "Digicert UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "DigitalOcean": [
+   {
+    "match": "exact",
+    "names": {
+     "DigitalOcean EU B.V.": "60912006"
+    },
+    "source": "nl"
+   }
+  ],
+  "Dnb": [
+   {
+    "match": "loose",
+    "names": {
+     "DNB Bank ASA London Branch": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "DoorDash India": [
+   {
+    "match": "loose",
+    "names": {
+     "Doordash Technologies UK Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Dover": [
+   {
+    "match": "loose",
+    "names": {
+     "Dover Holdings UK Ltd": [
+      "Global Business Mobility: UK Expansion Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Dr Reddy's Laboratories Limited": [
+   {
+    "match": "exact",
+    "names": {
+     "Dr Reddys Laboratories (UK) Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ],
+     "Dr. Reddy's Laboratories (EU) Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Dscout": [
+   {
+    "match": "exact",
+    "names": {
+     "dscout UK LTD": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Duolingo": [
+   {
+    "match": "exact",
+    "names": {
+     "Duolingo UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Dynata": [
+   {
+    "match": "loose",
+    "names": {
+     "DYNATA GLOBAL UK LTD": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Dynata Europe B.V.": "24326088"
+    },
+    "source": "nl"
+   }
+  ],
+  "EVERSANA": [
+   {
+    "match": "exact",
+    "names": {
+     "EVERSANA UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "EXL": [
+   {
+    "match": "loose",
+    "names": {
+     "EXL Service (UK) Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Encora": [
+   {
+    "match": "loose",
+    "names": {
+     "Encora Software (UK) Private Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Endava": [
+   {
+    "match": "exact",
+    "names": {
+     "Endava UK Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Energy Exemplar": [
+   {
+    "match": "exact",
+    "names": {
+     "Energy Exemplar (Europe)  Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Enermech": [
+   {
+    "match": "exact",
+    "names": {
+     "EnerMech Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Ensono": [
+   {
+    "match": "exact",
+    "names": {
+     "Ensono Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Episode Six": [
+   {
+    "match": "exact",
+    "names": {
+     "Episode Six Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Episode Six US": [
+   {
+    "match": "exact",
+    "names": {
+     "Episode Six Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Equal Experts": [
+   {
+    "match": "exact",
+    "names": {
+     "Equal Experts UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ],
+     "Equal Experts UK Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Equativ": [
+   {
+    "match": "exact",
+    "names": {
+     "EQUATIV LTD": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Equinix": [
+   {
+    "match": "loose",
+    "names": {
+     "Equinix Services Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Equinix (EMEA) B.V.": "57577889",
+     "Equinix (Netherlands) B.V.": "24429748"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Equinix (Ireland) Limited": {
+      "2025": 2,
+      "2026": 4
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Equisoft": [
+   {
+    "match": "exact",
+    "names": {
+     "Equisoft Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Ergomed": [
+   {
+    "match": "exact",
+    "names": {
+     "Ergomed Limited": {
+      "2026": 1
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Esri": [
+   {
+    "match": "exact",
+    "names": {
+     "Esri (UK) Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "ESRI Global, Inc.": "24429405"
+    },
+    "source": "nl"
+   }
+  ],
+  "Essar": [
+   {
+    "match": "loose",
+    "names": {
+     "Essar International Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Etihad Airways": [
+   {
+    "match": "exact",
+    "names": {
+     "Etihad Airways": [
+      "Global Business Mobility: Senior or Specialist Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Euromonitor": [
+   {
+    "match": "loose",
+    "names": {
+     "EUROMONITOR INTERNATIONAL LIMITED": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Everbridge": [
+   {
+    "match": "exact",
+    "names": {
+     "Everbridge Europe Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Exfo": [
+   {
+    "match": "exact",
+    "names": {
+     "EXFO Europe Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Expedia": [
+   {
+    "match": "exact",
+    "names": {
+     "Expedia.com Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Expeditors": [
+   {
+    "match": "loose",
+    "names": {
+     "Expeditors International UK LTD": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Expeditors International B.V.": "34087992"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Expeditors Ireland Limited": {
+      "2026": 1
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Experian": [
+   {
+    "match": "exact",
+    "names": {
+     "EXPERIAN LIMITED": [
+      "Global Business Mobility: Graduate Trainee",
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Experian Nederland B.V.": "30103666"
+    },
+    "source": "nl"
+   }
+  ],
+  "Extreme Networks": [
+   {
+    "match": "loose",
+    "names": {
+     "Extreme Networks UK Technology Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Extreme Networks B.V.": "30106897"
+    },
+    "source": "nl"
+   }
+  ],
+  "Factset": [
+   {
+    "match": "exact",
+    "names": {
+     "FactSet Europe Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Fastly": [
+   {
+    "match": "exact",
+    "names": {
+     "Fastly Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Figma": [
+   {
+    "match": "exact",
+    "names": {
+     "Figma UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Figma Ireland Limited": {
+      "2026": 1
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Finastra": [
+   {
+    "match": "loose",
+    "names": {
+     "Finastra International Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Finastra International Limited": {
+      "2025": 2
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Firemon": [
+   {
+    "match": "exact",
+    "names": {
+     "FireMon Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Fiserv": [
+   {
+    "match": "exact",
+    "names": {
+     "Fiserv (Europe) Ltd.": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Fiserv Solutions (Europe) Limited": {
+      "2025": 19,
+      "2026": 18
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Five9": [
+   {
+    "match": "exact",
+    "names": {
+     "Five9, Inc UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Fivetran": [
+   {
+    "match": "exact",
+    "names": {
+     "Fivetran UK Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Flexport": [
+   {
+    "match": "loose",
+    "names": {
+     "Flexport International Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Flexport Group B.V.": "64391043",
+     "Flexport International B.V.": "80033946"
+    },
+    "source": "nl"
+   }
+  ],
+  "Flextrade": [
+   {
+    "match": "exact",
+    "names": {
+     "FlexTrade UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Floqast": [
+   {
+    "match": "exact",
+    "names": {
+     "Floqast UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Flowserve": [
+   {
+    "match": "exact",
+    "names": {
+     "Flowserve GB Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Flowserve B.V.": "20052878"
+    },
+    "source": "nl"
+   }
+  ],
+  "Fortrea": [
+   {
+    "match": "exact",
+    "names": {
+     "Fortrea Netherlands B.V.": "88689824"
+    },
+    "source": "nl"
+   }
+  ],
+  "Fospha": [
+   {
+    "match": "exact",
+    "names": {
+     "Fospha Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "FourKites": [
+   {
+    "match": "exact",
+    "names": {
+     "FourKites B.V.": "75960729"
+    },
+    "source": "nl"
+   }
+  ],
+  "Framestore": [
+   {
+    "match": "exact",
+    "names": {
+     "Framestore": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Freshworks": [
+   {
+    "match": "loose",
+    "names": {
+     "FRESHWORKS TECHNOLOGIES UK LIMITED": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Freshworks Technologies B.V.": "73582166"
+    },
+    "source": "nl"
+   }
+  ],
+  "Fusion Consulting": [
+   {
+    "match": "exact",
+    "names": {
+     "Fusion Consulting Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "GSK": [
+   {
+    "match": "exact",
+    "names": {
+     "GSK Plc": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Gainpro": [
+   {
+    "match": "exact",
+    "names": {
+     "Gain.pro LTD": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "GAIN.PRO B.V.": "71476717"
+    },
+    "source": "nl"
+   }
+  ],
+  "Galaxy": [
+   {
+    "match": "loose",
+    "names": {
+     "Galaxy Digital UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Gartner": [
+   {
+    "match": "exact",
+    "names": {
+     "Gartner UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Gartner Nederland B.V.": "33237099"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Gartner Ireland Limited": {
+      "2025": 4
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Genpact": [
+   {
+    "match": "exact",
+    "names": {
+     "Genpact (UK) Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Genpact Ireland Private Limited": {
+      "2025": 7,
+      "2026": 7
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Girl Effect": [
+   {
+    "match": "exact",
+    "names": {
+     "Girl Effect": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "GitLab": [
+   {
+    "match": "exact",
+    "names": {
+     "GitLab B.V.": "60034831"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "GitLab Ireland Limited": {
+      "2025": 1,
+      "2026": 1
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "GlobalFoundries": [
+   {
+    "match": "exact",
+    "names": {
+     "GlobalFoundries Europe Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Gojek": [
+   {
+    "match": "exact",
+    "names": {
+     "Gojek": [
+      "abhi-jha gist: Singapore"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
+  "Grab": [
+   {
+    "match": "exact",
+    "names": {
+     "Grab": [
+      "abhi-jha gist: Singapore"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
+  "Grafana Labs": [
+   {
+    "match": "exact",
+    "names": {
+     "Grafana Labs Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Grafana Labs Netherlands B.V.": "86435027"
+    },
+    "source": "nl"
+   }
+  ],
+  "Graphcore": [
+   {
+    "match": "exact",
+    "names": {
+     "Graphcore Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Groupon": [
+   {
+    "match": "exact",
+    "names": {
+     "Groupon Netherlands B.V.": "14130545"
+    },
+    "source": "nl"
+   }
+  ],
+  "Guidehouse": [
+   {
+    "match": "exact",
+    "names": {
+     "Guidehouse Europe Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Guidehouse Netherlands B.V.": "30161191"
+    },
+    "source": "nl"
+   }
+  ],
+  "Guidepoint": [
+   {
+    "match": "loose",
+    "names": {
+     "Guidepoint Global UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Gunnebo Entrance Control": [
+   {
+    "match": "exact",
+    "names": {
+     "Gunnebo Entrance Control Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "HEXAWARE": [
+   {
+    "match": "loose",
+    "names": {
+     "HEXAWARE TECHNOLOGIES UK LTD": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Netherlands Hexaware Technologies": "34233511"
+    },
+    "source": "nl"
+   }
+  ],
+  "HP Inc": [
+   {
+    "match": "exact",
+    "names": {
+     "HP Inc UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "HP Nederland B.V.": "62544721"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "HP Technology Ireland Limited": {
+      "2025": 1
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "HackerRank": [
+   {
+    "match": "exact",
+    "names": {
+     "HackerRank UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Hackerone": [
+   {
+    "match": "exact",
+    "names": {
+     "HackerOne B.V.": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ],
+     "HackerOne UK Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "HackerOne B.V.": "58601325"
+    },
+    "source": "nl"
+   }
+  ],
+  "Halma": [
+   {
+    "match": "exact",
+    "names": {
+     "Halma Plc": [
+      "Global Business Mobility: Graduate Trainee",
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Handshake": [
+   {
+    "match": "loose",
+    "names": {
+     "Handshake International UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Hapag-Lloyd": [
+   {
+    "match": "exact",
+    "names": {
+     "Hapag Lloyd (UK) Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Hasbro": [
+   {
+    "match": "loose",
+    "names": {
+     "Hasbro European Services": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Headout": [
+   {
+    "match": "exact",
+    "names": {
+     "Headout UK Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Hewlett Packard Enterprise": [
+   {
+    "match": "exact",
+    "names": {
+     "Hewlett Packard Enterprise Ireland Limited": {
+      "2026": 2
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "HighRadius": [
+   {
+    "match": "exact",
+    "names": {
+     "HighRadius UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "HighRadius B.V.": "75050943"
+    },
+    "source": "nl"
+   }
+  ],
+  "Hilton": [
+   {
+    "match": "loose",
+    "names": {
+     "Hilton International Nederland B.V.": "33107232"
+    },
+    "source": "nl"
+   }
+  ],
+  "Hitachi Solutions": [
+   {
+    "match": "exact",
+    "names": {
+     "Hitachi Solutions Europe Ltd": [
+      "Global Business Mobility: Graduate Trainee",
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Honeywell": [
+   {
+    "match": "exact",
+    "names": {
+     "Honeywell Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Honeywell B.V.": "33044803"
+    },
+    "source": "nl"
+   }
+  ],
+  "Horizontal Digital": [
+   {
+    "match": "exact",
+    "names": {
+     "HORIZONTAL DIGITAL UK LIMITED": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Hudl India": [
+   {
+    "match": "exact",
+    "names": {
+     "Hudl UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Hudl B.V.": "64473120"
+    },
+    "source": "nl"
+   }
+  ],
+  "Hudson River Trading": [
+   {
+    "match": "exact",
+    "names": {
+     "Hudson River Trading Europe Ltd.": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Huhtamaki": [
+   {
+    "match": "exact",
+    "names": {
+     "Huhtamaki Nederland B.V.": "01051894"
+    },
+    "source": "nl"
+   }
+  ],
+  "Hyva": [
+   {
+    "match": "exact",
+    "names": {
+     "Hyva (U.K.) Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Hyva Holding B.V.": "34277369",
+     "Hyva International B.V.": "28056017"
+    },
+    "source": "nl"
+   }
+  ],
+  "IBS": [
+   {
+    "match": "loose",
+    "names": {
+     "IBS Software Europe Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "IBS Software Europe Limited": "61205850"
+    },
+    "source": "nl"
+   }
+  ],
+  "IMC": [
+   {
+    "match": "exact",
+    "names": {
+     "IMC B.V.": "33212299"
+    },
+    "source": "nl"
+   }
+  ],
+  "IQ-EQ": [
+   {
+    "match": "loose",
+    "names": {
+     "IQ EQ (UK) Services Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "IQ EQ Netherlands": "33263803"
+    },
+    "source": "nl"
+   }
+  ],
+  "Icertis": [
+   {
+    "match": "loose",
+    "names": {
+     "Icertis Group Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "InMobi": [
+   {
+    "match": "exact",
+    "names": {
+     "InMobi": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Infios": [
+   {
+    "match": "exact",
+    "names": {
+     "Infios U.K. Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Infoblox": [
+   {
+    "match": "exact",
+    "names": {
+     "Infoblox UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Infoblox Netherlands B.V.": "57864578"
+    },
+    "source": "nl"
+   }
+  ],
+  "Informa Group Plc.": [
+   {
+    "match": "loose",
+    "names": {
+     "Informa UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Inizio": [
+   {
+    "match": "loose",
+    "names": {
+     "Inizio Services UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Inizio Evoke": [
+   {
+    "match": "exact",
+    "names": {
+     "Inizio Evoke Europe Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Insurity India": [
+   {
+    "match": "exact",
+    "names": {
+     "Insurity Europe Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Intel": [
+   {
+    "match": "exact",
+    "names": {
+     "Intel Corporation (UK) Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Intel International B.V.": "34098535"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Intel Ireland Limited": {
+      "2025": 74,
+      "2026": 71
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Intertek": [
+   {
+    "match": "loose",
+    "names": {
+     "Intertek Group plc": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Intertek Nederland B.V.": "24069423"
+    },
+    "source": "nl"
+   }
+  ],
+  "Invesco": [
+   {
+    "match": "exact",
+    "names": {
+     "Invesco UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Itron": [
+   {
+    "match": "exact",
+    "names": {
+     "Itron Nederland B.V.": "23044232"
+    },
+    "source": "nl"
+   }
+  ],
+  "Ivalua": [
+   {
+    "match": "exact",
+    "names": {
+     "Ivalua Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Ivanti": [
+   {
+    "match": "exact",
+    "names": {
+     "Ivanti UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Ivanti Software B.V.": "32090058"
+    },
+    "source": "nl"
+   }
+  ],
+  "J.S. Held LLC": [
+   {
+    "match": "exact",
+    "names": {
+     "J.S. Held UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "JFrog": [
+   {
+    "match": "exact",
+    "names": {
+     "JFrog UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Jamf": [
+   {
+    "match": "exact",
+    "names": {
+     "JAMF LTD": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Janes": [
+   {
+    "match": "loose",
+    "names": {
+     "Jane's Group UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Johnson Controls": [
+   {
+    "match": "loose",
+    "names": {
+     "Johnson Controls Systems & Service B.V.": "20104886"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Johnson Controls Ireland Limited": {
+      "2025": 1,
+      "2026": 3
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Jumio": [
+   {
+    "match": "exact",
+    "names": {
+     "Jumio UK Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Jump Trading": [
+   {
+    "match": "loose",
+    "names": {
+     "Jump Trading International Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Jump Trading Europe B.V.": "70927359"
+    },
+    "source": "nl"
+   }
+  ],
+  "Just Global": [
+   {
+    "match": "exact",
+    "names": {
+     "Just Global UK Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "KLA": [
+   {
+    "match": "exact",
+    "names": {
+     "KLA Corporation UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "KLDiscovery": [
+   {
+    "match": "exact",
+    "names": {
+     "KLDiscovery Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "KPMG Global Services": [
+   {
+    "match": "loose",
+    "names": {
+     "KPMG Ireland": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ],
+     "KPMG LLP": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "KPMG": {
+      "2025": 44,
+      "2026": 40
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "KRAFTON INDIA": [
+   {
+    "match": "exact",
+    "names": {
+     "KRAFTON EUROPE B.V.": "70134227"
+    },
+    "source": "nl"
+   }
+  ],
+  "Keyloop": [
+   {
+    "match": "exact",
+    "names": {
+     "Keyloop (UK) Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Keyloop (Nederland) B.V.": "61370398"
+    },
+    "source": "nl"
+   }
+  ],
+  "KnowBe4": [
+   {
+    "match": "exact",
+    "names": {
+     "KnowBe4 Uk Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Konecranes": [
+   {
+    "match": "exact",
+    "names": {
+     "Konecranes B.V.": "36048659"
+    },
+    "source": "nl"
+   }
+  ],
+  "Konrad": [
+   {
+    "match": "loose",
+    "names": {
+     "Konrad Group U.K. Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Kotak Mahindra Bank": [
+   {
+    "match": "loose",
+    "names": {
+     "Kotak Mahindra (UK) Limited,": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Ksb": [
+   {
+    "match": "exact",
+    "names": {
+     "KSB Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "LVMH": [
+   {
+    "match": "loose",
+    "names": {
+     "LVMH Services Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Lam Research": [
+   {
+    "match": "exact",
+    "names": {
+     "LAM Research Limited (UK)": [
+      "Skilled Worker"
+     ],
+     "Lam Research Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Lam Research International B.V.": "09151553"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Lam Research (Ireland) Limited": {
+      "2025": 5,
+      "2026": 9
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "LaunchDarkly": [
+   {
+    "match": "exact",
+    "names": {
+     "Launchdarkly Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Lesaffre": [
+   {
+    "match": "exact",
+    "names": {
+     "LESAFFRE UK AND IRELAND LIMITED": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Liberis": [
+   {
+    "match": "exact",
+    "names": {
+     "Liberis Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "LinkedIn": [
+   {
+    "match": "loose",
+    "names": {
+     "Linkedin Technology UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "LinkedIn Netherlands B.V.": "34370729"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "LinkedIn Ireland Unlimited Company": {
+      "2025": 13,
+      "2026": 3
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "LogicMonitor": [
+   {
+    "match": "exact",
+    "names": {
+     "LogicMonitor UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Logitech": [
+   {
+    "match": "exact",
+    "names": {
+     "Logitech Ltd": [
+      "Skilled Worker"
+     ],
+     "Logitech UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Logitech Europe S.A.": "10144574"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Logitech Ireland Services Limited": {
+      "2025": 7,
+      "2026": 11
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Loram": [
+   {
+    "match": "exact",
+    "names": {
+     "Loram UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "MSX International": [
+   {
+    "match": "exact",
+    "names": {
+     "MSX International Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "MSX International": "30210212"
+    },
+    "source": "nl"
+   }
+  ],
+  "Madison Logic": [
+   {
+    "match": "exact",
+    "names": {
+     "Madison Logic UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Mapbox": [
+   {
+    "match": "exact",
+    "names": {
+     "Mapbox UK Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "MariaDB plc": [
+   {
+    "match": "exact",
+    "names": {
+     "MariaDB UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Marvell": [
+   {
+    "match": "exact",
+    "names": {
+     "Marvell Netherlands B.V.": "34233879"
+    },
+    "source": "nl"
+   }
+  ],
+  "MasterControl": [
+   {
+    "match": "loose",
+    "names": {
+     "MasterControl Global Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Mastercard": [
+   {
+    "match": "exact",
+    "names": {
+     "Mastercard Nederland": "50304348"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "MasterCard Ireland Limited": {
+      "2025": 89
+     },
+     "Mastercard Ireland Limited": {
+      "2026": 77
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Matillion": [
+   {
+    "match": "exact",
+    "names": {
+     "Matillion Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Mattel": [
+   {
+    "match": "exact",
+    "names": {
+     "Mattel UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Mattel Europe Holdings B.V.": "33297748"
+    },
+    "source": "nl"
+   }
+  ],
+  "McDermott": [
+   {
+    "match": "exact",
+    "names": {
+     "McDermott Nederland B.V.": "27049906"
+    },
+    "source": "nl"
+   }
+  ],
+  "Medline": [
+   {
+    "match": "loose",
+    "names": {
+     "Medline International B.V.": "59171960"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Medline Ireland Limited": {
+      "2025": 1
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Medtronic": [
+   {
+    "match": "exact",
+    "names": {
+     "Medtronic Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Medtronic B.V.": "14023267"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Medtronic Ireland Limited": {
+      "2025": 1
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Megaport": [
+   {
+    "match": "exact",
+    "names": {
+     "Megaport (UK) Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Megaport (Netherlands) B.V.": "64677273"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Megaport (Ireland) Limited": {
+      "2025": 1
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "MerQube Inc": [
+   {
+    "match": "exact",
+    "names": {
+     "MerQube UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Merative": [
+   {
+    "match": "exact",
+    "names": {
+     "Merative UK Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "MiQ Digital": [
+   {
+    "match": "exact",
+    "names": {
+     "MiQ Digital Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "MicroStrategy": [
+   {
+    "match": "exact",
+    "names": {
+     "MicroStrategy Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Microchip Technology": [
+   {
+    "match": "loose",
+    "names": {
+     "MICROCHIP LIMITED": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Microchip Technology Ireland Limited": {
+      "2025": 1,
+      "2026": 3
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Micron": [
+   {
+    "match": "exact",
+    "names": {
+     "Micron Europe Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Mintel": [
+   {
+    "match": "loose",
+    "names": {
+     "Mintel Group Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Mirantis": [
+   {
+    "match": "exact",
+    "names": {
+     "Mirantis UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Miratech": [
+   {
+    "match": "exact",
+    "names": {
+     "MIRATECH EUROPE LIMITED": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Mitratech": [
+   {
+    "match": "exact",
+    "names": {
+     "Mitratech (UK) Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Mixpanel": [
+   {
+    "match": "exact",
+    "names": {
+     "Mixpanel UK Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Modaxo": [
+   {
+    "match": "loose",
+    "names": {
+     "Modaxo Group UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Modulr": [
+   {
+    "match": "loose",
+    "names": {
+     "Modulr Technology Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "MongoDB": [
+   {
+    "match": "exact",
+    "names": {
+     "MongoDB UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "MongoDB Netherlands B.V.": "66500842"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "MongoDB Limited": {
+      "2025": 8,
+      "2026": 41
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Moniepoint": [
+   {
+    "match": "exact",
+    "names": {
+     "Moniepoint UK Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Monster Energy APAC": [
+   {
+    "match": "exact",
+    "names": {
+     "Monster Energy Europe Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Monster Energy Limited": {
+      "2025": 1
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Moog": [
+   {
+    "match": "exact",
+    "names": {
+     "Moog B.V.": "28075621"
+    },
+    "source": "nl"
+   }
+  ],
+  "Moonpay": [
+   {
+    "match": "exact",
+    "names": {
+     "MoonPay (UK) Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "MoonPay Europe B.V.": "93501153"
+    },
+    "source": "nl"
+   }
+  ],
+  "Morgan Stanley": [
+   {
+    "match": "exact",
+    "names": {
+     "Morgan Stanley UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Motorola Solutions": [
+   {
+    "match": "exact",
+    "names": {
+     "Motorola Solutions UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Motorola Solutions Netherlands B.V.": "17068204"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Motorola Solutions Ireland Ltd": {
+      "2026": 2
+     },
+     "Motorola Solutions Ireland Ltd.": {
+      "2025": 20
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Munters": [
+   {
+    "match": "exact",
+    "names": {
+     "Munters Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Munters Netherlands B.V.": "50307177"
+    },
+    "source": "nl"
+   }
+  ],
+  "Murex": [
+   {
+    "match": "exact",
+    "names": {
+     "Murex UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "NCR": [
+   {
+    "match": "exact",
+    "names": {
+     "NCR Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "NCR Nederland B.V.": "33019902"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "NCR LIMITED": {
+      "2026": 1
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "NICE": [
+   {
+    "match": "exact",
+    "names": {
+     "NICE Netherlands B.V.": "34140161"
+    },
+    "source": "nl"
+   }
+  ],
+  "NXP Semiconductors": [
+   {
+    "match": "exact",
+    "names": {
+     "NXP Semiconductors N.V.": "34253298",
+     "NXP Semiconductors Netherlands B.V.": "17070621"
+    },
+    "source": "nl"
+   }
+  ],
+  "Nab": [
+   {
+    "match": "loose",
+    "names": {
+     "NAB Services (UK) Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Nagarro": [
+   {
+    "match": "loose",
+    "names": {
+     "Nagarro Software Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Narvar": [
+   {
+    "match": "exact",
+    "names": {
+     "Narvar UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Nasdaq": [
+   {
+    "match": "exact",
+    "names": {
+     "Nasdaq Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "National Instruments": [
+   {
+    "match": "exact",
+    "names": {
+     "National Instruments Corporation (UK) Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "National Instruments Netherlands B.V.": "30116813"
+    },
+    "source": "nl"
+   }
+  ],
+  "Navan": [
+   {
+    "match": "loose",
+    "names": {
+     "Navan Labs UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Navan Netherlands B.V.": "71801375"
+    },
+    "source": "nl"
+   }
+  ],
+  "Neara": [
+   {
+    "match": "exact",
+    "names": {
+     "Neara Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Nebius": [
+   {
+    "match": "exact",
+    "names": {
+     "Nebius UK Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Nebius B.V.": "51515539"
+    },
+    "source": "nl"
+   }
+  ],
+  "Neo4j": [
+   {
+    "match": "exact",
+    "names": {
+     "NEO4J UK LIMITED": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "NetDocuments": [
+   {
+    "match": "exact",
+    "names": {
+     "NetDocuments Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Netflix": [
+   {
+    "match": "loose",
+    "names": {
+     "Netflix Services UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Netflix International B.V.": "62266519"
+    },
+    "source": "nl"
+   }
+  ],
+  "Netgear": [
+   {
+    "match": "exact",
+    "names": {
+     "Netgear Netherlands B.V.": "24360451"
+    },
+    "source": "nl"
+   }
+  ],
+  "Netskope": [
+   {
+    "match": "exact",
+    "names": {
+     "Netskope UK Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "New Relic": [
+   {
+    "match": "exact",
+    "names": {
+     "New Relic UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "New Relic International Limited": {
+      "2025": 2
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "NewRocket": [
+   {
+    "match": "exact",
+    "names": {
+     "NewRocket (UK) Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Newmark": [
+   {
+    "match": "loose",
+    "names": {
+     "Newmark Holdings Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Nexthink": [
+   {
+    "match": "exact",
+    "names": {
+     "Nexthink Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Nium": [
+   {
+    "match": "exact",
+    "names": {
+     "Nium Europe B.V.": "88844889"
+    },
+    "source": "nl"
+   }
+  ],
+  "Nokia": [
+   {
+    "match": "exact",
+    "names": {
+     "Nokia UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Notion": [
+   {
+    "match": "loose",
+    "names": {
+     "Notion Labs, Ireland Limited": {
+      "2025": 2,
+      "2026": 1
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Novartis": [
+   {
+    "match": "exact",
+    "names": {
+     "Novartis": "09016995"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Novartis Ireland Limited": {
+      "2025": 6,
+      "2026": 9
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Numerix": [
+   {
+    "match": "loose",
+    "names": {
+     "Numerix Software LTD": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Nvidia": [
+   {
+    "match": "exact",
+    "names": {
+     "NVIDIA Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "O2h": [
+   {
+    "match": "exact",
+    "names": {
+     "o2h Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Oaknorth": [
+   {
+    "match": "exact",
+    "names": {
+     "Oaknorth (UK) Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Oceaneering": [
+   {
+    "match": "loose",
+    "names": {
+     "Oceaneering International Services Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Okta": [
+   {
+    "match": "exact",
+    "names": {
+     "Okta UK Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "OneTrust": [
+   {
+    "match": "loose",
+    "names": {
+     "OneTrust Technology Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "OneTrust Netherlands": "91737826"
+    },
+    "source": "nl"
+   }
+  ],
+  "OpenAI": [
+   {
+    "match": "exact",
+    "names": {
+     "OpenAI UK Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "OpenAI Ireland Limited": {
+      "2026": 2
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "OpenTable": [
+   {
+    "match": "loose",
+    "names": {
+     "OpenTable International Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Optiver": [
+   {
+    "match": "exact",
+    "names": {
+     "Optiver UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Optiver Holding B.V.": "33186961",
+     "Optiver Services B.V.": "61090891"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Optiver": [
+      "abhi-jha gist: Amsterdam, Netherlands"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
+  "Orca Security": [
+   {
+    "match": "exact",
+    "names": {
+     "Orca Security UK Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Orion Innovation": [
+   {
+    "match": "loose",
+    "names": {
+     "Orion Innovation Solutions UK Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Otis": [
+   {
+    "match": "exact",
+    "names": {
+     "Otis Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Otis B.V.": "33076048"
+    },
+    "source": "nl"
+   }
+  ],
+  "Outpost VFX": [
+   {
+    "match": "exact",
+    "names": {
+     "Outpost VFX Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Outreach": [
+   {
+    "match": "exact",
+    "names": {
+     "Outreach Corporation UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "PSI CRO": [
+   {
+    "match": "exact",
+    "names": {
+     "PSI CRO UK Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Palo Alto Networks": [
+   {
+    "match": "exact",
+    "names": {
+     "PALO ALTO NETWORKS (UK) LIMITED": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Palo Alto Networks (Netherlands) B.V.": "54620074"
+    },
+    "source": "nl"
+   }
+  ],
+  "Paxos": [
+   {
+    "match": "loose",
+    "names": {
+     "Paxos Technology Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "PayPal": [
+   {
+    "match": "exact",
+    "names": {
+     "PayPal Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ],
+     "PayPal UK Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "PayPal Limited": "34318455"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "PayPal Europe Services Limited": {
+      "2025": 8,
+      "2026": 9
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Payoneer": [
+   {
+    "match": "exact",
+    "names": {
+     "PAYONEER (UK) LIMITED": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Pearson": [
+   {
+    "match": "exact",
+    "names": {
+     "Pearson plc": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Perficient": [
+   {
+    "match": "exact",
+    "names": {
+     "Perficient UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Perforce": [
+   {
+    "match": "loose",
+    "names": {
+     "Perforce Software UK Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Pfizer": [
+   {
+    "match": "exact",
+    "names": {
+     "Pfizer Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Pfizer B.V.": "34087728"
+    },
+    "source": "nl"
+   }
+  ],
+  "Philips": [
+   {
+    "match": "exact",
+    "names": {
+     "Philips Nederland B.V.": "17039420"
+    },
+    "source": "nl"
+   }
+  ],
+  "Ping Identity": [
+   {
+    "match": "exact",
+    "names": {
+     "Ping Identity Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Point72": [
+   {
+    "match": "exact",
+    "names": {
+     "Point72 UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Popsockets": [
+   {
+    "match": "exact",
+    "names": {
+     "PopSockets Europe": "66735963"
+    },
+    "source": "nl"
+   }
+  ],
+  "Prodege": [
+   {
+    "match": "exact",
+    "names": {
+     "Prodege UK, Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Protegrity": [
+   {
+    "match": "exact",
+    "names": {
+     "Protegrity Europe Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Protolabs": [
+   {
+    "match": "exact",
+    "names": {
+     "Protolabs Europe B.V.": "57883424"
+    },
+    "source": "nl"
+   }
+  ],
+  "PubMatic": [
+   {
+    "match": "exact",
+    "names": {
+     "PubMatic Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "QAD, Inc.": [
+   {
+    "match": "exact",
+    "names": {
+     "QAD EUROPE LTD": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "QAD Netherlands B.V.": "30152748"
+    },
+    "source": "nl"
+   }
+  ],
+  "QIMA": [
+   {
+    "match": "exact",
+    "names": {
+     "QIMA (UK) LIMITED": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Qiagen": [
+   {
+    "match": "exact",
+    "names": {
+     "QIAGEN Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Qiagen N.V.": "12036979"
+    },
+    "source": "nl"
+   }
+  ],
+  "Qualcomm": [
+   {
+    "match": "loose",
+    "names": {
+     "Qualcomm Technologies International Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Qualcomm Technologies Netherlands B.V.": "56169841"
+    },
+    "source": "nl"
+   }
+  ],
+  "Qualys": [
+   {
+    "match": "exact",
+    "names": {
+     "Qualys Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Qualys Netherlands B.V.": "67815294"
+    },
+    "source": "nl"
+   }
+  ],
+  "Quantcast": [
+   {
+    "match": "exact",
+    "names": {
+     "Quantcast Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Quantiphi": [
+   {
+    "match": "exact",
+    "names": {
+     "Quantiphi Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Quantiphi Netherlands B.V.": "82820465"
+    },
+    "source": "nl"
+   }
+  ],
+  "Quantium": [
+   {
+    "match": "exact",
+    "names": {
+     "Quantium Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Qube Research & Technologies": [
+   {
+    "match": "exact",
+    "names": {
+     "Qube Research & Technologies Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "REXEL": [
+   {
+    "match": "exact",
+    "names": {
+     "REXEL UK LIMITED": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Ramboll": [
+   {
+    "match": "exact",
+    "names": {
+     "Ramboll UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Recorded Future": [
+   {
+    "match": "exact",
+    "names": {
+     "Recorded Future UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Red Bull": [
+   {
+    "match": "exact",
+    "names": {
+     "Red Bull Company Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Red Bull Nederland": "31044812"
+    },
+    "source": "nl"
+   }
+  ],
+  "Red Hat": [
+   {
+    "match": "exact",
+    "names": {
+     "Red Hat UK Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Red Hat B.V.": "32110594"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Red Hat Limited": {
+      "2025": 31,
+      "2026": 16
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Redis": [
+   {
+    "match": "exact",
+    "names": {
+     "Redis EMEA Ltd.": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Redwood Software": [
+   {
+    "match": "exact",
+    "names": {
+     "Redwood Software UK Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Redwood Software Nederland B.V.": "30141687"
+    },
+    "source": "nl"
+   }
+  ],
+  "Reltio": [
+   {
+    "match": "exact",
+    "names": {
+     "Reltio UK Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Renesas Electronics": [
+   {
+    "match": "exact",
+    "names": {
+     "Renesas Electronics Europe GmbH": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Resilinc": [
+   {
+    "match": "exact",
+    "names": {
+     "Resilinc UK Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Revantage": [
+   {
+    "match": "loose",
+    "names": {
+     "Revantage Global Services UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Revantage Europe Netherlands B.V.": "66531772"
+    },
+    "source": "nl"
+   }
+  ],
+  "Revinate": [
+   {
+    "match": "exact",
+    "names": {
+     "Revinate B.V.": "57292094"
+    },
+    "source": "nl"
+   }
+  ],
+  "Revvity": [
+   {
+    "match": "loose",
+    "names": {
+     "Revvity (UK) Holdings Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Revvity Nederland B.V.": "20078200"
+    },
+    "source": "nl"
+   }
+  ],
+  "Roblox": [
+   {
+    "match": "exact",
+    "names": {
+     "Roblox UK Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Rockstar Games": [
+   {
+    "match": "exact",
+    "names": {
+     "Rockstar Games UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Rohlig": [
+   {
+    "match": "exact",
+    "names": {
+     "Rohlig UK Ltd": [
+      "Global Business Mobility: Graduate Trainee",
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Roku": [
+   {
+    "match": "exact",
+    "names": {
+     "Roku UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Roku International B.V.": "75604450"
+    },
+    "source": "nl"
+   }
+  ],
+  "Rsm": [
+   {
+    "match": "exact",
+    "names": {
+     "RSM US (UK) Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "RSM Netherlands Holding N.V.": "34255762"
+    },
+    "source": "nl"
+   }
+  ],
+  "Rubrik": [
+   {
+    "match": "exact",
+    "names": {
+     "Rubrik UK Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Rubrik The Netherlands B.V.": "70358966"
+    },
+    "source": "nl"
+   }
+  ],
+  "Rws": [
+   {
+    "match": "loose",
+    "names": {
+     "RWS Global UK Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "S&P Global": [
+   {
+    "match": "exact",
+    "names": {
+     "S&P Global Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ],
+     "S&P Global UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "SGS": [
+   {
+    "match": "exact",
+    "names": {
+     "SGS Nederland B.V.": "24226722"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SGS Ireland Limited": {
+      "2025": 2,
+      "2026": 10
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Sabre": [
+   {
+    "match": "loose",
+    "names": {
+     "Sabre Global Technologies Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Salary Finance": [
+   {
+    "match": "exact",
+    "names": {
+     "Salary Finance Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Salesforce": [
+   {
+    "match": "exact",
+    "names": {
+     "Salesforce UK Limited": [
+      "Global Business Mobility: Graduate Trainee",
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Salesloft": [
+   {
+    "match": "exact",
+    "names": {
+     "SalesLoft UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "SambaNova": [
+   {
+    "match": "loose",
+    "names": {
+     "SambaNova Systems UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Samsara": [
+   {
+    "match": "exact",
+    "names": {
+     "Samsara Nederland B.V.": "84377577"
+    },
+    "source": "nl"
+   }
+  ],
+  "Samsonite": [
+   {
+    "match": "exact",
+    "names": {
+     "Samsonite Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Saviynt": [
+   {
+    "match": "exact",
+    "names": {
+     "SAVIYNT EUROPE LTD": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Scale AI": [
+   {
+    "match": "exact",
+    "names": {
+     "Scale AI Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Schrödinger": [
+   {
+    "match": "loose",
+    "names": {
+     "Schrodinger Technologies Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Scopely": [
+   {
+    "match": "exact",
+    "names": {
+     "Scopely UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Sensor Tower": [
+   {
+    "match": "exact",
+    "names": {
+     "Sensor Tower UK Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "SentinelOne": [
+   {
+    "match": "exact",
+    "names": {
+     "SentinelOne B.V.": "78312949"
+    },
+    "source": "nl"
+   }
+  ],
+  "ServiceNow": [
+   {
+    "match": "exact",
+    "names": {
+     "ServiceNow UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ServiceNow Nederland B.V.": "53045998"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ServiceNow Ireland Limited": {
+      "2025": 39,
+      "2026": 27
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Servify": [
+   {
+    "match": "exact",
+    "names": {
+     "Servify UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Shell": [
+   {
+    "match": "loose",
+    "names": {
+     "Shell International Ltd": [
+      "Global Business Mobility: Graduate Trainee",
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Shell Nederland B.V.": "24098177"
+    },
+    "source": "nl"
+   }
+  ],
+  "ShipBob, Inc.": [
+   {
+    "match": "exact",
+    "names": {
+     "ShipBob UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Showpad": [
+   {
+    "match": "exact",
+    "names": {
+     "Showpad Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Sibylline Ltd": [
+   {
+    "match": "exact",
+    "names": {
+     "Sibylline Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Sifive": [
+   {
+    "match": "exact",
+    "names": {
+     "SiFive UK Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Sigmoid": [
+   {
+    "match": "loose",
+    "names": {
+     "Sigmoid HQ Limited": {
+      "2026": 1
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Signode": [
+   {
+    "match": "exact",
+    "names": {
+     "Signode UK Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Sika AG": [
+   {
+    "match": "exact",
+    "names": {
+     "Sika Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Sika Nederland B.V.": "30062406"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Sika Ireland Limited": {
+      "2026": 1
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Silvaco": [
+   {
+    "match": "exact",
+    "names": {
+     "SILVACO EUROPE LTD": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Simpplr": [
+   {
+    "match": "exact",
+    "names": {
+     "SIMPPLR Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Sinch": [
+   {
+    "match": "exact",
+    "names": {
+     "Sinch UK Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "SingleStore": [
+   {
+    "match": "exact",
+    "names": {
+     "Singlestore UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Skechers": [
+   {
+    "match": "exact",
+    "names": {
+     "Skechers USA Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Smarsh": [
+   {
+    "match": "loose",
+    "names": {
+     "Smarsh Software UK Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Smart Working Solutions": [
+   {
+    "match": "exact",
+    "names": {
+     "Smart Working Solutions Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Smartsheet": [
+   {
+    "match": "exact",
+    "names": {
+     "SMARTSHEET UK LIMITED": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Snap": [
+   {
+    "match": "loose",
+    "names": {
+     "Snap Group Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Soho House & Co.": [
+   {
+    "match": "exact",
+    "names": {
+     "Soho House Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Solenis": [
+   {
+    "match": "exact",
+    "names": {
+     "Solenis Netherlands B.V.": "60529075"
+    },
+    "source": "nl"
+   }
+  ],
+  "Sonatus": [
+   {
+    "match": "exact",
+    "names": {
+     "Sonatus Ireland Limited": {
+      "2025": 1,
+      "2026": 4
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Sonatype": [
+   {
+    "match": "exact",
+    "names": {
+     "Sonatype UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "SonicWall": [
+   {
+    "match": "exact",
+    "names": {
+     "SonicWall (UK) Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Sophos": [
+   {
+    "match": "exact",
+    "names": {
+     "SOPHOS LIMITED": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Sopra Steria": [
+   {
+    "match": "exact",
+    "names": {
+     "Sopra Steria Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Sopra Steria Nederland B.V.": "30086514"
+    },
+    "source": "nl"
+   }
+  ],
+  "Sphera": [
+   {
+    "match": "loose",
+    "names": {
+     "Sphera Solutions UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Sphera Solutions": "66233089"
+    },
+    "source": "nl"
+   }
+  ],
+  "Spotify": [
+   {
+    "match": "exact",
+    "names": {
+     "Spotify Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Spotify Netherlands B.V.": "34388788"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Spotify Ireland Limited": {
+      "2025": 2,
+      "2026": 2
+     }
+    },
+    "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Spotify": [
+      "abhi-jha gist: London",
+      "abhi-jha gist: Sweden, Stockholm",
+      "shubheksha list: Stockholm, SE",
+      "shubheksha list: London, UK"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
+  "Spreetail": [
+   {
+    "match": "exact",
+    "names": {
+     "Spreetail UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Sprinklr": [
+   {
+    "match": "exact",
+    "names": {
+     "Sprinklr UK Ltd": [
+      "Global Business Mobility: Graduate Trainee",
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Squarepoint Capital": [
+   {
+    "match": "exact",
+    "names": {
+     "Squarepoint Capital LLP": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "StarRez": [
+   {
+    "match": "exact",
+    "names": {
+     "StarRez Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Startek®": [
+   {
+    "match": "loose",
+    "names": {
+     "STARTEK GROUP LTD": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "State Street": [
+   {
+    "match": "loose",
+    "names": {
+     "State Street Bank International GmbH Amsterdam Branch": "58459235"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "State Street International (Ireland) Limited": {
+      "2025": 23,
+      "2026": 7
+     },
+     "State Street Technology (Ireland) Limited": {
+      "2026": 17
+     },
+     "State Street Technology (Ireland) Ltd": {
+      "2025": 3
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Stripe": [
+   {
+    "match": "loose",
+    "names": {
+     "Stripe Payments UK Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Stripe Netherlands B.V.": "66626641"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Stripe Payments Europe Limited": {
+      "2025": 5,
+      "2026": 1
+     },
+     "Stripe Technology Company Limited": {
+      "2025": 34,
+      "2026": 60
+     },
+     "Stripe Technology Europe Limited": {
+      "2025": 1
+     }
+    },
+    "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Stripe": [
+      "shubheksha list: London, UK",
+      "shubheksha list: Dublin, IE"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
+  "Stäubli": [
+   {
+    "match": "exact",
+    "names": {
+     "Staubli (UK) Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Surveymonkey": [
+   {
+    "match": "exact",
+    "names": {
+     "SurveyMonkey Netherlands B.V.": "65508416"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SurveyMonkey Europe Unlimited Company": {
+      "2026": 1
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Sutherland": [
+   {
+    "match": "loose",
+    "names": {
+     "Sutherland Digital UK Private Limited": [
+      "Global Business Mobility: Graduate Trainee",
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ],
+     "Sutherland Global Services UK Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Sycurio": [
+   {
+    "match": "exact",
+    "names": {
+     "Sycurio Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Syndigo": [
+   {
+    "match": "exact",
+    "names": {
+     "Syndigo UK Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Synechron": [
+   {
+    "match": "exact",
+    "names": {
+     "Synechron Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Syngenta Group": [
+   {
+    "match": "loose",
+    "names": {
+     "Syngenta Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "T.EN": [
+   {
+    "match": "exact",
+    "names": {
+     "T.EN Netherlands B.V.": "27069724"
+    },
+    "source": "nl"
+   }
+  ],
+  "Taboola": [
+   {
+    "match": "exact",
+    "names": {
+     "Taboola Europe Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Take-Two Interactive Software, Inc.": [
+   {
+    "match": "exact",
+    "names": {
+     "Take-Two Interactive Software Europe Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Talon.One": [
+   {
+    "match": "exact",
+    "names": {
+     "Talon.One UK Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Teads": [
+   {
+    "match": "exact",
+    "names": {
+     "Teads Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Tekion": [
+   {
+    "match": "exact",
+    "names": {
+     "Tekion UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Telefonica Tech": [
+   {
+    "match": "exact",
+    "names": {
+     "Telefonica Tech UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Telnyx": [
+   {
+    "match": "exact",
+    "names": {
+     "Telnyx UK Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Telnyx Netherlands B.V.": "82622124"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Telnyx Ireland Limited": {
+      "2025": 2,
+      "2026": 2
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Telus Digital": [
+   {
+    "match": "loose",
+    "names": {
+     "TELUS International (U.K.) Ltd.": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Terex": [
+   {
+    "match": "exact",
+    "names": {
+     "Terex GB Limited": [
+      "Global Business Mobility: Graduate Trainee",
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Texas Instruments": [
+   {
+    "match": "exact",
+    "names": {
+     "Texas Instruments Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Texas Instruments Holland B.V.": "06022045"
+    },
+    "source": "nl"
+   }
+  ],
+  "Tgs": [
+   {
+    "match": "exact",
+    "names": {
+     "TGS UK LTD": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "The Citco Group Limited": [
+   {
+    "match": "loose",
+    "names": {
+     "Citco Bank Nederland N.V.": "33185291",
+     "Citco Nederland B.V.": "33161897"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Citco Bank Nederland NV Dublin Branch": {
+      "2026": 1
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "The Hackett Group": [
+   {
+    "match": "exact",
+    "names": {
+     "THE HACKETT GROUP LIMITED": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Thoughtworks": [
+   {
+    "match": "exact",
+    "names": {
+     "ThoughtWorks Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Thoughtworks Netherlands B.V.": "72270616"
+    },
+    "source": "nl"
+   }
+  ],
+  "Threecolts": [
+   {
+    "match": "exact",
+    "names": {
+     "THREECOLTS UK Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Tjx": [
+   {
+    "match": "exact",
+    "names": {
+     "TJX UK": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Tower Research Capital": [
+   {
+    "match": "exact",
+    "names": {
+     "Tower Research Capital Europe Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Tower Research Capital Europe B.V.": "71179569"
+    },
+    "source": "nl"
+   }
+  ],
+  "TraceLink, Inc": [
+   {
+    "match": "exact",
+    "names": {
+     "Tracelink Europe Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Transmit Security": [
+   {
+    "match": "exact",
+    "names": {
+     "TRANSMIT SECURITY UK LTD": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Trintech": [
+   {
+    "match": "exact",
+    "names": {
+     "Trintech (UK) Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "TripleLift": [
+   {
+    "match": "exact",
+    "names": {
+     "TripleLift UK Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Trm Labs": [
+   {
+    "match": "exact",
+    "names": {
+     "TRM Labs UK Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Turner & Townsend": [
+   {
+    "match": "exact",
+    "names": {
+     "Turner & Townsend Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Turner & Townsend Europe": "34130522"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Turner & Townsend Limited": {
+      "2026": 23
+     },
+     "Turner & Townsend Ltd": {
+      "2025": 39
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Turnitin, LLC": [
+   {
+    "match": "exact",
+    "names": {
+     "Turnitin UK LTD": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Twilio": [
+   {
+    "match": "exact",
+    "names": {
+     "Twilio UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Twilio Netherlands B.V.": "73420514"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Twilio Ireland Limited": {
+      "2025": 3,
+      "2026": 3
+     }
+    },
+    "source": "ie"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Twilio": [
+      "shubheksha list: London, UK"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
+  "UKG": [
+   {
+    "match": "loose",
+    "names": {
+     "UKG Technology Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Ubisoft": [
+   {
+    "match": "exact",
+    "names": {
+     "Ubisoft": [
+      "abhi-jha gist: Berlin, Germany"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
+  "UiPath": [
+   {
+    "match": "exact",
+    "names": {
+     "UIPATH UK LIMITED": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Uniphore": [
+   {
+    "match": "loose",
+    "names": {
+     "Uniphore Technologies UK Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Unispace": [
+   {
+    "match": "loose",
+    "names": {
+     "Unispace Global Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Unispace B.V.": "67070809"
+    },
+    "source": "nl"
+   }
+  ],
+  "Unisys": [
+   {
+    "match": "exact",
+    "names": {
+     "Unisys Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Unisys Nederland N.V.": "33000201"
+    },
+    "source": "nl"
+   }
+  ],
+  "UnitedLex": [
+   {
+    "match": "exact",
+    "names": {
+     "UNITEDLEX LIMITED": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Unlimit": [
+   {
+    "match": "exact",
+    "names": {
+     "Unlimit UK Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "VML": [
+   {
+    "match": "exact",
+    "names": {
+     "VML(UK) Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "VML Netherlands B.V.": "32092788"
+    },
+    "source": "nl"
+   }
+  ],
+  "Valeo": [
+   {
+    "match": "exact",
+    "names": {
+     "Valeo UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Valmet": [
+   {
+    "match": "exact",
+    "names": {
+     "Valmet Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Valmet B.V.": "62681532"
+    },
+    "source": "nl"
+   }
+  ],
+  "Valtech": [
+   {
+    "match": "exact",
+    "names": {
+     "Valtech Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Valtech B.V.": "24300177"
+    },
+    "source": "nl"
+   }
+  ],
+  "Vantive": [
+   {
+    "match": "exact",
+    "names": {
+     "Vantive Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Vantive B.V.": "90778049"
+    },
+    "source": "nl"
+   }
+  ],
+  "VaynerMedia LLC": [
+   {
+    "match": "exact",
+    "names": {
+     "VAYNERMEDIA LIMITED": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Veeam Software": [
+   {
+    "match": "exact",
+    "names": {
+     "Veeam Software UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Veeam Software B.V.": "67514162"
+    },
+    "source": "nl"
+   }
+  ],
+  "Vendavo": [
+   {
+    "match": "exact",
+    "names": {
+     "Vendavo UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Vercel": [
+   {
+    "match": "exact",
+    "names": {
+     "Vercel UK Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Vercel": [
+      "abhi-jha gist: London",
+      "abhi-jha gist: Amsterdam, Netherlands",
+      "abhi-jha gist: Dublin, Ireland"
+     ]
+    },
+    "source": "lists"
+   }
+  ],
+  "Veremark": [
+   {
+    "match": "exact",
+    "names": {
+     "Veremark Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Verifone": [
+   {
+    "match": "exact",
+    "names": {
+     "Verifone (UK) LIMITED": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Verifone Payments B.V.": "34246766"
+    },
+    "source": "nl"
+   }
+  ],
+  "Verint": [
+   {
+    "match": "loose",
+    "names": {
+     "Verint Systems UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Veripark": [
+   {
+    "match": "loose",
+    "names": {
+     "VeriPark Software UK Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Verizon": [
+   {
+    "match": "exact",
+    "names": {
+     "Verizon UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Verizon Nederland B.V.": "34199467"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Verizon Services Ireland Limited": {
+      "2025": 8
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Version 1": [
+   {
+    "match": "loose",
+    "names": {
+     "Version 1 Solutions Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ],
+     "Version 1 Technology Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Version 1 Software Limited": {
+      "2025": 12,
+      "2026": 14
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Vertiv": [
+   {
+    "match": "loose",
+    "names": {
+     "Vertiv Company Group Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Vertiv Ireland Ltd": {
+      "2026": 1
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Visa": [
+   {
+    "match": "exact",
+    "names": {
+     "VISA EUROPE LIMITED": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ],
+     "Visa Europe Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Visa Europe (Netherlands) B.V.": "34304949"
+    },
+    "source": "nl"
+   }
+  ],
+  "Vishay": [
+   {
+    "match": "exact",
+    "names": {
+     "Vishay Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "WNS Global Services": [
+   {
+    "match": "exact",
+    "names": {
+     "WNS Global Services (UK)": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "WNS Global Services Netherlands B.V.": "34272863"
+    },
+    "source": "nl"
+   }
+  ],
+  "WPP Media": [
+   {
+    "match": "exact",
+    "names": {
+     "WPP Media UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "WPP Media B.V.": "34108169"
+    },
+    "source": "nl"
+   }
+  ],
+  "Wabtec": [
+   {
+    "match": "exact",
+    "names": {
+     "Wabtec UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Weatherford": [
+   {
+    "match": "exact",
+    "names": {
+     "Weatherford UK Limited": [
+      "Global Business Mobility: Graduate Trainee",
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Weatherford Netherlands B.V.": "34231980"
+    },
+    "source": "nl"
+   }
+  ],
+  "Weg": [
+   {
+    "match": "exact",
+    "names": {
+     "WEG (UK) LTD": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "WEG Holding B.V.": "91188350"
+    },
+    "source": "nl"
+   }
+  ],
+  "Wells Fargo": [
+   {
+    "match": "loose",
+    "names": {
+     "Wells Fargo Bank International": {
+      "2025": 1
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Western Digital": [
+   {
+    "match": "exact",
+    "names": {
+     "Western Digital (UK) Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Wise": [
+   {
+    "match": "loose",
+    "names": {
+     "Wise Payments Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Wiz, Inc.": [
+   {
+    "match": "loose",
+    "names": {
+     "WIZ TECHNOLOGIES LTD": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Wolters Kluwer": [
+   {
+    "match": "exact",
+    "names": {
+     "Wolters Kluwer (UK) Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Wolters Kluwer N.V.": "33202517",
+     "Wolters Kluwer Nederland B.V.": "38013226"
+    },
+    "source": "nl"
+   }
+  ],
+  "Workato": [
+   {
+    "match": "exact",
+    "names": {
+     "Workato UK Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Workday": [
+   {
+    "match": "exact",
+    "names": {
+     "Workday (UK) Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Workday B.V.": "53679660"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Workday Limited": {
+      "2025": 36,
+      "2026": 18
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Wri": [
+   {
+    "match": "exact",
+    "names": {
+     "WRI Europe": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Wrisk": [
+   {
+    "match": "exact",
+    "names": {
+     "WRISK LIMITED": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Xometry": [
+   {
+    "match": "exact",
+    "names": {
+     "Xometry UK Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Xometry Europe": [
+   {
+    "match": "exact",
+    "names": {
+     "Xometry UK Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Xpel": [
+   {
+    "match": "exact",
+    "names": {
+     "XPEL B.V.": "65627555"
+    },
+    "source": "nl"
+   }
+  ],
+  "Yext": [
+   {
+    "match": "exact",
+    "names": {
+     "Yext Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Zafin": [
+   {
+    "match": "loose",
+    "names": {
+     "ZAFIN LABS UK LTD": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Zafin Labs AG": "70868468"
+    },
+    "source": "nl"
+   }
+  ],
+  "Zeeco": [
+   {
+    "match": "exact",
+    "names": {
+     "Zeeco Europe Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Zeller": [
+   {
+    "match": "exact",
+    "names": {
+     "Zeller UK Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Zensar": [
+   {
+    "match": "loose",
+    "names": {
+     "Zensar Technologies (UK) Ltd": [
+      "Global Business Mobility: Graduate Trainee",
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Zeta Global": [
+   {
+    "match": "exact",
+    "names": {
+     "Zeta Global Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Zinnov": [
+   {
+    "match": "exact",
+    "names": {
+     "Zinnov UK Private Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "ZoomInfo Technologies LLC": [
+   {
+    "match": "loose",
+    "names": {
+     "ZoomInfo UK LTD": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "ZoomInfo Ireland Limited": {
+      "2025": 1
+     }
+    },
+    "source": "ie"
+   }
+  ],
+  "Zscaler": [
+   {
+    "match": "exact",
+    "names": {
+     "Zscaler UK Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Zscaler Netherlands B.V.": "67202829"
+    },
+    "source": "nl"
+   }
+  ],
+  "Zuora": [
+   {
+    "match": "exact",
+    "names": {
+     "Zuora UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Zuru": [
+   {
+    "match": "exact",
+    "names": {
+     "ZURU UK Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "dunnhumby": [
+   {
+    "match": "exact",
+    "names": {
+     "dunnhumby Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "eClerx": [
+   {
+    "match": "exact",
+    "names": {
+     "eClerx Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "eClerx B.V.": "77976207"
+    },
+    "source": "nl"
+   }
+  ],
+  "ib vogt GmbH": [
+   {
+    "match": "exact",
+    "names": {
+     "ib vogt UK Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "project44": [
+   {
+    "match": "exact",
+    "names": {
+     "Project44 B.V.": "81471068"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Project44": [
+      "abhi-jha gist: Berlin, Germany"
+     ]
+    },
+    "source": "lists"
+   }
+  ]
+ },
+ "sources": {
+  "ie": {
+   "downloaded": "2026-10-21",
+   "entries": 12715,
+   "licence": "Government of Ireland copyright: reuse with the source and copyright acknowledged",
+   "page": "https://enterprise.gov.ie/en/what-we-do/workplace-and-skills/employment-permits/statistics/",
+   "title": "DETE employment permits issued to companies",
+   "years": [
+    2025,
+    2026
+   ]
+  },
+  "lists": {
+   "downloaded": "2026-10-21",
+   "entries": 130,
+   "licence": "none stated (only matched names are recorded)",
+   "pages": [
+    "https://gist.github.com/abhi-jha/5225e0dcc912174dda6b7f01e8a24156",
+    "https://github.com/shubheksha/companies-sponsoring-visas"
+   ],
+   "title": "Community lists of companies hiring from India with visa and relocation"
+  },
+  "nl": {
+   "downloaded": "2026-10-21",
+   "entries": 13012,
+   "licence": "none stated on the page",
+   "page": "https://ind.nl/en/public-register-recognised-sponsors/public-register-regular-labour-and-highly-skilled-migrants",
+   "published": "2026-10-05",
+   "title": "IND public register Work (recognised sponsors)"
+  },
+  "uk": {
+   "downloaded": "2026-10-21",
+   "entries": 123205,
+   "file": "https://assets.publishing.service.gov.uk/media/6ad71d3d67af5c09d047985e/SP_-_Worker_and_Temporary_Worker_Web_Register_-_2026-10-20.csv",
+   "licence": "Open Government Licence v3.0",
+   "page": "https://www.gov.uk/government/publications/register-of-licensed-sponsors-workers",
+   "published": "2026-10-20",
+   "title": "Register of licensed sponsors: workers"
+  }
+ }
+}

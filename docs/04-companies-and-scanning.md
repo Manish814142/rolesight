@@ -238,6 +238,74 @@ with `discover`. `autopilot validate` rewrites `companies.json` in place and acc
 
 ---
 
+## Visa sponsorship: which companies can sponsor
+
+For someone in India applying abroad, a job counts only if the employer sponsors the visa. **Most postings never say.**
+Measured on 2026-10-21 (`scripts/measure_visa_wording.py`): every job on the 989 Greenhouse, Lever, Ashby, Workable, Recruitee
+and Personio boards of the list (71,121 jobs; the other ATSs return India only or need a request per job), titles with an
+include word:
+
+| Place | Jobs | Visa offered | Refused | Says nothing |
+|---|---|---|---|---|
+| UK | 557 | 20 (3.6%) | 56 (10.1%) | 473 (84.9%) |
+| Germany | 157 | 2 (1.3%) | 2 (1.3%) | 147 (93.6%) |
+| Netherlands | 125 | 7 (5.6%) | 0 | 111 (88.8%) |
+| Ireland | 147 | 5 (3.4%) | 5 (3.4%) | 136 (92.5%) |
+| UAE | 46 | 0 | 0 | 46 (100%) |
+| Singapore | 229 | 2 (0.9%) | 2 (0.9%) | 224 (97.8%) |
+
+The rest mention a visa without a clear answer. These are pattern counts. In a sample of one posting per company, read by hand,
+"refused" was right 12 of 12 and "offered" 10 of 12; a refusal written as a bare requirement ("Right to work in Singapore")
+lands in "no clear answer". The offers come from few companies: 116 offering postings in all places, 79 of them Anthropic's.
+
+So the employer's public record is used instead: **`job_hunt/data/visa_sponsors.json`**, built by
+`scripts/build_visa_sponsors.py` from:
+
+| Source | What being on it means | Size (2026-10-21) | Reuse terms |
+|---|---|---|---|
+| UK: GOV.UK [register of licensed sponsors: workers](https://www.gov.uk/government/publications/register-of-licensed-sponsors-workers) (2026-10-20) | licensed to sponsor Skilled Worker or Global Business Mobility visas | 123,205 organisations on those routes | Open Government Licence v3.0 |
+| Netherlands: IND [public register "Work"](https://ind.nl/en/public-register-recognised-sponsors/public-register-regular-labour-and-highly-skilled-migrants) (2026-10-05) | recognised sponsor, which the highly skilled migrant permit needs | 13,012 | none stated on the page |
+| Ireland: DETE [employment permits issued to companies](https://enterprise.gov.ie/en/what-we-do/workplace-and-skills/employment-permits/statistics/), 2025 and Jan–Sep 2026 | permits actually granted, with the count per year | 12,715 employers | Government of Ireland copyright: reuse with the source acknowledged |
+| Community lists: [abhi-jha's gist](https://gist.github.com/abhi-jha/5225e0dcc912174dda6b7f01e8a24156), [shubheksha's list](https://github.com/shubheksha/companies-sponsoring-visas) | named as hiring from India with visa and relocation | 130 names | none stated |
+
+Germany, the UAE and Singapore publish no list of sponsoring employers. The file holds only companies on `companies.json`,
+each with the source's own entry (Canva: "CANVA UK OPERATIONS LIMITED" with its two UK routes, and the gist's "London"; an
+Irish employer's permit counts per year), never a copy of a register. **2026-10-21: 534 of the 1,589 companies have evidence** (UK 467, Netherlands 185, Ireland 84, lists 18).
+
+**How names are matched, and checked.** An *exact* match agrees once legal suffixes and country words are dropped
+("Google (UK) Limited" is Google). A *loose* one agrees only once generic words go too ("Stripe Payments UK Ltd" is Stripe).
+A name is not proof: "Stripe Partners", "Amazon Filters Ltd" and "Phoenix Software Limited" are other businesses. So a loose
+match counts only when someone has accepted it in **`scripts/visa_sponsor_review.json`**, and any match listed there as
+rejected is dropped. All 890 candidate matches of 2026-10-21 were read: 103 rejected, and the 189 loose ones kept were each
+accepted there (the other 598 kept are exact). The rejected
+ones are mostly names that are ordinary words (Phoenix, Shift, Mesh, Healthcare, Lighthouse) and other firms with the same
+name ("Pico Technology" is not Pico Quantitative Trading). The verdicts went by name, the company's job-board slug and general
+knowledge, not by company records; unsure ones were rejected. One independent check: every company whose UK, Dutch or Irish
+postings offer sponsorship and that is on that country's record was found (10 of 10). The other 4 are on no record under
+their own name.
+
+**What the record does not say:**
+- **That a given job is sponsored.** 17 of the 44 companies whose UK postings refuse sponsorship are licensed UK sponsors
+  (Graphcore, Addepar, Esri, …). A posting's own "no" outweighs the record.
+- **Anything about a company registered under another legal name.** Meta's UK entity, for example, is "Facebook UK Ltd".
+- **What happened after the download.** The registers change every month, so rebuild.
+
+**Rebuilding** (from the repository folder; it downloads about 13 MB into the git-ignored `data/visa_sources/`):
+
+```bash
+python scripts/build_visa_sponsors.py --report /tmp/visa.csv            # download, match, write the file
+python scripts/build_visa_sponsors.py --offline --report /tmp/visa.csv  # same downloads (after a discover --merge)
+```
+
+It prints how many loose matches are *unreviewed*; those are not used. Read them in the report (Status `unreviewed`), add each
+company's entry to `accepted` or `rejected` in the review file, and run again with `--offline`. `--emit-seeds /tmp/s.txt`
+writes the community-list names that are not on the list yet (111 on 2026-10-21), ready for `discover --add-file`.
+
+**The scan does not use this yet.** Its pre-filter still keeps India jobs only. Making the location the person's own,
+and showing this evidence per job, is T108 in the [task board](tasks.md).
+
+---
+
 ## What a scan does
 
 `autopilot scan` (`scanner.run_scan`):

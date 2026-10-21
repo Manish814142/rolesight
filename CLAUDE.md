@@ -34,6 +34,8 @@ python scripts/measure_prefilter.py --jobs saved.json   # pre-filter survivors +
 python scripts/measure_generic_titles.py --jobs saved.json   # India jobs dropped only for a generic title ("Senior Engineer"), by kind and company (T69 g)
 python scripts/rubric_ids.py [--db data/jobs.db]   # which rubric text each stored score's id means, and how many scored rows carry each id (T97; read-only)
 python scripts/measure_workday_tenants.py   # per-tenant Workday fetch time, detail calls, survivors (~4-9 min, real network)
+python scripts/measure_visa_wording.py --jobs saved.json   # how postings in UK/DE/NL/IE/UAE/SG word visa sponsorship (--save fetches, ~3.5 min; T133)
+python scripts/build_visa_sponsors.py [--offline] --report /tmp/visa.csv   # job_hunt/data/visa_sponsors.json from the UK/NL/IE sponsor records (T133)
 python scripts/score_golden_set.py         # score the labelled jobs with the rubric off/on (~150 Gemini calls); --from-scores re-analyses
 autopilot doctor            # SQLite / Gemini / Telegram / ATS egress checks
 autopilot export [--min N] [--days N]   # CSV (+ .xlsx) in output/history/ from data/jobs.db: last finished scan, or N days (no API keys needed; T32)
@@ -157,6 +159,14 @@ end of the run. **Workable refuses about half the requests of a sustained burst 
 but a bulk run of Workable or Recruitee boards should still use `--workers 3` (at 20 workers, before the retry existed, 13 of 100 sampled Workable "no live board" verdicts, and 19 of 100 Recruitee, were alive when probed one at a time). Oracle HCM sites are harvested too (T112): the
 host is a customer code (`cbcz.fa.us2…`), so the script names each site from its page `<title>`; `discover` keeps one entry per
 host, its busiest site, named by that site's own title (T117). The full guide for people: `docs/04-companies-and-scanning.md`, "Growing the list".
+
+**Visa-sponsor evidence (T133):** `job_hunt/data/visa_sponsors.json` lists the companies on the list that appear on the UK register of licensed
+sponsors, the Dutch IND register, Ireland's permits-issued-to-companies files or two community lists, each with the source's own entry. Built by
+`scripts/build_visa_sponsors.py` (downloads into `data/visa_sources/`; `--offline` reuses them). A loose name match (generic words dropped)
+counts only when accepted in `scripts/visa_sponsor_review.json`, which also holds the rejections: after a rebuild, read the report's
+`unreviewed` rows. Why: 85–100% of engineering postings outside India never state a visa policy (measured 2026-10-21,
+`scripts/measure_visa_wording.py`); and 17 of the 44 UK companies whose postings refuse sponsorship are licensed, so a posting's own refusal wins.
+The scan does not read it yet (T108). Guide: `docs/04-companies-and-scanning.md`, "Visa sponsorship".
 
 **`companies.json` is curated — do not blindly overwrite it with `autopilot harvest`.**
 Harvest into a scratch file (`--out /tmp/x.json`) and diff. Boards removed on evidence

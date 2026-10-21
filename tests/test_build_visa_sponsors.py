@@ -1,0 +1,211 @@
+"""T133: scripts/build_visa_sponsors.py — name matching, the source parsers, the review file and the build (no network)."""
+import importlib.util
+import json
+from pathlib import Path
+
+import openpyxl
+import pytest
+
+ROOT = Path(__file__).resolve().parent.parent
+SPEC = importlib.util.spec_from_file_location("bvs", ROOT / "scripts" / "build_visa_sponsors.py")
+bvs = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(bvs)
+
+
+@pytest.mark.parametrize("name, exact, loose", [
+    ("Google (UK) Limited", "google", "google"),
+    ("Atlassian (UK) Operations Limited", "atlassian operations", "atlassian"),
+    ("Booking.com B.V.", "booking", "booking"),
+    ("Adyen N.V.", "adyen", "adyen"),
+    ("Schrödinger Technologies Limited", "schrodinger technologies", "schrodinger"),
+    ("DBS Bank Ltd, London Branch", "dbs bank", "dbs"),          # a branch's place goes
+    ("Amazon EU SARL, Dutch Branch", "amazon", "amazon"),
+    ("BRAVE LONDON LTD", "brave london", "brave london"),         # a city alone stays: "Brave London Ltd" is not Brave
+    ("Stripe Partners", "stripe partners", "stripe partners"),
+])
+def test_name_keys(name, exact, loose):
+    assert bvs.exact_key(name) == exact
+    assert bvs.loose_key(name) == loose
+
+
+def test_match_prefers_exact_and_never_matches_another_business_with_the_same_first_word():
+    idx = bvs.Index({"Stripe Payments UK Ltd": [], "Stripe Partners": [], "STRIPE CONSULTING LIMITED": [],
+                     "Amazon UK Services Ltd": [], "Amazon Filters Ltd": [], "Amazon Charitable Trust": [],
+                     "Keller Postman UK Limited": [], "Google (UK) Limited": [], "Google Services Ltd": []})
+    assert idx.match("Stripe") == ("loose", ["Stripe Payments UK Ltd"])
+    assert idx.match("Amazon") == ("loose", ["Amazon UK Services Ltd"])
+    assert idx.match("Google") == ("exact", ["Google (UK) Limited"])     # the loose "Google Services Ltd" is not added
+    assert idx.match("Postman") == (None, [])
+    assert idx.match("") == (None, [])
+
+
+def test_parse_uk_keeps_the_worker_routes_and_strips_the_names(tmp_path):
+    p = tmp_path / "uk.csv"
+    p.write_text("Organisation Name,Town/City,County,Type & Rating,Route\n"
+                 " Acme Limited,London,,Worker (A rating),Skilled Worker\n"
+                 "Acme Limited,London,,Worker (A rating),Global Business Mobility: Senior or Specialist Worker\n"
+                 "Church Of Acme,Leeds,,Worker (A rating),Tier 2 Ministers of Religion\n", encoding="utf-8")
+    assert bvs.parse_uk(p) == {"Acme Limited": ["Global Business Mobility: Senior or Specialist Worker", "Skilled Worker"]}
+
+
+def test_parse_nl_reads_the_row_header_cell_and_skips_the_table_header():
+    page = ('<table><tr><th>Organisation</th><th>KVK (Chamber of Commerce) number</th></tr>'
+            '<tr><th scope="row">""Aa-Dee"" Machinefabriek B.V.</th><td>16051874</td></tr>'
+            '<tr><th scope="row">Adyen N.V.</th><td>34259528</td></tr></table>')
+    assert bvs.parse_nl(page) == {'"Aa-Dee" Machinefabriek B.V.': "16051874", "Adyen N.V.": "34259528"}
+
+
+def _xlsx(path, rows):
+    wb = openpyxl.Workbook()
+    for r in rows:
+        wb.active.append(r)
+    wb.save(path)
+
+
+def test_parse_ie_reads_both_yearly_layouts(tmp_path):
+    _xlsx(tmp_path / "2025.xlsx", [(None, "January", "February", "Grand Total"), ("Grand Total", 5, 7, 12),
+                                   (" IQVIA RDS IRELAND LTD", None, 1, 1), ("Stripe Payments Europe Limited", 3, 8, 11)])
+    _xlsx(tmp_path / "2026.xlsx", [("Employer Name", "Permits Issued Jan", "Permits Issued Grand Total"),
+                                   ("Stripe Payments Europe Limited", 2, 2), ("Total", 2, 2)])
+    assert bvs.parse_ie(tmp_path / "2025.xlsx") == {"IQVIA RDS IRELAND LTD": 1, "Stripe Payments Europe Limited": 11}
+    assert bvs.parse_ie(tmp_path / "2026.xlsx") == {"Stripe Payments Europe Limited": 2}
+
+
+GIST = json.dumps({"files": {"list.md": {"content": "Intro text\n\n**London**\n* [Google](https://careers.google.com/)\n"
+                                                     "* [Monzo](https://monzo.com)\n\n**Berlin, Germany**\n* [Google](x)\n"
+                                                     "* [Zalando](https://jobs.zalando.com)\n"}}})
+SHUBHEKSHA = ("| Name  | Location(s)  |Roles sponsored  |  Careers page |\n|-------|--------------|----|----|\n"
+              "| Stripe| London, UK <br>Dublin, IE| Engineering| https://stripe.com/jobs|\n"
+              "| QuantumBlack | [Global](https://quantumblack.com/careers) | Data | x |\n")
+
+
+def test_parse_the_community_lists():
+    assert bvs.parse_gist(GIST) == {"Google": ["London", "Berlin, Germany"], "Monzo": ["London"], "Zalando": ["Berlin, Germany"]}
+    assert bvs.parse_shubheksha(SHUBHEKSHA) == {"Stripe": ["London, UK", "Dublin, IE"], "QuantumBlack": ["Global"]}
+
+
+def test_status_keeps_exact_matches_and_only_accepted_loose_ones():
+    review = {"accepted": {"Stripe": ["Stripe Payments UK Ltd"]}, "rejected": {"Phoenix": ["Phoenix Software Limited"]}}
+    assert bvs.status("Stripe", "Stripe Payments UK Ltd", "loose", review) == "kept"
+    assert bvs.status("Canva", "CANVA UK OPERATIONS LIMITED", "loose", review) == "unreviewed"
+    assert bvs.status("Adyen", "Adyen N.V.", "exact", review) == "kept"
+    assert bvs.status("Phoenix", "Phoenix Software Limited", "exact", review) == "rejected"   # rejected wins over exact
+
+
+def test_load_review_without_a_file_means_no_verdicts(tmp_path):
+    assert bvs.load_review(tmp_path / "missing.json") == {"accepted": {}, "rejected": {}}
+
+
+def _sources(d: Path) -> Path:
+    d.mkdir()
+    (d / "uk_register.csv").write_text("Organisation Name,Town/City,County,Type & Rating,Route\n"
+                                       "Stripe Payments UK Ltd,London,,Worker (A rating),Skilled Worker\n"
+                                       "Phoenix Software Limited,York,,Worker (A rating),Skilled Worker\n"
+                                       "Adyen N.V. London Branch,London,,Worker (A rating),Skilled Worker\n", encoding="utf-8")
+    (d / "nl_register.html").write_text('<tr><th scope="row">Adyen N.V.</th><td>34259528</td></tr>', encoding="utf-8")
+    _xlsx(d / "ie_companies_2025.xlsx", [("Employer Name", "Permits Issued Grand Total"), ("Stripe Technology Europe Limited", 4)])
+    (d / "gist.json").write_text(GIST, encoding="utf-8")
+    (d / "shubheksha.md").write_text(SHUBHEKSHA, encoding="utf-8")
+    meta = {"uk": {"title": "uk", "files": ["uk_register.csv"]}, "nl": {"title": "nl", "files": ["nl_register.html"]},
+            "ie": {"title": "ie", "years": [2025], "files": ["ie_companies_2025.xlsx"]},
+            "lists": {"title": "lists", "files": ["gist.json", "shubheksha.md"]}}
+    (d / "sources.json").write_text(json.dumps(meta), encoding="utf-8")
+    return d
+
+
+COMPANIES = [{"name": "Stripe", "ats": "greenhouse"}, {"name": "Adyen", "ats": "greenhouse"},
+             {"name": "Phoenix", "ats": "ashby"}, {"name": "Acme", "ats": "lever"}]
+
+
+def test_build_writes_kept_evidence_with_each_sources_own_name(tmp_path):
+    review = {"accepted": {"Stripe": ["Stripe Payments UK Ltd", "Stripe Technology Europe Limited"]},
+              "rejected": {"Phoenix": ["Phoenix Software Limited"]}}
+    data, cands = bvs.build(_sources(tmp_path / "src"), COMPANIES, review)
+    assert data["companies"] == {
+        "Stripe": [{"source": "uk", "match": "loose", "names": {"Stripe Payments UK Ltd": ["Skilled Worker"]}},
+                   {"source": "ie", "match": "loose", "names": {"Stripe Technology Europe Limited": {"2025": 4}}},
+                   {"source": "lists", "match": "exact", "names": {"Stripe": ["shubheksha list: London, UK",
+                                                                               "shubheksha list: Dublin, IE"]}}],
+        "Adyen": [{"source": "uk", "match": "exact", "names": {"Adyen N.V. London Branch": ["Skilled Worker"]}},
+                  {"source": "nl", "match": "exact", "names": {"Adyen N.V.": "34259528"}}]}
+    assert {k: v["entries"] for k, v in data["sources"].items()} == {"uk": 3, "nl": 1, "ie": 1, "lists": 5}
+    assert all("files" not in v for v in data["sources"].values())
+    assert ("Phoenix", "uk", "loose", "Phoenix Software Limited", ["Skilled Worker"]) in cands   # still in the report
+
+
+def test_an_unreviewed_loose_match_is_not_evidence(tmp_path):
+    data, _ = bvs.build(_sources(tmp_path / "src"), COMPANIES, {"accepted": {}, "rejected": {}})
+    assert [e["source"] for e in data["companies"]["Stripe"]] == ["lists"]
+    assert "Phoenix" not in data["companies"] and "Acme" not in data["companies"]
+
+
+def test_seeds_are_the_list_names_not_on_companies_json(tmp_path):
+    assert bvs.seeds(_sources(tmp_path / "src"), COMPANIES) == ["Google", "Monzo", "QuantumBlack", "Zalando"]
+
+
+def test_main_offline_writes_the_file_report_and_seeds(tmp_path, capsys):
+    src = _sources(tmp_path / "src")
+    (tmp_path / "companies.json").write_text(json.dumps(COMPANIES), encoding="utf-8")
+    out, report, seeds = tmp_path / "v.json", tmp_path / "r.csv", tmp_path / "s.txt"
+    assert bvs.main(["--offline", "--sources", str(src), "--companies", str(tmp_path / "companies.json"), "--out", str(out),
+                     "--review", str(tmp_path / "none.json"), "--report", str(report), "--emit-seeds", str(seeds)]) == 0
+    printed = capsys.readouterr().out
+    assert "2 of 4 companies have evidence" in printed and "loose ones unreviewed (not used" in printed
+    assert set(json.loads(out.read_text(encoding="utf-8"))["companies"]) == {"Stripe", "Adyen"}
+    assert report.read_text(encoding="utf-8").splitlines()[0] == "Status,Company,ATS,Source,Match,Source's name,Detail"
+    assert "unreviewed,Phoenix,ashby,uk,loose,Phoenix Software Limited" in report.read_text(encoding="utf-8")
+    assert seeds.read_text(encoding="utf-8").split() == ["Google", "Monzo", "QuantumBlack", "Zalando"]
+
+
+def test_main_offline_without_downloads_stops(tmp_path):
+    with pytest.raises(SystemExit, match="nothing downloaded"):
+        bvs.main(["--offline", "--sources", str(tmp_path / "empty")])
+
+
+class _Resp:
+    def __init__(self, text="", content=b"", data=None):
+        self.text, self.content, self._data = text, content, data
+
+    def json(self):
+        return self._data
+
+
+def test_download_finds_each_file_from_its_page(tmp_path, monkeypatch):
+    """The CSV from GOV.UK's content API, the IND page's date, DETE's two latest years: no network (requests stubbed)."""
+    calls = []
+
+    def fake_get(url, timeout=120):
+        calls.append(url)
+        if url == bvs.UK_CONTENT_API:
+            return _Resp(data={"title": "Register of licensed sponsors: workers", "public_updated_at": "2026-10-20T09:40:36+01:00",
+                               "details": {"attachments": [{"url": "https://x/a.pdf", "content_type": "application/pdf"},
+                                                           {"url": "https://x/register.csv", "content_type": "text/csv"}]}})
+        if url == bvs.NL_PAGE:
+            return _Resp(text="<p>This register was last updated on 5 October 2026.</p>")
+        if url == bvs.IE_STATS:
+            return _Resp(text=" ".join(f'<a href="/en/publications/employment-permit-statistics-{y}.html">' for y in (2024, 2025, 2026)))
+        if url.endswith("statistics-2025.html") or url.endswith("statistics-2026.html"):
+            return _Resp(text='<a href="/en/publications/publication-files/by-county.xlsx"></a>'
+                              '<a href="/en/publications/publication-files/permits-issued-to-companies.xlsx"></a>')
+        return _Resp(text="{}", content=b"bytes")
+
+    monkeypatch.setattr(bvs, "_get", fake_get)
+    meta = bvs.download(tmp_path)
+    assert "https://x/register.csv" in calls and "https://x/a.pdf" not in calls
+    assert meta["uk"]["published"] == "2026-10-20" and meta["uk"]["licence"] == "Open Government Licence v3.0"
+    assert meta["nl"]["published"] == "2026-10-05"
+    assert meta["ie"]["years"] == [2025, 2026] and not any("2024" in c for c in calls)
+    assert sorted(p.name for p in tmp_path.iterdir()) == ["gist.json", "ie_companies_2025.xlsx", "ie_companies_2026.xlsx",
+                                                          "nl_register.html", "shubheksha.md", "sources.json", "uk_register.csv"]
+
+
+def test_the_shipped_dataset_and_review_file_are_well_formed():
+    data = json.loads((ROOT / "job_hunt" / "data" / "visa_sponsors.json").read_text(encoding="utf-8"))
+    assert set(data["sources"]) == {"uk", "nl", "ie", "lists"}
+    assert data["companies"] and all(e["source"] in data["sources"] and e["match"] in ("exact", "loose") and e["names"]
+                                     for ev in data["companies"].values() for e in ev)
+    review = json.loads((ROOT / "scripts" / "visa_sponsor_review.json").read_text(encoding="utf-8"))
+    for verdict in ("accepted", "rejected"):
+        assert all(isinstance(v, list) and all(isinstance(n, str) for n in v) for v in review[verdict].values())
+    for company, ev in data["companies"].items():           # nothing rejected by hand made it into the file
+        assert not {n for e in ev for n in e["names"]} & set(review["rejected"].get(company, []))

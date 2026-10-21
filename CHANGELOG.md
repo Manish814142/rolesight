@@ -9,6 +9,26 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Added (2026-10-21, T133: visa-sponsor evidence per company, groundwork for T108)
+- Manish: the people he has in mind are in India and will relocate, so "company should provide visa as well"; most postings
+  will not say, so use public datasets of which companies sponsor.
+- **`scripts/measure_visa_wording.py`** counts how postings in the UK, Germany, the Netherlands, Ireland, the UAE, Singapore and
+  "Europe/EMEA" word visa sponsorship (offered, refused, unclear, nothing), relocation help and "must live here" wording. Measured
+  on 2026-10-21 on the 989 boards whose list API carries descriptions (71,121 jobs, fetched in 3 min 26 s): engineering-titled
+  postings say nothing about a visa in 84.9% (UK, 557 jobs), 93.6% (DE), 88.8% (NL), 92.5% (IE), 100% (UAE, 46), 97.8% (SG); when
+  they do, a refusal is more common (UK: 56 refused, 20 offered). Pattern counts, checked by reading samples by hand (second
+  sample, one posting per company: refused 12 of 12 right, offered 10 of 12); two misses of the first sample were fixed.
+- **`job_hunt/data/visa_sponsors.json`**, built by **`scripts/build_visa_sponsors.py`**: the companies on `companies.json` that
+  appear on the GOV.UK register of licensed sponsors (2026-10-20, Open Government Licence), the IND public register of recognised
+  sponsors (2026-10-05), DETE's employment permits issued to companies (2025 and 2026), or two community lists of companies hiring
+  from India with visa and relocation, each with the source's own entry. **534 of 1,589 companies** (UK 467, NL 185, IE 84,
+  lists 18). Names are matched exactly or loosely (generic words dropped); a loose match counts only when accepted in
+  `scripts/visa_sponsor_review.json`. All 890 candidate matches were read: 103 rejected (ordinary-word names such as Phoenix,
+  Shift, Mesh; other firms of the same name). Check: every company whose UK, Dutch or Irish postings offer sponsorship and that is
+  on that record was found (10 of 10). 17 of the 44 UK companies whose postings refuse sponsorship are licensed: the record says a
+  company can sponsor, not that a job is sponsored. `--offline` rebuilds from the downloads; `--emit-seeds` writes the community-list
+  names not on the list (111). The scan does not read the file yet (T108). Guide: `docs/04`, "Visa sponsorship".
+
 ### Fixed (2026-10-21, T134)
 - **T134:** a normal install (`pip install .`, or a wheel) now ships `job_hunt/data/`, so `autopilot init` works without `-e`.
   `.gitignore`'s `data/`, meant for the root `data/` folder, also matched `job_hunt/data/`, and the wheel builder (hatchling) leaves

@@ -1,0 +1,745 @@
+{
+ "about": "Name matches read by hand (T133). 'accepted': loose matches (generic words dropped) that name the same employer; 'rejected': matches that name another employer, or that could not be told apart by name. Read on 2026-10-21 by name, the company's job board slug and general knowledge, not against company records; where unsure, rejected. A rebuild lists new loose matches as unreviewed: add each here.",
+ "accepted": {
+  "1GLOBAL": [
+   "1GLOBAL Operations (UK) Limited"
+  ],
+  "Accelya": [
+   "Accelya Global Limited"
+  ],
+  "Adjust": [
+   "Adjust Software Limited"
+  ],
+  "Adobe India": [
+   "ADOBE GROUP LIMITED",
+   "Adobe Systems Europe Limited",
+   "Adobe Systems Software Ireland Limited"
+  ],
+  "Agilent": [
+   "Agilent Technologies Ireland Limited",
+   "Agilent Technologies Netherlands B.V."
+  ],
+  "Agilisys": [
+   "Agilisys Holdings Ltd"
+  ],
+  "Agoda": [
+   "AGODA INTERNATIONAL PTE LTD"
+  ],
+  "Akamai": [
+   "Akamai Technologies Ireland Limited",
+   "Akamai Technologies Limited",
+   "Akamai Technologies Netherlands B.V."
+  ],
+  "Aliaxis": [
+   "Aliaxis Holding UK Limited"
+  ],
+  "Allegis Global Solutions": [
+   "Allegis Group B.V.",
+   "Allegis Group Limited"
+  ],
+  "Allucent": [
+   "Allucent Group (UK) Limited"
+  ],
+  "AlphaSense": [
+   "AlphaSense Technology Limited"
+  ],
+  "Amadeus": [
+   "Amadeus Software Limited"
+  ],
+  "Amazon": [
+   "Amazon UK Services Ltd"
+  ],
+  "American Express": [
+   "American Express Services Europe Limited"
+  ],
+  "Amgen": [
+   "Amgen Technology (Ireland) Unlimited Company"
+  ],
+  "Analog Devices": [
+   "Analog Devices International Unlimited Company"
+  ],
+  "Aptos": [
+   "Aptos Solutions UK Ltd"
+  ],
+  "Ashland": [
+   "Ashland Services"
+  ],
+  "Autodesk": [
+   "Autodesk Ireland Operations Unlimited Company"
+  ],
+  "Aveva": [
+   "AVEVA Software Netherlands B.V.",
+   "AVEVA Solutions Ltd"
+  ],
+  "Aviatrix": [
+   "Aviatrix Systems UK Ltd"
+  ],
+  "BCG": [
+   "BCG Digital Ventures"
+  ],
+  "Barclays": [
+   "Barclays Bank Ireland PLC",
+   "Barclays Bank Ireland Plc, Netherlands branch",
+   "Barclays Bank PLC",
+   "Barclays Bank UK PLC"
+  ],
+  "Binance": [
+   "Binance (Services) Holdings Ltd"
+  ],
+  "Blackline": [
+   "BlackLine International B.V.",
+   "Blackline Systems Ltd"
+  ],
+  "Bosch": [
+   "Bosch Global Software Technologies Private Limited"
+  ],
+  "Bottomline": [
+   "Bottomline Technologies Limited"
+  ],
+  "Brandtech+": [
+   "THE BRANDTECH GROUP LIMITED"
+  ],
+  "Brave": [
+   "Brave Software Europe Ltd"
+  ],
+  "Burson": [
+   "Burson Group Limited"
+  ],
+  "Canva": [
+   "CANVA UK OPERATIONS LIMITED"
+  ],
+  "Cgg": [
+   "CGG Services (UK) Ltd"
+  ],
+  "Cisco": [
+   "Cisco International Limited"
+  ],
+  "Cision": [
+   "Cision Group Limited"
+  ],
+  "Citi": [
+   "Citi Group"
+  ],
+  "Cloudera": [
+   "Cloudera International Limited"
+  ],
+  "Commvault": [
+   "Commvault Systems Ltd"
+  ],
+  "Control Risks": [
+   "Control Risks Group Limited"
+  ],
+  "Coupa": [
+   "Coupa Operations Inc.",
+   "Coupa Software UK Ltd"
+  ],
+  "DBS": [
+   "DBS Bank Ltd, London Branch"
+  ],
+  "DEPT®": [
+   "Dept Digital Ltd",
+   "Dept Holding B.V.",
+   "Dept UK Holding Ltd"
+  ],
+  "Dexcom": [
+   "Dexcom International Limited",
+   "Dexcom International Ltd."
+  ],
+  "Diebold Nixdorf": [
+   "Diebold Nixdorf Global Solutions B.V."
+  ],
+  "Dnb": [
+   "DNB Bank ASA London Branch"
+  ],
+  "DoorDash India": [
+   "Doordash Technologies UK Ltd"
+  ],
+  "Dover": [
+   "Dover Holdings UK Ltd"
+  ],
+  "Dynata": [
+   "DYNATA GLOBAL UK LTD"
+  ],
+  "EXL": [
+   "EXL Service (UK) Limited"
+  ],
+  "Encora": [
+   "Encora Software (UK) Private Limited"
+  ],
+  "Equinix": [
+   "Equinix Services Limited"
+  ],
+  "Esri": [
+   "ESRI Global, Inc."
+  ],
+  "Essar": [
+   "Essar International Limited"
+  ],
+  "Euromonitor": [
+   "EUROMONITOR INTERNATIONAL LIMITED"
+  ],
+  "Expeditors": [
+   "Expeditors International B.V.",
+   "Expeditors International UK LTD"
+  ],
+  "Extreme Networks": [
+   "Extreme Networks UK Technology Limited"
+  ],
+  "Finastra": [
+   "Finastra International Limited"
+  ],
+  "Fiserv": [
+   "Fiserv Solutions (Europe) Limited"
+  ],
+  "Flexport": [
+   "Flexport Group B.V.",
+   "Flexport International B.V.",
+   "Flexport International Limited"
+  ],
+  "Freshworks": [
+   "FRESHWORKS TECHNOLOGIES UK LIMITED",
+   "Freshworks Technologies B.V."
+  ],
+  "Galaxy": [
+   "Galaxy Digital UK Limited"
+  ],
+  "Guidepoint": [
+   "Guidepoint Global UK Limited"
+  ],
+  "HEXAWARE": [
+   "HEXAWARE TECHNOLOGIES UK LTD",
+   "Netherlands Hexaware Technologies"
+  ],
+  "HP Inc": [
+   "HP Technology Ireland Limited"
+  ],
+  "Handshake": [
+   "Handshake International UK Limited"
+  ],
+  "Hasbro": [
+   "Hasbro European Services"
+  ],
+  "Hilton": [
+   "Hilton International Nederland B.V."
+  ],
+  "Hyva": [
+   "Hyva Holding B.V.",
+   "Hyva International B.V."
+  ],
+  "IBS": [
+   "IBS Software Europe Limited",
+   "IBS Software Europe Ltd"
+  ],
+  "IQ-EQ": [
+   "IQ EQ (UK) Services Limited"
+  ],
+  "Icertis": [
+   "Icertis Group Limited"
+  ],
+  "Informa Group Plc.": [
+   "Informa UK Limited"
+  ],
+  "Inizio": [
+   "Inizio Services UK Limited"
+  ],
+  "Intel": [
+   "Intel International B.V."
+  ],
+  "Intertek": [
+   "Intertek Group plc"
+  ],
+  "Ivanti": [
+   "Ivanti Software B.V."
+  ],
+  "Janes": [
+   "Jane's Group UK Limited"
+  ],
+  "Johnson Controls": [
+   "Johnson Controls Systems & Service B.V."
+  ],
+  "Jump Trading": [
+   "Jump Trading International Limited"
+  ],
+  "KPMG Global Services": [
+   "KPMG",
+   "KPMG Ireland",
+   "KPMG LLP"
+  ],
+  "Konrad": [
+   "Konrad Group U.K. Limited"
+  ],
+  "Kotak Mahindra Bank": [
+   "Kotak Mahindra (UK) Limited,"
+  ],
+  "LVMH": [
+   "LVMH Services Limited"
+  ],
+  "Lam Research": [
+   "Lam Research International B.V."
+  ],
+  "LinkedIn": [
+   "Linkedin Technology UK Limited"
+  ],
+  "Logitech": [
+   "Logitech Ireland Services Limited"
+  ],
+  "MasterControl": [
+   "MasterControl Global Ltd"
+  ],
+  "Mattel": [
+   "Mattel Europe Holdings B.V."
+  ],
+  "Medline": [
+   "Medline International B.V."
+  ],
+  "Microchip Technology": [
+   "MICROCHIP LIMITED"
+  ],
+  "Mintel": [
+   "Mintel Group Ltd"
+  ],
+  "Modaxo": [
+   "Modaxo Group UK Limited"
+  ],
+  "Modulr": [
+   "Modulr Technology Ltd"
+  ],
+  "Nab": [
+   "NAB Services (UK) Ltd"
+  ],
+  "Nagarro": [
+   "Nagarro Software Ltd"
+  ],
+  "Navan": [
+   "Navan Labs UK Limited"
+  ],
+  "Netflix": [
+   "Netflix International B.V.",
+   "Netflix Services UK Limited"
+  ],
+  "New Relic": [
+   "New Relic International Limited"
+  ],
+  "Newmark": [
+   "Newmark Holdings Limited"
+  ],
+  "Notion": [
+   "Notion Labs, Ireland Limited"
+  ],
+  "Numerix": [
+   "Numerix Software LTD"
+  ],
+  "Oceaneering": [
+   "Oceaneering International Services Limited"
+  ],
+  "OneTrust": [
+   "OneTrust Technology Limited"
+  ],
+  "OpenTable": [
+   "OpenTable International Limited"
+  ],
+  "Optiver": [
+   "Optiver Holding B.V.",
+   "Optiver Services B.V."
+  ],
+  "Orion Innovation": [
+   "Orion Innovation Solutions UK Limited"
+  ],
+  "Paxos": [
+   "Paxos Technology Limited"
+  ],
+  "PayPal": [
+   "PayPal Europe Services Limited"
+  ],
+  "Perforce": [
+   "Perforce Software UK Ltd"
+  ],
+  "Qualcomm": [
+   "Qualcomm Technologies International Ltd",
+   "Qualcomm Technologies Netherlands B.V."
+  ],
+  "Revantage": [
+   "Revantage Global Services UK Limited"
+  ],
+  "Revvity": [
+   "Revvity (UK) Holdings Limited"
+  ],
+  "Roku": [
+   "Roku International B.V."
+  ],
+  "Rsm": [
+   "RSM Netherlands Holding N.V."
+  ],
+  "Rws": [
+   "RWS Global UK Limited"
+  ],
+  "Sabre": [
+   "Sabre Global Technologies Ltd"
+  ],
+  "SambaNova": [
+   "SambaNova Systems UK Limited"
+  ],
+  "Schrödinger": [
+   "Schrodinger Technologies Limited"
+  ],
+  "Shell": [
+   "Shell International Ltd"
+  ],
+  "Sigmoid": [
+   "Sigmoid HQ Limited"
+  ],
+  "Smarsh": [
+   "Smarsh Software UK Ltd"
+  ],
+  "Snap": [
+   "Snap Group Limited"
+  ],
+  "Sphera": [
+   "Sphera Solutions",
+   "Sphera Solutions UK Limited"
+  ],
+  "Startek®": [
+   "STARTEK GROUP LTD"
+  ],
+  "State Street": [
+   "State Street Bank International GmbH Amsterdam Branch",
+   "State Street International (Ireland) Limited",
+   "State Street Technology (Ireland) Limited",
+   "State Street Technology (Ireland) Ltd"
+  ],
+  "Stripe": [
+   "Stripe Payments Europe Limited",
+   "Stripe Payments UK Ltd",
+   "Stripe Technology Company Limited",
+   "Stripe Technology Europe Limited"
+  ],
+  "Sutherland": [
+   "Sutherland Digital UK Private Limited",
+   "Sutherland Global Services UK Ltd"
+  ],
+  "Syngenta Group": [
+   "Syngenta Limited"
+  ],
+  "Telus Digital": [
+   "TELUS International (U.K.) Ltd."
+  ],
+  "The Citco Group Limited": [
+   "Citco Bank Nederland N.V.",
+   "Citco Bank Nederland NV Dublin Branch",
+   "Citco Nederland B.V."
+  ],
+  "UKG": [
+   "UKG Technology Limited"
+  ],
+  "Uniphore": [
+   "Uniphore Technologies UK Limited"
+  ],
+  "Unispace": [
+   "Unispace Global Limited"
+  ],
+  "Verifone": [
+   "Verifone Payments B.V."
+  ],
+  "Verint": [
+   "Verint Systems UK Limited"
+  ],
+  "Veripark": [
+   "VeriPark Software UK Limited"
+  ],
+  "Verizon": [
+   "Verizon Services Ireland Limited"
+  ],
+  "Version 1": [
+   "Version 1 Software Limited",
+   "Version 1 Solutions Limited",
+   "Version 1 Technology Limited"
+  ],
+  "Vertiv": [
+   "Vertiv Company Group Limited"
+  ],
+  "Weg": [
+   "WEG Holding B.V."
+  ],
+  "Wells Fargo": [
+   "Wells Fargo Bank International"
+  ],
+  "Wise": [
+   "Wise Payments Limited"
+  ],
+  "Wiz, Inc.": [
+   "WIZ TECHNOLOGIES LTD"
+  ],
+  "Zafin": [
+   "ZAFIN LABS UK LTD",
+   "Zafin Labs AG"
+  ],
+  "Zensar": [
+   "Zensar Technologies (UK) Ltd"
+  ],
+  "ZoomInfo Technologies LLC": [
+   "ZoomInfo Ireland Limited",
+   "ZoomInfo UK LTD"
+  ]
+ },
+ "rejected": {
+  "Apollo.io": [
+   "Apollo Solutions Ltd"
+  ],
+  "Architect": [
+   "@ Architect UK Ltd"
+  ],
+  "Armada": [
+   "Armada Technologies Limited"
+  ],
+  "Base.com": [
+   "Base Solutions Limited"
+  ],
+  "Boku": [
+   "Boku Labs Ltd"
+  ],
+  "Carrier": [
+   "Carrier Solutions UK Ltd"
+  ],
+  "Cip": [
+   "CIP PLATFORM SOLUTIONS UK LTD."
+  ],
+  "Cognition": [
+   "The Cognition Company Group Ltd"
+  ],
+  "Concentric": [
+   "Concentric Solutions Limited"
+  ],
+  "Continental": [
+   "Continental Ventures Ltd"
+  ],
+  "Cresta": [
+   "CRESTA SOLUTIONS LIMITED"
+  ],
+  "Cursor": [
+   "Cursor Ltd"
+  ],
+  "D.B. Group": [
+   "DB Group Services (UK) Ltd"
+  ],
+  "DBS": [
+   "DBS VENTURES LTD"
+  ],
+  "Disa": [
+   "DISA Nederland B.V."
+  ],
+  "Ema": [
+   "EMA Europe Limited"
+  ],
+  "Empower": [
+   "EMpower"
+  ],
+  "Endor Labs": [
+   "ENDOR Ltd"
+  ],
+  "Envoy Global, Inc.": [
+   "Envoy EMEA Limited"
+  ],
+  "Fmc": [
+   "FMC Technologies Ltd"
+  ],
+  "Fourier": [
+   "Fourier Ltd"
+  ],
+  "Fractal": [
+   "Fractal Labs Ltd"
+  ],
+  "Genesis": [
+   "Genesis Global Technology Limited.",
+   "Genesis Ireland Operations Limited",
+   "Genesis Technology Services Limited"
+  ],
+  "Harness": [
+   "Harness Group UK Limited"
+  ],
+  "Harvey": [
+   "Holland Harvey Limited"
+  ],
+  "Healthcare": [
+   "Branch Healthcare Limited",
+   "GB Healthcare Ltd",
+   "SAS Healthcare"
+  ],
+  "Hilton": [
+   "Hilton Ltd"
+  ],
+  "Hyde": [
+   "AS Hyde Ltd",
+   "Hyde Ltd."
+  ],
+  "IMC": [
+   "IMC Systems Ltd"
+  ],
+  "ION Group": [
+   "Ion Technologies Ltd",
+   "ion Ventures Ltd"
+  ],
+  "Idt": [
+   "I.D.T.-Systems Ltd"
+  ],
+  "Ig": [
+   "IG Private Ltd"
+  ],
+  "Invisible Technologies": [
+   "INVISIBLE SYSTEMS LTD"
+  ],
+  "Kong": [
+   "Kong International (UK) Limited"
+  ],
+  "Konrad": [
+   "Konrad-Technologies UK Ltd"
+  ],
+  "Libra": [
+   "LIBRA EUROPE LTD"
+  ],
+  "Lighthouse": [
+   "LIGHTHOUSE PVT LTD",
+   "Lighthouse Netherlands B.V."
+  ],
+  "MAP": [
+   "MAP GROUP (UK) LIMITED"
+  ],
+  "Masters India Private Limited": [
+   "Masters UK Ltd."
+  ],
+  "Mesh": [
+   "MESH",
+   "Mesh B.V."
+  ],
+  "Metropolis": [
+   "Metropolis International Group Ltd"
+  ],
+  "Motive": [
+   "Motive Technology UK Limited"
+  ],
+  "NICE": [
+   "Nice UK Ltd"
+  ],
+  "NRI": [
+   "UK NRI Solutions Limited"
+  ],
+  "Nextgen": [
+   "NEXTGEN TECH LIMITED",
+   "Nextgen Technology Limited"
+  ],
+  "Novo": [
+   "Novo Tech Solutions Ltd",
+   "Novo Technologies Ltd"
+  ],
+  "Novotech": [
+   "NOVOTECH DIGITAL LTD"
+  ],
+  "OLIVER - APAC": [
+   "OLIVER SERVICES LTD",
+   "Oliver B.V."
+  ],
+  "Orion": [
+   "Orion (GB) Limited"
+  ],
+  "Osa": [
+   "OSA Systems ltd"
+  ],
+  "Overview": [
+   "Overview Ltd"
+  ],
+  "Pearl": [
+   "Pearl Holdings Limited"
+  ],
+  "Phoenix": [
+   "PHOENIX SYSTEMS UK LIMITED",
+   "Phoenix Software Limited"
+  ],
+  "Photon": [
+   "PHOTON SYSTEMS LIMITED",
+   "PHOTON TECHNOLOGIES LIMITED"
+  ],
+  "Pico": [
+   "PICO SOLUTIONS SERVICE LTD",
+   "Pico Global Ltd.",
+   "Pico Technology"
+  ],
+  "Platform Science": [
+   "Science (UK) Limited",
+   "Science and Technology B.V."
+  ],
+  "Power Digital": [
+   "DAC POWER",
+   "Digital Power Technologies B.V.",
+   "INTERNATIONAL POWER Ltd.",
+   "UK Power Solutions Ltd"
+  ],
+  "Quantiq": [
+   "QuantIQ B.V."
+  ],
+  "SHIELD": [
+   "SHIELD TECH ENTERPRISES LIMITED",
+   "Shield Systems Ltd"
+  ],
+  "Sama": [
+   "SAMA Group Ltd"
+  ],
+  "Sanctuary": [
+   "Sanctuary Ltd"
+  ],
+  "Sentient": [
+   "Sentient Solutions Limited"
+  ],
+  "Shift": [
+   "Shift Holdings Ltd",
+   "Shift Technology UK Limited"
+  ],
+  "Singular": [
+   "Singular UK Limited"
+  ],
+  "Sleek": [
+   "Sleek Technology Limited"
+  ],
+  "Snap": [
+   "Snap B.V."
+  ],
+  "Study.com": [
+   "Global Study UK",
+   "Study Group Ireland Ltd",
+   "Study Group Limited",
+   "UK Study Group Ltd"
+  ],
+  "Supa": [
+   "Supa B.V."
+  ],
+  "Target India": [
+   "Target Group Limited"
+  ],
+  "Tbc": [
+   "TBC Bank Group PLC",
+   "TBC GROUP LTD"
+  ],
+  "Tempo": [
+   "Tempo International Limited"
+  ],
+  "Ten Group": [
+   "T.EN Netherlands B.V."
+  ],
+  "Turing": [
+   "Turing Europe B.V."
+  ],
+  "Vectra": [
+   "Vectra Limited"
+  ],
+  "Whizz": [
+   "Tech Whizz Ltd"
+  ],
+  "Wise": [
+   "UK Wise Group Ltd"
+  ],
+  "Wmg": [
+   "WMG SERVICES LIMITED"
+  ],
+  "Worldwide": [
+   "GB Worldwide Limited"
+  ]
+ }
+}
