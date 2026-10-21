@@ -181,6 +181,7 @@ def _search_term(term: str, url: str, cxs_base: str, base_domain: str, tenant: s
                  jobs: List[JobPosting], seen_paths: set) -> bool:
     """Page through one search term, appending new jobs; False when the whole board is done (404, redirect, budget)."""
     total: int | None = None
+    term_paths: set[str] = set()     # this term's own postings: the "a page adds nothing new" stop (T47) is per term (review)
 
     for offset in range(0, MAX_JOBS, PAGE_SIZE):
         if total is not None and offset >= total:
@@ -225,10 +226,14 @@ def _search_term(term: str, url: str, cxs_base: str, base_domain: str, tenant: s
         for item in postings:
             external_path = item.get("externalPath", "")
             if external_path:
-                if external_path in seen_paths:
+                if external_path in term_paths:
+                    continue
+                term_paths.add(external_path)
+            new_in_page += 1
+            if external_path:
+                if external_path in seen_paths:     # an earlier term returned it ("United Kingdom", then "UK")
                     continue
                 seen_paths.add(external_path)
-            new_in_page += 1
 
             title = item.get("title", "").strip()
             location = item_location(item)

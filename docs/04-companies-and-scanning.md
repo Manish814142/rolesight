@@ -484,7 +484,9 @@ The pre-filter and scoring rules are spelled out in [07](07-config-and-scoring.m
 **Your countries (T137).** Five ATSs answer only for the country they are asked about. With `candidate.countries` set (T136),
 each asks for yours instead of India: Workday runs one full-text search per term ("United Kingdom" and "UK"; "United Arab Emirates"
 and "Dubai"; the country name for the others, because the spellings find different jobs: at ABB "United Kingdom" found 37 and
-"UK" 60, measured 2026-10-21), all terms sharing one 600 s budget; Eightfold one search per country name; Phenom one search
+"UK" 60, measured 2026-10-21; 74 different jobs in all), all terms sharing one 600 s budget. A job another term already returned
+is kept once and the term reads on (until the review fix, "UK"'s first page of such jobs ended it: ABB gave 44 of its 74).
+Eightfold one search per country name (the same rule); Phenom one search
 with the list; Amazon one per country code (GBR, DEU, NLD, IRL, ARE, SGP); Oracle HCM one read per country facet. An Oracle site
 lists only its biggest locations as facets (10 on most), so when one of your countries has none, the site is read once without a
 facet, newest first, and the posted-date window stops it. India alone sends exactly the requests above. Measured on 15 boards for

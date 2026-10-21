@@ -22,6 +22,14 @@ reconstructed from git history.
 - docs/04: **34** of the 111 names have a live board but no India job (3,141 jobs), not 35 (3,184): Qonto's Lever and Ashby
   boards carry the same 44 jobs (both fetched) and were counted twice. The other counts are report rows, not names.
 
+### Fixed in review (2026-10-21, T137)
+- **Workday's second search term for a country was cut at its first page.** The terms share one seen-job set, and T47's stop
+  ("a page that adds nothing new ends the paging") counted jobs an earlier term had returned as repeats. Measured on ABB:
+  "United Kingdom" 44 jobs, "UK" 64, 74 different; the adapter returned 44 (30 UK jobs never fetched), and 74 after the fix.
+  The stop now counts a term's own repeats only; Eightfold's per-country searches had the same rule and get the same fix (its
+  posted-date stop reads the search's own new positions). India alone sends one term, so its requests and jobs are unchanged.
+  T137's real-fetch counts (ABB 23 UK, …) were taken before the fix.
+
 ### Tests added in review (2026-10-21, T136)
 - Two rules of the location filter abroad had no test (two mutants survived): "Remote" written only in the location, with the
   board's remote flag off, is kept; a remote job in another city of your country is kept when `candidate.cities` is set. Both

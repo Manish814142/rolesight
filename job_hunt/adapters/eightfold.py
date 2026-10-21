@@ -78,6 +78,7 @@ def _search_location(location_name: str, url: str, host: str, domain: str, compa
                      jobs: List[JobPosting], seen: set) -> bool:
     """Page through one location's search, appending new positions; False once the budget is spent."""
     start = 0
+    here: set = set()        # this search's own positions: the "nothing new" and posted-date stops are per search (review)
     while start < MAX_JOBS:
         if time.monotonic() - began > BOARD_BUDGET_SECONDS:
             logger.warning("Eightfold %s: %.0fs budget spent, stopping at %d jobs", host, BOARD_BUDGET_SECONDS, len(jobs))
@@ -95,13 +96,16 @@ def _search_location(location_name: str, url: str, host: str, domain: str, compa
             mark_incomplete(f"page failed at start={start}")
             break
         positions = data.get("positions") or []
-        new = 0
+        dates: List[str] = []
         for p in positions:
             pid = p.get("id")
-            if pid is None or pid in seen:
+            if pid is None or pid in here:
+                continue
+            here.add(pid)
+            dates.append(_posted(p.get("postedTs")))
+            if pid in seen:                  # another of your countries' searches returned it
                 continue
             seen.add(pid)
-            new += 1
             location = "; ".join(loc for loc in (p.get("locations") or []) if loc)
             path = p.get("positionUrl") or f"/careers/job/{pid}"
             jobs.append(JobPosting(
@@ -116,9 +120,9 @@ def _search_location(location_name: str, url: str, host: str, domain: str, compa
             ))
         start += PAGE_SIZE
         total = data.get("count")
-        if new == 0 or len(positions) < PAGE_SIZE or (isinstance(total, int) and start >= total):
+        if not dates or len(positions) < PAGE_SIZE or (isinstance(total, int) and start >= total):
             break
-        if stop_at_window(j.posted_at for j in jobs[-new:]):   # sort_by=timestamp is newest first (T02)
+        if stop_at_window(dates):   # sort_by=timestamp is newest first (T02)
             break
         time.sleep(PAGE_PAUSE)
     else:  # stopped at MAX_JOBS with more positions left
