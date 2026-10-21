@@ -63,6 +63,18 @@ def test_discover_for_india_writes_no_places(monkeypatch):
     assert verified and "places" not in verified[0]
 
 
+def test_the_recheck_rediscovers_a_dead_board_for_the_entrys_own_places(monkeypatch):
+    """Review: an entry accepted for the UK whose board died is searched for again for the UK. A mutant that searched for India
+    jobs instead (finding none, so removing Monzo) passed every test."""
+    _stub_discovery(monkeypatch, "London, UK")
+    live = disc.fetch_company_jobs
+    monkeypatch.setattr(disc, "fetch_company_jobs", lambda c: [] if c.get("slug") == "monzo-old" else live(c))
+    entries = [{"name": "Monzo", "ats": "lever", "slug": "monzo-old", "headcount": "Unknown", "places": ["United Kingdom"]}]
+    new, summary = disc.recheck_companies(entries)
+    assert [(c["ats"], c["slug"], c.get("places")) for c in new] == [("greenhouse", "monzo", ["United Kingdom"])]
+    assert summary[0]["verdict"].startswith("REPLACED lever/monzo-old")
+
+
 def test_the_recheck_checks_each_entry_against_its_own_places(monkeypatch):
     seen = []
 

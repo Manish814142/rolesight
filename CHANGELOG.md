@@ -30,6 +30,11 @@ reconstructed from git history.
   posted-date stop reads the search's own new positions). India alone sends one term, so its requests and jobs are unchanged.
   T137's real-fetch counts (ABB 23 UK, …) were taken before the fix.
 
+### Tests added in review (2026-10-21, T139)
+- The monthly recheck re-discovers a dead board for the places its entry was accepted for; a mutant that searched for India
+  jobs instead (so an entry like Monzo would be removed) passed every test (7 other mutants of T139 were caught).
+  `tests/test_discover_places.py` now replaces a UK entry's dead Lever board with its Greenhouse one, `places` kept.
+
 ### Tests added in review (2026-10-21, T138)
 - `autopilot export` reads `config.json`'s countries for the Visa column; a mutant that skipped that passed every test (8 other
   mutants of T138 were caught). `tests/test_export_from_db.py` now exports with and without a UK config.
