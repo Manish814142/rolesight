@@ -201,3 +201,10 @@ def test_the_builder_keeps_a_citys_longer_foreign_namesakes_out():
 def test_a_department_is_not_a_country_code(location, expected):
     p = pl.places_from_config({"candidate": {"countries": ["Germany", "Italy", "Croatia", "Qatar", "France", "Spain"]}})
     assert sorted(c.name for c in p.countries_in(location)) == sorted(expected)
+
+
+def test_a_department_code_after_one_of_its_countrys_cities_is_that_country():
+    """Review (T147): the rule's other half. "Milan" alone would carry Italy through the city check, so a mutant that never read
+    the code passed every test; the code itself is read after the country's own city."""
+    assert pl.explicit_countries("Milan, IT") == {"IT"} and pl.explicit_countries("Doha, QA") == {"QA"}
+    assert pl.explicit_countries("Hannover, IT") == set()

@@ -9,6 +9,10 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Tests added in review (2026-10-22, T147)
+- A department-like code after one of its country's own cities is that country ("Milan, IT", "Doha, QA"): a mutant that never
+  read such a code passed every test, because the city alone already names the country. `tests/test_places_world.py`.
+
 ### Fixed (2026-10-21, T147: a department written like a country code)
 - Personio writes "office, department", so "Hannover, IT" (the IT department) counted as Italy, and a person looking in Italy would
   have been shown German IT jobs; `IT`, `HR`, `QA`, `PR`, `AI` and `BI` now count as a country at the end of a location only
