@@ -69,6 +69,17 @@ def _init_with(workdir, monkeypatch, fake, resume_name="asha.md", yes=False, key
 
 # -- plain init ----------------------------------------------------------------------------------------------------------
 
+def test_init_says_how_many_companies_it_wrote_and_where_they_hire(workdir, capsys):
+    """T151: it said "200+ companies ... mostly hiring in India" long after the list grew (1,647, 58 of them only abroad)."""
+    main.init_project()
+    shipped = json.loads((workdir / "companies.json").read_text(encoding="utf-8"))
+    abroad = sum(1 for c in shipped if c.get("places"))
+    out = capsys.readouterr().out
+    assert (f"companies.json created ({len(shipped):,} companies with a live job board: {len(shipped) - abroad:,} hiring in "
+            f"India, {abroad:,} only in other countries)") in out
+    assert "200+" not in out
+
+
 def test_plain_init_writes_the_rubric_file_the_example_config_names(workdir, capsys):
     main.init_project()
     config = json.loads((workdir / "config.json").read_text())

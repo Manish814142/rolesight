@@ -79,7 +79,10 @@ def _scaffold(cwd: Path) -> bool:
         print(f"✓ {label}")
         return True
 
-    copy("companies.json", cwd / "companies.json", "companies.json created (200+ companies with a live job board, mostly hiring in India)")
+    shipped = json.loads(data.joinpath("companies.json").read_text(encoding="utf-8"))
+    abroad = sum(1 for c in shipped if c.get("places"))     # accepted for other countries (T139); the rest for India (T151)
+    copy("companies.json", cwd / "companies.json", f"companies.json created ({len(shipped):,} companies with a live job board: "
+                                                   f"{len(shipped) - abroad:,} hiring in India, {abroad:,} only in other countries)")
     created = copy("config.example.json", cwd / "config.json", "config.json created — your settings")
     copy("env_example", cwd / ".env", ".env created — your Gemini API key goes here")
     rubric = cwd / RUBRIC_FILE

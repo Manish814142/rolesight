@@ -9,6 +9,10 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed (2026-10-22, T151)
+- `init` says how many companies it wrote and where they hire, from the shipped list itself ("1,647 companies with a live job
+  board: 1,589 hiring in India, 58 only in other countries"); it still said "200+ companies … mostly hiring in India".
+
 ### Tests added in review (2026-10-22, T147)
 - A department-like code after one of its country's own cities is that country ("Milan, IT", "Doha, QA"): a mutant that never
   read such a code passed every test, because the city alone already names the country. `tests/test_places_world.py`.
