@@ -93,8 +93,20 @@ def test_status_keeps_exact_matches_and_only_accepted_loose_ones():
     review = {"accepted": {"Stripe": ["Stripe Payments UK Ltd"]}, "rejected": {"Phoenix": ["Phoenix Software Limited"]}}
     assert bvs.status("Stripe", "Stripe Payments UK Ltd", "loose", review) == "kept"
     assert bvs.status("Canva", "CANVA UK OPERATIONS LIMITED", "loose", review) == "unreviewed"
-    assert bvs.status("Adyen", "Adyen N.V.", "exact", review) == "kept"
+    assert bvs.status("Revolut", "Revolut Ltd", "exact", review) == "kept"
     assert bvs.status("Phoenix", "Phoenix Software Limited", "exact", review) == "rejected"   # rejected wins over exact
+
+
+def test_an_exact_match_on_a_name_of_five_letters_or_fewer_counts_only_when_accepted():
+    """T144 review: "River" matched a hospital's trade name and "UK-Med" (the country word goes, "med" is left) a software
+    firm's; a key that short names many businesses, as squashed_key's six-letter floor already says."""
+    review = {"accepted": {"Adyen": ["Adyen N.V."]}, "rejected": {}}
+    assert bvs.status("River", "RIVERSIDE HOSPITAL INC D B A RIVER", "exact", review) == "unreviewed"
+    assert bvs.status("UK-Med", "CAP DIGISOFT SOLUTIONS INC DBA MED", "exact", review) == "unreviewed"
+    assert bvs.status("Adyen", "Adyen N.V.", "exact", review) == "kept"                     # read and accepted
+    assert bvs.status("Arcadia", "Arcadia Ltd", "exact", review) == "kept"                  # six letters and more: as before
+    assert bvs.status("EY GDS", "EY GDS Limited", "exact", review) == "unreviewed"            # letters are counted, not the space
+    assert bvs.status("Moss", "AB MOSS LIMITED", "exact", {"accepted": {}, "rejected": {"Moss": ["AB MOSS LIMITED"]}}) == "rejected"
 
 
 def test_load_review_without_a_file_means_no_verdicts(tmp_path):
@@ -106,8 +118,8 @@ def _sources(d: Path) -> Path:
     (d / "uk_register.csv").write_text("Organisation Name,Town/City,County,Type & Rating,Route\n"
                                        "Stripe Payments UK Ltd,London,,Worker (A rating),Skilled Worker\n"
                                        "Phoenix Software Limited,York,,Worker (A rating),Skilled Worker\n"
-                                       "Adyen N.V. London Branch,London,,Worker (A rating),Skilled Worker\n", encoding="utf-8")
-    (d / "nl_register.html").write_text('<tr><th scope="row">Adyen N.V.</th><td>34259528</td></tr>', encoding="utf-8")
+                                       "Mollie B.V. London Branch,London,,Worker (A rating),Skilled Worker\n", encoding="utf-8")
+    (d / "nl_register.html").write_text('<tr><th scope="row">Mollie B.V.</th><td>34259528</td></tr>', encoding="utf-8")
     _xlsx(d / "ie_companies_2025.xlsx", [("Employer Name", "Permits Issued Grand Total"), ("Stripe Technology Europe Limited", 4)])
     (d / "gist.json").write_text(GIST, encoding="utf-8")
     (d / "shubheksha.md").write_text(SHUBHEKSHA, encoding="utf-8")
@@ -118,7 +130,7 @@ def _sources(d: Path) -> Path:
     return d
 
 
-COMPANIES = [{"name": "Stripe", "ats": "greenhouse"}, {"name": "Adyen", "ats": "greenhouse"},
+COMPANIES = [{"name": "Stripe", "ats": "greenhouse"}, {"name": "Mollie", "ats": "greenhouse"},
              {"name": "Phoenix", "ats": "ashby"}, {"name": "Acme", "ats": "lever"}]
 
 
@@ -131,8 +143,8 @@ def test_build_writes_kept_evidence_with_each_sources_own_name(tmp_path):
                    {"source": "ie", "match": "loose", "names": {"Stripe Technology Europe Limited": {"2025": 4}}},
                    {"source": "lists", "match": "exact", "names": {"Stripe": ["shubheksha list: London, UK",
                                                                                "shubheksha list: Dublin, IE"]}}],
-        "Adyen": [{"source": "uk", "match": "exact", "names": {"Adyen N.V. London Branch": ["Skilled Worker"]}},
-                  {"source": "nl", "match": "exact", "names": {"Adyen N.V.": "34259528"}}]}
+        "Mollie": [{"source": "uk", "match": "exact", "names": {"Mollie B.V. London Branch": ["Skilled Worker"]}},
+                  {"source": "nl", "match": "exact", "names": {"Mollie B.V.": "34259528"}}]}
     assert {k: v["entries"] for k, v in data["sources"].items()} == {"uk": 3, "nl": 1, "ie": 1, "lists": 5}
     assert all("files" not in v for v in data["sources"].values())
     assert ("Phoenix", "uk", "loose", "Phoenix Software Limited", ["Skilled Worker"]) in cands   # still in the report
@@ -155,8 +167,8 @@ def test_main_offline_writes_the_file_report_and_seeds(tmp_path, capsys):
     assert bvs.main(["--offline", "--sources", str(src), "--companies", str(tmp_path / "companies.json"), "--out", str(out),
                      "--review", str(tmp_path / "none.json"), "--report", str(report), "--emit-seeds", str(seeds)]) == 0
     printed = capsys.readouterr().out
-    assert "2 of 4 companies have evidence" in printed and "loose ones unreviewed (not used" in printed
-    assert set(json.loads(out.read_text(encoding="utf-8"))["companies"]) == {"Stripe", "Adyen"}
+    assert "2 of 4 companies have evidence" in printed and "unreviewed (loose, or exact on a short name) (not used" in printed
+    assert set(json.loads(out.read_text(encoding="utf-8"))["companies"]) == {"Stripe", "Mollie"}
     assert report.read_text(encoding="utf-8").splitlines()[0] == "Status,Company,ATS,Source,Match,Source's name,Detail"
     assert "unreviewed,Phoenix,ashby,uk,loose,Phoenix Software Limited" in report.read_text(encoding="utf-8")
     assert seeds.read_text(encoding="utf-8").split() == ["Google", "Monzo", "QuantumBlack", "Zalando"]
@@ -226,6 +238,8 @@ def test_the_shipped_dataset_and_review_file_are_well_formed():
         assert all(isinstance(v, list) and all(isinstance(n, str) for n in v) for v in review[verdict].values())
     for company, ev in data["companies"].items():           # nothing rejected by hand made it into the file
         assert not {n for e in ev for n in e["names"]} & set(review["rejected"].get(company, []))
+        if len(bvs.exact_key(company).replace(" ", "")) <= bvs.SHORT_KEY:      # a short name's exact match was read (T144 review)
+            assert all(n in review["accepted"].get(company, []) for e in ev if e["match"] == "exact" for n in e["names"]), company
 
 
 RELOCATE = """# Intro

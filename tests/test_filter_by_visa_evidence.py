@@ -25,11 +25,21 @@ def _e(name, ats="greenhouse", places=("United Kingdom",)):
 
 
 def test_a_register_for_a_country_it_hires_in_is_evidence():
-    idx = _idx(uk={"Monzo Bank Ltd": ["Skilled Worker"]}, nl={"Adyen N.V.": "34259528"})
+    idx = _idx(uk={"Monzo Bank Ltd": ["Skilled Worker"]}, nl={"Mollie B.V.": "34259528"})
     assert fbve.judge(_e("Monzo Bank"), idx, NO_REVIEW, {})[:2] == ("keep", ["uk: Monzo Bank Ltd"])
     # on the Dutch register but hiring only in the UK: not evidence for the UK
-    assert fbve.judge(_e("Adyen"), idx, NO_REVIEW, {})[0] == "drop"
-    assert fbve.judge(_e("Adyen", places=("Netherlands",)), idx, NO_REVIEW, {})[0] == "keep"
+    assert fbve.judge(_e("Mollie"), idx, NO_REVIEW, {})[0] == "drop"
+    assert fbve.judge(_e("Mollie", places=("Netherlands",)), idx, NO_REVIEW, {})[0] == "keep"
+
+
+def test_an_exact_match_on_a_short_name_is_for_review_until_somebody_accepts_it():
+    """T144 review: "River" was kept on "RIVERSIDE HOSPITAL INC D B A RIVER"; a key of five letters or fewer needs a reader."""
+    idx = _idx(uk={"Monzo Ltd": ["Skilled Worker"]}, us={"RIVERSIDE HOSPITAL INC D B A RIVER": {"2024": [1, 0]}})
+    assert fbve.judge(_e("Monzo"), idx, NO_REVIEW, {})[0] == "review"
+    assert fbve.judge(_e("Monzo"), idx, {"accepted": {"Monzo": ["Monzo Ltd"]}, "rejected": {}}, {})[0] == "keep"
+    river = _e("River", places=("United States",))
+    assert fbve.judge(river, idx, NO_REVIEW, {})[:3] == ("review", [], ["us: RIVERSIDE HOSPITAL INC D B A RIVER"])
+    assert fbve.judge(river, idx, {"accepted": {}, "rejected": {"River": ["RIVERSIDE HOSPITAL INC D B A RIVER"]}}, {})[0] == "drop"
 
 
 def test_a_name_from_a_web_address_matches_as_squashed():

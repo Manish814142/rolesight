@@ -6,10 +6,10 @@ The list of job boards to scan. It is committed, it is the core of the project, 
 was checked by `autopilot discover` (below) to be live, to belong to the employer it names and to have India jobs (or,
 for the 27 entries that carry `"places"`, jobs in those countries: T139).
 
-**Counts (2026-10-22):** 2,547 boards: Greenhouse 744, Workday 490, Ashby 405, SmartRecruiters 264, Lever 209,
+**Counts (2026-10-22):** 2,509 boards: Greenhouse 732, Workday 481, Ashby 391, SmartRecruiters 264, Lever 206,
 Recruitee 195, Oracle HCM 108, Workable 106, Personio 20, Eightfold 4, Amazon 1, Phenom 1. The first 224 were curated by
-hand; 1,365 came from the bulk harvest (T111, T112); 958 were checked for other countries instead of India (T139, T142, T144):
-58 from the community lists and 900 that passed the visa-evidence rule (below). Count yours with
+hand; 1,365 came from the bulk harvest (T111, T112); 920 were checked for other countries instead of India (T139, T142, T144):
+58 from the community lists and 862 that passed the visa-evidence rule (below; 900 before its review took out 38). Count yours with
 `python -c "import json,collections;print(collections.Counter(c['ats'] for c in json.load(open('companies.json'))))"`.
 
 `job_hunt/data/companies.json` is the copy `autopilot init` gives a new user. **After any change, copy the list there**
@@ -488,7 +488,8 @@ python scripts/filter_by_visa_evidence.py --candidates /tmp/v1.json /tmp/v2.json
 A company is kept when, for a country it hires in, **one** of these holds: it is on that country's sponsor record (UK register,
 Dutch IND register, Irish permits, US H-1B, Canadian LMIA) by an exact match, a *squashed* match (the same name without spaces,
 six letters or more: "Cloudimperiumgames" = "Cloud Imperium Games Ltd") or a loose match accepted by hand in
-`scripts/visa_sponsor_review.json`; it is on a community list for that country; or one of its postings offers visa sponsorship.
+`scripts/visa_sponsor_review.json`, where an exact match on a name of five letters or fewer must be accepted too (T144 review:
+"River" matched a hospital's trade name, "UK-Med" a software firm's); it is on a community list for that country; or one of its postings offers visa sponsorship.
 A record for a country it does not hire in does not count (a Dutch register entry says nothing about a German job); a Workday
 entry records every country checked, so any record counts. **The review file doubles as an alias list**: a name accepted there
 counts although no rule proposes it ("SFDC Ireland Limited" for Salesforce, "WAL MART ASSOCIATES INC" for Walmart; this settles
@@ -506,7 +507,7 @@ What it did on 2026-10-22 (the sources that had finished; Workable's 12,585 boar
 | SmartRecruiters | 433 | 77 |
 | Lever | 228 | 49 |
 | Workday | 298 | 188 |
-| **Total** | **5,518** | **900** (list 1,647 -> 2,547) |
+| **Total** | **5,518** | **900** (list 1,647 -> 2,547; 862 after the review below: 2,509) |
 
 By country, new companies kept by the first pass (862): United Kingdom 486, Netherlands 257, Germany 166, France 107, Spain 93, Poland 83, Ireland 78,
 Singapore 75, Italy 69, Sweden 68, Portugal 62, Belgium 61, Denmark 54, Switzerland 52, Austria 48, Czechia 44, UAE 44, Norway
@@ -541,6 +542,23 @@ The other 798 stay out: no evidence from a register, a list, a posting or the we
 companies (no title-matching job) was not run.
 
 **Record rebuilt (2026-10-22): 1,711 of 2,547 companies** (1,712 before the review rejected Tgs's UK match, T133; UK 1,104, Netherlands 494, Ireland 146, lists 93, USA 853, Canada 94).
+
+**The review of T144 (2026-10-22): an exact name is not the same company.** The first pass trusted every exact and squashed match
+unread, and several put a company on the list on another business's record (Harmonic on "Harmonic (UK) Ltd." in Farnborough, the
+video firm; Ramp on "The Ramp", a Manchester church; Fca, the Financial Conduct Authority's tenant, on Fiat Chrysler's; 7 Eleven,
+the Australian licensee's tenant, on the US company's). So every kept record of the entries added for other countries whose name
+is five letters or fewer, made only of dictionary words, or a squashed match was read against the board fetched under its own
+places (its job locations and how its postings describe it): 430 entries, 572 records, and 89 records of theirs for other
+countries; the other 491 entries were checked automatically (register town, US state or Canadian province against the board's
+job locations; a non-tech industry or a low-wage stream) and the 141 flagged ones read too. Where a reading left a doubt, the web
+was searched (Companies House, SEC subsidiary lists, the press): 27 records, 10 confirmed (UK Bandwidth Limited is in Bandwidth
+Inc's SEC subsidiary list; Airspace B.V. is Airspace's European base). **67 records were rejected**, 10 of them loose names the
+first pass had accepted by hand (Faculty Services Limited in Edinburgh is not Faculty AI; Duna AI Limited is a Limerick start-up
+of 2026). Where unsure, rejected. **38 entries left the list**: 37 with no evidence left and Pulse Healthcare, a staffing agency
+the agency check missed. The India list's 184 short-name records were read as well (2 rejected: Neara Ltd, Aleph The Netherlands
+Corporation B.V.). **Record rebuilt: 1,667 of 2,509 companies** (UK 1,068, Netherlands 486, Ireland 145, lists 92, USA 838,
+Canada 89). What was not read: exact matches of longer, non-dictionary names outside the 141 flagged, and the India list's
+dictionary-word names (230 records).
 
 **The scan uses it** (T138): with `candidate.countries` set, every job outside your home country gets a **Visa** column in
 the CSV: what the posting says, then this record for its country ([docs/05](05-outputs-and-notifications.md)).

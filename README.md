@@ -4,8 +4,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue)](https://www.python.org/)
 
-**An AI job radar.** Every day it pulls open roles straight from the public job APIs of 2,547
-company boards (1,589 of them hiring in India; the other 958 hire in Europe, the Gulf, Singapore and beyond and are for people looking abroad), drops the ones that obviously don't fit, has Google Gemini score
+**An AI job radar.** Every day it pulls open roles straight from the public job APIs of 2,509
+company boards (1,589 of them hiring in India; the other 920 hire in Europe, the Gulf, Singapore and beyond and are for people looking abroad), drops the ones that obviously don't fit, has Google Gemini score
 the rest against your resume, and writes the matches to a CSV, best first.
 
 The defaults are one profile's: 3 years of experience in Node.js, backend and distributed systems,
@@ -70,7 +70,7 @@ the company's own job page.
 | Area | What you get |
 |---|---|
 | **Direct ATS APIs** | Adapters for Greenhouse (US and EU), Lever, Ashby, SmartRecruiters, Workday, Oracle HCM, Eightfold, Phenom, Amazon Jobs, Workable, Recruitee and Personio. Parallel fetching (8 workers) with a hard time limit on every request, so one slow board can't stall a scan. |
-| **Company list** | `companies.json`: 2,547 boards, each checked to be live: 1,589 have India jobs; 958 were checked for other countries instead (Europe, the Gulf, Singapore, the USA, Canada, Australia, …), each with the countries where it has jobs and **evidence that it sponsors visas** (a sponsor register, a community list, or a posting that offers sponsorship; T144), and are fetched only when `candidate.countries` names one of those (T139, T142). The first 224 were curated by hand and matched to the right employer by name; the other 1,365 were taken from the job boards' own web addresses (`scripts/harvest_board_urls.py`, T111). `autopilot discover` adds companies from a pasted list in any format and applies the same checks. |
+| **Company list** | `companies.json`: 2,509 boards, each checked to be live: 1,589 have India jobs; 920 were checked for other countries instead (Europe, the Gulf, Singapore, the USA, Canada, Australia, …), each with the countries where it has jobs and **evidence that it sponsors visas** (a sponsor register, a community list, or a posting that offers sponsorship; T144), and are fetched only when `candidate.countries` names one of those (T139, T142). The first 224 were curated by hand and matched to the right employer by name; the other 1,365 were taken from the job boards' own web addresses (`scripts/harvest_board_urls.py`, T111). `autopilot discover` adds companies from a pasted list in any format and applies the same checks. |
 | **Local pre-filter** | Word-bounded title rules (backend / Node.js / SDE / software engineer in, plus generic "Senior Engineer" titles; staff / lead / manager / other stacks out), location rules (all of India or remote from India, or any countries in `candidate.countries`; or only the cities you list in `candidate.cities`), and an optional "posted within N days" window. |
 | **Full descriptions** | For Workday, SmartRecruiters, Oracle HCM and Eightfold, whose list APIs carry little or no description, the full text is fetched for survivors only, just before scoring. |
 | **Resume-aware scoring** | Gemini reads the whole resume, the candidate profile and the whole job description. It returns a score and one sentence explaining it. One job per call, by design: batching measurably inflated scores. |
@@ -85,7 +85,7 @@ the company's own job page.
 
 ```mermaid
 flowchart TD
-    C["companies.json<br/>2,547 boards"] --> F["Fetch<br/>public ATS APIs, 8 in parallel"]
+    C["companies.json<br/>2,509 boards"] --> F["Fetch<br/>public ATS APIs, 8 in parallel"]
     F --> D{"Seen before?<br/>data/jobs.db"}
     D -- "already scored" --> X["skip"]
     D -- "new, or not scored yet" --> P{"Pre-filter<br/>title · location · posted date"}
@@ -174,7 +174,7 @@ rolesight scan --posted-within 7
 ls output/                              # open_matches.xlsx and last_scan.xlsx (open these), history/, drafts/
 ```
 
-`rolesight` and `autopilot` are the same command. In this repo `companies.json` (2,547 boards) is already in place;
+`rolesight` and `autopilot` are the same command. In this repo `companies.json` (2,509 boards) is already in place;
 `rolesight init` skips files that exist, and in an empty directory it copies the same curated list. Without
 `--resume`, `init` writes the default settings and you edit them yourself ([the guide](docs/00-user-guide.md)).
 
@@ -251,11 +251,11 @@ Details, including what each DB status means: [docs/05-outputs-and-notifications
 
 | ATS | Boards |
 |---|---|
-| Greenhouse | 744 |
-| Workday | 490 |
-| Ashby | 405 |
+| Greenhouse | 732 |
+| Workday | 481 |
+| Ashby | 391 |
 | SmartRecruiters | 264 |
-| Lever | 209 |
+| Lever | 206 |
 | Recruitee | 195 |
 | Oracle HCM | 108 |
 | Workable | 106 |
@@ -263,7 +263,7 @@ Details, including what each DB status means: [docs/05-outputs-and-notifications
 | Eightfold | 4 |
 | Amazon Jobs | 1 |
 | Phenom | 1 |
-| **Total** | **2,547** (counted 2026-10-22; 958 of them for other countries only) |
+| **Total** | **2,509** (counted 2026-10-22; 920 of them for other countries only) |
 
 To add companies, paste their names into a file in any format and run
 `autopilot discover --add-file paste.txt --report /tmp/r.csv --out /tmp/v.json --merge companies.json`.
@@ -276,7 +276,7 @@ before a merge, the monthly recheck, what a bigger list costs and where to grow 
 Companies on custom career portals (Google, Flipkart, Swiggy's own site, Darwinbox,
 Zoho Recruit, …) can't be reached. See [docs/04](docs/04-companies-and-scanning.md).
 
-Which of the companies can sponsor a visa (1,711 of 2,547 are on the UK, Dutch or Irish sponsor records, the US H-1B approvals,
+Which of the companies can sponsor a visa (1,667 of 2,509 are on the UK, Dutch or Irish sponsor records, the US H-1B approvals,
 Canada's positive LMIA employers, or a community relocation list) is in `job_hunt/data/visa_sponsors.json`; most postings
 abroad never say. See
 [docs/04](docs/04-companies-and-scanning.md#visa-sponsorship-which-companies-can-sponsor). With `candidate.countries` set,

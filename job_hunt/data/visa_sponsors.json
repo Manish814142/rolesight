@@ -62,49 +62,6 @@
     "source": "us"
    }
   ],
-  "7 Eleven": [
-   {
-    "match": "exact",
-    "names": {
-     "7 ELEVEN INC": {
-      "2024": [
-       0,
-       2
-      ]
-     },
-     "7-ELEVEN INC": {
-      "2024": [
-       6,
-       75
-      ]
-     }
-    },
-    "source": "us"
-   },
-   {
-    "match": "exact",
-    "names": {
-     "7-Eleven Canada Inc.": {
-      "2025Q2": {
-       "positions": 1,
-       "streams": [
-        "High Wage"
-       ],
-       "tech": 0
-      },
-      "2025Q3": {
-       "positions": 4,
-       "streams": [
-        "High Wage",
-        "Low Wage"
-       ],
-       "tech": 0
-      }
-     }
-    },
-    "source": "ca"
-   }
-  ],
   "8th Light": [
    {
     "match": "exact",
@@ -1395,15 +1352,6 @@
     "source": "us"
    }
   ],
-  "Aleph": [
-   {
-    "match": "exact",
-    "names": {
-     "Aleph The Netherlands Corporation B.V.": "52636003"
-    },
-    "source": "nl"
-   }
-  ],
   "Algo1": [
    {
     "match": "exact",
@@ -2481,18 +2429,6 @@
     "source": "us"
    }
   ],
-  "Archer": [
-   {
-    "match": "exact",
-    "names": {
-     "ARCHER (UK) LIMITED": [
-      "Global Business Mobility: Senior or Specialist Worker",
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
-   }
-  ],
   "Argano": [
    {
     "match": "exact",
@@ -2749,18 +2685,6 @@
      }
     },
     "source": "ca"
-   }
-  ],
-  "Astound": [
-   {
-    "match": "loose",
-    "names": {
-     "Astound Commerce Limited (UK)": [
-      "Global Business Mobility: Senior or Specialist Worker",
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
    }
   ],
   "AstraZeneca": [
@@ -3287,18 +3211,6 @@
      "Axon Public Safety B.V.": "60432713"
     },
     "source": "nl"
-   },
-   {
-    "match": "exact",
-    "names": {
-     "AXON US CORP": {
-      "2024": [
-       5,
-       1
-      ]
-     }
-    },
-    "source": "us"
    }
   ],
   "Axual": [
@@ -3319,35 +3231,6 @@
      ]
     },
     "source": "uk"
-   }
-  ],
-  "Aztecgroup": [
-   {
-    "match": "squashed",
-    "names": {
-     "AZTEC GROUP LLC": {
-      "2024": [
-       1,
-       1
-      ]
-     }
-    },
-    "source": "us"
-   },
-   {
-    "match": "squashed",
-    "names": {
-     "Aztec Group Ltd.": {
-      "2025Q4": {
-       "positions": 1,
-       "streams": [
-        "Low Wage"
-       ],
-       "tech": 0
-      }
-     }
-    },
-    "source": "ca"
    }
   ],
   "Azul": [
@@ -3774,17 +3657,6 @@
      "Basic Fit International B.V.": "34314877"
     },
     "source": "nl"
-   }
-  ],
-  "Basis Research": [
-   {
-    "match": "exact",
-    "names": {
-     "Basis Research Limited": [
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
    }
   ],
   "Baya Systems": [
@@ -4693,9 +4565,6 @@
    {
     "match": "exact",
     "names": {
-     "Box UK Limited": [
-      "Skilled Worker"
-     ],
      "Box.com (UK) Limited": [
       "Global Business Mobility: Senior or Specialist Worker",
       "Skilled Worker"
@@ -4720,15 +4589,6 @@
    {
     "match": "exact",
     "names": {
-     "SA Brain and Co Limited": [
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
-   },
-   {
-    "match": "exact",
-    "names": {
      "Brain Corporation B.V.": "77166051"
     },
     "source": "nl"
@@ -4740,29 +4600,6 @@
       "2024": [
        4,
        6
-      ]
-     }
-    },
-    "source": "us"
-   }
-  ],
-  "Brainco": [
-   {
-    "match": "exact",
-    "names": {
-     "Brainco limited": [
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
-   },
-   {
-    "match": "exact",
-    "names": {
-     "BRAINCO INC": {
-      "2024": [
-       1,
-       2
       ]
      }
     },
@@ -5060,17 +4897,6 @@
     "source": "ie"
    }
   ],
-  "Bunch": [
-   {
-    "match": "exact",
-    "names": {
-     "The-Bunch Limited": [
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
-   }
-  ],
   "Bunq": [
    {
     "match": "exact",
@@ -5180,18 +5006,6 @@
      ]
     },
     "source": "uk"
-   },
-   {
-    "match": "loose",
-    "names": {
-     "CAE TECHNOLOGY SERVICES INC": {
-      "2024": [
-       5,
-       3
-      ]
-     }
-    },
-    "source": "us"
    },
    {
     "match": "exact",
@@ -5503,29 +5317,6 @@
       "2024": [
        5,
        3
-      ]
-     }
-    },
-    "source": "us"
-   }
-  ],
-  "Carta": [
-   {
-    "match": "loose",
-    "names": {
-     "Carta Financial Services Limited": [
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
-   },
-   {
-    "match": "exact",
-    "names": {
-     "ESHARES INC DBA CARTA INC": {
-      "2024": [
-       2,
-       28
       ]
      }
     },
@@ -6205,17 +5996,6 @@
      }
     },
     "source": "us"
-   }
-  ],
-  "Clark": [
-   {
-    "match": "exact",
-    "names": {
-     "Clark": [
-      "abhi-jha gist: Berlin, Germany"
-     ]
-    },
-    "source": "lists"
    }
   ],
   "Claylabs": [
@@ -8872,33 +8652,6 @@
      "Domino's Pizza Netherlands B.V.": "18048127"
     },
     "source": "nl"
-   },
-   {
-    "match": "exact",
-    "names": {
-     "DOMINOS PIZZA INC": {
-      "2024": [
-       5,
-       28
-      ]
-     }
-    },
-    "source": "us"
-   },
-   {
-    "match": "exact",
-    "names": {
-     "Domino's Pizza": {
-      "2025Q3": {
-       "positions": 1,
-       "streams": [
-        "High Wage"
-       ],
-       "tech": 0
-      }
-     }
-    },
-    "source": "ca"
    }
   ],
   "Donaldson": [
@@ -9148,17 +8901,6 @@
     "source": "uk"
    }
   ],
-  "Duna": [
-   {
-    "match": "loose",
-    "names": {
-     "Duna AI Limited": {
-      "2026": 1
-     }
-    },
-    "source": "ie"
-   }
-  ],
   "Duolingo": [
    {
     "match": "exact",
@@ -9192,17 +8934,6 @@
      "Dura Vermeer Techniek B.V.": "82982511"
     },
     "source": "nl"
-   }
-  ],
-  "Duvo": [
-   {
-    "match": "exact",
-    "names": {
-     "Duvo Limited": [
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
    }
   ],
   "Dynata": [
@@ -9601,32 +9332,6 @@
     "source": "ca"
    }
   ],
-  "Enable": [
-   {
-    "match": "exact",
-    "names": {
-     "ENABLE Scotland": [
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
-   },
-   {
-    "match": "exact",
-    "names": {
-     "Enable Canada Inc.": {
-      "2025Q3": {
-       "positions": 1,
-       "streams": [
-        "High Wage"
-       ],
-       "tech": 1
-      }
-     }
-    },
-    "source": "ca"
-   }
-  ],
   "Encora": [
    {
     "match": "loose",
@@ -9871,19 +9576,6 @@
      }
     },
     "source": "us"
-   }
-  ],
-  "Eon": [
-   {
-    "match": "exact",
-    "names": {
-     "E.ON UK plc": [
-      "Global Business Mobility: Graduate Trainee",
-      "Global Business Mobility: Senior or Specialist Worker",
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
    }
   ],
   "Epages Gmbh": [
@@ -10335,17 +10027,6 @@
     "source": "nl"
    }
   ],
-  "Events": [
-   {
-    "match": "exact",
-    "names": {
-     "UK EVENTS LTD": [
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
-   }
-  ],
   "Everbridge": [
    {
     "match": "exact",
@@ -10368,17 +10049,6 @@
      }
     },
     "source": "us"
-   }
-  ],
-  "Evergreen": [
-   {
-    "match": "exact",
-    "names": {
-     "EVERGREEN UK. LTD": [
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
    }
   ],
   "Everway": [
@@ -10699,17 +10369,6 @@
     "source": "uk"
    }
   ],
-  "Faculty": [
-   {
-    "match": "loose",
-    "names": {
-     "Faculty Services Limited": [
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
-   }
-  ],
   "FalconX": [
    {
     "match": "exact",
@@ -10859,27 +10518,6 @@
      ]
     },
     "source": "lists"
-   }
-  ],
-  "Fca": [
-   {
-    "match": "exact",
-    "names": {
-     "FCA Netherlands B.V.": "33164133"
-    },
-    "source": "nl"
-   },
-   {
-    "match": "exact",
-    "names": {
-     "FCA US LLC": {
-      "2024": [
-       15,
-       138
-      ]
-     }
-    },
-    "source": "us"
    }
   ],
   "Feedbackfruits": [
@@ -11360,9 +10998,6 @@
     "match": "exact",
     "names": {
      "Flock Limited": [
-      "Skilled Worker"
-     ],
-     "Flock.io Ltd": [
       "Skilled Worker"
      ]
     },
@@ -11865,29 +11500,6 @@
     "source": "uk"
    }
   ],
-  "GSR": [
-   {
-    "match": "loose",
-    "names": {
-     "GSR Technology Europe Ltd.": [
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
-   },
-   {
-    "match": "loose",
-    "names": {
-     "GSR SERVICES USA LLC": {
-      "2024": [
-       0,
-       3
-      ]
-     }
-    },
-    "source": "us"
-   }
-  ],
   "Gain Theory": [
    {
     "match": "exact",
@@ -12119,9 +11731,6 @@
    {
     "match": "exact",
     "names": {
-     "Genomics England Limited": [
-      "Skilled Worker"
-     ],
      "Genomics Ltd.": [
       "Skilled Worker"
      ]
@@ -12134,9 +11743,6 @@
     "match": "exact",
     "names": {
      "Genomics England Limited": [
-      "Skilled Worker"
-     ],
-     "Genomics Ltd.": [
       "Skilled Worker"
      ]
     },
@@ -12898,24 +12504,6 @@
     "source": "uk"
    }
   ],
-  "HERE": [
-   {
-    "match": "exact",
-    "names": {
-     "Here Limited": [
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
-   },
-   {
-    "match": "exact",
-    "names": {
-     "HERE Europe B.V.": "17168515"
-    },
-    "source": "nl"
-   }
-  ],
   "HEXAWARE": [
    {
     "match": "loose",
@@ -13178,30 +12766,6 @@
      ]
     },
     "source": "uk"
-   }
-  ],
-  "Harmonic": [
-   {
-    "match": "exact",
-    "names": {
-     "Harmonic (UK) Ltd.": [
-      "Global Business Mobility: Senior or Specialist Worker",
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
-   },
-   {
-    "match": "exact",
-    "names": {
-     "HARMONIC INC": {
-      "2024": [
-       0,
-       1
-      ]
-     }
-    },
-    "source": "us"
    }
   ],
   "Harness": [
@@ -13583,37 +13147,6 @@
      ]
     },
     "source": "uk"
-   }
-  ],
-  "Hopper": [
-   {
-    "match": "exact",
-    "names": {
-     "HOPPER UK INC. LTD": [
-      "Global Business Mobility: Senior or Specialist Worker",
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
-   },
-   {
-    "match": "exact",
-    "names": {
-     "Hopper Netherlands B.V.": "84054778"
-    },
-    "source": "nl"
-   },
-   {
-    "match": "exact",
-    "names": {
-     "HOPPER USA INC": {
-      "2024": [
-       2,
-       3
-      ]
-     }
-    },
-    "source": "us"
    }
   ],
   "Horizon3ai": [
@@ -15176,17 +14709,6 @@
     "source": "uk"
    }
   ],
-  "Jigsaw": [
-   {
-    "match": "exact",
-    "names": {
-     "Jigsaw +": [
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
-   }
-  ],
   "Jitterbit": [
    {
     "match": "exact",
@@ -15199,20 +14721,6 @@
      }
     },
     "source": "us"
-   }
-  ],
-  "Jm": [
-   {
-    "match": "exact",
-    "names": {
-     "JM (UK) Ltd": [
-      "Skilled Worker"
-     ],
-     "KG&JM LTD": [
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
    }
   ],
   "Jobandtalent": [
@@ -15639,17 +15147,6 @@
      }
     },
     "source": "us"
-   }
-  ],
-  "Kernel": [
-   {
-    "match": "exact",
-    "names": {
-     "Kernel Limited": [
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
    }
   ],
   "Keunehaircosmetics": [
@@ -17311,26 +16808,6 @@
     "source": "us"
    }
   ],
-  "Maven": [
-   {
-    "match": "exact",
-    "names": {
-     "MAVEN INC": {
-      "2024": [
-       0,
-       1
-      ]
-     },
-     "MAVEN LLC": {
-      "2024": [
-       1,
-       1
-      ]
-     }
-    },
-    "source": "us"
-   }
-  ],
   "Mavenir": [
    {
     "match": "loose",
@@ -18419,20 +17896,6 @@
     "source": "us"
    }
   ],
-  "Moss": [
-   {
-    "match": "exact",
-    "names": {
-     "AB MOSS LIMITED": [
-      "Skilled Worker"
-     ],
-     "Moss Europe Limited": [
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
-   }
-  ],
   "Motherduck": [
    {
     "match": "exact",
@@ -18600,15 +18063,6 @@
      ]
     },
     "source": "lists"
-   }
-  ],
-  "Mulberry": [
-   {
-    "match": "loose",
-    "names": {
-     "Mulberry International B.V.": "33144784"
-    },
-    "source": "nl"
    }
   ],
   "Multitankcard": [
@@ -19014,17 +18468,6 @@
      ]
     },
     "source": "lists"
-   }
-  ],
-  "Neara": [
-   {
-    "match": "exact",
-    "names": {
-     "Neara Ltd": [
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
    }
   ],
   "Nearform": [
@@ -19832,24 +19275,6 @@
     "source": "uk"
    }
   ],
-  "OLIVER": [
-   {
-    "match": "loose",
-    "names": {
-     "OLIVER SERVICES LTD": [
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
-   },
-   {
-    "match": "exact",
-    "names": {
-     "Oliver B.V.": "17257650"
-    },
-    "source": "nl"
-   }
-  ],
   "OPSWAT": [
    {
     "match": "exact",
@@ -19967,17 +19392,6 @@
     "source": "us"
    }
   ],
-  "Odeko": [
-   {
-    "match": "loose",
-    "names": {
-     "Odeko (N.I.) Ltd": [
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
-   }
-  ],
   "Ogury": [
    {
     "match": "exact",
@@ -20035,20 +19449,6 @@
      "Olenex Holdings B.V.": "64445070"
     },
     "source": "nl"
-   }
-  ],
-  "Olix": [
-   {
-    "match": "exact",
-    "names": {
-     "OLIX US INC": {
-      "2024": [
-       1,
-       0
-      ]
-     }
-    },
-    "source": "us"
    }
   ],
   "Olyx": [
@@ -20360,17 +19760,6 @@
     "source": "uk"
    }
   ],
-  "Orange": [
-   {
-    "match": "exact",
-    "names": {
-     "ORANGE PRIVATE LIMITED": [
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
-   }
-  ],
   "Orca Security": [
    {
     "match": "exact",
@@ -20497,17 +19886,6 @@
      }
     },
     "source": "us"
-   }
-  ],
-  "Outset": [
-   {
-    "match": "exact",
-    "names": {
-     "Outset Limited": [
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
    }
   ],
   "Ownwell": [
@@ -20725,18 +20103,6 @@
      "Parfumado B.V.": "68443048"
     },
     "source": "nl"
-   }
-  ],
-  "Park+": [
-   {
-    "match": "exact",
-    "names": {
-     "Park Corporation UK Branch": [
-      "Global Business Mobility: Senior or Specialist Worker",
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
    }
   ],
   "Particle41": [
@@ -21261,33 +20627,6 @@
         "High Wage"
        ],
        "tech": 3
-      }
-     }
-    },
-    "source": "ca"
-   }
-  ],
-  "Pigment": [
-   {
-    "match": "loose",
-    "names": {
-     "Pigment Global Limited": [
-      "Global Business Mobility: Senior or Specialist Worker",
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
-   },
-   {
-    "match": "exact",
-    "names": {
-     "Pigment Corp.": {
-      "2025Q4": {
-       "positions": 1,
-       "streams": [
-        "High Wage"
-       ],
-       "tech": 1
       }
      }
     },
@@ -21932,17 +21271,6 @@
     "source": "us"
    }
   ],
-  "Pulse Healthcare": [
-   {
-    "match": "exact",
-    "names": {
-     "Pulse Healthcare Limited": [
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
-   }
-  ],
   "PwC": [
    {
     "match": "loose",
@@ -22577,17 +21905,6 @@
     "names": {
      "Ramboll UK Limited": [
       "Global Business Mobility: Senior or Specialist Worker",
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
-   }
-  ],
-  "Ramp": [
-   {
-    "match": "exact",
-    "names": {
-     "The Ramp": [
       "Skilled Worker"
      ]
     },
@@ -23418,15 +22735,6 @@
   ],
   "Ripple": [
    {
-    "match": "exact",
-    "names": {
-     "Ripple+ Limited": [
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
-   },
-   {
     "match": "loose",
     "names": {
      "Ripple Payments Ireland Limited": {
@@ -23485,29 +22793,6 @@
      ]
     },
     "source": "uk"
-   }
-  ],
-  "River": [
-   {
-    "match": "exact",
-    "names": {
-     "RIVER UK LIMITED": [
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
-   },
-   {
-    "match": "exact",
-    "names": {
-     "RIVERSIDE HOSPITAL INC D B A RIVER": {
-      "2024": [
-       1,
-       0
-      ]
-     }
-    },
-    "source": "us"
    }
   ],
   "Robert Half": [
@@ -24471,18 +23756,6 @@
      }
     },
     "source": "ca"
-   }
-  ],
-  "Sanity": [
-   {
-    "match": "exact",
-    "names": {
-     "Sanity UK Inc Ltd": [
-      "Global Business Mobility: Senior or Specialist Worker",
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
    }
   ],
   "Sanofi": [
@@ -25930,17 +25203,6 @@
     "source": "uk"
    }
   ],
-  "Sok": [
-   {
-    "match": "exact",
-    "names": {
-     "SOK UK Limited": [
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
-   }
-  ],
   "Solenis": [
    {
     "match": "exact",
@@ -26890,17 +26152,6 @@
     "source": "uk"
    }
   ],
-  "Strike": [
-   {
-    "match": "exact",
-    "names": {
-     "Strike Limited": [
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
-   }
-  ],
   "Stripe": [
    {
     "match": "loose",
@@ -27386,13 +26637,6 @@
      ]
     },
     "source": "uk"
-   },
-   {
-    "match": "exact",
-    "names": {
-     "Swap Netherlands B.V.": "89291506"
-    },
-    "source": "nl"
    }
   ],
   "Swisscom": [
@@ -29670,18 +28914,6 @@
      ]
     },
     "source": "uk"
-   },
-   {
-    "match": "exact",
-    "names": {
-     "CAP DIGISOFT SOLUTIONS INC DBA MED": {
-      "2024": [
-       5,
-       1
-      ]
-     }
-    },
-    "source": "us"
    }
   ],
   "UKG": [
@@ -30783,17 +30015,6 @@
     "source": "nl"
    }
   ],
-  "Via": [
-   {
-    "match": "exact",
-    "names": {
-     "Via Inc Ltd": [
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
-   }
-  ],
   "Vialis": [
    {
     "match": "exact",
@@ -30958,15 +30179,6 @@
      }
     },
     "source": "us"
-   }
-  ],
-  "Voodoo": [
-   {
-    "match": "exact",
-    "names": {
-     "Voodoo Netherlands B.V.": "74174428"
-    },
-    "source": "nl"
    }
   ],
   "Vsparticle": [

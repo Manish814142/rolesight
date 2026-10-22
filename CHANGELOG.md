@@ -9,6 +9,21 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed in review (2026-10-22, T144: an exact name is not the same company)
+- The review found companies on the list on another business's visa record (Harmonic on the Farnborough video firm's, Ramp on a
+  Manchester church's, Fca, the Financial Conduct Authority, on Fiat Chrysler's): exact and squashed name matches had been trusted
+  unread, and some hand-accepted loose ones were wrong too (Faculty, OLIVER). Every record of the entries added for other countries
+  whose name is short, made of dictionary words or squashed was read against the board's own jobs (430 entries, 572 records, plus
+  89 for other countries); the other 491 entries were checked for a register town, state or industry that does not fit the board,
+  and the 141 flagged read. 67 records rejected in `scripts/visa_sponsor_review.json` (10 of them earlier hand acceptances), 27
+  doubtful ones looked up on the web (10 confirmed). `companies.json` 2,547 -> **2,509**: 37 entries with no evidence left and one
+  staffing agency (Pulse Healthcare) removed; every other entry unchanged, the India list identical (1,589). Visa records: 1,667 of
+  2,509 companies (UK 1,068, Netherlands 486, Ireland 145, lists 92, USA 838, Canada 89).
+- `build_visa_sponsors.status`: an exact match on a name of five letters or fewer (`SHORT_KEY`) counts only when accepted by hand,
+  as squashed matches already need six letters: "River" matched "RIVERSIDE HOSPITAL INC D B A RIVER" and "UK-Med" (the country word
+  dropped) "CAP DIGISOFT SOLUTIONS INC DBA MED". The India list's 184 such records were read (182 accepted, 2 rejected), so the
+  rebuild leaves 0 unreviewed. A test checks that every short name's exact match in the shipped file was accepted.
+
 ### Fixed in review (2026-10-22, T148)
 - `discover`'s summary counted a Workday tenant's sites as companies: 15 names, 5 companies found, "8/15 companies verified"
   (AstraZeneca's 4 sites, Shell's 2). It now says "5/15 companies verified (8 boards or sites)"; `--merge` keeps one per company.

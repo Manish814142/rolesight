@@ -366,15 +366,6 @@
     ]
   },
   {
-    "name": "Basis Research",
-    "ats": "ashby",
-    "slug": "basis-research",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom"
-    ]
-  },
-  {
     "name": "Beamery",
     "ats": "ashby",
     "slug": "beamery",
@@ -458,16 +449,6 @@
     "headcount": "Unknown"
   },
   {
-    "name": "Brainco",
-    "ats": "ashby",
-    "slug": "brainco",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom",
-      "United Arab Emirates"
-    ]
-  },
-  {
     "name": "Breakmark",
     "ats": "ashby",
     "slug": "breakmark",
@@ -484,19 +465,6 @@
     "ats": "ashby",
     "slug": "bullpen-talent",
     "headcount": "Unknown"
-  },
-  {
-    "name": "Bunch",
-    "ats": "ashby",
-    "slug": "bunch",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom",
-      "Germany",
-      "Spain",
-      "Portugal",
-      "Luxembourg"
-    ]
   },
   {
     "name": "Bureau",
@@ -1058,34 +1026,6 @@
     ]
   },
   {
-    "name": "Duna",
-    "ats": "ashby",
-    "slug": "duna",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom",
-      "Germany",
-      "Netherlands",
-      "Ireland",
-      "France",
-      "Spain",
-      "Portugal",
-      "Poland",
-      "Sweden",
-      "Denmark",
-      "Finland",
-      "Norway",
-      "Switzerland",
-      "Austria",
-      "Belgium",
-      "Luxembourg",
-      "Italy",
-      "Czechia",
-      "Estonia",
-      "Lithuania"
-    ]
-  },
-  {
     "name": "Dust",
     "ats": "ashby",
     "slug": "dust",
@@ -1093,16 +1033,6 @@
     "places": [
       "United Kingdom",
       "France"
-    ]
-  },
-  {
-    "name": "Duvo",
-    "ats": "ashby",
-    "slug": "duvo",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom",
-      "Czechia"
     ]
   },
   {
@@ -1178,15 +1108,6 @@
       "Finland",
       "Norway",
       "Belgium"
-    ]
-  },
-  {
-    "name": "Faculty",
-    "ats": "ashby",
-    "slug": "faculty",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom"
     ]
   },
   {
@@ -1399,15 +1320,6 @@
     "headcount": "Unknown"
   },
   {
-    "name": "Harmonic",
-    "ats": "ashby",
-    "slug": "Harmonic",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom"
-    ]
-  },
-  {
     "name": "Harvey",
     "ats": "ashby",
     "slug": "harvey",
@@ -1456,16 +1368,6 @@
     "headcount": "Unknown",
     "places": [
       "United Kingdom"
-    ]
-  },
-  {
-    "name": "Hopper",
-    "ats": "ashby",
-    "slug": "hopper",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom",
-      "Spain"
     ]
   },
   {
@@ -1608,15 +1510,6 @@
     "ats": "ashby",
     "slug": "jellyfishcareers",
     "headcount": "Unknown"
-  },
-  {
-    "name": "Jigsaw",
-    "ats": "ashby",
-    "slug": "jigsaw",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom"
-    ]
   },
   {
     "name": "Josys",
@@ -2101,19 +1994,6 @@
     ]
   },
   {
-    "name": "Moss",
-    "ats": "ashby",
-    "slug": "moss",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom",
-      "Germany",
-      "Netherlands",
-      "Poland",
-      "Estonia"
-    ]
-  },
-  {
     "name": "Motherduck",
     "ats": "ashby",
     "slug": "MotherDuck",
@@ -2349,34 +2229,6 @@
     "ats": "ashby",
     "slug": "outmarket",
     "headcount": "Unknown"
-  },
-  {
-    "name": "Outset",
-    "ats": "ashby",
-    "slug": "outset",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom",
-      "Germany",
-      "Netherlands",
-      "Ireland",
-      "France",
-      "Spain",
-      "Portugal",
-      "Poland",
-      "Sweden",
-      "Denmark",
-      "Finland",
-      "Norway",
-      "Switzerland",
-      "Austria",
-      "Belgium",
-      "Luxembourg",
-      "Italy",
-      "Czechia",
-      "Estonia",
-      "Lithuania"
-    ]
   },
   {
     "name": "Overview",
@@ -2708,15 +2560,6 @@
     ]
   },
   {
-    "name": "Ramp",
-    "ats": "ashby",
-    "slug": "ramp",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom"
-    ]
-  },
-  {
     "name": "Ravio",
     "ats": "ashby",
     "slug": "Ravio",
@@ -2823,34 +2666,6 @@
     "headcount": "Unknown"
   },
   {
-    "name": "River",
-    "ats": "ashby",
-    "slug": "river",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom",
-      "Germany",
-      "Netherlands",
-      "Ireland",
-      "France",
-      "Spain",
-      "Portugal",
-      "Poland",
-      "Sweden",
-      "Denmark",
-      "Finland",
-      "Norway",
-      "Switzerland",
-      "Austria",
-      "Belgium",
-      "Luxembourg",
-      "Italy",
-      "Czechia",
-      "Estonia",
-      "Lithuania"
-    ]
-  },
-  {
     "name": "Riveron",
     "ats": "ashby",
     "slug": "riveron",
@@ -2904,34 +2719,6 @@
     "ats": "ashby",
     "slug": "sanctuary",
     "headcount": "Unknown"
-  },
-  {
-    "name": "Sanity",
-    "ats": "ashby",
-    "slug": "sanity",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom",
-      "Germany",
-      "Netherlands",
-      "Ireland",
-      "France",
-      "Spain",
-      "Portugal",
-      "Poland",
-      "Sweden",
-      "Denmark",
-      "Finland",
-      "Norway",
-      "Switzerland",
-      "Austria",
-      "Belgium",
-      "Luxembourg",
-      "Italy",
-      "Czechia",
-      "Estonia",
-      "Lithuania"
-    ]
   },
   {
     "name": "Sardine",
@@ -4352,15 +4139,6 @@
     "headcount": "Unknown"
   },
   {
-    "name": "Archer",
-    "ats": "greenhouse",
-    "slug": "archer56",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom"
-    ]
-  },
-  {
     "name": "Archipelago Analytics Inc.",
     "ats": "greenhouse",
     "slug": "onarchipelago",
@@ -5041,16 +4819,6 @@
     "ats": "greenhouse",
     "slug": "carrotfertility",
     "headcount": "Unknown"
-  },
-  {
-    "name": "Carta",
-    "ats": "greenhouse",
-    "slug": "carta",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom",
-      "Singapore"
-    ]
   },
   {
     "name": "Cast AI",
@@ -5879,15 +5647,6 @@
     "headcount": "Unknown"
   },
   {
-    "name": "Eon",
-    "ats": "greenhouse",
-    "slug": "eonio",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom"
-    ]
-  },
-  {
     "name": "EOS",
     "ats": "greenhouse",
     "slug": "eositsolutions",
@@ -5955,24 +5714,6 @@
     "ats": "greenhouse",
     "slug": "eudia",
     "headcount": "Unknown"
-  },
-  {
-    "name": "Events",
-    "ats": "greenhouse",
-    "slug": "mwamevents",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom"
-    ]
-  },
-  {
-    "name": "Evergreen",
-    "ats": "greenhouse",
-    "slug": "evergreenservicesgroup",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom"
-    ]
   },
   {
     "name": "Everpure",
@@ -6567,16 +6308,6 @@
     "headcount": "Unknown"
   },
   {
-    "name": "GSR",
-    "ats": "greenhouse",
-    "slug": "gsrmarkets",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom",
-      "Singapore"
-    ]
-  },
-  {
     "name": "Guidepoint",
     "ats": "greenhouse",
     "slug": "guidepoint",
@@ -6676,15 +6407,6 @@
       "Ireland",
       "United Arab Emirates",
       "Singapore"
-    ]
-  },
-  {
-    "name": "HERE",
-    "ats": "greenhouse",
-    "slug": "hereio",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom"
     ]
   },
   {
@@ -7742,15 +7464,6 @@
     "headcount": "Unknown"
   },
   {
-    "name": "Odeko",
-    "ats": "greenhouse",
-    "slug": "odeko",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom"
-    ]
-  },
-  {
     "name": "Okta",
     "ats": "greenhouse",
     "slug": "okta",
@@ -7784,20 +7497,6 @@
       "Czechia",
       "Estonia",
       "Lithuania"
-    ]
-  },
-  {
-    "name": "OLIVER",
-    "ats": "greenhouse",
-    "slug": "oliver",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom",
-      "Germany",
-      "Ireland",
-      "United Arab Emirates",
-      "France",
-      "Belgium"
     ]
   },
   {
@@ -8150,17 +7849,6 @@
     "ats": "greenhouse",
     "slug": "pubmatic",
     "headcount": "Unknown"
-  },
-  {
-    "name": "Pulse Healthcare",
-    "ats": "greenhouse",
-    "slug": "pulse",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom",
-      "Ireland",
-      "Denmark"
-    ]
   },
   {
     "name": "QphoX",
@@ -9022,15 +8710,6 @@
     "headcount": "Unknown"
   },
   {
-    "name": "Strike",
-    "ats": "greenhouse",
-    "slug": "strike",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom"
-    ]
-  },
-  {
     "name": "Stripe",
     "ats": "greenhouse",
     "slug": "stripe",
@@ -9631,18 +9310,6 @@
     "ats": "greenhouse",
     "slug": "verve",
     "headcount": "Unknown"
-  },
-  {
-    "name": "Via",
-    "ats": "greenhouse",
-    "slug": "via",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom",
-      "Germany",
-      "Netherlands",
-      "France"
-    ]
   },
   {
     "name": "Viral Nation Inc.",
@@ -10272,15 +9939,6 @@
     "headcount": "Unknown"
   },
   {
-    "name": "Enable",
-    "ats": "lever",
-    "slug": "enable",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom"
-    ]
-  },
-  {
     "name": "Endpointclinical",
     "ats": "lever",
     "slug": "endpointclinical",
@@ -10836,19 +10494,6 @@
     ]
   },
   {
-    "name": "Mulberry",
-    "ats": "lever",
-    "slug": "mulberry",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom",
-      "Netherlands",
-      "Ireland",
-      "Sweden",
-      "Italy"
-    ]
-  },
-  {
     "name": "Mytos",
     "ats": "lever",
     "slug": "mytos",
@@ -11005,21 +10650,6 @@
     "ats": "lever",
     "slug": "perforce",
     "headcount": "Unknown"
-  },
-  {
-    "name": "Pigment",
-    "ats": "lever",
-    "slug": "pigment",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom",
-      "Germany",
-      "Netherlands",
-      "France",
-      "Spain",
-      "Sweden",
-      "Switzerland"
-    ]
   },
   {
     "name": "Pipedrive",
@@ -17290,42 +16920,6 @@
     ]
   },
   {
-    "name": "7 Eleven",
-    "ats": "workday",
-    "tenant": "7eleven",
-    "dc": "wd3",
-    "site": "7elevenv2",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom",
-      "Germany",
-      "Netherlands",
-      "Ireland",
-      "United Arab Emirates",
-      "Singapore",
-      "France",
-      "Spain",
-      "Portugal",
-      "Poland",
-      "Sweden",
-      "Denmark",
-      "Finland",
-      "Norway",
-      "Switzerland",
-      "Austria",
-      "Belgium",
-      "Luxembourg",
-      "Italy",
-      "Czechia",
-      "Estonia",
-      "Lithuania",
-      "United States",
-      "Canada",
-      "Australia",
-      "New Zealand"
-    ]
-  },
-  {
     "name": "Aareon",
     "ats": "workday",
     "tenant": "aareon",
@@ -17906,38 +17500,6 @@
     ]
   },
   {
-    "name": "Astound",
-    "ats": "workday",
-    "tenant": "astound",
-    "dc": "wd108",
-    "site": "Astound_Careers",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom",
-      "Germany",
-      "Netherlands",
-      "Ireland",
-      "United Arab Emirates",
-      "Singapore",
-      "France",
-      "Spain",
-      "Portugal",
-      "Poland",
-      "Sweden",
-      "Denmark",
-      "Finland",
-      "Norway",
-      "Switzerland",
-      "Austria",
-      "Belgium",
-      "Luxembourg",
-      "Italy",
-      "Czechia",
-      "Estonia",
-      "Lithuania"
-    ]
-  },
-  {
     "name": "AstraZeneca",
     "ats": "workday",
     "tenant": "astrazeneca",
@@ -18144,38 +17706,6 @@
     "dc": "wd3",
     "site": "AyvensCareers",
     "headcount": "Unknown"
-  },
-  {
-    "name": "Aztecgroup",
-    "ats": "workday",
-    "tenant": "aztecgroup",
-    "dc": "wd103",
-    "site": "External",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom",
-      "Germany",
-      "Netherlands",
-      "Ireland",
-      "United Arab Emirates",
-      "Singapore",
-      "France",
-      "Spain",
-      "Portugal",
-      "Poland",
-      "Sweden",
-      "Denmark",
-      "Finland",
-      "Norway",
-      "Switzerland",
-      "Austria",
-      "Belgium",
-      "Luxembourg",
-      "Italy",
-      "Czechia",
-      "Estonia",
-      "Lithuania"
-    ]
   },
   {
     "name": "Baker Hughes",
@@ -19111,42 +18641,6 @@
       "Czechia",
       "Estonia",
       "Lithuania"
-    ]
-  },
-  {
-    "name": "Clark",
-    "ats": "workday",
-    "tenant": "clark",
-    "dc": "wd503",
-    "site": "ClarkExternal",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom",
-      "Germany",
-      "Netherlands",
-      "Ireland",
-      "United Arab Emirates",
-      "Singapore",
-      "France",
-      "Spain",
-      "Portugal",
-      "Poland",
-      "Sweden",
-      "Denmark",
-      "Finland",
-      "Norway",
-      "Switzerland",
-      "Austria",
-      "Belgium",
-      "Luxembourg",
-      "Italy",
-      "Czechia",
-      "Estonia",
-      "Lithuania",
-      "United States",
-      "Canada",
-      "Australia",
-      "New Zealand"
     ]
   },
   {
@@ -20159,42 +19653,6 @@
     "tenant": "fastretailing",
     "dc": "wd3",
     "site": "store_staff_eu_Uniqlo",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom",
-      "Germany",
-      "Netherlands",
-      "Ireland",
-      "United Arab Emirates",
-      "Singapore",
-      "France",
-      "Spain",
-      "Portugal",
-      "Poland",
-      "Sweden",
-      "Denmark",
-      "Finland",
-      "Norway",
-      "Switzerland",
-      "Austria",
-      "Belgium",
-      "Luxembourg",
-      "Italy",
-      "Czechia",
-      "Estonia",
-      "Lithuania",
-      "United States",
-      "Canada",
-      "Australia",
-      "New Zealand"
-    ]
-  },
-  {
-    "name": "Fca",
-    "ats": "workday",
-    "tenant": "fca",
-    "dc": "wd3",
-    "site": "FCA_earlycareers",
     "headcount": "Unknown",
     "places": [
       "United Kingdom",
@@ -21492,38 +20950,6 @@
     "dc": "wd108",
     "site": "JBT_Marel_Career_Site",
     "headcount": "Unknown"
-  },
-  {
-    "name": "Jm",
-    "ats": "workday",
-    "tenant": "jm",
-    "dc": "wd103",
-    "site": "External",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom",
-      "Germany",
-      "Netherlands",
-      "Ireland",
-      "United Arab Emirates",
-      "Singapore",
-      "France",
-      "Spain",
-      "Portugal",
-      "Poland",
-      "Sweden",
-      "Denmark",
-      "Finland",
-      "Norway",
-      "Switzerland",
-      "Austria",
-      "Belgium",
-      "Luxembourg",
-      "Italy",
-      "Czechia",
-      "Estonia",
-      "Lithuania"
-    ]
   },
   {
     "name": "Johnson Controls",
@@ -22838,42 +22264,6 @@
     "headcount": "Unknown"
   },
   {
-    "name": "Orange",
-    "ats": "workday",
-    "tenant": "orange",
-    "dc": "wd3",
-    "site": "Orange_Career",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom",
-      "Germany",
-      "Netherlands",
-      "Ireland",
-      "United Arab Emirates",
-      "Singapore",
-      "France",
-      "Spain",
-      "Portugal",
-      "Poland",
-      "Sweden",
-      "Denmark",
-      "Finland",
-      "Norway",
-      "Switzerland",
-      "Austria",
-      "Belgium",
-      "Luxembourg",
-      "Italy",
-      "Czechia",
-      "Estonia",
-      "Lithuania",
-      "United States",
-      "Canada",
-      "Australia",
-      "New Zealand"
-    ]
-  },
-  {
     "name": "Otis",
     "ats": "workday",
     "tenant": "otis",
@@ -22888,42 +22278,6 @@
     "dc": "wd5",
     "site": "panwexternalcareers",
     "headcount": "10,001+ employees"
-  },
-  {
-    "name": "Park+",
-    "ats": "workday",
-    "tenant": "park",
-    "dc": "wd1",
-    "site": "ParkUniversityCareers",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom",
-      "Germany",
-      "Netherlands",
-      "Ireland",
-      "United Arab Emirates",
-      "Singapore",
-      "France",
-      "Spain",
-      "Portugal",
-      "Poland",
-      "Sweden",
-      "Denmark",
-      "Finland",
-      "Norway",
-      "Switzerland",
-      "Austria",
-      "Belgium",
-      "Luxembourg",
-      "Italy",
-      "Czechia",
-      "Estonia",
-      "Lithuania",
-      "United States",
-      "Canada",
-      "Australia",
-      "New Zealand"
-    ]
   },
   {
     "name": "Path",
@@ -24452,38 +23806,6 @@
     "dc": "wd1",
     "site": "snap",
     "headcount": "Unknown"
-  },
-  {
-    "name": "Sok",
-    "ats": "workday",
-    "tenant": "sok",
-    "dc": "wd502",
-    "site": "S-ryhman-avoimet-tyopaikat",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom",
-      "Germany",
-      "Netherlands",
-      "Ireland",
-      "United Arab Emirates",
-      "Singapore",
-      "France",
-      "Spain",
-      "Portugal",
-      "Poland",
-      "Sweden",
-      "Denmark",
-      "Finland",
-      "Norway",
-      "Switzerland",
-      "Austria",
-      "Belgium",
-      "Luxembourg",
-      "Italy",
-      "Czechia",
-      "Estonia",
-      "Lithuania"
-    ]
   },
   {
     "name": "Solenis",

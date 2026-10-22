@@ -438,11 +438,17 @@ def load_review(path: Path) -> Dict[str, Dict[str, List[str]]]:
     return {"accepted": r.get("accepted", {}), "rejected": r.get("rejected", {})}
 
 
+SHORT_KEY = 5     # an exact key this short ("river", "med", "eon") names many businesses: read it first (T144 review)
+
+
 def status(company: str, source_name: str, match: str, review: Dict[str, Dict[str, List[str]]]) -> str:
-    """"kept" (an exact match, or a loose one accepted by hand), "rejected" by hand, or "unreviewed" (a loose one)."""
+    """"kept" (an exact or squashed match, or a loose one or a short exact one accepted by hand), "rejected" by hand, or
+    "unreviewed" (a loose match, or an exact one on a key of SHORT_KEY letters or fewer, until someone reads it)."""
     if source_name in review["rejected"].get(company, []):
         return "rejected"
-    if match in ("exact", "squashed") or source_name in review["accepted"].get(company, []):
+    if source_name in review["accepted"].get(company, []):
+        return "kept"
+    if match == "squashed" or (match == "exact" and len(exact_key(company).replace(" ", "")) > SHORT_KEY):
         return "kept"
     return "unreviewed"
 
@@ -537,7 +543,7 @@ def main(argv=None) -> int:
     print(f"{len(data['companies'])} of {len(companies)} companies have evidence ({', '.join(f'{k} {v}' for k, v in by.items())}); "
           f"wrote {args.out}")
     counts = {s: sum(status(c, n, k, review) == s for c, _, k, n, _ in cands) for s in ("kept", "rejected", "unreviewed")}
-    print(f"matches: {counts['kept']} kept, {counts['rejected']} rejected by hand, {counts['unreviewed']} loose ones unreviewed"
+    print(f"matches: {counts['kept']} kept, {counts['rejected']} rejected by hand, {counts['unreviewed']} unreviewed (loose, or exact on a short name)"
           + (" (not used: read them with --report, then accept or reject them in the review file)" if counts["unreviewed"] else ""))
     if args.report:
         print(f"{write_report(args.report, cands, review, companies)} matches in {args.report}")
