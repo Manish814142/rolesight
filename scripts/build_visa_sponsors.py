@@ -23,7 +23,8 @@ Germany, the UAE, Singapore, Australia and New Zealand publish no register to do
 COUNTRY_RULE (T141, T143), and the lists name companies there. A register says the employer can sponsor, not that a given job does.
 
 A match is "exact" when the names agree once legal suffixes and country words are dropped ("Google (UK) Limited" is Google),
-"loose" when they agree only once generic words are dropped too ("Atlassian (UK) Operations Limited" is Atlassian). Only
+"squashed" when they agree once the spaces are gone too ("Cloudimperiumgames" is "Cloud Imperium Games Ltd"; six letters or
+more), "loose" when they agree only once generic words are dropped too ("Atlassian (UK) Operations Limited" is Atlassian). Only
 companies on companies.json are written, with the source's own name, so every match can be checked; the registers themselves
 are not copied. Run from the repository folder; the downloads go to data/visa_sources/ (git-ignored).
 """
@@ -95,6 +96,13 @@ def exact_key(name: str) -> str:
     return " ".join(w for w in t if w not in LEGAL and w not in PLACE)
 
 
+def squashed_key(name: str) -> str:
+    """exact_key with the spaces taken out: a name built from a web address ("Cloudimperiumgames", "Basicfit") against the
+    register's ("Cloud Imperium Games Ltd", "Basic-Fit B.V."). Only for names of six letters or more (T144)."""
+    key = exact_key(name).replace(" ", "")
+    return key if len(key) >= 6 else ""
+
+
 def loose_key(name: str) -> str:
     """exact_key without generic business words too: "Atlassian (UK) Operations Limited" -> "atlassian"."""
     return " ".join(w for w in exact_key(name).split() if w not in GENERIC)
@@ -106,18 +114,24 @@ class Index:
     def __init__(self, entries: Dict[str, Any]):
         self.entries = entries                        # source's own name -> detail (routes, permits, list section)
         self.exact: Dict[str, List[str]] = {}
+        self.squashed: Dict[str, List[str]] = {}
         self.loose: Dict[str, List[str]] = {}
         for n in entries:
             if exact_key(n):
                 self.exact.setdefault(exact_key(n), []).append(n)
+            if squashed_key(n):
+                self.squashed.setdefault(squashed_key(n), []).append(n)
             if loose_key(n):
                 self.loose.setdefault(loose_key(n), []).append(n)
 
     def match(self, company: str) -> Tuple[Optional[str], List[str]]:
-        """("exact" | "loose" | None, the source names that match)."""
+        """("exact" | "squashed" | "loose" | None, the source names that match)."""
         e, lk = exact_key(company), loose_key(company)
         if e and e in self.exact:
             return "exact", sorted(self.exact[e])
+        sq = squashed_key(company)
+        if sq and sq in self.squashed:
+            return "squashed", sorted(self.squashed[sq])
         if lk and lk in self.loose:
             return "loose", sorted(self.loose[lk])
         return None, []
@@ -412,7 +426,7 @@ def load_sources(src: Path) -> Dict[str, Index]:
     return out
 
 
-Candidate = Tuple[str, str, str, str, Any]      # company, source, "exact" | "loose", the source's name, its detail
+Candidate = Tuple[str, str, str, str, Any]      # company, source, "exact" | "squashed" | "loose", the source's name, its detail
 
 
 def load_review(path: Path) -> Dict[str, Dict[str, List[str]]]:
@@ -425,7 +439,7 @@ def status(company: str, source_name: str, match: str, review: Dict[str, Dict[st
     """"kept" (an exact match, or a loose one accepted by hand), "rejected" by hand, or "unreviewed" (a loose one)."""
     if source_name in review["rejected"].get(company, []):
         return "rejected"
-    if match == "exact" or source_name in review["accepted"].get(company, []):
+    if match in ("exact", "squashed") or source_name in review["accepted"].get(company, []):
         return "kept"
     return "unreviewed"
 

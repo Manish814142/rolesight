@@ -219,7 +219,7 @@ def test_download_finds_each_file_from_its_page(tmp_path, monkeypatch):
 def test_the_shipped_dataset_and_review_file_are_well_formed():
     data = json.loads((ROOT / "job_hunt" / "data" / "visa_sponsors.json").read_text(encoding="utf-8"))
     assert set(data["sources"]) == {"uk", "nl", "ie", "us", "ca", "lists"}
-    assert data["companies"] and all(e["source"] in data["sources"] and e["match"] in ("exact", "loose") and e["names"]
+    assert data["companies"] and all(e["source"] in data["sources"] and e["match"] in ("exact", "squashed", "loose") and e["names"]
                                      for ev in data["companies"].values() for e in ev)
     review = json.loads((ROOT / "scripts" / "visa_sponsor_review.json").read_text(encoding="utf-8"))
     for verdict in ("accepted", "rejected"):
@@ -333,3 +333,27 @@ def test_offline_with_a_newer_hub_export_replaces_only_the_us_file(tmp_path, cap
 
 def test_every_flag_gets_its_countrys_name():
     assert bvs._flags_to_names("Toronto 🇨🇦") == "Toronto, Canada" and bvs._flags_to_names("Lisbon 🇵🇹") == "Lisbon, Portugal"
+
+
+# ── T144: a name built from a web address ──────────────────────────────────────
+
+@pytest.mark.parametrize("name, key", [
+    ("Cloudimperiumgames", "cloudimperiumgames"), ("Cloud Imperium Games Ltd", "cloudimperiumgames"), ("Basic-Fit B.V.", "basicfit"),
+    ("Ace Ltd", ""), ("ING", ""),                                       # under six letters: too many other firms
+])
+def test_squashed_key(name, key):
+    assert bvs.squashed_key(name) == key
+
+
+def test_a_name_from_a_web_address_matches_the_registers_spaced_name_as_squashed():
+    idx = bvs.Index({"Cloud Imperium Games Ltd": [], "Basic-Fit B.V.": [], "Ace Ltd": []})
+    assert idx.match("Cloudimperiumgames") == ("squashed", ["Cloud Imperium Games Ltd"])
+    assert idx.match("Basicfit") == ("squashed", ["Basic-Fit B.V."])
+    assert idx.match("Cloud Imperium Games") == ("exact", ["Cloud Imperium Games Ltd"])          # the exact match still comes first
+    assert idx.match("Acedia") == (None, [])
+
+
+def test_a_squashed_match_is_kept_without_a_review_and_a_rejection_still_wins():
+    review = {"accepted": {}, "rejected": {"Basicfit": ["Basic-Fit B.V."]}}
+    assert bvs.status("Cloudimperiumgames", "Cloud Imperium Games Ltd", "squashed", review) == "kept"
+    assert bvs.status("Basicfit", "Basic-Fit B.V.", "squashed", review) == "rejected"
