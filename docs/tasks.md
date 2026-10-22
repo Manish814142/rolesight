@@ -381,9 +381,9 @@ T11, T12, T14, T15, T16, T17 and T18 were verified 2026-10-07, T66 and T67 on 20
 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
-| T149 | Warn when `candidate.seeking` or `profile` names India (or an Indian city) and none of `candidate.countries`, which lie outside India: Gemini then marks jobs abroad down, even those that offer visa sponsorship (Manish 2026-10-22: "you can decide and do the needful") | todo | claude | S | T140 |
+| T149 | Warn when `candidate.seeking` or `profile` names India (or an Indian city) and none of `candidate.countries`, which lie outside India: Gemini then marks jobs abroad down, even those that offer visa sponsorship (Manish 2026-10-22: "you can decide and do the needful") | doing · claude · 2026-10-22 | claude | S | T140 |
 | T150 | A location part that names a country beside a US, Canadian or Australian state code is not that country: a street name ("Ireland Rd"), a town named after a country ("Holland, MI", "Panama City, FL"), a province code before the country ("Rieti, RI, Italy"), an Indian state code that is also a US one ("Madurai,TN" at an Indian site) | todo | claude | S | T146, T147 |
-| T151 | `init` prints the shipped list's real size instead of "200+ companies … mostly hiring in India" | doing · claude · 2026-10-22 | claude | XS | — |
+| T151 | `init` prints the shipped list's real size instead of "200+ companies … mostly hiring in India" | review · claude · b1c4ee4 | claude | XS | — |
 
 **T149 · finding (Inbox text, claude, the review of T133–T143):** **A `seeking` text that names India makes Gemini cap jobs abroad even with `candidate.countries` set:** the profile outweighs the rewritten rule 1. Measured 2026-10-21 in review (Gemini 3.5 flash-lite): UK rubric with Manish's `seeking` ("Remote / Hybrid / Bengaluru / India") → silent Neo4j 25, Anthropic and Wayve, whose postings offer sponsorship, 25 and 30, every reason citing work authorisation; the same postings with the `seeking` that `init --countries` writes → 75, 50, 45, reasons about fit. `init --countries` replaces only the example's text; someone who adds `countries` by hand keeps an India `seeking`. Option, Manish's call: warn at scan start when `countries` leaves out India and `seeking` names India or an Indian city, or have `init --countries` offer to rewrite it *(measured (20 calls, 4 postings compared))*
 
@@ -671,6 +671,7 @@ The implementer adds a row when a task reaches `review`; the verifier removes it
 
 | ID | Commit(s) | Implementer | Evidence (command → result) |
 |---|---|---|---|
+| T151 | b1c4ee4 | claude | New test `test_init_says_how_many_companies_it_wrote_and_where_they_hire` red before (the old "200+" line), green after. `python -m job_hunt init` in an empty folder (review worktree code) → "✓ companies.json created (1,647 companies with a live job board: 1,589 hiring in India, 58 only in other countries)"; the written file: 1,647 entries, 58 with `places`. The counts come from the shipped file, so they follow the list. No doc quoted the old line (grep). Init, CLI and file-mode tests: 81 passed; ruff, mypy clean |
 
 ---
 
