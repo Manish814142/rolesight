@@ -56,6 +56,7 @@ import requests
 from job_hunt.adapters import detect_ats, fetch_company_jobs
 from job_hunt.adapters.base import DEFAULT_HEADERS
 from job_hunt.adapters.workday import (
+    _fetch_detail,
     fetch_detail_locations,
     is_multi_location,
     item_location,
@@ -222,15 +223,18 @@ def parse_seeds(text: str) -> List[Dict[str, Any]]:
         is_workday = len(parts) >= 5 and parts[1].lower() == "workday"
         is_eightfold = len(parts) >= 4 and parts[1].lower() == "eightfold"
         is_phenom = len(parts) >= 4 and parts[1].lower() == "phenom"
+        workday_auto = len(parts) == 3 and parts[1].lower() == "workday" and parts[2].lower() == "auto"      # T148
         # "Name | board URL | exact" (T111): a harvested board. Its name is only a label, so two boards may share one.
         exact = len(parts) >= 3 and parts[2].lower() == "exact" and not (is_workday or is_eightfold or is_phenom)
-        key = (name.lower(), "workday" if is_workday else "eightfold" if is_eightfold else "phenom" if is_phenom else "",
-               parts[1].lower() if exact else "")
+        key = (name.lower(), "workday" if is_workday else "eightfold" if is_eightfold else "phenom" if is_phenom else
+               "workday-auto" if workday_auto else "", parts[1].lower() if exact else "")
         if not name or key in seen:
             continue
         seen.add(key)
         seed: Dict[str, Any] = {"name": name}
-        if is_workday:
+        if workday_auto:
+            seed["workday_auto"] = True
+        elif is_workday:
             seed["workday"] = {"tenant": parts[2], "dc": parts[3], "site": parts[4]}
         elif is_eightfold:
             seed["eightfold"] = {"host": parts[2], "domain": parts[3]}
@@ -418,7 +422,81 @@ def evaluate_entry(seed_name: str, entry: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def evaluate_workday(seed_name: str, tenant: str, dc: str, site: str) -> Dict[str, Any]:
+# ── Workday tenants found by name (T148) ──────────────────────────────────────
+
+# Data centres, most employers first (Europe's are mostly wd3 and wd103, measured 2026-10-22 on 58 well-known employers).
+WORKDAY_DCS = ("wd3", "wd1", "wd5", "wd103", "wd12", "wd501", "wd502", "wd503", "wd108", "wd102", "wd115", "wd10", "wd107", "wd504",
+               "wd2", "wd4")
+# Workday answers a plain request with 406: it wants a language. The file a tenant serves at /robots.txt lists every career
+# site it has ("Sitemap: https://<tenant>.<dc>.myworkdayjobs.com/<Site>/siteMap.xml"), and a tenant that does not exist on that
+# data centre answers 422, so the tenant, its data centre and all its sites come from the company name alone.
+_WORKDAY_ROBOTS_HEADERS = {**DEFAULT_HEADERS, "Accept": "*/*", "Accept-Language": "en-US,en;q=0.9"}
+_WORKDAY_SITE_RE = re.compile(r"myworkdayjobs\.com/([^/\s]+)/siteMap\.xml", re.IGNORECASE)
+MAX_WORKDAY_SITES = 12
+
+
+_LEGAL_TOKENS = {"ag", "se", "sa", "nv", "bv", "gmbh", "plc", "inc", "ltd", "llc", "limited", "corp", "corporation", "co", "company",
+                 "private", "pvt", "the", "kg", "oy", "ab", "as", "spa", "srl", "sas", "sarl"}
+_GROUP_TOKENS = {"group", "holdings", "holding"}
+
+
+def workday_tenant_slugs(name: str) -> List[str]:
+    """Tenant names a company might use: its name run together, without its legal form, and without "Group" or "Holdings" too
+    ("Lloyds Banking Group" -> lloydsbankinggroup, lloydsbanking; "Deutsche Bank AG" -> deutschebankag, deutschebank). Never a
+    first word alone: "standard" was not Standard Chartered's tenant and "lloyds" was Lloyd's of London (prototype, 2026-10-22)."""
+    out: List[str] = []
+    for v in name_variants(name):
+        words = _words(v)
+        plain = [w for w in words if w not in _LEGAL_TOKENS] or words
+        short = [w for w in plain if w not in _GROUP_TOKENS] or plain
+        for tokens in (words, plain, short):
+            slug = "".join(tokens)
+            if re.fullmatch(r"[a-z0-9]{3,40}", slug) and slug not in out:
+                out.append(slug)
+    return out[:4]
+
+
+def _workday_robots(slug: str, dc: str) -> List[str]:
+    """The career sites a tenant lists on one data centre; none when it is not there (422) or the request fails twice."""
+    for attempt in range(2):
+        try:
+            r = requests.get(f"https://{slug}.{dc}.myworkdayjobs.com/robots.txt", headers=_WORKDAY_ROBOTS_HEADERS, timeout=15)
+        except requests.RequestException:
+            continue
+        if r.status_code == 200:
+            return list(dict.fromkeys(_WORKDAY_SITE_RE.findall(r.text)))[:MAX_WORKDAY_SITES]
+        if r.status_code in (404, 422):
+            return []
+    return []
+
+
+def workday_tenant_for(name: str) -> List[Tuple[str, str, str]]:
+    """[(tenant, data centre, site)] for the Workday tenant named like the company: the first slug and data centre that answer."""
+    for slug in workday_tenant_slugs(name):
+        for dc in WORKDAY_DCS:
+            sites = _workday_robots(slug, dc)
+            if sites:
+                return [(slug, dc, site) for site in sites]
+    return []
+
+
+def _workday_names_company(seed_name: str, cxs_base: str, posts: List[Dict[str, Any]]) -> Tuple[bool, str]:
+    """Whether the company's name appears in the text of up to 3 of the tenant's postings (those in your places first): a
+    tenant called "delta" is not necessarily Delta Air Lines."""
+    pool = [q for q in posts if q.get("externalPath")]
+    pool.sort(key=lambda q: not _in_places(item_location(q)))
+    patterns = [re.compile(r"\b" + re.escape(" ".join(_core_words(v))).replace(r"\ ", r"[\s\-]?") + r"\b", re.IGNORECASE)
+                for v in name_variants(seed_name)]
+    asked = 0
+    for q in pool[:3]:
+        asked += 1
+        _, text = _fetch_detail(cxs_base, q["externalPath"])
+        if any(pt.search(f"{q.get('title', '')}\n{text}") for pt in patterns):
+            return True, f"named in a job description ({asked} read)"
+    return False, f"not named in {asked} job description(s) read"
+
+
+def evaluate_workday(seed_name: str, tenant: str, dc: str, site: str, confirm_name: bool = False) -> Dict[str, Any]:
     """Light check: first page of the India search (the adapter itself paginates to 100). When that page shows no India
     job, a few "N Locations" postings are resolved with the detail call, as the adapter does (T113: Northern Trust's
     search has 99 hits but its first 20 read "2 Locations", "Chicago, IL", "Luxembourg")."""
@@ -463,6 +541,11 @@ def evaluate_workday(seed_name: str, tenant: str, dc: str, site: str) -> Dict[st
                     break
     passing = [j for j in jobs if should_evaluate_job(j)[0]]
     ok, verdict = accept_board("workday", f"{tenant}:{dc}:{site}", len(jobs), india, True)
+    if ok and confirm_name:                  # a tenant found by guessing its name: say whose it is from the postings themselves
+        named, how = _workday_names_company(seed_name, cxs_base, posts)
+        row["identity"] = how
+        if not named:
+            ok, verdict = False, "identity not confirmed"
     row.update({"verdict": verdict if posts else f"{verdict} ({status})", "accepted": ok, "jobs": len(jobs),
                 "place_jobs": india, "prefilter_pass": len(passing),
                 "sample_titles": "; ".join(j.title[:50] for j in passing[:3]),
@@ -519,7 +602,7 @@ def discover(seeds: List[Dict[str, Any]], workers: int = 40,
     active ones, India unless configured): it needs a job there, and its entry records them when they are not India (T139)."""
     places = places or active_places()
     tag = {} if places.india_only() else {"places": places.search_names()}   # Workday, Oracle HCM, Eightfold, Phenom: all checked
-    board_seeds = [s for s in seeds if not {"workday", "oracle_hcm", "eightfold", "phenom"} & s.keys()]
+    board_seeds = [s for s in seeds if not {"workday", "oracle_hcm", "eightfold", "phenom", "workday_auto"} & s.keys()]
     tasks = [(s, ats, slug, fu) for s in board_seeds for ats, slug, fu in _probe_pairs(s)]
     print(f"Phase 1/3 — probing {len(tasks)} (ATS, slug) pairs for {len(board_seeds)} companies...")
     with ThreadPoolExecutor(max_workers=workers) as ex:
@@ -532,6 +615,19 @@ def discover(seeds: List[Dict[str, Any]], workers: int = 40,
                                                  h[1], h[2], h[3]), hits))
 
     wd_seeds = [s for s in seeds if "workday" in s]
+    auto_rows: List[Dict[str, Any]] = []
+    auto = [s for s in seeds if s.get("workday_auto")]
+    if auto:
+        print(f"Looking for the Workday tenants of {len(auto)} companies by name (robots.txt of <name>.<data centre>.myworkdayjobs.com)...")
+        with ThreadPoolExecutor(max_workers=workers) as ex:
+            found = list(ex.map(lambda s: workday_tenant_for(s["name"]), auto))
+        for s, sites in zip(auto, found):
+            if not sites:
+                auto_rows.append({"seed": s["name"], "verdict": "no Workday tenant named like it", "accepted": False,
+                                  "ats": "workday"})
+            wd_seeds += [{"name": s["name"], "workday": {"tenant": t, "dc": dc, "site": site}, "confirm_name": True}
+                         for t, dc, site in sites]
+        print(f"  {sum(1 for f in found if f)} of {len(auto)} have a tenant, {len(wd_seeds) - len([s for s in seeds if 'workday' in s])} sites")
     oracle_seeds = [s for s in seeds if "oracle_hcm" in s]
     eightfold_seeds = [s for s in seeds if "eightfold" in s]
     phenom_seeds = [s for s in seeds if "phenom" in s]
@@ -539,7 +635,8 @@ def discover(seeds: List[Dict[str, Any]], workers: int = 40,
           f"{len(eightfold_seeds)} Eightfold sites and {len(phenom_seeds)} Phenom sites...")
     with ThreadPoolExecutor(max_workers=8) as ex:
         wd_rows = list(ex.map(lambda s: _under(places, _or_error, evaluate_workday, s["name"], "workday", s["workday"]["tenant"],
-                                               s["name"], s["workday"]["tenant"], s["workday"]["dc"], s["workday"]["site"]),
+                                               s["name"], s["workday"]["tenant"], s["workday"]["dc"], s["workday"]["site"],
+                                               *([True] if s.get("confirm_name") else [])),      # T148: a tenant found by name
                               wd_seeds))
         for ats, group in (("oracle_hcm", oracle_seeds), ("eightfold", eightfold_seeds), ("phenom", phenom_seeds)):
             wd_rows += list(ex.map(lambda s, a=ats: _under(places, _or_error, evaluate_entry, s["name"], a,
@@ -573,6 +670,7 @@ def discover(seeds: List[Dict[str, Any]], workers: int = 40,
                 "headcount": match_headcount(seed["name"], best["board"], company_cache, slug_cache), **seen,
             })
     rows.extend(wd_rows)
+    rows.extend(auto_rows)
     # A tenant may have several sites (Careers, Campus, ...) and merge_companies keeps one entry per company, the first it
     # meets: put the site with the most India jobs first (a stable sort, so ties keep the seed order). T111.
     for r in sorted((r for r in wd_rows if r["accepted"]), key=lambda r: -(r.get("place_jobs") or 0)):
