@@ -45,6 +45,13 @@ is job N of the last completed scan, which `draft N` and `mark N` look up in `da
 
 The columns are in reading order since T128 (Manish: the score is what he ranks and filters on, and it was the 8th column, behind two long links).
 
+**Accents (T126): open the `.xlsx`, or import the CSV as UTF-8.** The CSV is UTF-8 without a byte-order mark, so a spreadsheet that
+guesses another encoding shows "MÃ¼nchen" for München and "KrakÃ³w" for Kraków; the `.xlsx` beside it shows them right. To open
+the CSV itself, choose UTF-8 when importing: LibreOffice's import dialog, Character set "Unicode (UTF-8)"; Excel, Data → From
+Text/CSV, File origin "65001: Unicode (UTF-8)" (the Excel steps are not tested here). A byte-order mark was measured and not added
+(2026-10-23): LibreOffice's default import garbled the text with or without it and showed the header as "ï»¿Score", and a Python
+`csv` reader opening the file as UTF-8 (RoleSight's own `.xlsx` builder among them) got the column "\ufeffScore" instead of "Score".
+
 **The Excel copy (T128).** Beside every CSV the scan writes a workbook of the same rows under the same name (`history/jobs_YYYY-MM-DD.xlsx`, `last_scan.xlsx`, `open_matches.xlsx`; `autopilot export` writes one too). It is built from the CSV just written, so the
 columns, their order and the optional ones below always agree. What it adds: the header row is dark blue, bold and **frozen together with Score and Company**; a **filter** is on every column (filter on ATS, or on Score); Score is a **number**
 (sorts and filters as one), **green** at 85 and above and **amber** from `min_score` up to 84, plain below; Role, Location and Reason **wrap** and the rows are sized to fit; **Application URL** and **LinkedIn people** are cells

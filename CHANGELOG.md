@@ -9,6 +9,12 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Documented (2026-10-23, T126: accents in the CSV)
+- A spreadsheet that guesses a legacy encoding shows "MÃ¼nchen" in the CSV; docs/05 and docs/08 now say to open the `.xlsx` beside it
+  (it shows them right) or import the CSV as UTF-8. A byte-order mark was measured and not added: LibreOffice 7.3's default import
+  stayed garbled with it and showed "ï»¿Score"; Python's csv reader on UTF-8 (the `.xlsx` builder among them) got "\ufeffScore".
+  Excel was not tested.
+
 ### Fixed (2026-10-23, T154: the India list's dictionary-word visa records read)
 - The 230 exact matches of India-list companies whose names are dictionary words (120 companies: American Express, Carrier, Better,
   Expeditors, …), trusted unread until now, were read against the register rows: 229 are the company's own entity and are now

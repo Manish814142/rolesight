@@ -31,6 +31,7 @@ every job's pre-filter decision, score and reason is there.
 | Symptom | Cause | Fix |
 |---|---|---|
 | A job you expected isn't in today's CSV | (1) the pre-filter rejected it, (2) it was scored in an earlier scan (CSVs only hold that scan's jobs), (3) it's outside `--posted-within`, (4) Workday's search (India, or your countries' terms) didn't return it | `grep -i "<title words>" data/autopilot.log` shows the decision; `autopilot export --days 30` shows earlier scores |
+| Locations show "MÃ¼nchen" or "KrakÃ³w" | The CSV is UTF-8 and the spreadsheet guessed another encoding | Open the `.xlsx` beside it, or import the CSV choosing UTF-8 ([docs/05](05-outputs-and-notifications.md), T126) |
 | The same job appears several times | Fixed in T47 for Workday paging. If it still happens, the board may list the job twice under different requisitions | Compare the URLs; each should be a different requisition |
 | Many jobs score exactly 90 | Scores cluster; the rubric (T48) shifts calibration but not ranking | Read the Reason column to separate them; sub-scores are planned (T41) |
 | The scan uses a different `min_score` than `config.json` says | A `MIN_SCORE=` line in `.env` (or exported in the shell) overrides it; since T05 the template sets none and `run_daily.sh` exports none | Look at the scan's `Min score:` line; delete the `MIN_SCORE` line from `.env` |
