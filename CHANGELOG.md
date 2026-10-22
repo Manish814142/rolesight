@@ -9,6 +9,12 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Changed (2026-10-23, T153: the docs after T133–T152)
+- docs/10 counted 27 companies abroad (921 now) and still listed "any country" and "region company lists" as future goals; they are done,
+  and the table now names the gaps left: titles in other languages, more companies abroad (Workable, T160). docs/08: the
+  "no built-in place list" note now means a name that is no country (every country has a list since T142), and the T149 profile
+  warning has a row. README: the pre-filter's location is India or remote by default, your countries with `candidate.countries`.
+
 ### Fixed in review (2026-10-22, T144 rework)
 - **Via is back on the list.** The rework dropped it after rejecting "Via Inc Ltd", although it had found Via's real UK subsidiary
   in Via's 10-K: "Via Transportation UK Ltd." is on the UK register (London, Skilled Worker and Global Business Mobility), but no

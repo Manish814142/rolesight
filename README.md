@@ -49,8 +49,8 @@ Each scan (`autopilot scan`):
 
 1. **Fetches** every open job from each company's applicant-tracking system (Greenhouse,
    Lever, Workday, …) through its public JSON API. No browser, no scraping of careers pages.
-2. **Filters locally**, with no network or AI: role title, India or remote location, and
-   optionally how recently the job was posted.
+2. **Filters locally**, with no network or AI: role title, location (India or remote by default; your countries
+   with `candidate.countries`), and optionally how recently the job was posted.
 3. **Fetches the full job description** for the jobs that survived, where the list API
    didn't include one.
 4. **Scores** each survivor with Gemini, from 0 to 100, against the full resume and the
