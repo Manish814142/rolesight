@@ -9,6 +9,13 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Added (2026-10-22, T149: a warning when your profile still says India)
+- With `candidate.countries` outside India, a `seeking` or `profile` that names India (or an Indian city) and none of your
+  countries now gets a warning at every scan and from `init --countries`, which keeps your text and says what to write. Gemini
+  reads those lines as where you want to work: measured with the UK rubric, London postings that offer visa sponsorship scored
+  25 and 30 under a "Bengaluru / India" `seeking` and 50 and 45 under a UK one (the review of T133–T143, 20 Gemini calls). No
+  warning when the text names one of your countries or a region of them, or when India is one of your countries.
+
 ### Fixed (2026-10-22, T151)
 - `init` says how many companies it wrote and where they hire, from the shipped list itself ("1,647 companies with a live job
   board: 1,589 hiring in India, 58 only in other countries"); it still said "200+ companies … mostly hiring in India".

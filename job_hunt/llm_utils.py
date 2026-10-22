@@ -381,6 +381,25 @@ def rubric_for_places(text: str, places: Places) -> tuple[str, str | None]:
     return text.replace(INDIA_LOCATION_FIT, f"   - Location fits ({_where(places)} or Remote)."), warning
 
 
+def profile_warning(config: dict, places: Places) -> str | None:
+    """T149: a warning when candidate.seeking or profile names India (or an Indian city) and none of the person's countries,
+    which leave India out. The prompt carries both lines, and Gemini reads them as where the person wants to work: measured
+    2026-10-21 with the UK rubric, postings in London that offer visa sponsorship scored 25 and 30 under an India `seeking`
+    and 50 and 45 under a UK one. None otherwise (with India among the countries, India is one of the places named); the
+    person's text is never rewritten."""
+    from job_hunt.prefilter import location_is_india
+    candidate = config.get("candidate") or {}
+    for field in ("seeking", "profile"):
+        text = " ".join(str(candidate.get(field) or "").split())
+        if text and location_is_india(text) and not places.names_place(text):
+            where, home = _where(places), places.home
+            return (f"candidate.{field} names India (\"{text[:80]}\") but none of your countries ({places.label()}): Gemini reads "
+                    f"it as where you want to work and marks jobs there down, even when the posting offers visa sponsorship "
+                    f"(T149). Name your countries in it, e.g. \"Backend or platform roles in {where}. I live in {home}; for a "
+                    f"role outside {home} I need the employer to sponsor my work visa and relocation\"")
+    return None
+
+
 def rubric_id(text: str | None = None) -> str:
     """Short id (8 hex digits of SHA-256) of the scoring prompt text, default `SCORING_RUBRIC` (T97).
 

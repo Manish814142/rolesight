@@ -234,7 +234,10 @@ What changes:
    sponsorship or asks for citizenship, permanent residence or an existing right to work there. A posting that says nothing
    about visas is not capped. **Rewrite `candidate.seeking` in your own words**, e.g. "Backend roles in Berlin or London; I
    need visa sponsorship and relocation". `init --countries` replaces the example's text, which names Bengaluru: left in, it
-   made Gemini mark a Singapore office job down "for the Bengaluru preference" (the end-to-end run, T140).
+   made Gemini mark a Singapore office job down "for the Bengaluru preference" (the end-to-end run, T140). Your own text is
+   never rewritten: when `seeking` or `profile` names India (or an Indian city) and none of your countries, `init --countries`
+   and every scan print a warning (T149). It matters: measured with a UK search, London postings that offer visa sponsorship
+   scored 25 and 30 under a "Bengaluru / India" `seeking`, and 50 and 45 once it named the UK.
 4. **A Visa column** in the CSV for every job outside your home country: what the posting says, then what public records
    say about the company there, e.g. `Not stated; UK licensed sponsor`
    ([docs/05](05-outputs-and-notifications.md); the records: [docs/04](04-companies-and-scanning.md#visa-sponsorship-which-companies-can-sponsor)).

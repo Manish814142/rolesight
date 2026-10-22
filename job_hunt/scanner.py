@@ -396,6 +396,9 @@ def run_scan(config: dict, companies: list[dict]) -> None:
     if provider == "gemini":   # the other providers score with their own prompt, not this rubric (T97)
         logger.info(f"Scoring rubric: {rubric_id(llm_utils.STRUCTURED_INSTRUCTIONS if config.get('scoring_mode') == 'structured' else None)}")
         logger.info(f"Rubric text: {rubric_source}")
+    profile_note = llm_utils.profile_warning(config, places)     # T149: an India `seeking` marks jobs abroad down
+    if profile_note:
+        logger.warning(profile_note)
 
     resume_path = Path(config.get("candidate", {}).get("resume_path", "resume/YOUR_RESUME.md"))
     resume = resume_path.read_text()

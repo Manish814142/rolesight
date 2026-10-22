@@ -113,6 +113,35 @@ def test_init_countries_writes_the_built_in_names_and_keeps_the_rest(tmp_path, m
     assert "Bengaluru" not in json.dumps(cfg["candidate"]["seeking"])
 
 
+def test_a_scan_warns_when_seeking_names_india_but_none_of_your_countries(env, caplog):
+    """T149: Gemini reads `seeking` as where you want to work and marked UK jobs down for an India `seeking` (measured)."""
+    env["candidate"].update(countries=["United Kingdom"], seeking="Backend roles, Remote / Hybrid / Bengaluru / India")
+    with caplog.at_level(logging.INFO, logger="job_hunt.scanner"):
+        _scan(env, [_job(1, "London, UK")])
+    assert any(r.levelno == logging.WARNING and r.getMessage().startswith("candidate.seeking names India")
+               for r in caplog.records)
+
+
+def test_an_india_scan_does_not_warn_about_an_india_seeking(env, caplog):
+    env["candidate"]["seeking"] = "Backend roles, Remote / Hybrid / Bengaluru / India"
+    with caplog.at_level(logging.INFO, logger="job_hunt.scanner"):
+        _scan(env, [_job(1, "Pune, India")])
+    assert "names India" not in caplog.text
+
+
+def test_init_countries_notes_a_seeking_you_wrote_that_names_india(tmp_path, monkeypatch, capsys):
+    """T149: your own text is kept (never rewritten), with a note saying why it matters and what to write."""
+    import json
+
+    from job_hunt.onboarding import set_countries
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "config.json").write_text(json.dumps({"candidate": {"seeking": "Backend roles, Bengaluru or remote"}}))
+    set_countries(tmp_path, "UK")
+    assert json.loads((tmp_path / "config.json").read_text())["candidate"]["seeking"] == "Backend roles, Bengaluru or remote"
+    out = capsys.readouterr().out
+    assert "candidate.seeking names India" in out and "Backend or platform roles in United Kingdom" in out
+
+
 def test_init_countries_keeps_a_seeking_you_wrote(tmp_path, monkeypatch):
     import json
 

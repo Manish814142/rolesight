@@ -20,7 +20,12 @@ from datetime import date
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
-from job_hunt.llm_utils import DEFAULT_SCORING_RUBRIC, _gemini_models, _get_genai_client_and_types
+from job_hunt.llm_utils import (
+    DEFAULT_SCORING_RUBRIC,
+    _gemini_models,
+    _get_genai_client_and_types,
+    profile_warning,
+)
 from job_hunt.log import redact
 from job_hunt.models import JobPosting
 from job_hunt.places import Places, places_from_config
@@ -541,6 +546,10 @@ def set_countries(cwd: Path, countries: str) -> None:
     print(f"✓ config.json: looking in {places.label()} (candidate.countries); you live in {home} (candidate.home_country)")
     if replaced:
         print(f"  candidate.seeking now says so too (the example's text named Bengaluru): \"{candidate['seeking']}\". Put it in your words")
+    else:
+        note = profile_warning(cfg, places_from_config(cfg))    # T149: your own text is kept, with this note when it names India
+        if note:
+            print(f"  note: {note}")
     for name in places.unknown():
         print(f"  note: '{name}' has no built-in place list: its jobs are matched by its name (and candidate.cities) only")
 
