@@ -34,7 +34,7 @@ ALIASES: Dict[str, List[str]] = {
     "democratic republic of the congo"], "CG": ["republic of the congo"], "MK": ["macedonia"], "SZ": ["swaziland"],
     "MM": ["burma"], "HK": ["hong kong sar"], "MO": ["macao"], "CV": ["cabo verde"], "PS": ["palestinian territories"],
     "AE": ["uae", "u.a.e."], "GB": ["uk", "u.k.", "great britain", "britain", "northern ireland", "england", "scotland", "wales"], "NL": ["the netherlands", "holland"],
-    "PH": ["the philippines"], "BA": ["bosnia"], "TT": ["trinidad"], "LA": ["lao pdr"], "TW": ["republic of china"],
+    "PH": ["the philippines"], "BR": ["brasil"], "BA": ["bosnia"], "TT": ["trinidad"], "LA": ["lao pdr"], "TW": ["republic of china"],
 }
 
 EU = "AT BE BG HR CY CZ DK EE FI FR DE GR HU IE IT LV LT LU MT NL PL PT RO SK SI ES SE".split()
@@ -48,10 +48,11 @@ REGIONS: Dict[str, Tuple[str, List[str]]] = {
     "emea": (r"emea", ["@EU", "@AF"] + MIDDLE_EAST),
     "middle east": (r"middle\s+east", MIDDLE_EAST),
     "mena": (r"mena", MIDDLE_EAST + ["DZ", "MA", "TN", "LY", "SD"]),
-    "gcc": (r"gcc|gulf", ["AE", "SA", "QA", "KW", "BH", "OM"]),
+    # Not the bare "gulf" (T146: "Gulf Shores, AL", "Gulf Breeze, FL" are in the USA)
+    "gcc": (r"gcc|persian\s+gulf|arabian\s+gulf|gulf\s+region|gulf\s+countries", ["AE", "SA", "QA", "KW", "BH", "OM"]),
     "apac": (r"apac|asia\s+pacific|asia-pacific", ["@AS!ME", "@OC"]),
     "asia": (r"asia", ["@AS"]),
-    "sea": (r"southeast\s+asia|south\s+east\s+asia|(?-i:SEA)", "BN KH ID LA MY MM PH SG TH VN TL".split()),
+    "sea": (r"southeast\s+asia|south\s+east\s+asia", "BN KH ID LA MY MM PH SG TH VN TL".split()),   # not "SEA": Seattle (T146)
     "south asia": (r"south\s+asia", "AF BD BT IN MV NP PK LK".split()),
     "latam": (r"latam|latin\s+america", ["@SA"] + LATAM_EXTRA),
     "south america": (r"south\s+america", ["@SA"]),
@@ -126,6 +127,23 @@ def build(country_info: str, cities_text: str) -> Dict[str, Any]:
                 break
         out[iso2] = {"name": c["name"], "iso3": c["iso3"], "aliases": ALIASES.get(iso2, []), "continent": c["continent"],
                      "cities": names, "regions": regions_of(iso2, c["continent"])}
+        followers = _followers(names, iso2, cities)
+        if followers:
+            out[iso2]["not_followed_by"] = followers
+    return out
+
+
+def _followers(names: List[str], iso2: str, cities: List[Tuple[str, str, str, int]]) -> Dict[str, List[str]]:
+    """For each kept city, the next words of other countries' cities that begin with its name (T146: "Porto Alegre" and
+    "Porto Velho" are Brazil's, so "Porto" counts for Portugal only when no such word follows)."""
+    out: Dict[str, List[str]] = {}
+    for n in names:
+        f = _fold(n)
+        nxt = sorted({rest.split()[0] for name, ascii_name, other, _ in cities if other != iso2
+                      for g in {_fold(name), _fold(ascii_name)} if g.startswith(f + " ")
+                      for rest in [g[len(f) + 1:]] if rest.split()})
+        if nxt:
+            out[n] = nxt
     return out
 
 

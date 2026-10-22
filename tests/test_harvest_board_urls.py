@@ -86,15 +86,115 @@ class FakeSession:
 def test_fetch_urls_retries_a_gateway_error_then_returns_the_lines(monkeypatch):
     monkeypatch.setattr(hb.time, "sleep", lambda s: None)
     session = FakeSession([(504, "<html>"), (200, "https://jobs.lever.co/a1\n\nhttps://jobs.lever.co/b2\n")])
-    assert hb.fetch_urls(hb.ARCHIVE_QUERIES["lever"], session=session) == ["https://jobs.lever.co/a1", "https://jobs.lever.co/b2"]
+    assert hb.fetch_urls(hb.ARCHIVE_QUERIES["ashby"], session=session) == ["https://jobs.lever.co/a1", "https://jobs.lever.co/b2"]
     assert len(session.calls) == 2 and session.calls[0]["matchType"] == "prefix"
     assert "statuscode:200" in session.calls[0]["filter"]               # boards that were alive when archived
 
 
 def test_fetch_urls_gives_up_after_its_tries_and_says_so(monkeypatch):
     monkeypatch.setattr(hb.time, "sleep", lambda s: None)
-    with pytest.raises(RuntimeError, match="lever"):
-        hb.fetch_urls(hb.ARCHIVE_QUERIES["lever"], session=FakeSession([(504, "x")] * hb.TRIES))
+    with pytest.raises(RuntimeError, match="ashby"):
+        hb.fetch_urls(hb.ARCHIVE_QUERIES["ashby"], session=FakeSession([(504, "x")] * hb.TRIES))
+
+
+class KeyedSession:
+    """Answers by the query's `url` (chunks run in threads, so the order of calls is not fixed); a missing url is a 504."""
+    def __init__(self, answers):
+        self.answers, self.calls = answers, []
+
+    def get(self, url, params=None, timeout=None):
+        self.calls.append(params["url"])
+        status, text = self.answers.get(params["url"], (504, "x"))
+        return type("R", (), {"status_code": status, "text": text})()
+
+
+# ── T144: the archive times out on a whole host; Lever, SmartRecruiters and Workday run as chunks ──────────────────────
+
+def test_the_big_hosts_are_split_into_chunks_that_together_cover_them():
+    lever, wd = hb.ARCHIVE_QUERIES["lever"], hb.ARCHIVE_QUERIES["workday"]
+    assert lever["split"][0] == "jobs.lever.co/0" and lever["split"][-1] == "jobs.lever.co/z" and len(lever["split"]) == 36
+    assert "wd1.myworkdayjobs.com" in wd["split"] and "wd503.myworkdayjobs.com" in wd["split"] and "wd12.myworkdayjobs.com" in wd["split"]
+    assert hb.ARCHIVE_QUERIES["smartrecruiters"]["split"][1] == "jobs.smartrecruiters.com/1"
+    assert hb.ARCHIVE_QUERIES["greenhouse"]["split"] is None            # the ones that answered whole stay whole
+
+
+def test_a_split_query_joins_its_chunks(monkeypatch):
+    monkeypatch.setattr(hb.time, "sleep", lambda s: None)
+    q = {**hb.ARCHIVE_QUERIES["lever"], "split": ["jobs.lever.co/a", "jobs.lever.co/b"]}
+    session = KeyedSession({"jobs.lever.co/a": (200, "https://jobs.lever.co/acme\n"), "jobs.lever.co/b": (200, "https://jobs.lever.co/bolt\n")})
+    assert hb.fetch_urls(q, session=session) == ["https://jobs.lever.co/acme", "https://jobs.lever.co/bolt"]
+    assert sorted(session.calls) == ["jobs.lever.co/a", "jobs.lever.co/b"]
+
+
+def test_a_chunk_that_never_answers_is_named_and_the_others_are_kept(monkeypatch):
+    monkeypatch.setattr(hb.time, "sleep", lambda s: None)
+    q = {**hb.ARCHIVE_QUERIES["lever"], "split": ["jobs.lever.co/a", "jobs.lever.co/b", "jobs.lever.co/c"]}
+    session = KeyedSession({"jobs.lever.co/a": (200, "https://jobs.lever.co/acme\n"), "jobs.lever.co/c": (200, "https://jobs.lever.co/cog\n")})
+    with pytest.raises(hb.ArchiveError, match=r"1 of 3 chunks \(jobs.lever.co/b\)") as e:
+        hb.fetch_urls(q, session=session)
+    assert sorted(e.value.urls) == ["https://jobs.lever.co/acme", "https://jobs.lever.co/cog"]
+
+
+class SpanSession:
+    """The whole chunk is too big (504). A span of `max_months` months or fewer answers; `bad_month` (YYYYMM) never does."""
+    def __init__(self, max_months=12, bad_month=None):
+        self.calls, self.max_months, self.bad_month = [], max_months, bad_month
+
+    def get(self, url, params=None, timeout=None):
+        self.calls.append(dict(params))
+        lo, hi = params.get("from"), params.get("to")
+        if lo is None:
+            return type("R", (), {"status_code": 504, "text": "x"})()
+        months = (int(hi[:4]) - int(lo[:4])) * 12 + int(hi[4:]) - int(lo[4:]) + 1
+        if months > self.max_months or (self.bad_month and lo <= self.bad_month <= hi and lo == hi):
+            return type("R", (), {"status_code": 504, "text": "x"})()
+        if self.bad_month and lo <= self.bad_month <= hi:
+            return type("R", (), {"status_code": 504, "text": "x"})()
+        return type("R", (), {"status_code": 200, "text": f"https://jobs.lever.co/co{lo}\nhttps://jobs.lever.co/always\n"})()
+
+
+def test_a_chunk_too_big_for_one_answer_is_asked_one_year_at_a_time(monkeypatch):
+    monkeypatch.setattr(hb.time, "sleep", lambda s: None)
+    q = {**hb.ARCHIVE_QUERIES["lever"], "split": ["jobs.lever.co/a"]}
+    session = SpanSession(max_months=12)
+    got = hb.fetch_urls(q, session=session)
+    assert "https://jobs.lever.co/co201401" in got and "https://jobs.lever.co/co202601" in got and "https://jobs.lever.co/always" in got
+    spans = {(c["from"], c["to"]) for c in session.calls if "from" in c}
+    assert ("201401", "201412") in spans and ("202601", "202612") in spans and len(spans) == len(hb.YEARS)
+    lines = hb.board_seeds(got, [])
+    assert sum("Always" in ln for ln in lines) == 1                       # captured in 13 years, one seed
+
+
+def test_a_year_that_is_still_too_big_is_halved_down_to_the_month(monkeypatch):
+    monkeypatch.setattr(hb.time, "sleep", lambda s: None)
+    q = {**hb.ARCHIVE_QUERIES["lever"], "split": ["jobs.lever.co/a"]}
+    session = SpanSession(max_months=3)
+    got = hb.fetch_urls(q, session=session)
+    spans = {(c["from"], c["to"]) for c in session.calls if "from" in c}
+    assert ("201401", "201406") in spans and ("201401", "201403") in spans            # a year, a half, then a quarter that answers
+    assert not any(a == b for a, b in spans)                                          # never down to a month when a quarter does
+    assert "https://jobs.lever.co/co201401" in got and "https://jobs.lever.co/co201404" in got
+
+
+def test_a_month_that_never_answers_fails_the_chunk_but_keeps_what_the_other_months_gave(monkeypatch):
+    monkeypatch.setattr(hb.time, "sleep", lambda s: None)
+    q = {**hb.ARCHIVE_QUERIES["lever"], "split": ["jobs.lever.co/a"]}
+    with pytest.raises(hb.ArchiveError, match=r"1 of 1 chunks") as e:
+        hb.fetch_urls(q, session=SpanSession(max_months=12, bad_month="202003"))
+    urls = e.value.urls
+    assert "https://jobs.lever.co/co201401" in urls                                   # another year
+    assert "https://jobs.lever.co/co202001" in urls and "https://jobs.lever.co/co202004" in urls   # the months around it
+    assert "https://jobs.lever.co/co202003" not in urls                               # the month that never answered
+
+
+def test_main_writes_the_seeds_of_the_chunks_that_answered_and_exits_3(tmp_path, monkeypatch, capsys):
+    def fetch(query, session=None):
+        raise hb.ArchiveError("the Internet Archive did not answer for lever: 1 of 36 chunks (jobs.lever.co/q)", ["https://jobs.lever.co/acme"])
+    monkeypatch.setattr(hb, "fetch_urls", fetch)
+    out = tmp_path / "seeds.txt"
+    assert hb.main(["--out", str(out), "--hosts", "lever", "--companies", str(tmp_path / "none.json")]) == 3
+    assert out.read_text().splitlines() == ["Acme | https://jobs.lever.co/acme | exact"]
+    assert "kept 1 url(s)" in capsys.readouterr().out
 
 
 def test_main_writes_the_seeds_and_a_count_per_board(tmp_path, monkeypatch, capsys):

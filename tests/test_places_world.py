@@ -144,3 +144,60 @@ def test_the_shipped_countries_file():
     data = json.loads((ROOT / "job_hunt" / "data" / "countries.json").read_text(encoding="utf-8"))
     assert data["source"]["licence"] == "CC BY 4.0" and len(data["countries"]) >= 250
     assert data["countries"]["US"]["iso3"] == "USA" and "Toronto" in data["countries"]["CA"]["cities"]
+
+
+# ── T146: misreads found by T144's bulk check (boards accepted for Europe only on a US or Brazilian place) ──────
+
+@pytest.mark.parametrize("location, expected", [
+    ("Gulf Shores, AL", []), ("Gulf Breeze, FL", []), ("2082 Gulf To Bay Blvd Clearwater, FL", []),     # not the Gulf
+    ("Gulf Region - Middle East (Remote)", ["United Arab Emirates"]), ("Remote - GCC", ["United Arab Emirates"]),
+    ("Hybrid (NYC, MPK, DC, SEA)", []), ("SF, SEA, NYC", []),                                           # Seattle
+    ("Remote - Southeast Asia", ["Singapore"]),
+    ("New London", []), ("New Britain, CT", []), ("New Holland, Pennsylvania, United States", []),        # "New ..." elsewhere
+    ("New Glasgow (Contract Full time)", []),
+    ("4900 Florence Street, Denver, CO 80238", []), ("29300 Lyon Pines Drive, New Hudson, MI 48165", []),  # a street
+    ("192 Adelaide St W, Toronto, ON M5H 0A4", []), ("10 Downing Street, London", ["United Kingdom"]),
+    ("London, On", []), ("Dublin, Oh", []), ("Berlin, De", ["Germany"]),                                  # mixed-case codes
+    ("Porto Alegre, Rio Grande do Sul, Brazil", []), ("Porto, Portugal", ["Portugal"]), ("Porto", ["Portugal"]),
+    ("London, UK", ["United Kingdom"]), ("Amsterdam, Holland", ["Netherlands"]), ("Leeds, Great Britain", ["United Kingdom"]),
+])
+def test_misreads_found_by_the_bulk_check(location, expected):
+    p = pl.places_from_config({"candidate": {"countries": [
+        "United Kingdom", "Germany", "Netherlands", "Ireland", "United Arab Emirates", "Singapore", "France", "Italy", "Portugal",
+        "Australia"]}})
+    assert [c.name for c in p.countries_in(location)] + ([p.region_in(location).name] if p.region_in(location) and not
+                                                          p.countries_in(location) else []) == expected
+
+
+@pytest.mark.parametrize("location, code", [
+    ("London, On", "CA"), ("Dublin, Oh", "US"), ("Perth, Wa", "AU"), ("New York, NY", "US"), ("Newark, New Jersey", "US"),
+    ("Auckland, New Zealand", "NZ"), ("Papua New Guinea", "PG"), ("Nouméa, New Caledonia", "NC"), ("Remote in Brasil", "BR"),
+    ("Albuquerque, New Mexico", "US"),
+])
+def test_what_the_new_rules_still_read(location, code):
+    assert code in pl.explicit_countries(location)
+    assert not pl.explicit_countries("New Guinea")                      # not Guinea
+
+
+def test_the_builder_keeps_a_citys_longer_foreign_namesakes_out():
+    cities = "\n".join([_city("Porto", "PT", 231_800), _city("Porto Alegre", "BR", 1_332_570), _city("Madrid", "ES", 3_255_944),
+                        _city("Porto Salvo", "PT", 30_000),               # its own country's: "Porto" may stand before it
+                        _city("Portoviejo", "EC", 200_000)])              # begins with the letters but is another word
+    info = INFO + "PT\tPRT\t620\tPO\tPortugal\tLisbon\t92391\t10328900\tEU\nBR\tBRA\t076\tBR\tBrazil\tBrasilia\t8511965\t209469333\tSA\n"
+    out = bc.build(info, cities)
+    assert out["PT"]["not_followed_by"] == {"Porto": ["alegre"]} and "not_followed_by" not in out["ES"]
+    assert "brasil" in out["BR"]["aliases"]
+    assert "gulf" not in bc.REGIONS["gcc"][0].split("|") and "SEA" not in bc.REGIONS["sea"][0]
+
+
+# ── T147: a department written like a country code (Personio: "office, department") ─────────────────────────────
+
+@pytest.mark.parametrize("location, expected", [
+    ("Hannover, IT", ["Germany"]), ("Gräfelfing, IT", []), ("Berlin, HR", ["Germany"]), ("Munich, QA", ["Germany"]),
+    ("Gurugram, HR", []), ("Rome, IT", ["Italy"]), ("Milan, IT (Hybrid)", ["Italy"]), ("Zagreb, HR", ["Croatia"]),
+    ("Doha, QA", ["Qatar"]), ("Hannover, PR", ["Germany"]), ("Hannover, AI", ["Germany"]), ("Hannover, BI", ["Germany"]), ("Paris, FR", ["France"]), ("Valencia, ES", ["Spain"]),        # other codes still end a location
+    ("Bergamo, it", ["Italy"]), ("Hannover, Italy", ["Italy"]),
+])
+def test_a_department_is_not_a_country_code(location, expected):
+    p = pl.places_from_config({"candidate": {"countries": ["Germany", "Italy", "Croatia", "Qatar", "France", "Spain"]}})
+    assert sorted(c.name for c in p.countries_in(location)) == sorted(expected)

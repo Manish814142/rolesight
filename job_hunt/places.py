@@ -20,7 +20,7 @@ import unicodedata
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from functools import lru_cache
-from typing import Any, Dict, FrozenSet, Iterator, List, Optional, Set, Tuple, Union
+from typing import Any, Dict, FrozenSet, Iterable, Iterator, List, Optional, Set, Tuple, Union
 
 from job_hunt.settings import countries_of, home_country_of
 
@@ -34,8 +34,20 @@ def _fold(text: str) -> str:
     return " ".join(unicodedata.normalize("NFKD", text or "").encode("ascii", "ignore").decode().lower().split())
 
 
-def _alternation(names) -> str:
-    return "|".join(r"\s+".join(map(re.escape, n.split())) for n in sorted({n for n in names if n}, key=len, reverse=True))
+def _alternation(names, not_followed_by: Optional[Dict[str, List[str]]] = None) -> str:
+    """Names as regex alternatives, longest first; a name with words that may not follow it ("Porto", not "Porto Alegre", T146)
+    gets a lookahead."""
+    def one(n: str) -> str:
+        rx = r"\s+".join(map(re.escape, n.split()))
+        after = (not_followed_by or {}).get(n)
+        return rx + (rf"(?!\s+(?:{'|'.join(map(re.escape, after))})(?!\w))" if after else "")
+    return "|".join(one(n) for n in sorted({n for n in names if n}, key=len, reverse=True))
+
+
+def _city_rx(alternatives: str) -> Optional[re.Pattern]:
+    """A city never right after "New ": "New London" (Connecticut), "New Holland" (Pennsylvania) (T146). A city whose own
+    name starts with "New" ("New York", "New Delhi") matches from its first word."""
+    return re.compile(rf"(?<!\w)(?<!new\s)(?:{alternatives})(?!\w)", re.IGNORECASE) if alternatives else None
 
 
 @dataclass(frozen=True)
@@ -55,7 +67,7 @@ class Country:
 
     def _p(self, key: str) -> Optional[re.Pattern]:
         if key not in self._compiled:
-            self._compiled[key] = {"words": lambda: _rx(self.words), "cities": lambda: _rx(self.cities),
+            self._compiled[key] = {"words": lambda: _rx(self.words), "cities": lambda: _city_rx(self.cities),
                                    "regions": lambda: _rx(self.regions)}[key]()
         return self._compiled[key]
 
@@ -78,7 +90,7 @@ class Country:
             segments = [s.strip() for s in part.split(",")]
             prefix = _prefix_countries(part)
             for i, seg in enumerate(segments):
-                if cities.search(seg):
+                if cities.search(seg) and not _STREET.match(seg):    # "4900 Florence Street, Denver, CO" (T146)
                     around = seg + (", " + segments[i + 1] if i + 1 < len(segments) else "")
                     if not ((explicit_countries(around) | prefix) - {self.code} - CITY_STATES):
                         return True
@@ -133,7 +145,7 @@ PACKS: Tuple[Country, ...] = (
     Country("India", aliases=("india", "bharat", "in", "ind"), iso3="IND", regions=r"apac|asia|south\s+asia",
             workday_terms=("India",), india=True, code="IN"),
     Country("United Kingdom", aliases=("united kingdom", "uk", "u.k.", "u.k", "great britain", "britain", "england", "gb", "gbr"),
-            words=r"united\s+kingdom|u\.k\.?|uk|great\s+britain|britain|(?<!new\s)england|scotland|(?<!new\ssouth\s)wales"
+            words=r"united\s+kingdom|u\.k\.?|uk|great\s+britain|(?<!new\s)britain|(?<!new\s)england|scotland|(?<!new\ssouth\s)wales"
                   r"|northern\s+ireland",
             cities=r"london|manchester|edinburgh|glasgow|cambridge|oxford|bristol|birmingham|leeds|belfast|reading|cardiff"
                    r"|liverpool|sheffield|nottingham|brighton|milton\s+keynes|aberdeen|coventry|leicester|southampton|swindon"
@@ -157,10 +169,10 @@ PACKS: Tuple[Country, ...] = (
     Country("United Arab Emirates", aliases=("united arab emirates", "uae", "u.a.e.", "u.a.e", "emirates", "dubai", "ae", "are"),
             words=r"united\s+arab\s+emirates|u\.a\.e\.?|uae|emirates",
             cities=r"dubai|abu\s+dhabi|sharjah|ajman|ras\s+al\s+khaimah|fujairah|al\s+ain",
-            iso2="ae", iso3="ARE", regions=r"emea|mena|gcc|middle\s+east|gulf",
+            iso2="ae", iso3="ARE", regions=r"emea|mena|gcc|middle\s+east|persian\s+gulf|arabian\s+gulf|gulf\s+region|gulf\s+countries",
             workday_terms=("United Arab Emirates", "Dubai"), code="AE"),
     Country("Singapore", aliases=("singapore", "sg", "sgp"), words=r"singapore", iso2="sg", iso3="SGP",
-            regions=r"apac|asia|asia\s+pacific|asia-pacific|southeast\s+asia|south\s+east\s+asia|(?-i:SEA)",
+            regions=r"apac|asia|asia\s+pacific|asia-pacific|southeast\s+asia|south\s+east\s+asia",   # not "SEA": Seattle (T146)
             workday_terms=("Singapore",), code="SG"),
     # T142. Cities: the tech hubs and the biggest; a name shared with another country ("Cambridge", "London", "Perth",
     # "Victoria") is left to the state or province code.
@@ -213,7 +225,8 @@ def _pack(code: str) -> Optional[Country]:
         return None
     names = [g["name"], *g.get("aliases", [])]
     return Country(g["name"], aliases=tuple({_fold(n) for n in names} | {code.lower(), g["iso3"].lower()}),
-                   words=_alternation(names), cities=_alternation(g.get("cities", [])), iso2=code.lower(), iso3=g["iso3"],
+                   words=_alternation(names), cities=_alternation(g.get("cities", []), g.get("not_followed_by")),
+                   iso2=code.lower(), iso3=g["iso3"],
                    regions=g.get("region_words", ""), workday_terms=(g["name"],), code=code)
 
 
@@ -234,7 +247,9 @@ def _index() -> Tuple[re.Pattern, Dict[str, FrozenSet[str]], Dict[str, str], Dic
         for n in names:
             by_name.setdefault(_fold(n), set()).add(code)
     by_name.setdefault("georgia", set()).update({"US", "GE"})    # the state and the country: both, unless a code says which
-    names_rx = re.compile(rf"(?<!\w)(?:{_alternation(by_name)})(?!\w)", re.IGNORECASE)
+    # Not right after "New ": "New Britain" (Connecticut), "New Holland" (Pennsylvania); "New Zealand" and "Papua New Guinea"
+    # match from their first word (T146).
+    names_rx = re.compile(rf"(?<!\w)(?<!new\s)(?:{_alternation(by_name)})(?!\w)", re.IGNORECASE)
     iso3 = {g["iso3"]: code for code, g in _generated().items() if g.get("iso3")}
     iso2 = {code: code for code in _generated()}
     hand = [(c.code, c._p("words")) for c in PACKS if c.words]
@@ -249,6 +264,15 @@ _ENDS = re.compile(r"\s*(\([^)]*\))?\s*")
 _NOT_A_PREFIX = frozenset({"NA", "IT", "AM", "PM"})     # "NA - Remote" is North America (or n/a), not Namibia
 _ISO2_SUFFIX = re.compile(r",\s*([a-z]{2})\s*$")
 _CODE_AFTER_COMMA = re.compile(r",\s*([A-Z]{2,3})\b")
+# Country codes that boards also write as a department after the office (Personio: "Hannover, IT"), T147: Italy, Croatia, Qatar,
+# Puerto Rico, Anguilla, Burundi.
+_DEPARTMENT_CODES = frozenset({"IT", "HR", "QA", "PR", "AI", "BI"})
+# T146: "London, On", "Dublin, Oh": a state or province code written in mixed case at the end; only codes that are no
+# country's ("De" could be Germany).
+_TITLE_CODE_END = re.compile(r",\s*([A-Z][a-z])\s*(?:\([^)]*\))?\s*$")
+# T146: a segment that is a street address names no city ("4900 Florence Street", "29300 Lyon Pines Drive").
+_STREET = re.compile(r"\d+[a-z]?\s+.*\b(?:street|st|avenue|ave|road|rd|drive|dr|boulevard|blvd|lane|ln|way|court|ct|place|pl"
+                     r"|parkway|pkwy|highway|hwy|suite)\b", re.IGNORECASE)
 _ZIP = re.compile(r"\b([A-Z]{2})\s+\d{5}(?:-\d{4})?\b")
 _US_WORD = re.compile(r"(?<![A-Za-z])US(?![A-Za-z])")       # upper case only: "US-CA-Dublin"
 _PART_SPLIT = re.compile(r"\s*(?:;|\||\s/\s|\s+or\s+|\n)\s*", re.IGNORECASE)
@@ -283,12 +307,19 @@ def _codes_after_comma(part: str) -> Set[str]:
         owners = set(_CODE_OWNERS.get(code, set()))
         # A country code ends the location ("Munich, DE"); one in the middle is a region's ("St. Gallen, SG, ch" is a canton).
         last = bool(_ENDS.fullmatch(part[m.end():]))
-        if code in iso2 and last and (not owners or _has_city_of(code, before)):
+        # A code that is also a department or a state ("Hannover, IT", "Berlin, HR", "Gurugram, HR") is the country only after
+        # one of its cities (T147); any other country code ends the location as it is ("Paris, FR", "Valencia, ES").
+        if code in iso2 and last and (_has_city_of(code, before) or (not owners and code not in _DEPARTMENT_CODES)):
             found.add(code)
             continue
         if len(owners) > 1:
             owners = {"AU"} if _has_city_of("AU", part) else owners - {"AU"}
         found |= owners
+    title = _TITLE_CODE_END.search(part)
+    code = title.group(1).upper() if title else ""
+    if code in _CODE_OWNERS and code not in iso2:
+        owners = set(_CODE_OWNERS[code])
+        found |= ({"AU"} if _has_city_of("AU", part) else owners - {"AU"}) if len(owners) > 1 else owners
     return found
 
 
@@ -331,6 +362,7 @@ _BY_ALIAS = {a: c for c in PACKS for a in (c.name.lower(), *c.aliases)}
 _HAND_ISO3 = {c.code: re.compile(rf"(?<![A-Za-z]){c.iso3}(?![A-Za-z])") for c in PACKS if c.iso3}
 
 
+@lru_cache(maxsize=None)
 def country(written: str) -> Country:
     """The pack for a country name as a person writes it ("UK", "Holland", "uae", "Brazil", "BR"); a name no pack knows gets
     a pack of its name alone."""
@@ -371,6 +403,15 @@ class Places:
 
     def names_place(self, location: str) -> bool:
         return bool(self.countries_in(location) or self.region_in(location))
+
+    def seen_in(self, locations: Iterable[str]) -> List[str]:
+        """The names of your countries that some of these locations name (a location that names no country but a region of
+        one counts for every country that region includes), in your order (T144: what a board's entry records as its places)."""
+        seen: Set[str] = set()
+        for loc in locations:
+            named = self.countries_in(loc)
+            seen.update(c.name for c in (named or [c for c in self.countries if c.in_region(loc)]))
+        return [c.name for c in self.countries if c.name in seen]
 
     # What the connectors that ask a board for one country send (T137). India alone gives exactly what they sent before:
     # Workday "India", Eightfold and Phenom "India", Oracle HCM the "India" facet, Amazon "IND".

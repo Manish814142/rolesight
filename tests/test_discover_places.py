@@ -57,6 +57,33 @@ def test_discover_for_other_places_writes_them_on_the_entry(monkeypatch):
     assert verified == [] and any(r.get("verdict") == "no India jobs" for r in rows)
 
 
+EU = pl.places_from_config({"candidate": {"countries": ["United Kingdom", "Germany", "Spain", "Singapore"]}})
+
+
+def test_a_board_records_only_the_countries_where_it_has_a_job(monkeypatch):
+    """T144: 22 countries per run must not make every board listed for all 22."""
+    _stub_discovery(monkeypatch, "London, UK")
+    monkeypatch.setattr(disc, "fetch_company_jobs", lambda c: [_jp("London, UK"), _jp("Madrid, Spain"), _jp("Austin, TX")])
+    verified, _ = disc.discover(disc.parse_seeds("Monzo\n"), workers=2, places=EU)
+    assert verified[0]["places"] == ["United Kingdom", "Spain"]                 # in the person's order; Germany: no job
+
+
+def test_a_region_only_board_records_the_countries_of_that_region(monkeypatch):
+    _stub_discovery(monkeypatch, "Remote - EMEA")
+    verified, _ = disc.discover(disc.parse_seeds("Monzo\n"), workers=2, places=EU)
+    assert verified[0]["places"] == ["United Kingdom", "Germany", "Spain"]      # EMEA: not Singapore
+
+
+def test_seen_in_names_each_country_once_in_the_persons_order():
+    assert EU.seen_in(["Berlin", "London, UK", "Munich, Germany", "Pune, India"]) == ["United Kingdom", "Germany"]
+    assert EU.seen_in(["Singapore", "APAC"]) == ["Singapore"] and EU.seen_in(["Pune, India"]) == []
+    assert EU.seen_in(["Remote - Europe"]) == ["United Kingdom", "Germany", "Spain"]
+
+
+def test_country_is_looked_up_once():
+    assert pl.country("Spain") is pl.country("Spain") and pl.country("Atlantis") is pl.country("Atlantis")
+
+
 def test_discover_for_india_writes_no_places(monkeypatch):
     _stub_discovery(monkeypatch, "Bengaluru, India")
     verified, _ = disc.discover(disc.parse_seeds("Monzo\n"), workers=2)
@@ -106,6 +133,18 @@ def test_the_workday_light_check_tries_each_term_until_one_shows_a_place(mock_po
         row = disc.evaluate_workday("Acme", "acme", "wd5", "Ext")
     assert [c.kwargs["json"]["searchText"] for c in mock_post.call_args_list] == ["United Kingdom", "UK"]
     assert row["accepted"] is True and row["place_jobs"] == 1
+
+
+@patch("requests.post")
+@pytest.mark.parametrize("status", [404, 422])
+def test_the_workday_light_check_stops_at_a_missing_board(mock_post, status):
+    """T144: 24 countries are 24 search terms; a board or site that does not exist answers every one the same way."""
+    r = MagicMock()
+    r.status_code, r.headers = status, {}
+    mock_post.return_value = r
+    with pl.using(UK):
+        row = disc.evaluate_workday("Gone", "gone", "wd5", "Ext")
+    assert mock_post.call_count == 1 and row["accepted"] is False and f"HTTP {status}" in row["verdict"]
 
 
 @patch("requests.post")

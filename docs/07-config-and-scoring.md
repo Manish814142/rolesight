@@ -120,6 +120,19 @@ They are applied in this order (the default lists):
      (…)`. Measured on the 2026-10-21 and 2026-10-13 fetches (13,015 distinct locations): India's decisions are unchanged on
      111,106 saved jobs; for the six countries of T136, 40 locations changed, all read: US and Australian places that had passed
      as British ("Aberdeen, MD", "Glasgow, Delaware", "Cardiff, NSW") and city lists that now count ("New York, London").
+     T146 (found by T144's bulk check: 24 of 864 Greenhouse boards had been accepted for Europe only on a US or Brazilian place)
+     added: nothing is a city or country right after "New " ("New London", "New Britain, CT", "New Holland, PA"; "New York" and
+     "New Zealand" still match from their first word); a segment that is a street address names no city ("4900 Florence Street,
+     Denver"); a mixed-case state code at the end is read ("London, On" is Ontario, "Dublin, Oh" Ohio); a city is not read
+     when a longer city of another country starts with it ("Porto Alegre" is Brazil's, "Santiago de Querétaro" Mexico's);
+     "Brasil" is Brazil; "Gulf Shores, AL" is no Gulf region (only "Persian/Arabian Gulf", "Gulf region", "GCC"), and "SEA" is
+     Seattle, not South-East Asia ("Southeast Asia" still counts). Measured: 41 of 13,428 saved locations read differently, all
+     read; India's decisions unchanged on 118,330 saved jobs.
+     T147: a code that boards also write as a department (`IT`, `HR`, `QA`, `PR`, `AI`, `BI`) ends a location as a country only
+     after one of that country's cities: Personio's "Hannover, IT" is a German IT job, "Gurugram, HR" is Haryana, "Rome, IT"
+     is Italy. Cost: "Bergamo, IT" (a small Italian town written with the code alone) is not read as Italy; none of the 13,428
+     saved locations ended that way. Still misread, rarely (4 of 978 thin boards in T144's check): "Birmingham, AL" listed
+     among UK cities, "Holland, MI" as the Netherlands, "Waterford Lakes" as Ireland.
    - **Optional city filter** (`candidate.cities`, e.g. `["Pune", "Hyderabad"]`; empty = all of India or of your countries). A job in an Indian city
      or state that is not one of them is rejected, unless it is remote or names no city (just "India"). Usual alternative names
      match (Bangalore = Bengaluru, Gurgaon = Gurugram), and `"Delhi NCR"` means Delhi, New Delhi, Noida, Greater Noida, Gurugram,

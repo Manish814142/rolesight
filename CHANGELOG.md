@@ -9,6 +9,20 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed (2026-10-21, T147: a department written like a country code)
+- Personio writes "office, department", so "Hannover, IT" (the IT department) counted as Italy, and a person looking in Italy would
+  have been shown German IT jobs; `IT`, `HR`, `QA`, `PR`, `AI` and `BI` now count as a country at the end of a location only
+  after one of that country's cities. Found by T144's place check on 978 thin boards (about 55 of 191 odd locations).
+  3 of 13,428 saved locations change ("Gurugram, HR" is no longer Croatia); India's decisions unchanged on 118,330 saved jobs.
+
+### Fixed (2026-10-21, T146: place misreads found by T144's bulk check)
+- Reading T144's first bulk run (Greenhouse, 864 boards accepted for 22 European, Gulf and Singapore places), 24 boards were accepted
+  only on a US or Brazilian place. Fixed in `job_hunt/places.py` and `scripts/build_countries.py`: nothing counts right after
+  "New " ("New London", "New Britain, CT"); a street address names no city; "London, On" / "Dublin, Oh" are Ontario and Ohio;
+  a city followed by a word that makes it another country's city is not read ("Porto Alegre", "Santiago de Querétaro",
+  "Bergen op Zoom"); "Brasil" is Brazil; "Gulf Shores, AL" is no Gulf region and "SEA" is Seattle. 41 of 13,428 saved
+  locations read differently, all read; India's decisions unchanged on 118,330 saved jobs.
+
 ### Fixed in review (2026-10-21, T133)
 - **Tgs had a wrong UK visa record.** The register's "TGS UK LTD" is a coachbuilder in Bristol (Companies House: TGS (UK) LTD,
   SIC 29201); the Tgs board on the list is TransPerfect's games testing (its postings name TransPerfect; UK jobs in London and

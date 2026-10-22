@@ -10,6 +10,9 @@ companies.json are dropped. Output lines are `Name | board URL | exact`: `discov
 every other ATS) and names the company from the board where the ATS publishes a name. Workday sites carry `exact` too, so a
 tenant's every site is checked (tenant, data centre and site are in the URL) and `discover` keeps the one with most India jobs.
 
+Lever, SmartRecruiters and Workday run as smaller queries (by first letter, by data centre), because the archive times out on
+the whole host; a chunk that does not answer is named and the others are kept (T144).
+
 Most boards are dead or have no India job (about 3 in 100 pass `discover`, measured 2026-10-16), so run it on the whole list in
 chunks and read the report. Network: the archive and, in `discover`, each board's public job API. No keys.
 """
@@ -35,25 +38,35 @@ CDX = "https://web.archive.org/cdx/search/cdx"
 TRIES = 4
 
 
-def _query(name: str, url: str, match: str, regex: str) -> Dict[str, str]:
-    return {"name": name, "url": url, "matchType": match, "regex": regex}
+def _query(name: str, url: str, match: str, regex: str, split: Optional[List[str]] = None) -> Dict[str, Any]:
+    """`split`: smaller queries (their `url`s) that together are this one. The archive times out on a big host (Lever, Workday,
+    SmartRecruiters failed three times in a row on 2026-10-21, T144), and one that fails then costs a chunk, not the host."""
+    return {"name": name, "url": url, "matchType": match, "regex": regex, "split": split}
+
+
+_FIRST_CHARS = "0123456789abcdefghijklmnopqrstuvwxyz"            # a board name starts with one of these (the archive keys lower-case)
+# Workday data centres: the 14 on the list on 2026-10-21 (wd1 ... wd504) and the numbers around them that exist or may.
+_WORKDAY_DCS = [f"wd{n}" for n in (*range(1, 13), 25, *range(100, 131), *range(500, 511))]
 
 
 _ORACLE_SITE = r"https?://[^/]+\.oraclecloud\.com/hcmUI/CandidateExperience/[^/]+/sites/[^/?#]+/?$"
 
 # Root pages only (nothing after the company), so each board appears once however many job pages the archive holds.
-ARCHIVE_QUERIES: Dict[str, Dict[str, str]] = {q["name"]: q for q in [
+ARCHIVE_QUERIES: Dict[str, Dict[str, Any]] = {q["name"]: q for q in [
     _query("greenhouse", "boards.greenhouse.io", "prefix", r"https?://boards\.greenhouse\.io/[^/?#]+/?$"),
     _query("greenhouse-new", "job-boards.greenhouse.io", "prefix", r"https?://job-boards\.greenhouse\.io/[^/?#]+/?$"),
-    _query("lever", "jobs.lever.co", "prefix", r"https?://jobs\.lever\.co/[^/?#]+/?$"),
+    _query("lever", "jobs.lever.co", "prefix", r"https?://jobs\.lever\.co/[^/?#]+/?$",
+           split=[f"jobs.lever.co/{c}" for c in _FIRST_CHARS]),
     _query("ashby", "jobs.ashbyhq.com", "prefix", r"https?://jobs\.ashbyhq\.com/[^/?#]+/?$"),
-    _query("smartrecruiters", "jobs.smartrecruiters.com", "prefix", r"https?://jobs\.smartrecruiters\.com/[^/?#]+/?$"),
+    _query("smartrecruiters", "jobs.smartrecruiters.com", "prefix", r"https?://jobs\.smartrecruiters\.com/[^/?#]+/?$",
+           split=[f"jobs.smartrecruiters.com/{c}" for c in _FIRST_CHARS]),
     _query("smartrecruiters-careers", "careers.smartrecruiters.com", "prefix", r"https?://careers\.smartrecruiters\.com/[^/?#]+/?$"),
     _query("workable", "apply.workable.com", "prefix", r"https?://apply\.workable\.com/[^/?#]+/?$"),
     _query("recruitee", "recruitee.com", "domain", r"https?://[^./]+\.recruitee\.com/?$"),
     _query("personio", "jobs.personio.de", "domain", r"https?://[^./]+\.jobs\.personio\.de/?$"),
     _query("workday", "myworkdayjobs.com", "domain",
-           r"https?://[^./]+\.wd[0-9]+\.myworkdayjobs\.com/([a-z]{2}-[A-Za-z]{2}/)?[^/?#]+/?$"),
+           r"https?://[^./]+\.wd[0-9]+\.myworkdayjobs\.com/([a-z]{2}-[A-Za-z]{2}/)?[^/?#]+/?$",
+           split=[f"{dc}.myworkdayjobs.com" for dc in _WORKDAY_DCS]),
     # Oracle HCM (T112): one query per data centre, because the whole oraclecloud.com domain times out. The host is a customer
     # code (`cbcz.fa.us2.oraclecloud.com`); the employer's name comes from the site's page title (fetch_site_names).
     *[_query(f"oracle-{pod}", f"fa.{pod}.oraclecloud.com", "domain", _ORACLE_SITE)
@@ -76,12 +89,30 @@ _BOARD_URL = {"greenhouse": "https://boards.greenhouse.io/{}", "lever": "https:/
               "personio": "https://{}.jobs.personio.de"}
 
 
-def fetch_urls(query: Dict[str, str], session: Any = None) -> List[str]:
-    """Root-page URLs the archive saw for one host, only those it archived with HTTP 200."""
-    session = session or requests
+class ArchiveError(RuntimeError):
+    """The archive did not answer; `urls` is what the chunks that did answer returned."""
+
+    def __init__(self, message: str, urls: Optional[List[str]] = None):
+        super().__init__(message)
+        self.urls = urls or []
+
+
+YEARS = list(range(2014, 2027))       # a chunk that still fails is asked again one year of captures at a time, then by half, quarter, month
+FIRST_YEAR = YEARS[0]
+
+
+def _month(i: int) -> str:
+    """Month number i counted from January of FIRST_YEAR, as the archive writes a date: 0 -> '201401'."""
+    year, month = divmod(i, 12)
+    return f"{FIRST_YEAR + year}{month + 1:02d}"
+
+
+def _fetch_one(query: Dict[str, Any], session: Any, tries: int = TRIES) -> List[str]:
     params = {"url": query["url"], "matchType": query["matchType"], "collapse": "urlkey", "fl": "original", "output": "text",
               "filter": ["statuscode:200", f"original:{query['regex']}"]}
-    for attempt in range(TRIES):
+    if query.get("from"):
+        params["from"], params["to"] = query["from"], query["to"]
+    for attempt in range(tries):
         try:
             resp = session.get(CDX, params=params, timeout=900)
             if resp.status_code == 200:
@@ -89,7 +120,52 @@ def fetch_urls(query: Dict[str, str], session: Any = None) -> List[str]:
         except requests.RequestException:
             pass
         time.sleep(5 * (attempt + 1))
-    raise RuntimeError(f"the Internet Archive did not answer for {query['name']} after {TRIES} tries")
+    raise ArchiveError(f"the Internet Archive did not answer for {query['name']} after {tries} tries")
+
+
+def _fetch_span(query: Dict[str, Any], lo: int, hi: int, session: Any, got: List[str]) -> bool:
+    """URLs captured in months lo..hi (counted from FIRST_YEAR) into `got`; a span the archive will not answer is split in two,
+    down to one month. False when a month still fails (the rest of the span is kept)."""
+    try:
+        got += _fetch_one({**query, "from": _month(lo), "to": _month(hi)}, session, tries=2)
+        return True
+    except ArchiveError:
+        if lo == hi:
+            return False
+        mid = (lo + hi) // 2
+        first = _fetch_span(query, lo, mid, session, got)
+        return _fetch_span(query, mid + 1, hi, session, got) and first
+
+
+def fetch_urls(query: Dict[str, Any], session: Any = None, workers: int = 3) -> List[str]:
+    """Root-page URLs the archive saw for one host, only those it archived with HTTP 200. A query with `split` runs as its
+    chunks; the chunks that answer are kept even when others do not (`ArchiveError.urls`)."""
+    session = session or requests
+    if not query.get("split"):
+        return _fetch_one(query, session)
+
+    def chunk(url: str) -> Tuple[str, List[str], bool]:
+        try:
+            return url, _fetch_one({**query, "url": url}, session), True
+        except ArchiveError:
+            pass
+        # Too big for one answer (wd1, wd3, wd5, Lever's commonest letters, 2026-10-21): one year of captures at a time, and a year
+        # that still fails in halves, down to one month. A board captured in several years is listed once by `board_seeds`.
+        got: List[str] = []
+        ok = True
+        for year in YEARS:
+            lo = (year - FIRST_YEAR) * 12
+            ok = _fetch_span(query, lo, lo + 11, session, got) and ok
+        return url, got, ok
+
+    with ThreadPoolExecutor(max_workers=workers) as ex:
+        done = list(ex.map(chunk, query["split"]))
+    urls = [u for _, got, _ in done for u in got]            # what a failed chunk did return is kept too
+    failed = [url for url, _, ok in done if not ok]
+    if failed:
+        raise ArchiveError(f"the Internet Archive did not answer for {query['name']}: {len(failed)} of {len(done)} chunks "
+                           f"({', '.join(failed[:4])}{', ...' if len(failed) > 4 else ''})", urls)
+    return urls
 
 
 def pretty(slug: str) -> str:
@@ -262,6 +338,9 @@ def main(argv: Optional[List[str]] = None) -> int:
         except RuntimeError as e:            # the archive is flaky: one query that never answers must not lose the others
             print(f"  {name}: {e}", file=sys.stderr)
             failed.append(name)
+            urls += getattr(e, "urls", [])      # the chunks of a split query that did answer
+            if getattr(e, "urls", []):
+                print(f"  {name}: kept {len(e.urls)} url(s) from the chunks that answered")  # type: ignore[attr-defined]
             continue
         print(f"  {name}: {len(got)} url(s)")
         urls += got
