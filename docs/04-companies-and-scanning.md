@@ -486,8 +486,8 @@ entry records every country checked, so any record counts. **The review file dou
 counts although no rule proposes it ("SFDC Ireland Limited" for Salesforce, "WAL MART ASSOCIATES INC" for Walmart; this settles
 T145). Postings that only offer *relocation* do not count (87 companies; add them if you want).
 
-What it did on 2026-10-22 (the sources that had finished; Workable's 12,585 boards were still being checked and go through the same
-filter when done):
+What it did on 2026-10-22 (the sources that had finished; Workable's 12,585 boards are not in it: that run was stopped after 8.9 h with no output because Workable throttles this machine
+(task T160, seeds in 13 batches of 1,000); they go through the same filter when checked):
 
 | Platform | Verified and new | Kept |
 |---|---|---|

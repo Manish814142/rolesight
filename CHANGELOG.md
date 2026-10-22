@@ -33,7 +33,8 @@ reconstructed from git history.
   six letters or more); a name accepted in `scripts/visa_sponsor_review.json` is an alias even when no rule proposes it ("SFDC
   Ireland Limited" for Salesforce, T145). 8 existing companies' records changed: Salesforce, Visa, NICE, Shell (their earlier hand
   acceptances now take effect) and Protolabs, Sumo Logic, TripleLift (squashed matches).
-- Not done: Workable's 12,585 boards were still being checked when this was written; they go through the same filter when done.
+- Not done: Workable's 12,585 boards. The run was stopped after 8.9 h with no output (Workable throttles this machine: HTTP 429 after 5.4 s
+  on 4 of 5 single requests); the seeds are in 13 batches with a runner script, task T160.
 
 ### Fixed (2026-10-22, T146 + T147: place misreads found by T144's bulk checks)
 - Nothing is a city or country right after "New " ("New London", "New Britain, CT"); a street address names no city; "London, On" /
