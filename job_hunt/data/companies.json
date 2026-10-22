@@ -9312,6 +9312,18 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Via",
+    "ats": "greenhouse",
+    "slug": "via",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "France"
+    ]
+  },
+  {
     "name": "Viral Nation Inc.",
     "ats": "greenhouse",
     "slug": "viralnation",

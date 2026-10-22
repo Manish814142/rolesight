@@ -9,6 +9,14 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed in review (2026-10-22, T144 rework)
+- **Via is back on the list.** The rework dropped it after rejecting "Via Inc Ltd", although it had found Via's real UK subsidiary
+  in Via's 10-K: "Via Transportation UK Ltd." is on the UK register (London, Skilled Worker and Global Business Mobility), but no
+  name rule links it to "Via". It is now accepted as Via's alias in `scripts/visa_sponsor_review.json`; the filter keeps Via on
+  it. `companies.json` and its copy 2,509 -> 2,510 (Via's entry as before the rework), visa records 1,668 of 2,510 (UK 1,069);
+  README, ARCHITECTURE, docs/00, docs/04 and docs/10 counts updated. A curated-data change: checked by the offline rebuild and
+  the filter, no new test.
+
 ### Fixed in review (2026-10-22, T144: an exact name is not the same company)
 - The review found companies on the list on another business's visa record (Harmonic on the Farnborough video firm's, Ramp on a
   Manchester church's, Fca, the Financial Conduct Authority, on Fiat Chrysler's): exact and squashed name matches had been trusted

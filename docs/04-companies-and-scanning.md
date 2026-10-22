@@ -6,9 +6,9 @@ The list of job boards to scan. It is committed, it is the core of the project, 
 was checked by `autopilot discover` (below) to be live, to belong to the employer it names and to have India jobs (or,
 for the 27 entries that carry `"places"`, jobs in those countries: T139).
 
-**Counts (2026-10-22):** 2,509 boards: Greenhouse 732, Workday 481, Ashby 391, SmartRecruiters 264, Lever 206,
+**Counts (2026-10-22):** 2,510 boards: Greenhouse 733, Workday 481, Ashby 391, SmartRecruiters 264, Lever 206,
 Recruitee 195, Oracle HCM 108, Workable 106, Personio 20, Eightfold 4, Amazon 1, Phenom 1. The first 224 were curated by
-hand; 1,365 came from the bulk harvest (T111, T112); 920 were checked for other countries instead of India (T139, T142, T144):
+hand; 1,365 came from the bulk harvest (T111, T112); 921 were checked for other countries instead of India (T139, T142, T144):
 58 from the community lists and 862 that passed the visa-evidence rule (below; 900 before its review took out 38). Count yours with
 `python -c "import json,collections;print(collections.Counter(c['ats'] for c in json.load(open('companies.json'))))"`.
 
@@ -507,7 +507,7 @@ What it did on 2026-10-22 (the sources that had finished; Workable's 12,585 boar
 | SmartRecruiters | 433 | 77 |
 | Lever | 228 | 49 |
 | Workday | 298 | 188 |
-| **Total** | **5,518** | **900** (list 1,647 -> 2,547; 862 after the review below: 2,509) |
+| **Total** | **5,518** | **900** (list 1,647 -> 2,547; 863 after the review below: 2,510) |
 
 By country, new companies kept by the first pass (862): United Kingdom 486, Netherlands 257, Germany 166, France 107, Spain 93, Poland 83, Ireland 78,
 Singapore 75, Italy 69, Sweden 68, Portugal 62, Belgium 61, Denmark 54, Switzerland 52, Austria 48, Czechia 44, UAE 44, Norway
@@ -556,8 +556,10 @@ Inc's SEC subsidiary list; Airspace B.V. is Airspace's European base). **67 reco
 first pass had accepted by hand (Faculty Services Limited in Edinburgh is not Faculty AI; Duna AI Limited is a Limerick start-up
 of 2026). Where unsure, rejected. **38 entries left the list**: 37 with no evidence left and Pulse Healthcare, a staffing agency
 the agency check missed. The India list's 184 short-name records were read as well (2 rejected: Neara Ltd, Aleph The Netherlands
-Corporation B.V.). **Record rebuilt: 1,667 of 2,509 companies** (UK 1,068, Netherlands 486, Ireland 145, lists 92, USA 838,
-Canada 89). What was not read: exact matches of longer, non-dictionary names outside the 141 flagged, and the India list's
+Corporation B.V.). Via was then put back by the verifier: the rework had found its UK subsidiary in Via's 10-K, "Via Transportation
+UK Ltd.", which is on the UK register (London, Skilled Worker and Global Business Mobility) but which no name rule links to "Via";
+it is now accepted as Via's alias, so 37 entries left. **Record rebuilt: 1,668 of 2,510 companies** (UK 1,069, Netherlands 486,
+Ireland 145, lists 92, USA 838, Canada 89). What was not read: exact matches of longer, non-dictionary names outside the 141 flagged, and the India list's
 dictionary-word names (230 records).
 
 **The scan uses it** (T138): with `candidate.countries` set, every job outside your home country gets a **Visa** column in
