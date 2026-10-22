@@ -11,13 +11,14 @@ reconstructed from git history.
 
 ### Added (2026-10-22, T144 + T148: a bigger list of companies that sponsor visas, Workday found by name)
 - Manish: "add more companies so make the bigger list", then "if they sponsor a visa then keep them, irrespective of a specific job
-  post ... otherwise no point of adding them". `companies.json` goes from 1,647 to **2,509** boards: 862 companies added for other
+  post ... otherwise no point of adding them". `companies.json` goes from 1,647 to **2,547** boards: 900 companies added for other
   countries (Europe, the Gulf, Singapore, with the USA, Canada, Australia and New Zealand checked for Workday), each with the
   countries where it has jobs and **evidence that it sponsors visas** (`scripts/filter_by_visa_evidence.py`): a sponsor record for
-  a country it hires in, a community list, or a posting that offers sponsorship. Of 5,518 verified new boards 862 pass; the rest are
-  left out (the price, measured: they hold 1,783 of the 2,486 title-matching jobs). The India scan still fetches exactly the same
-  1,589 boards; a UK-and-Germany scan fetches 2,351. Visa records: 1,674 of 2,509 companies (UK 1,076, Netherlands 479, Ireland 145,
-  lists 93, USA 847, Canada 93).
+  a country it hires in, a community list, or a posting that offers sponsorship. Of 5,518 verified new boards 900 pass (862 by the first pass, 38 more after a prefix check of the registers on the 836 dropped
+  companies that have title-matching jobs); the rest are left out (the price, measured: they hold 1,783 of the 2,486 title-matching
+  jobs). Online checks of postings, company sites and web search found almost nothing more (about 1%, 1 of 12). The India scan still fetches exactly the same
+  1,589 boards; a UK-and-Germany scan fetches 2,381. Visa records: 1,712 of 2,547 companies (UK 1,105, Netherlands 494, Ireland 146,
+  lists 93, USA 853, Canada 94).
 - **Workday by name** (T148): the archive and Common Crawl refuse the wd1/wd3/wd5 queries (HTTP 504 at every size, down to a month),
   but a tenant's `robots.txt` lists its career sites and a missing tenant answers 422, so a seed `Name | workday | auto` finds the
   tenant, data centre and sites from the company name, confirms the employer from up to 3 postings' text, and checks the sites for the

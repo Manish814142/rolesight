@@ -2,6 +2,15 @@
  "about": "Companies on companies.json that appear in public visa-sponsor sources (T133). A register means the employer can sponsor a visa, not that a given job does. Each match names the source's own entry; loose name matches are kept only when accepted by hand in scripts/visa_sponsor_review.json. Rebuild: python scripts/build_visa_sponsors.py",
  "built": "2026-10-22",
  "companies": {
+  "12build": [
+   {
+    "match": "loose",
+    "names": {
+     "12Build Sales B.V.": "63719444"
+    },
+    "source": "nl"
+   }
+  ],
   "1GLOBAL": [
    {
     "match": "loose",
@@ -652,6 +661,17 @@
     "match": "squashed",
     "names": {
      "Abercrombie & Kent Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Ably (UK)": [
+   {
+    "match": "loose",
+    "names": {
+     "Ably Real-Time Ltd": [
       "Skilled Worker"
      ]
     },
@@ -3250,6 +3270,37 @@
     "source": "us"
    }
   ],
+  "Axon": [
+   {
+    "match": "loose",
+    "names": {
+     "Axon Public Safety UK Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Axon Public Safety B.V.": "60432713"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "AXON US CORP": {
+      "2024": [
+       5,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "Axual": [
    {
     "match": "exact",
@@ -3613,6 +3664,18 @@
      }
     },
     "source": "us"
+   }
+  ],
+  "Ballastnedam": [
+   {
+    "match": "loose",
+    "names": {
+     "Ballast Nedam Bouw & Ontwikkeling": "33121397",
+     "Ballast Nedam Industriebouw B.V.": "33183018",
+     "Ballast Nedam Infra B.V.": "33154028",
+     "Ballast Nedam Ontwikkelingsmaatschappij B.V.": "24237504"
+    },
+    "source": "nl"
    }
   ],
   "Bandwidth": [
@@ -5446,6 +5509,29 @@
     "source": "us"
    }
   ],
+  "Carta": [
+   {
+    "match": "loose",
+    "names": {
+     "Carta Financial Services Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ESHARES INC DBA CARTA INC": {
+      "2024": [
+       2,
+       28
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "Carwow": [
    {
     "match": "exact",
@@ -6735,6 +6821,18 @@
     "source": "us"
    }
   ],
+  "Conclusion": [
+   {
+    "match": "loose",
+    "names": {
+     "Conclusion Enablement B.V.": "39101391",
+     "Conclusion MBS B.V.": "30191754",
+     "Conclusion Mission Critical B.V.": "27364140",
+     "Conclusion Xforce B.V.": "30195258"
+    },
+    "source": "nl"
+   }
+  ],
   "Condenast": [
    {
     "match": "squashed",
@@ -7789,6 +7887,52 @@
     "source": "nl"
    }
   ],
+  "DRW": [
+   {
+    "match": "loose",
+    "names": {
+     "DRW Investments (UK) Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "DRW Europe Derivatives B.V.": "72007443"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "DRW HOLDINGS LLC": {
+      "2024": [
+       13,
+       21
+      ]
+     }
+    },
+    "source": "us"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "DRW Canada Co.": {
+      "2026Q1": {
+       "positions": 1,
+       "streams": [
+        "High Wage"
+       ],
+       "tech": 1
+      }
+     }
+    },
+    "source": "ca"
+   }
+  ],
   "DTCC": [
    {
     "match": "exact",
@@ -8052,6 +8196,18 @@
      }
     },
     "source": "us"
+   }
+  ],
+  "Decagon": [
+   {
+    "match": "loose",
+    "names": {
+     "Decagon AI UK Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
    }
   ],
   "DeciBio Consulting": [
@@ -8698,6 +8854,17 @@
     "source": "us"
    }
   ],
+  "DoiT": [
+   {
+    "match": "loose",
+    "names": {
+     "DOIT International UK&I Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
   "Domino's Pizza Netherlands": [
    {
     "match": "exact",
@@ -8981,6 +9148,17 @@
     "source": "uk"
    }
   ],
+  "Duna": [
+   {
+    "match": "loose",
+    "names": {
+     "Duna AI Limited": {
+      "2026": 1
+     }
+    },
+    "source": "ie"
+   }
+  ],
   "Duolingo": [
    {
     "match": "exact",
@@ -9003,6 +9181,17 @@
      }
     },
     "source": "us"
+   }
+  ],
+  "Duravermeer": [
+   {
+    "match": "loose",
+    "names": {
+     "Dura Vermeer Infra Landelijke Projecten B.V.": "34084789",
+     "Dura Vermeer Infra Regionale Projecten B.V.": "34196257",
+     "Dura Vermeer Techniek B.V.": "82982511"
+    },
+    "source": "nl"
    }
   ],
   "Duvo": [
@@ -9118,6 +9307,24 @@
      }
     },
     "source": "us"
+   }
+  ],
+  "Ebury": [
+   {
+    "match": "loose",
+    "names": {
+     "Ebury Partners UK Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Ebury Partners Belgium SA/NV": "74280511"
+    },
+    "source": "nl"
    }
   ],
   "EcoVadis": [
@@ -10684,6 +10891,17 @@
     "source": "nl"
    }
   ],
+  "Fender": [
+   {
+    "match": "loose",
+    "names": {
+     "Fender Musical Instruments Europe Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
   "Ferovinum": [
    {
     "match": "exact",
@@ -10850,6 +11068,30 @@
      ]
     },
     "source": "uk"
+   }
+  ],
+  "Fireblocks": [
+   {
+    "match": "loose",
+    "names": {
+     "FIREBLOCKS UK INT'L LIMITED": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "FIREBLOCKS INC": {
+      "2024": [
+       1,
+       2
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Firemon": [
@@ -11313,6 +11555,15 @@
      ]
     },
     "source": "uk"
+   }
+  ],
+  "Forcyd": [
+   {
+    "match": "loose",
+    "names": {
+     "Forcyd Managed Review B.V.": "75018551"
+    },
+    "source": "nl"
    }
   ],
   "Forter": [
@@ -13767,6 +14018,15 @@
     "source": "us"
    }
   ],
+  "Igh": [
+   {
+    "match": "loose",
+    "names": {
+     "IG & H Consulting & Interim": "30167195"
+    },
+    "source": "nl"
+   }
+  ],
   "Illumina": [
    {
     "match": "exact",
@@ -13899,6 +14159,17 @@
      }
     },
     "source": "us"
+   }
+  ],
+  "Ineffable": [
+   {
+    "match": "loose",
+    "names": {
+     "Ineffable Intelligence Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
    }
   ],
   "Inetum": [
@@ -15381,6 +15652,16 @@
     "source": "uk"
    }
   ],
+  "Keunehaircosmetics": [
+   {
+    "match": "loose",
+    "names": {
+     "Keune Hair Cosmetics Export B.V.": "31026449",
+     "Keune Haircosmetics Manufacturing B.V.": "31026451"
+    },
+    "source": "nl"
+   }
+  ],
   "Keyfactor, Inc.": [
    {
     "match": "loose",
@@ -16230,6 +16511,17 @@
     "source": "uk"
    }
   ],
+  "Lindus": [
+   {
+    "match": "loose",
+    "names": {
+     "Lindus Health Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
   "LinkedIn": [
    {
     "match": "loose",
@@ -16850,6 +17142,25 @@
     "source": "us"
    }
   ],
+  "Marktlink": [
+   {
+    "match": "loose",
+    "names": {
+     "Marktlink North UK M&A Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Marktlink Capital Management Coöperatief U.A.": "80340180"
+    },
+    "source": "nl"
+   }
+  ],
   "Marshmallow": [
    {
     "match": "loose",
@@ -17353,6 +17664,17 @@
      }
     },
     "source": "us"
+   }
+  ],
+  "Meticulous": [
+   {
+    "match": "loose",
+    "names": {
+     "Meticulous Ai Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
    }
   ],
   "MiQ Digital": [
@@ -18175,6 +18497,17 @@
     "source": "us"
    }
   ],
+  "Motorway": [
+   {
+    "match": "loose",
+    "names": {
+     "Motorway Online Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
   "Mourant": [
    {
     "match": "loose",
@@ -18373,6 +18706,17 @@
      }
     },
     "source": "us"
+   }
+  ],
+  "Mytos": [
+   {
+    "match": "loose",
+    "names": {
+     "Mytos Bio Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
    }
   ],
   "N26": [
@@ -18912,6 +19256,17 @@
      }
     },
     "source": "us"
+   }
+  ],
+  "Nevis": [
+   {
+    "match": "loose",
+    "names": {
+     "NEVIS WEALTH TECHNOLOGY LTD": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
    }
   ],
   "New Era Technology": [
@@ -19465,6 +19820,18 @@
     "source": "us"
    }
   ],
+  "OKX": [
+   {
+    "match": "loose",
+    "names": {
+     "OKX UK FinTech Company LImited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
   "OLIVER": [
    {
     "match": "loose",
@@ -19598,6 +19965,17 @@
      }
     },
     "source": "us"
+   }
+  ],
+  "Odeko": [
+   {
+    "match": "loose",
+    "names": {
+     "Odeko (N.I.) Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
    }
   ],
   "Ogury": [
@@ -20157,12 +20535,47 @@
     "source": "uk"
    }
   ],
+  "PDT Partners": [
+   {
+    "match": "loose",
+    "names": {
+     "PDT Partners UK I Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "PDT PARTNERS LLC": {
+      "2024": [
+       2,
+       3
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "PSI CRO": [
    {
     "match": "exact",
     "names": {
      "PSI CRO UK Ltd": [
       "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Paddle": [
+   {
+    "match": "loose",
+    "names": {
+     "Paddle.com Market Limited": [
       "Skilled Worker"
      ]
     },
@@ -20681,6 +21094,18 @@
      }
     },
     "source": "us"
+   }
+  ],
+  "Perplexity": [
+   {
+    "match": "loose",
+    "names": {
+     "Perplexity AI Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
    }
   ],
   "Perthyn": [
@@ -21334,6 +21759,17 @@
      }
     },
     "source": "us"
+   }
+  ],
+  "Prolific": [
+   {
+    "match": "loose",
+    "names": {
+     "Prolific Academic Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
    }
   ],
   "Proofpoint": [
@@ -22331,6 +22767,17 @@
      }
     },
     "source": "us"
+   }
+  ],
+  "Red Badger": [
+   {
+    "match": "loose",
+    "names": {
+     "Red Badger Consulting Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
    }
   ],
   "Red Bull": [
@@ -24213,6 +24660,17 @@
     "source": "us"
    }
   ],
+  "Schonfeld": [
+   {
+    "match": "loose",
+    "names": {
+     "Schonfeld Strategic Advisors (UK) LLP": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
   "Schreiberfoods": [
    {
     "match": "squashed",
@@ -25687,6 +26145,24 @@
     "source": "nl"
    }
   ],
+  "Sosafe": [
+   {
+    "match": "loose",
+    "names": {
+     "SoSafe Security Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SoSafe B.V.": "86607715"
+    },
+    "source": "nl"
+   }
+  ],
   "Sotheby's": [
    {
     "match": "exact",
@@ -26742,6 +27218,37 @@
     "source": "ca"
    }
   ],
+  "Sungrow Emea": [
+   {
+    "match": "loose",
+    "names": {
+     "Sungrow Power UK Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Sungrow Benelux B.V.": "81243936"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "SUNGROW USA CORPORATION": {
+      "2024": [
+       10,
+       3
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "Super Payments": [
    {
     "match": "exact",
@@ -26867,6 +27374,25 @@
      }
     },
     "source": "us"
+   }
+  ],
+  "Swap": [
+   {
+    "match": "loose",
+    "names": {
+     "Swap Commerce Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Swap Netherlands B.V.": "89291506"
+    },
+    "source": "nl"
    }
   ],
   "Swisscom": [
@@ -28589,6 +29115,15 @@
      }
     },
     "source": "us"
+   }
+  ],
+  "Transavia": [
+   {
+    "match": "loose",
+    "names": {
+     "Transavia Airlines": "34069081"
+    },
+    "source": "nl"
    }
   ],
   "Transferz": [
@@ -30925,6 +31460,18 @@
     "source": "uk"
    }
   ],
+  "Winton": [
+   {
+    "match": "loose",
+    "names": {
+     "Winton Capital Management Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
   "Wise": [
    {
     "match": "loose",
@@ -30998,6 +31545,17 @@
      "Wolters Kluwer Nederland B.V.": "38013226"
     },
     "source": "nl"
+   }
+  ],
+  "Wordsmith": [
+   {
+    "match": "loose",
+    "names": {
+     "Wordsmith AI Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
    }
   ],
   "Workato": [

@@ -963,6 +963,20 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Decagon",
+    "ats": "ashby",
+    "slug": "decagon",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "France",
+      "Denmark",
+      "Austria"
+    ]
+  },
+  {
     "name": "Deepl",
     "ats": "ashby",
     "slug": "DeepL",
@@ -1041,6 +1055,34 @@
     "headcount": "Unknown",
     "places": [
       "United Kingdom"
+    ]
+  },
+  {
+    "name": "Duna",
+    "ats": "ashby",
+    "slug": "duna",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "Ireland",
+      "France",
+      "Spain",
+      "Portugal",
+      "Poland",
+      "Sweden",
+      "Denmark",
+      "Finland",
+      "Norway",
+      "Switzerland",
+      "Austria",
+      "Belgium",
+      "Luxembourg",
+      "Italy",
+      "Czechia",
+      "Estonia",
+      "Lithuania"
     ]
   },
   {
@@ -1514,6 +1556,15 @@
     ]
   },
   {
+    "name": "Ineffable",
+    "ats": "ashby",
+    "slug": "ineffable",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
     "name": "Inferact",
     "ats": "ashby",
     "slug": "Inferact",
@@ -1770,6 +1821,15 @@
     ]
   },
   {
+    "name": "Lindus",
+    "ats": "ashby",
+    "slug": "lindus",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
     "name": "Litellm",
     "ats": "ashby",
     "slug": "litellm",
@@ -1924,6 +1984,15 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Meticulous",
+    "ats": "ashby",
+    "slug": "meticulous",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
     "name": "Mimica",
     "ats": "ashby",
     "slug": "mimica",
@@ -2054,6 +2123,15 @@
     ]
   },
   {
+    "name": "Motorway",
+    "ats": "ashby",
+    "slug": "motorway",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
     "name": "Multiverse",
     "ats": "ashby",
     "slug": "multiverse",
@@ -2090,6 +2168,15 @@
     "ats": "ashby",
     "slug": "neuralconcept",
     "headcount": "Unknown"
+  },
+  {
+    "name": "Nevis",
+    "ats": "ashby",
+    "slug": "nevis",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
   },
   {
     "name": "Neworbit",
@@ -2298,6 +2385,16 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Paddle",
+    "ats": "ashby",
+    "slug": "paddle",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Netherlands"
+    ]
+  },
+  {
     "name": "Panoptyc",
     "ats": "ashby",
     "slug": "Panoptyc",
@@ -2389,6 +2486,16 @@
       "Netherlands",
       "Spain",
       "Portugal"
+    ]
+  },
+  {
+    "name": "Perplexity",
+    "ats": "ashby",
+    "slug": "perplexity",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany"
     ]
   },
   {
@@ -3018,6 +3125,16 @@
     ]
   },
   {
+    "name": "Sosafe",
+    "ats": "ashby",
+    "slug": "sosafe",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany"
+    ]
+  },
+  {
     "name": "Spaice Tech",
     "ats": "ashby",
     "slug": "spaice-tech",
@@ -3152,6 +3269,16 @@
     "ats": "ashby",
     "slug": "surveymonkey",
     "headcount": "Unknown"
+  },
+  {
+    "name": "Swap",
+    "ats": "ashby",
+    "slug": "swap",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Poland"
+    ]
   },
   {
     "name": "Sxaler",
@@ -3744,6 +3871,16 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Wordsmith",
+    "ats": "ashby",
+    "slug": "wordsmith",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany"
+    ]
+  },
+  {
     "name": "Writer",
     "ats": "ashby",
     "slug": "writer",
@@ -3842,6 +3979,15 @@
     "name": "ABBYY",
     "ats": "greenhouse",
     "slug": "abbyy",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
+    "name": "Ably (UK)",
+    "ats": "greenhouse",
+    "slug": "ably30",
     "headcount": "Unknown",
     "places": [
       "United Kingdom"
@@ -4384,6 +4530,23 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Axon",
+    "ats": "greenhouse",
+    "slug": "axon",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "United Arab Emirates",
+      "Singapore",
+      "Spain",
+      "Poland",
+      "Finland",
+      "Belgium"
+    ]
+  },
+  {
     "name": "AXS",
     "ats": "greenhouse",
     "slug": "axs",
@@ -4878,6 +5041,16 @@
     "ats": "greenhouse",
     "slug": "carrotfertility",
     "headcount": "Unknown"
+  },
+  {
+    "name": "Carta",
+    "ats": "greenhouse",
+    "slug": "carta",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Singapore"
+    ]
   },
   {
     "name": "Cast AI",
@@ -5482,6 +5655,36 @@
     ]
   },
   {
+    "name": "DoiT",
+    "ats": "greenhouse",
+    "slug": "doitintl",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "Ireland",
+      "United Arab Emirates",
+      "Singapore",
+      "France",
+      "Spain",
+      "Portugal",
+      "Poland",
+      "Sweden",
+      "Denmark",
+      "Finland",
+      "Norway",
+      "Switzerland",
+      "Austria",
+      "Belgium",
+      "Luxembourg",
+      "Italy",
+      "Czechia",
+      "Estonia",
+      "Lithuania"
+    ]
+  },
+  {
     "name": "Domino",
     "ats": "greenhouse",
     "slug": "dominodatalab",
@@ -5504,6 +5707,17 @@
     "ats": "greenhouse",
     "slug": "druva",
     "headcount": "Unknown"
+  },
+  {
+    "name": "DRW",
+    "ats": "greenhouse",
+    "slug": "drweng",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Netherlands",
+      "Singapore"
+    ]
   },
   {
     "name": "Dscout",
@@ -5553,6 +5767,28 @@
     "ats": "greenhouse",
     "slug": "ebanx",
     "headcount": "Unknown"
+  },
+  {
+    "name": "Ebury",
+    "ats": "greenhouse",
+    "slug": "ebury",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "United Arab Emirates",
+      "Singapore",
+      "France",
+      "Spain",
+      "Portugal",
+      "Sweden",
+      "Denmark",
+      "Belgium",
+      "Luxembourg",
+      "Italy",
+      "Lithuania"
+    ]
   },
   {
     "name": "eClinical Solutions",
@@ -5814,6 +6050,16 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Fender",
+    "ats": "greenhouse",
+    "slug": "fender",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany"
+    ]
+  },
+  {
     "name": "FeverUp",
     "ats": "greenhouse",
     "slug": "feverup",
@@ -5845,6 +6091,19 @@
     "places": [
       "United Kingdom",
       "Singapore"
+    ]
+  },
+  {
+    "name": "Fireblocks",
+    "ats": "greenhouse",
+    "slug": "fireblocks",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "United Arab Emirates",
+      "Singapore",
+      "Denmark"
     ]
   },
   {
@@ -7483,10 +7742,49 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Odeko",
+    "ats": "greenhouse",
+    "slug": "odeko",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
     "name": "Okta",
     "ats": "greenhouse",
     "slug": "okta",
     "headcount": "11-50 employees"
+  },
+  {
+    "name": "OKX",
+    "ats": "greenhouse",
+    "slug": "OKX",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "Ireland",
+      "United Arab Emirates",
+      "Singapore",
+      "France",
+      "Spain",
+      "Portugal",
+      "Poland",
+      "Sweden",
+      "Denmark",
+      "Finland",
+      "Norway",
+      "Switzerland",
+      "Austria",
+      "Belgium",
+      "Luxembourg",
+      "Italy",
+      "Czechia",
+      "Estonia",
+      "Lithuania"
+    ]
   },
   {
     "name": "OLIVER",
@@ -7633,6 +7931,15 @@
     "ats": "greenhouse",
     "slug": "pay2dc",
     "headcount": "Unknown"
+  },
+  {
+    "name": "PDT Partners",
+    "ats": "greenhouse",
+    "slug": "pdtpartners",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
   },
   {
     "name": "Pearl",
@@ -7830,6 +8137,15 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Prolific",
+    "ats": "greenhouse",
+    "slug": "prolific",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
     "name": "PubMatic",
     "ats": "greenhouse",
     "slug": "pubmatic",
@@ -7966,6 +8282,15 @@
     "ats": "greenhouse",
     "slug": "recordedfuture",
     "headcount": "Unknown"
+  },
+  {
+    "name": "Red Badger",
+    "ats": "greenhouse",
+    "slug": "redbadger",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
   },
   {
     "name": "Reddit",
@@ -8240,6 +8565,17 @@
     "ats": "greenhouse",
     "slug": "scaleai",
     "headcount": "Unknown"
+  },
+  {
+    "name": "Schonfeld",
+    "ats": "greenhouse",
+    "slug": "Schonfeld",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "United Arab Emirates",
+      "Singapore"
+    ]
   },
   {
     "name": "Schrödinger",
@@ -9420,6 +9756,16 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Winton",
+    "ats": "greenhouse",
+    "slug": "winton",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "United Arab Emirates"
+    ]
+  },
+  {
     "name": "Wiz, Inc.",
     "ats": "greenhouse",
     "slug": "wizinc",
@@ -10500,6 +10846,15 @@
       "Ireland",
       "Sweden",
       "Italy"
+    ]
+  },
+  {
+    "name": "Mytos",
+    "ats": "lever",
+    "slug": "mytos",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
     ]
   },
   {
@@ -12259,6 +12614,30 @@
     ]
   },
   {
+    "name": "Sungrow Emea",
+    "ats": "personio",
+    "slug": "sungrow-emea",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "Ireland",
+      "France",
+      "Spain",
+      "Portugal",
+      "Poland",
+      "Sweden",
+      "Denmark",
+      "Finland",
+      "Austria",
+      "Belgium",
+      "Italy",
+      "Czechia",
+      "Lithuania"
+    ]
+  },
+  {
     "name": "Tonies",
     "ats": "personio",
     "slug": "tonies",
@@ -12283,6 +12662,15 @@
     "host": "careers.bcg.com",
     "locale": "global/en",
     "headcount": "Unknown"
+  },
+  {
+    "name": "12build",
+    "ats": "recruitee",
+    "slug": "12build",
+    "headcount": "Unknown",
+    "places": [
+      "Netherlands"
+    ]
   },
   {
     "name": "Acomo",
@@ -12380,6 +12768,15 @@
     "name": "Axual",
     "ats": "recruitee",
     "slug": "axual",
+    "headcount": "Unknown",
+    "places": [
+      "Netherlands"
+    ]
+  },
+  {
+    "name": "Ballastnedam",
+    "ats": "recruitee",
+    "slug": "ballastnedam",
     "headcount": "Unknown",
     "places": [
       "Netherlands"
@@ -12582,6 +12979,15 @@
     ]
   },
   {
+    "name": "Conclusion",
+    "ats": "recruitee",
+    "slug": "conclusion",
+    "headcount": "Unknown",
+    "places": [
+      "Netherlands"
+    ]
+  },
+  {
     "name": "Consultdss",
     "ats": "recruitee",
     "slug": "consultdss",
@@ -12651,6 +13057,15 @@
     "name": "Dtx",
     "ats": "recruitee",
     "slug": "dtx",
+    "headcount": "Unknown",
+    "places": [
+      "Netherlands"
+    ]
+  },
+  {
+    "name": "Duravermeer",
+    "ats": "recruitee",
+    "slug": "duravermeer",
     "headcount": "Unknown",
     "places": [
       "Netherlands"
@@ -12787,6 +13202,15 @@
     "headcount": "Unknown",
     "places": [
       "Germany",
+      "Netherlands"
+    ]
+  },
+  {
+    "name": "Forcyd",
+    "ats": "recruitee",
+    "slug": "forcyd",
+    "headcount": "Unknown",
+    "places": [
       "Netherlands"
     ]
   },
@@ -12947,6 +13371,16 @@
     ]
   },
   {
+    "name": "Igh",
+    "ats": "recruitee",
+    "slug": "igh",
+    "headcount": "Unknown",
+    "places": [
+      "Netherlands",
+      "Portugal"
+    ]
+  },
+  {
     "name": "Infomedics",
     "ats": "recruitee",
     "slug": "infomedics",
@@ -13048,6 +13482,15 @@
     "ats": "recruitee",
     "slug": "kcoverseaseducation",
     "headcount": "Unknown"
+  },
+  {
+    "name": "Keunehaircosmetics",
+    "ats": "recruitee",
+    "slug": "keunehaircosmetics",
+    "headcount": "Unknown",
+    "places": [
+      "Netherlands"
+    ]
   },
   {
     "name": "Kpsnacks",
@@ -13170,6 +13613,18 @@
     "places": [
       "Germany",
       "Netherlands"
+    ]
+  },
+  {
+    "name": "Marktlink",
+    "ats": "recruitee",
+    "slug": "marktlink",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "Norway"
     ]
   },
   {
@@ -13719,6 +14174,16 @@
     "headcount": "Unknown",
     "places": [
       "Netherlands"
+    ]
+  },
+  {
+    "name": "Transavia",
+    "ats": "recruitee",
+    "slug": "transavia",
+    "headcount": "Unknown",
+    "places": [
+      "Netherlands",
+      "Belgium"
     ]
   },
   {

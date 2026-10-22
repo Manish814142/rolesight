@@ -6,10 +6,10 @@ The list of job boards to scan. It is committed, it is the core of the project, 
 was checked by `autopilot discover` (below) to be live, to belong to the employer it names and to have India jobs (or,
 for the 27 entries that carry `"places"`, jobs in those countries: T139).
 
-**Counts (2026-10-22):** 2,509 boards: Greenhouse 729, Workday 490, Ashby 393, SmartRecruiters 264, Lever 208,
-Recruitee 186, Oracle HCM 108, Workable 106, Personio 19, Eightfold 4, Amazon 1, Phenom 1. The first 224 were curated by
-hand; 1,365 came from the bulk harvest (T111, T112); 920 were checked for other countries instead of India (T139, T142, T144):
-58 from the community lists and 862 that passed the visa-evidence rule (below). Count yours with
+**Counts (2026-10-22):** 2,547 boards: Greenhouse 744, Workday 490, Ashby 405, SmartRecruiters 264, Lever 209,
+Recruitee 195, Oracle HCM 108, Workable 106, Personio 20, Eightfold 4, Amazon 1, Phenom 1. The first 224 were curated by
+hand; 1,365 came from the bulk harvest (T111, T112); 958 were checked for other countries instead of India (T139, T142, T144):
+58 from the community lists and 900 that passed the visa-evidence rule (below). Count yours with
 `python -c "import json,collections;print(collections.Counter(c['ats'] for c in json.load(open('companies.json'))))"`.
 
 `job_hunt/data/companies.json` is the copy `autopilot init` gives a new user. **After any change, copy the list there**
@@ -498,9 +498,9 @@ filter when done):
 | SmartRecruiters | 433 | 77 |
 | Lever | 228 | 49 |
 | Workday | 298 | 188 |
-| **Total** | **5,518** | **862** (list 1,647 -> 2,509) |
+| **Total** | **5,518** | **900** (list 1,647 -> 2,547) |
 
-By country, new companies kept: United Kingdom 486, Netherlands 257, Germany 166, France 107, Spain 93, Poland 83, Ireland 78,
+By country, new companies kept by the first pass (862): United Kingdom 486, Netherlands 257, Germany 166, France 107, Spain 93, Poland 83, Ireland 78,
 Singapore 75, Italy 69, Sweden 68, Portugal 62, Belgium 61, Denmark 54, Switzerland 52, Austria 48, Czechia 44, UAE 44, Norway
 41, Luxembourg 41, Finland 37, Estonia 34, Lithuania 34 (Workday entries record every country and are not counted here). Germany,
 France, Spain and Poland publish no register, so there the evidence is mostly a posting or a list: 166 of the 2,363 German companies
@@ -516,7 +516,23 @@ The weak name matches (183 companies before the merge, 116 after) were read by h
 (common words or another company: "Axiom", "Proton", "Open", "Planet"; "Puma Energy" is not PUMA, "Weber Shandwick" is not Weber),
 and 64 names accepted as aliases for 28 big Workday employers whose register names differ (Walmart, Gilead, Maersk, Repsol, …).
 
-**Record rebuilt (2026-10-22): 1,674 of 2,509 companies** (UK 1,076, Netherlands 479, Ireland 145, lists 93, USA 847, Canada 93).
+**A second look at the dropped companies with title-matching jobs (836, 1,783 such jobs).** Manish: add them if sponsorship can be
+verified online, so that nobody has to look it up by hand. Three routes were tried on them, measured:
+
+- *Postings of any country and the company's own site* (careers, about, benefits pages found from links in its postings): on 80 random
+  ones, a website was found for 10, one posting offered sponsorship and no site said anything: about 1%, so not worth running.
+- *Web search* (12 companies, the ones with the most such jobs): usable evidence for 1 (Ebury, through an aggregator quoting the UK
+  register); the rest returned job-board noise, third-party tags ("visa sponsorship: not available" for DRW) or relocation text with no
+  visa wording (Nord Security, Satispay, Wolt). Not a bulk method.
+- *The official registers, by name prefix* (the register's entry begins with the company's name: "Ebury Partners UK Ltd", "DRW
+  Investments (UK) Ltd", "DOIT International UK&I Ltd"), restricted to the registers of countries the company hires in: 87 of the
+  836 had a candidate, read by hand; 52 register names accepted for 38 companies, 198 rejected (common words: Planet, Slice,
+  Marble, "Ashby Capital LLP"). These 38 joined the list.
+
+The other 798 stay out: no evidence from a register, a list, a posting or the web. The same prefix check on the other ~3,800 dropped
+companies (no title-matching job) was not run.
+
+**Record rebuilt (2026-10-22): 1,712 of 2,547 companies** (UK 1,105, Netherlands 494, Ireland 146, lists 93, USA 853, Canada 94).
 
 **The scan uses it** (T138): with `candidate.countries` set, every job outside your home country gets a **Visa** column in
 the CSV: what the posting says, then this record for its country ([docs/05](05-outputs-and-notifications.md)).
