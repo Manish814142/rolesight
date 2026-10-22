@@ -208,3 +208,36 @@ def test_a_department_code_after_one_of_its_countrys_cities_is_that_country():
     the code passed every test; the code itself is read after the country's own city."""
     assert pl.explicit_countries("Milan, IT") == {"IT"} and pl.explicit_countries("Doha, QA") == {"QA"}
     assert pl.explicit_countries("Hannover, IT") == set()
+
+
+# ── T150: a country's name beside a US, Canadian or Australian state code (found in the review of T133–T143) ─────────
+
+@pytest.mark.parametrize("part, expected", [
+    ("1400 E Ireland Rd, South Bend, IN 46614-3452", {"US"}),          # a street address names no country
+    ("Panama City, FL (Contract Full time)", {"US"}), ("Jersey Shore, PA (Contract Full time)", {"US"}),   # towns
+    ("Holland, MI", {"US"}), ("Holland, Mi", {"US"}), ("Mexico, MO 65265", {"US"}),
+    ("Rieti, RI, Italy", {"IT"}),                                      # a province code before its country's name
+    ("1401-G-India: ELCOT IT Bldg, ELCOT SEZ, Madurai,TN", {"IN"}),    # Tamil Nadu after an Indian place
+    ("Panaji, India, GA", {"IN"}),                                     # Goa
+    # unchanged
+    ("Nashville, TN", {"US"}), ("Atlanta, GA", {"US"}), ("Toronto, ON, Canada", {"CA"}), ("Austin, TX, United States", {"US"}),
+    ("Netherlands, NL", {"NL"}), ("Germany, DE", {"DE"}),             # the country's own code after its name, not a state
+    ("Berlin, Germany, DE", {"DE"}), ("Panama City, Panama", {"PA"}), ("Perth, WA, Australia", {"AU"}),
+    ("4900 Florence Street, Denver, CO 80238", {"US"}), ("Ireland", {"IE"}), ("Dublin, Ireland", {"IE"}),
+    ("Ontario, CA (Full Time)", {"CA", "US"}),       # a province's name is no country's: Ontario, California, or Canada
+    ("Bhubaneswar, Or", set()), ("Bhubaneswar, OR", set()),   # Odisha after an Indian city, not Oregon
+    ("Portland, Or", {"US"}), ("Salem, OR", {"US"}),
+])
+def test_a_country_name_beside_a_state_code_is_read_with_the_code(part, expected):
+    assert pl.explicit_countries(part) == expected
+
+
+@pytest.mark.parametrize("location, country, kept", [
+    ("1400 E Ireland Rd, South Bend, IN 46614-3452", "Ireland", False), ("Holland, MI", "Netherlands", False),
+    ("Panama City, FL", "Panama", False), ("Rieti, RI, Italy", "Italy", True), ("Rieti, RI, Italy", "United States", False),
+    ("1401-G-India: ELCOT IT Bldg, ELCOT SEZ, Madurai,TN", "United States", False),
+    ("Dublin, Ireland", "Ireland", True), ("Amsterdam, Holland", "Netherlands", True),
+])
+def test_t150_through_the_filter(location, country, kept):
+    job = JobPosting("t:1", "gh", "A", "Backend Engineer", location, False, "u")
+    assert should_evaluate_job(job, places=pl.places_from_config({"candidate": {"countries": [country]}}))[0] is kept

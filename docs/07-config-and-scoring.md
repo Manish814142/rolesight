@@ -132,7 +132,13 @@ They are applied in this order (the default lists):
      after one of that country's cities: Personio's "Hannover, IT" is a German IT job, "Gurugram, HR" is Haryana, "Rome, IT"
      is Italy. Cost: "Bergamo, IT" (a small Italian town written with the code alone) is not read as Italy; none of the 13,428
      saved locations ended that way. Still misread, rarely (4 of 978 thin boards in T144's check): "Birmingham, AL" listed
-     among UK cities, "Holland, MI" as the Netherlands, "Waterford Lakes" as Ireland.
+     among UK cities, "Waterford Lakes" as Ireland.
+     T150: a country's name beside a US, Canadian or Australian state code is read with the code: a street name names no
+     country ("1400 E Ireland Rd, South Bend, IN"), a town named like a country is the state's ("Holland, MI", "Panama City,
+     FL", "Jersey Shore, PA"), a province code before another country's name is that country's ("Rieti, RI, Italy"), and
+     India's state codes that are also US ones (TN, OR, GA, …) are India's after an Indian place ("Madurai, TN"); a country's
+     own code after its name is the country ("Netherlands, NL", not Newfoundland). 5 of 13,461 saved locations read
+     differently (those five), India's decisions unchanged on 189,451 saved jobs.
    - **Optional city filter** (`candidate.cities`, e.g. `["Pune", "Hyderabad"]`; empty = all of India or of your countries). A job in an Indian city
      or state that is not one of them is rejected, unless it is remote or names no city (just "India"). Usual alternative names
      match (Bangalore = Bengaluru, Gurgaon = Gurugram), and `"Delhi NCR"` means Delhi, New Delhi, Noida, Greater Noida, Gurugram,

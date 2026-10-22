@@ -274,6 +274,12 @@ _TITLE_CODE_END = re.compile(r",\s*([A-Z][a-z])\s*(?:\([^)]*\))?\s*$")
 _STREET = re.compile(r"\d+[a-z]?\s+.*\b(?:street|st|avenue|ave|road|rd|drive|dr|boulevard|blvd|lane|ln|way|court|ct|place|pl"
                      r"|parkway|pkwy|highway|hwy|suite)\b", re.IGNORECASE)
 _ZIP = re.compile(r"\b([A-Z]{2})\s+\d{5}(?:-\d{4})?\b")
+# T150: a segment that is only a state or province code ("MI", "FL 32401", "PA (Contract Full time)", "Mi"): a country's name in
+# the segment before it is a town's there ("Holland, MI", "Panama City, FL", "Jersey Shore, PA").
+_STATE_SEGMENT = re.compile(r"^\s*([A-Z]{2,3}|[A-Z][a-z])(?:\s+\d{5}(?:-\d{4})?)?\s*(?:\([^)]*\))?\s*$")
+# T150: India's state codes that are also a US, Canadian or Australian one (Tamil Nadu, Odisha, Goa, Manipur, Nagaland, Sikkim,
+# Arunachal Pradesh, Ladakh): after an Indian place they are India's ("Madurai, TN"), not Tennessee.
+_INDIAN_STATE_CODES = frozenset({"TN", "OR", "GA", "MN", "NL", "SK", "AR", "LA"})
 _US_WORD = re.compile(r"(?<![A-Za-z])US(?![A-Za-z])")       # upper case only: "US-CA-Dublin"
 _PART_SPLIT = re.compile(r"\s*(?:;|\||\s/\s|\s+or\s+|\n)\s*", re.IGNORECASE)
 
@@ -309,14 +315,23 @@ def _codes_after_comma(part: str) -> Set[str]:
         last = bool(_ENDS.fullmatch(part[m.end():]))
         # A code that is also a department or a state ("Hannover, IT", "Berlin, HR", "Gurugram, HR") is the country only after
         # one of its cities (T147); any other country code ends the location as it is ("Paris, FR", "Valencia, ES").
-        if code in iso2 and last and (_has_city_of(code, before) or (not owners and code not in _DEPARTMENT_CODES)):
+        # T150: so is a country code right after that country's name ("Netherlands, NL", "Germany, DE": not Newfoundland or
+        # Delaware).
+        if code in iso2 and last and (_has_city_of(code, before) or code in _names_in(before)
+                                      or (not owners and code not in _DEPARTMENT_CODES)):
             found.add(code)
+            continue
+        # T150: a state code is not one when another country's name follows it ("Rieti, RI, Italy": Rieti province), or when it
+        # is also an Indian state's and follows an Indian place ("Madurai, TN": Tamil Nadu).
+        if owners and (_names_in(part[m.end():]) - owners or (code in _INDIAN_STATE_CODES and _indian_place(before))):
             continue
         if len(owners) > 1:
             owners = {"AU"} if _has_city_of("AU", part) else owners - {"AU"}
         found |= owners
     title = _TITLE_CODE_END.search(part)
     code = title.group(1).upper() if title else ""
+    if code in _INDIAN_STATE_CODES and _indian_place(part):      # "Bhubaneswar, Or" is Odisha, not Oregon (T150)
+        code = ""
     if code in _CODE_OWNERS and code not in iso2:
         owners = set(_CODE_OWNERS[code])
         found |= ({"AU"} if _has_city_of("AU", part) else owners - {"AU"}) if len(owners) > 1 else owners
@@ -335,6 +350,50 @@ def _prefix_countries(part: str) -> Set[str]:
     return {iso3[code]} if code in iso3 else ({code} if code in iso2 else set())
 
 
+def _indian_place(text: str) -> bool:
+    """India or an Indian city or state, by the pre-filter's full lists (Bhubaneswar, Madurai, Panaji: T150)."""
+    from job_hunt.prefilter import location_is_india
+    return location_is_india(text)
+
+
+@lru_cache(maxsize=1)
+def _country_names() -> Dict[str, FrozenSet[str]]:
+    """Folded country name or alias -> countries (GeoNames), without the states and provinces `_index` also holds."""
+    out: Dict[str, Set[str]] = {}
+    for code, g in _generated().items():
+        for n in [g["name"], *g.get("aliases", [])]:
+            out.setdefault(_fold(n), set()).add(code)
+    return {k: frozenset(v) for k, v in out.items()}
+
+
+def _names_in(text: str) -> Set[str]:
+    """The countries a text names by a country's own name or alias (no codes, no states or provinces: "Ontario, CA" may be
+    California's Ontario): GeoNames' names and the hand-made packs' own words."""
+    names_rx, _, _, _, hand = _index()
+    out: Set[str] = {code for code, rx in hand if rx.search(text)}
+    for m in names_rx.finditer(text):
+        out |= _country_names().get(_fold(m.group(0)), frozenset())
+    return out
+
+
+def _not_the_country(part: str, start: int, codes: FrozenSet[str]) -> bool:
+    """T150: a country's name at `start` that names a street or a town instead: its comma segment is a street address
+    ("1400 E Ireland Rd, South Bend, IN"), or the next segment is only a state or province code of another country
+    ("Holland, MI", "Panama City, FL", "Jersey Shore, PA"; not "Netherlands, NL", "Canada, ON" or an Indian state's "India, TN")."""
+    seg_start, seg_end = part.rfind(",", 0, start) + 1, part.find(",", start)
+    if _STREET.match(part[seg_start: seg_end if seg_end >= 0 else len(part)].strip()):
+        return True
+    if seg_end < 0:
+        return False
+    next_end = part.find(",", seg_end + 1)
+    state = _STATE_SEGMENT.match(part[seg_end + 1: next_end if next_end >= 0 else len(part)])
+    if not state:
+        return False
+    code = state.group(1).upper()
+    owners = _CODE_OWNERS.get(code, set())
+    return bool(owners) and not owners & codes and code not in codes and not ("IN" in codes and code in _INDIAN_STATE_CODES)
+
+
 @lru_cache(maxsize=200_000)
 def explicit_countries(part: str) -> FrozenSet[str]:
     """The countries one part of a location names outright: a country name or alias, an ISO code where boards put one, a US
@@ -342,9 +401,11 @@ def explicit_countries(part: str) -> FrozenSet[str]:
     names_rx, by_name, iso3, iso2, hand = _index()
     found: Set[str] = set()
     for m in names_rx.finditer(part):
-        found |= by_name.get(_fold(m.group(0)), frozenset())
+        codes = by_name.get(_fold(m.group(0)), frozenset())
+        if not _not_the_country(part, m.start(), codes):
+            found |= codes
     for code, rx in hand:
-        if rx.search(part):
+        if any(not _not_the_country(part, m.start(), frozenset({code})) for m in rx.finditer(part)):
             found.add(code)
     found |= {iso3[c] for c in _ISO3_AT.findall(part) if c in iso3}
     found |= {iso2[c.upper()] for c in _ISO2_SUFFIX.findall(part) if c.upper() in iso2}

@@ -9,6 +9,15 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed (2026-10-22, T150: a country's name beside a state code)
+- `job_hunt/places.py` reads a country's name with the state or province code beside it: a street address names no country
+  ("1400 E Ireland Rd, South Bend, IN" is not Ireland); a town named like a country is the state's ("Holland, MI", "Panama
+  City, FL", "Jersey Shore, PA"); a province code before another country's name is that country's ("Rieti, RI, Italy" is not
+  Rhode Island); India's state codes that are also US ones are India's after an Indian place ("Madurai, TN", "Bhubaneswar,
+  Or"); a country's own code after its name is the country ("Netherlands, NL", "Germany, DE": not Newfoundland or Delaware).
+  Measured on the 13,461 distinct saved locations of three fetches: 5 read differently, those five; "Ontario, CA" (a province's
+  name) stays as it was; India's decisions with Manish's config: 0 of 189,451 differ.
+
 ### Added (2026-10-22, T149: a warning when your profile still says India)
 - With `candidate.countries` outside India, a `seeking` or `profile` that names India (or an Indian city) and none of your
   countries now gets a warning at every scan and from `init --countries`, which keeps your text and says what to write. Gemini
