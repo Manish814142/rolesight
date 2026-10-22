@@ -243,9 +243,10 @@ What changes:
    ([docs/05](05-outputs-and-notifications.md); the records: [docs/04](04-companies-and-scanning.md#visa-sponsorship-which-companies-can-sponsor)).
    Most postings never say: 72-98% of engineering postings in these six countries, and 84-95% in the USA, Canada and
    Australia (measured 2026-10-21).
-5. **Companies.** All 1,589 India companies are scanned (many big employers hire in your countries too: 457 of 989
-   described boards had UK jobs on 2026-10-21), plus 27 that hire abroad and not in India (Monzo, N26, HelloFresh, SumUp,
-   Plaid, …). `rolesight discover --add-file names.txt --merge companies.json` adds more: it checks your countries (or
+5. **Companies.** All 1,589 India companies are scanned (many big employers hire in your countries too: 474 of 1,036
+   fetched boards had UK jobs on 2026-10-21), plus 958 that hire abroad and not in India, each with **evidence that it
+   sponsors visas** (T144): Monzo, N26, ASML, ING, Roche, Unilever, Zalando, Santander, Vanguard, … A scan for the UK and Germany
+   fetches 2,381 boards, one for Spain 1,907; your India scan still fetches the same 1,589. `rolesight discover --add-file names.txt --merge companies.json` adds more: it checks your countries (or
    `--places "…"`).
 
 Limits: postings in another language (Japanese or German titles) do not match the English title words; Germany, the UAE,

@@ -219,7 +219,7 @@ def test_download_finds_each_file_from_its_page(tmp_path, monkeypatch):
 def test_the_shipped_dataset_and_review_file_are_well_formed():
     data = json.loads((ROOT / "job_hunt" / "data" / "visa_sponsors.json").read_text(encoding="utf-8"))
     assert set(data["sources"]) == {"uk", "nl", "ie", "us", "ca", "lists"}
-    assert data["companies"] and all(e["source"] in data["sources"] and e["match"] in ("exact", "loose") and e["names"]
+    assert data["companies"] and all(e["source"] in data["sources"] and e["match"] in ("exact", "squashed", "loose") and e["names"]
                                      for ev in data["companies"].values() for e in ev)
     review = json.loads((ROOT / "scripts" / "visa_sponsor_review.json").read_text(encoding="utf-8"))
     for verdict in ("accepted", "rejected"):
@@ -342,3 +342,58 @@ def test_offline_with_a_newer_hub_export_replaces_only_the_us_file(tmp_path, cap
 
 def test_every_flag_gets_its_countrys_name():
     assert bvs._flags_to_names("Toronto 🇨🇦") == "Toronto, Canada" and bvs._flags_to_names("Lisbon 🇵🇹") == "Lisbon, Portugal"
+
+
+# ── T144: a name built from a web address ──────────────────────────────────────
+
+@pytest.mark.parametrize("name, key", [
+    ("Cloudimperiumgames", "cloudimperiumgames"), ("Cloud Imperium Games Ltd", "cloudimperiumgames"), ("Basic-Fit B.V.", "basicfit"),
+    ("Ace Ltd", ""), ("ING", ""),                                       # under six letters: too many other firms
+])
+def test_squashed_key(name, key):
+    assert bvs.squashed_key(name) == key
+
+
+def test_a_name_from_a_web_address_matches_the_registers_spaced_name_as_squashed():
+    idx = bvs.Index({"Cloud Imperium Games Ltd": [], "Basic-Fit B.V.": [], "Ace Ltd": []})
+    assert idx.match("Cloudimperiumgames") == ("squashed", ["Cloud Imperium Games Ltd"])
+    assert idx.match("Basicfit") == ("squashed", ["Basic-Fit B.V."])
+    assert idx.match("Cloud Imperium Games") == ("exact", ["Cloud Imperium Games Ltd"])          # the exact match still comes first
+    assert idx.match("Acedia") == (None, [])
+
+
+def test_a_squashed_match_is_kept_without_a_review_and_a_rejection_still_wins():
+    review = {"accepted": {}, "rejected": {"Basicfit": ["Basic-Fit B.V."]}}
+    assert bvs.status("Cloudimperiumgames", "Cloud Imperium Games Ltd", "squashed", review) == "kept"
+    assert bvs.status("Basicfit", "Basic-Fit B.V.", "squashed", review) == "rejected"
+
+
+# ── T144 (and T145): a name accepted by hand is an alias ─────────────────────────────────────────────────────────
+
+def test_a_name_accepted_by_hand_matches_although_no_rule_proposes_it():
+    idx = bvs.Index({"SFDC Ireland Limited": {"2025": 12}, "WAL MART ASSOCIATES INC": {}, "Salesforce UK Limited": []})
+    assert idx.match("Salesforce") == ("exact", ["Salesforce UK Limited"])                                         # a rule's match
+    assert idx.match("Salesforce", ["SFDC Ireland Limited"]) == ("exact", ["SFDC Ireland Limited", "Salesforce UK Limited"])
+    assert idx.match("Walmart") == (None, [])
+    assert idx.match("Walmart", ["WAL MART ASSOCIATES INC"]) == ("loose", ["WAL MART ASSOCIATES INC"])
+    assert idx.match("Walmart", ["NOT IN THIS SOURCE"]) == (None, [])                      # an alias another source holds
+
+
+def test_the_build_keeps_an_alias_the_review_accepted_and_only_that():
+    review = {"accepted": {"Salesforce": ["SFDC Ireland Limited"]}, "rejected": {}}
+    ie = bvs.Index({"SFDC Ireland Limited": {"2025": 12}, "SFDC Ireland Ltd Other": {"2025": 1}})
+    cands = bvs.candidates([{"name": "Salesforce", "ats": "greenhouse"}], {"ie": ie}, review)
+    assert [(c[0], c[1], c[2], c[3]) for c in cands] == [("Salesforce", "ie", "loose", "SFDC Ireland Limited")]
+    assert bvs.match_companies(cands, review) == {"Salesforce": [{"source": "ie", "match": "loose", "names": {"SFDC Ireland Limited": {"2025": 12}}}]}
+    assert bvs.match_companies(bvs.candidates([{"name": "Salesforce", "ats": "greenhouse"}], {"ie": ie}), review) == {}     # no alias, no match
+
+
+NO_REVIEW = {"accepted": {}, "rejected": {}}
+
+
+def test_build_uses_the_aliases_of_the_review(tmp_path):
+    src = _sources(tmp_path / "src")
+    review = {"accepted": {"Acme": ["Stripe Technology Europe Limited"]}, "rejected": {}}
+    data, _ = bvs.build(src, [{"name": "Acme", "ats": "lever"}], review)
+    assert data["companies"] == {"Acme": [{"source": "ie", "match": "loose", "names": {"Stripe Technology Europe Limited": {"2025": 4}}}]}
+    assert bvs.build(src, [{"name": "Acme", "ats": "lever"}], NO_REVIEW)[0]["companies"] == {}

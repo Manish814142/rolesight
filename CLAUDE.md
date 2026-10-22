@@ -36,6 +36,8 @@ python scripts/rubric_ids.py [--db data/jobs.db]   # which rubric text each stor
 python scripts/measure_workday_tenants.py   # per-tenant Workday fetch time, detail calls, survivors (~4-9 min, real network)
 python scripts/measure_visa_wording.py --jobs saved.json   # how postings in UK/DE/NL/IE/UAE/SG word visa sponsorship (--save fetches, ~3.5 min; T133)
 python scripts/build_visa_sponsors.py [--offline] --report /tmp/visa.csv   # job_hunt/data/visa_sponsors.json from the UK/NL/IE sponsor records (T133)
+python scripts/filter_by_visa_evidence.py --candidates v1.json v2.json --out kept.json --report f.csv   # keep only companies with visa-sponsor evidence (T144)
+# discover seed "Name | workday | auto": finds a Workday tenant, its data centre and sites from the company name (robots.txt; T148)
 python scripts/score_golden_set.py         # score the labelled jobs with the rubric off/on (~150 Gemini calls); --from-scores re-analyses
 autopilot doctor            # SQLite / Gemini / Telegram / ATS egress checks
 autopilot export [--min N] [--days N]   # CSV (+ .xlsx) in output/history/ from data/jobs.db: last finished scan, or N days (no API keys needed; T32)
@@ -164,6 +166,11 @@ end of the run. **Workable refuses about half the requests of a sustained burst 
 but a bulk run of Workable or Recruitee boards should still use `--workers 3` (at 20 workers, before the retry existed, 13 of 100 sampled Workable "no live board" verdicts, and 19 of 100 Recruitee, were alive when probed one at a time). Oracle HCM sites are harvested too (T112): the
 host is a customer code (`cbcz.fa.us2…`), so the script names each site from its page `<title>`; `discover` keeps one entry per
 host, its busiest site, named by that site's own title (T117). The full guide for people: `docs/04-companies-and-scanning.md`, "Growing the list".
+
+**A company added for other countries must show visa-sponsor evidence (T144, Manish 2026-10-22):** an entry with `places` is kept only
+if it is on a sponsor record or community list for a country it hires in, or a posting offers visa sponsorship
+(`scripts/filter_by_visa_evidence.py`; the review file `scripts/visa_sponsor_review.json` also holds hand-accepted aliases). The India
+companies need none. Workday employers are found by name (`Name | workday | auto`, T148): the archive cannot list wd1/wd3/wd5.
 
 **Visa-sponsor evidence (T133):** `job_hunt/data/visa_sponsors.json` lists the companies on the list that appear on the UK register of licensed
 sponsors, the Dutch IND register, Ireland's permits-issued-to-companies files, the USCIS H-1B approvals (FY2024 via the JohnBroberg/H1B_Hub copy,

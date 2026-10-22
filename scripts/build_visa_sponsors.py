@@ -23,7 +23,8 @@ Germany, the UAE, Singapore, Australia and New Zealand publish no register to do
 COUNTRY_RULE (T141, T143), and the lists name companies there. A register says the employer can sponsor, not that a given job does.
 
 A match is "exact" when the names agree once legal suffixes and country words are dropped ("Google (UK) Limited" is Google),
-"loose" when they agree only once generic words are dropped too ("Atlassian (UK) Operations Limited" is Atlassian). Only
+"squashed" when they agree once the spaces are gone too ("Cloudimperiumgames" is "Cloud Imperium Games Ltd"; six letters or
+more), "loose" when they agree only once generic words are dropped too ("Atlassian (UK) Operations Limited" is Atlassian). Only
 companies on companies.json are written, with the source's own name, so every match can be checked; the registers themselves
 are not copied. Run from the repository folder; the downloads go to data/visa_sources/ (git-ignored).
 """
@@ -95,6 +96,13 @@ def exact_key(name: str) -> str:
     return " ".join(w for w in t if w not in LEGAL and w not in PLACE)
 
 
+def squashed_key(name: str) -> str:
+    """exact_key with the spaces taken out: a name built from a web address ("Cloudimperiumgames", "Basicfit") against the
+    register's ("Cloud Imperium Games Ltd", "Basic-Fit B.V."). Only for names of six letters or more (T144)."""
+    key = exact_key(name).replace(" ", "")
+    return key if len(key) >= 6 else ""
+
+
 def loose_key(name: str) -> str:
     """exact_key without generic business words too: "Atlassian (UK) Operations Limited" -> "atlassian"."""
     return " ".join(w for w in exact_key(name).split() if w not in GENERIC)
@@ -106,21 +114,30 @@ class Index:
     def __init__(self, entries: Dict[str, Any]):
         self.entries = entries                        # source's own name -> detail (routes, permits, list section)
         self.exact: Dict[str, List[str]] = {}
+        self.squashed: Dict[str, List[str]] = {}
         self.loose: Dict[str, List[str]] = {}
         for n in entries:
             if exact_key(n):
                 self.exact.setdefault(exact_key(n), []).append(n)
+            if squashed_key(n):
+                self.squashed.setdefault(squashed_key(n), []).append(n)
             if loose_key(n):
                 self.loose.setdefault(loose_key(n), []).append(n)
 
-    def match(self, company: str) -> Tuple[Optional[str], List[str]]:
-        """("exact" | "loose" | None, the source names that match)."""
+    def match(self, company: str, aliases: Iterable[str] = ()) -> Tuple[Optional[str], List[str]]:
+        """("exact" | "squashed" | "loose" | None, the source names that match). `aliases`: names this source holds that someone
+        has accepted for the company by hand although no rule proposes them ("SFDC Ireland Limited" for Salesforce, "WAL MART
+        ASSOCIATES INC" for Walmart); they count as loose matches, which the review file then accepts."""
+        extra = sorted(n for n in set(aliases) if n in self.entries)
         e, lk = exact_key(company), loose_key(company)
         if e and e in self.exact:
-            return "exact", sorted(self.exact[e])
+            return "exact", sorted(set(self.exact[e]) | set(extra))
+        sq = squashed_key(company)
+        if sq and sq in self.squashed:
+            return "squashed", sorted(set(self.squashed[sq]) | set(extra))
         if lk and lk in self.loose:
-            return "loose", sorted(self.loose[lk])
-        return None, []
+            return "loose", sorted(set(self.loose[lk]) | set(extra))
+        return ("loose", extra) if extra else (None, [])
 
 
 # --- parsers (each takes a downloaded file) -----------------------------------------------------------------------
@@ -412,7 +429,7 @@ def load_sources(src: Path) -> Dict[str, Index]:
     return out
 
 
-Candidate = Tuple[str, str, str, str, Any]      # company, source, "exact" | "loose", the source's name, its detail
+Candidate = Tuple[str, str, str, str, Any]      # company, source, "exact" | "squashed" | "loose", the source's name, its detail
 
 
 def load_review(path: Path) -> Dict[str, Dict[str, List[str]]]:
@@ -425,17 +442,18 @@ def status(company: str, source_name: str, match: str, review: Dict[str, Dict[st
     """"kept" (an exact match, or a loose one accepted by hand), "rejected" by hand, or "unreviewed" (a loose one)."""
     if source_name in review["rejected"].get(company, []):
         return "rejected"
-    if match == "exact" or source_name in review["accepted"].get(company, []):
+    if match in ("exact", "squashed") or source_name in review["accepted"].get(company, []):
         return "kept"
     return "unreviewed"
 
 
-def candidates(companies: Iterable[Dict[str, Any]], indexes: Dict[str, Index]) -> List[Candidate]:
-    """Every match the names allow, before the review."""
+def candidates(companies: Iterable[Dict[str, Any]], indexes: Dict[str, Index],
+               review: Optional[Dict[str, Dict[str, List[str]]]] = None) -> List[Candidate]:
+    """Every match the names allow, before the review (plus the names the review accepted by hand as aliases)."""
     out: List[Candidate] = []
     for c in companies:
         for source, idx in indexes.items():
-            kind, names = idx.match(c["name"])
+            kind, names = idx.match(c["name"], (review or {}).get("accepted", {}).get(c["name"], ()))
             out.extend((c["name"], source, kind, n, idx.entries[n]) for n in names if kind)
     return out
 
@@ -462,7 +480,7 @@ def build(src: Path, companies: List[Dict[str, Any]], review: Dict[str, Dict[str
     for k, idx in indexes.items():
         meta[k]["entries"] = len(idx.entries)
         meta[k].pop("files", None)
-    cands = candidates(companies, indexes)
+    cands = candidates(companies, indexes, review)
     return ({"about": "Companies on companies.json that appear in public visa-sponsor sources (T133). A register means the "
                       "employer can sponsor a visa, not that a given job does. Each match names the source's own entry; "
                       "loose name matches are kept only when accepted by hand in scripts/visa_sponsor_review.json. "

@@ -18,7 +18,7 @@ Current as of 2026-10-04, after T47 (Workday paging), T30 (dedupe by ATS id) and
 
 ```mermaid
 flowchart TD
-    COMP["companies.json<br/>1,616 boards: ats + slug / tenant / host<br/>(entries with places: only for those countries)"] --> FETCH
+    COMP["companies.json<br/>2,547 boards: ats + slug / tenant / host<br/>(entries with places: only for those countries)"] --> FETCH
     subgraph Fetch ["1. Fetch: adapters/, 8 companies in parallel"]
         FETCH["fetch_company_jobs()"] --> LISTAPI["Greenhouse · Lever · Ashby · Workable<br/>Recruitee · Personio · Amazon<br/>(list API includes descriptions; Amazon's is cut to a stub, T57)"]
         FETCH --> WD["Workday CXS: searchText = your countries (India by default)<br/>20/page, ≤2,000 per term, 600 s budget<br/>detail call only for 'N Locations' / 'Location Negotiable' jobs whose title can pass"]
