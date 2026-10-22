@@ -18,6 +18,9 @@
    "Aareon Nederland B.V.",
    "Aareon UK Limited"
   ],
+  "Abacus Insights": [
+   "ABACUS INSIGHTS INC"
+  ],
   "Abb": [
    "ABB B.V.",
    "ABB INC",
@@ -46,6 +49,13 @@
   ],
   "Accelya": [
    "Accelya Global Limited"
+  ],
+  "Accenture": [
+   "ACCENTURE LLP",
+   "Accenture (UK) Limited",
+   "Accenture B.V.",
+   "Accenture Inc.",
+   "Accenture Limited"
   ],
   "accesso": [
    "accesso Technology Group"
@@ -159,6 +169,10 @@
   "AlphaSense": [
    "AlphaSense Technology Limited"
   ],
+  "Alphonso": [
+   "ALPHONSO INC",
+   "Alphonso UK Limited"
+  ],
   "Altana": [
    "ALTANA TECHNOLOGIES INC",
    "Altana Technologies UK Ltd"
@@ -182,12 +196,17 @@
   "Amazon": [
    "AMAZON PAYMENTS INC",
    "AMAZON.COM SERVICES LLC",
+   "Amazon",
+   "Amazon EU SARL, Dutch Branch",
+   "Amazon EU Sarl, Irish Branch",
    "Amazon UK Services Ltd"
   ],
   "Ambarella": [
    "AMBARELLA CORP"
   ],
   "American Express": [
+   "AMERICAN EXPRESS COMPANY",
+   "American Express Europe S.A. (Netherlands branch)",
    "American Express Services Europe Limited"
   ],
   "Amgen": [
@@ -204,17 +223,37 @@
    "Ampelmann Operations B.V.",
    "Ampelmann Operations BV"
   ],
+  "Amplitude": [
+   "AMPLITUDE INC",
+   "Amplitude Canada Limited"
+  ],
   "Analog Devices": [
-   "Analog Devices International Unlimited Company"
+   "ANALOG DEVICES INC",
+   "Analog Devices International Unlimited Company",
+   "Analog Devices Limited"
   ],
   "Antithesis": [
    "Antithesis UK Limited"
+  ],
+  "Anton Paar": [
+   "ANTON PAAR USA INC",
+   "Anton Paar (UK) Ltd.",
+   "Anton Paar Netherlands B.V."
   ],
   "APLL": [
    "APLL UK LTD"
   ],
   "Appen": [
    "Appen (Europe) LTD"
+  ],
+  "Applied Materials": [
+   "APPLIED MATERIALS INC",
+   "Applied Materials Europe B.V.",
+   "Applied Materials Ireland Limited",
+   "Applied Materials UK Ltd"
+  ],
+  "Apps Associates": [
+   "APPS ASSOCIATES LLC"
   ],
   "Appspace": [
    "Appspace Solutions Ltd"
@@ -233,6 +272,9 @@
   ],
   "Armada": [
    "ARMADA SYSTEMS INC"
+  ],
+  "Artefact": [
+   "Artefact UK LTD"
   ],
   "Asana": [
    "ASANA INC",
@@ -261,6 +303,10 @@
   ],
   "AST SpaceMobile": [
    "AST SPACEMOBILE SERVICES LLC"
+  ],
+  "Astronomer": [
+   "ASTRONOMER INC",
+   "ASTRONOMER, INC."
   ],
   "Asurion": [
    "ASURION LLC",
@@ -335,6 +381,10 @@
    "Back Market",
    "Back Market UK Limited"
   ],
+  "Baker Hughes": [
+   "BAKER HUGHES COMPANY",
+   "Baker Hughes EMEA Unlimited Company"
+  ],
   "Ballastnedam": [
    "Ballast Nedam Bouw & Ontwikkeling",
    "Ballast Nedam Industriebouw B.V.",
@@ -369,6 +419,9 @@
   "BestEx Research": [
    "BESTEX RESEARCH GROUP LLC"
   ],
+  "Better": [
+   "BETTER MORTGAGE CORPORATION A BETTER HOLDCO INC COMPANY DBA BETTER"
+  ],
   "Bettyblocks": [
    "Betty Blocks B.V."
   ],
@@ -385,6 +438,12 @@
   "BitGo": [
    "BITGO INC",
    "BitGo Canada, Inc."
+  ],
+  "BlackBerry": [
+   "BLACKBERRY CORPORATION",
+   "BlackBerry Limited",
+   "BlackBerry Netherlands B.V.",
+   "BlackBerry UK Limited"
   ],
   "Blackline": [
    "BLACKLINE SYSTEMS INC",
@@ -415,6 +474,9 @@
    "BLOOMBERG LP",
    "Bloomberg",
    "Bloomberg LP"
+  ],
+  "Blue Altair": [
+   "BLUE ALTAIR, LLC"
   ],
   "Blueprintautomation": [
    "Blueprint Automation B.V."
@@ -457,6 +519,10 @@
    "BRAIN CORPORATION",
    "Brain Corporation B.V."
   ],
+  "Branch Metrics": [
+   "BRANCH METRICS INC",
+   "Branch Metrics UK Ltd"
+  ],
   "Brandtech+": [
    "THE BRANDTECH GROUP LIMITED"
   ],
@@ -475,6 +541,9 @@
   "Bristol Myers Squibb": [
    "BRISTOL MYERS SQUIBB COMPANY",
    "BRISTOL-MYERS SQUIBB COMPANY"
+  ],
+  "British Asian Trust": [
+   "British Asian Trust"
   ],
   "BTIG": [
    "BTIG Limited"
@@ -531,6 +600,9 @@
   "Carlislemencap": [
    "Carlisle Mencap"
   ],
+  "Carrier": [
+   "CARRIER CORPORATION"
+  ],
   "Carta": [
    "ESHARES INC DBA CARTA INC"
   ],
@@ -539,6 +611,10 @@
   ],
   "Catapult Sports": [
    "Catapult Sports Limited"
+  ],
+  "Caxton Associates": [
+   "CAXTON ASSOCIATES LP",
+   "Caxton Associates LLP"
   ],
   "Cdpq": [
    "CDPQ US INC"
@@ -626,6 +702,10 @@
   "ClearScore Technology Limited": [
    "Clear Score Technology Limited"
   ],
+  "Clifford Chance": [
+   "CLIFFORD CHANCE US LLP",
+   "Clifford Chance LLP"
+  ],
   "Cloudera": [
    "Cloudera International Limited"
   ],
@@ -634,6 +714,10 @@
   ],
   "Cnsmedia": [
    "CNS Media B.V."
+  ],
+  "Cockroach Labs": [
+   "COCKROACH LABS INC",
+   "Cockroach Labs UK Limited"
   ],
   "Codal": [
    "CODAL INC",
@@ -646,6 +730,9 @@
    "COHERE US INC",
    "Cohere Inc.",
    "Cohere UK Ltd"
+  ],
+  "Cohere Health": [
+   "COHERE HEALTH INC"
   ],
   "Comind": [
    "CoMind Technologies Limited"
@@ -660,6 +747,10 @@
    "Conclusion Mission Critical B.V.",
    "Conclusion Xforce B.V."
   ],
+  "Confluent": [
+   "CONFLUENT INC",
+   "Confluent Europe Ltd"
+  ],
   "Conga": [
    "CONGA EUROPE LTD"
   ],
@@ -673,6 +764,9 @@
   ],
   "Conveo": [
    "Conveo.ai UK Ltd"
+  ],
+  "Copeland": [
+   "COPELAND LP"
   ],
   "Corelight": [
    "CORELIGHT UK LTD"
@@ -721,12 +815,21 @@
   "Cuspai": [
    "Cusp AI Limited"
   ],
+  "Customized Energy Solutions": [
+   "CUSTOMIZED ENERGY SOLUTIONS LTD"
+  ],
   "Cytel": [
    "CYTEL INC"
+  ],
+  "D Matrix": [
+   "D-MATRIX CORPORATION"
   ],
   "D2L": [
    "D2L Corporation",
    "D2L Europe Limited"
+  ],
+  "Daimler Truck": [
+   "Daimler Truck UK Limited"
   ],
   "Data Intellect": [
    "Data Intellect Services Limited"
@@ -748,6 +851,9 @@
   ],
   "Deepl": [
    "DeepL UK Limited"
+  ],
+  "Definitive Healthcare, India": [
+   "DEFINITIVE HEALTHCARE LLC"
   ],
   "Delfa": [
    "Delfa Limited"
@@ -795,6 +901,9 @@
    "DIGITAL ASSET US CORP",
    "Digital Asset Holdings UK LTD"
   ],
+  "Diligent Corporation": [
+   "Diligent Canada Inc."
+  ],
   "Discord - International": [
    "DISCORD INC",
    "Discord Netherlands B.V."
@@ -822,6 +931,9 @@
   ],
   "Domino's Pizza Netherlands": [
    "Domino's Pizza Netherlands B.V."
+  ],
+  "Donaldson": [
+   "DONALDSON COMPANY INC"
   ],
   "DoorDash India": [
    "DoorDash Technologies Canada Inc.",
@@ -914,6 +1026,10 @@
    "ENCORA TECHNOLOGIES INC",
    "Encora Software (UK) Private Limited"
   ],
+  "Energy Exemplar": [
+   "ENERGY EXEMPLAR LLC",
+   "Energy Exemplar (Europe)  Ltd"
+  ],
   "Eneve": [
    "Eneve Netherlands B.V."
   ],
@@ -923,14 +1039,27 @@
   "Envipco": [
    "Envipco Holding N.V."
   ],
+  "Envoy Global, Inc.": [
+   "ENVOY GLOBAL INC"
+  ],
   "Epic Games": [
    "EPIC GAMES INC",
    "Epic Games Canada ULC",
    "Epic Games UK Ltd",
    "Epic Games UK ltd"
   ],
+  "Episode Six": [
+   "Episode Six Limited"
+  ],
+  "Episode Six US": [
+   "Episode Six Limited"
+  ],
   "Eqeep": [
    "Eqeep Services B.V."
+  ],
+  "Equal Experts": [
+   "Equal Experts UK Limited",
+   "Equal Experts UK Ltd"
   ],
   "Equinix": [
    "Equinix Services Limited"
@@ -994,12 +1123,15 @@
   ],
   "Expeditors": [
    "Expeditors International B.V.",
-   "Expeditors International UK LTD"
+   "Expeditors International UK LTD",
+   "Expeditors Ireland Limited"
   ],
   "Experian": [
    "EXPERIAN SERVICES CORPORATION"
   ],
   "Extreme Networks": [
+   "EXTREME NETWORKS INC",
+   "Extreme Networks B.V.",
    "Extreme Networks UK Technology Limited"
   ],
   "Eye Security": [
@@ -1022,6 +1154,14 @@
   "Fender": [
    "Fender Musical Instruments Europe Ltd"
   ],
+  "Fidelity Investments": [
+   "FIDELITY INVESTMENTS",
+   "FMR LLC D B A FIDELITY INVESTMENTS",
+   "FMR LLC D/B/A FIDELITY INVESTMENTS",
+   "FMR LLC DBA FIDELITY INVESTMENTS",
+   "NATIONAL CHARITABLE SERVICES LLC D/B/A FIDELITY INVESTMENTS",
+   "NATIONAL FINANCIAL SERVICES LLC D/B/A FIDELITY INVESTMENTS"
+  ],
   "Figma": [
    "FIGMA INC",
    "Figma Ireland Limited",
@@ -1042,6 +1182,9 @@
   ],
   "Fireblocks": [
    "FIREBLOCKS UK INT'L LIMITED"
+  ],
+  "First Solar": [
+   "FIRST SOLAR INC"
   ],
   "Fiserv": [
    "FISERV SOLUTIONS LLC",
@@ -1125,14 +1268,23 @@
   "Galaxy": [
    "Galaxy Digital UK Limited"
   ],
+  "Gallup": [
+   "GALLUP INC"
+  ],
   "Garrigues": [
    "Garrigues UK LLP"
   ],
   "Gateterminal": [
    "Gate terminal"
   ],
+  "Gather AI": [
+   "GATHER AI"
+  ],
   "Gbmworks": [
    "GBM Works B.V."
+  ],
+  "Gen Digital": [
+   "GEN DIGITAL INC"
   ],
   "General Atlantic": [
    "GENERAL ATLANTIC LIMITED"
@@ -1167,6 +1319,9 @@
    "Gilead Sciences Europe Limited",
    "Gilead Sciences Ireland UC",
    "Gilead Sciences Netherlands B.V."
+  ],
+  "Girl Effect": [
+   "Girl Effect"
   ],
   "Glean": [
    "GLEAN TECHNOLOGIES INC"
@@ -1225,12 +1380,17 @@
    "Hamilton Lane (UK) Limited"
   ],
   "Handshake": [
-   "Handshake International UK Limited"
+   "Handshake International UK Limited",
+   "STRYDER CORPORATION DBA HANDSHAKE"
   ],
   "Harley Therapy": [
    "Harley Therapy Limited"
   ],
+  "Harness": [
+   "HARNESS INC"
+  ],
   "Hasbro": [
+   "HASBRO INC",
    "Hasbro European Services"
   ],
   "Hassell Services": [
@@ -1255,13 +1415,27 @@
   "Hengeler": [
    "Hengeler Mueller Partnerschaft von Rechtsanwaelten mbB"
   ],
+  "Hewlett Packard Enterprise": [
+   "HEWLETT PACKARD ENTERPRISE COMPANY",
+   "Hewlett Packard Enterprise Ireland Limited"
+  ],
   "HEXAWARE": [
    "HEXAWARE TECHNOLOGIES INC",
    "HEXAWARE TECHNOLOGIES UK LTD",
    "Netherlands Hexaware Technologies"
   ],
+  "HG Insights": [
+   "HG INSIGHTS INC"
+  ],
   "Hilton": [
    "Hilton International Nederland B.V."
+  ],
+  "Hinge Health": [
+   "HINGE HEALTH INC"
+  ],
+  "Hitachi Solutions": [
+   "Hitachi Solutions Canada, LTD",
+   "Hitachi Solutions Europe Ltd"
   ],
   "Hived": [
    "HIVED Ltd"
@@ -1270,13 +1444,18 @@
    "HNTB CORPORATION"
   ],
   "Honeywell": [
-   "HONEYWELL INTERNATIONAL INC"
+   "HONEYWELL INTERNATIONAL INC",
+   "Honeywell B.V.",
+   "Honeywell Limited"
   ],
   "Hopkinsarchitects": [
    "Hopkins Architects Ltd"
   ],
   "Horizon3ai": [
    "Horizon3 AI B.V."
+  ],
+  "Horizontal Digital": [
+   "HORIZONTAL DIGITAL UK LIMITED"
   ],
   "HP Inc": [
    "HP INC",
@@ -1290,6 +1469,10 @@
   "Hudl India": [
    "Hudl B.V.",
    "Hudl UK Limited"
+  ],
+  "Hudson River Trading": [
+   "HUDSON RIVER TRADING LLC",
+   "Hudson River Trading Europe Ltd."
   ],
   "Humaans": [
    "Humaans Software UK Limited"
@@ -1470,6 +1653,9 @@
   "Jedox": [
    "Jedox Ltd."
   ],
+  "Jensen Hughes": [
+   "JENSEN HUGHES INC"
+  ],
   "Jeranexbp": [
    "Jera Nex BP Limited"
   ],
@@ -1481,6 +1667,8 @@
    "Jobandtalent UK Limited"
   ],
   "Johnson Controls": [
+   "JOHNSON CONTROLS INC",
+   "Johnson Controls Ireland Limited",
    "Johnson Controls Systems & Service B.V."
   ],
   "Juicebox": [
@@ -1493,10 +1681,14 @@
    "Jumio UK Ltd"
   ],
   "Jump Trading": [
+   "Jump Trading Europe B.V.",
    "Jump Trading International Limited"
   ],
   "Junior Adventures Group": [
    "Junior Adventures Group UK Ltd"
+  ],
+  "Just Global": [
+   "Just Global UK Ltd"
   ],
   "JYSK": [
    "JYSK Limited"
@@ -1593,7 +1785,11 @@
    "KSB Limited"
   ],
   "Lam Research": [
-   "Lam Research International B.V."
+   "LAM RESEARCH CORPORATION",
+   "LAM Research Limited (UK)",
+   "Lam Research (Ireland) Limited",
+   "Lam Research International B.V.",
+   "Lam Research Limited"
   ],
   "LastPass": [
    "LastPass UK Limited"
@@ -1666,6 +1862,9 @@
    "LORAM TECHNOLOGIES INC",
    "Loram UK Limited"
   ],
+  "Louis Dreyfus Company": [
+   "LOUIS DREYFUS COMPANY LLC"
+  ],
   "Lpl Financial": [
    "LPL FINANCIAL LLC"
   ],
@@ -1693,6 +1892,10 @@
   "Maastrichtaachenairport": [
    "Maastricht Aachen Airport B.V."
   ],
+  "Madison Logic": [
+   "MADISON LOGIC INC",
+   "Madison Logic UK Limited"
+  ],
   "Maersk": [
    "MAERSK AGENCY USA INC",
    "MAERSK LINE UK LIMITED",
@@ -1714,6 +1917,9 @@
    "MANULIFE INVESTMENT MANAGEMENT TIM",
    "Manulife Investment Management (Europe) Ltd"
   ],
+  "MariaDB plc": [
+   "MariaDB UK Limited"
+  ],
   "Marie Curie": [
    "Marie Curie"
   ],
@@ -1724,19 +1930,26 @@
   "Marshmallow": [
    "Marshmallow Technology Ltd"
   ],
+  "Marvell": [
+   "Marvell Netherlands B.V."
+  ],
   "Mass General Brigham": [
    "MASS GENERAL BRIGHAM INCORPORATED"
   ],
   "Mastercard": [
    "MASTERCARD INTERNATIONAL INCORPORATED",
-   "MASTERCARD TECHNOLOGIES LLC"
+   "MASTERCARD TECHNOLOGIES LLC",
+   "MasterCard Ireland Limited",
+   "Mastercard Ireland Limited",
+   "Mastercard Nederland"
   ],
   "MasterControl": [
    "MasterControl Global Ltd"
   ],
   "Mattel": [
    "MATTEL HQ INC",
-   "Mattel Europe Holdings B.V."
+   "Mattel Europe Holdings B.V.",
+   "Mattel UK Limited"
   ],
   "Mavenir": [
    "Mavenir Systems Limited"
@@ -1767,10 +1980,13 @@
    "Meticulous Ai Limited"
   ],
   "Microchip Technology": [
-   "MICROCHIP LIMITED"
+   "MICROCHIP LIMITED",
+   "MICROCHIP TECHNOLOGY INC",
+   "Microchip Technology Ireland Limited"
   ],
   "Micron": [
-   "MICRON TECHNOLOGY INC"
+   "MICRON TECHNOLOGY INC",
+   "Micron Europe Limited"
   ],
   "Mimica": [
    "Mimica Lab Ltd."
@@ -1821,6 +2037,18 @@
   "Momomedical": [
    "Momo Medical B.V."
   ],
+  "MongoDB": [
+   "MONGODB INC",
+   "MongoDB Limited",
+   "MongoDB Netherlands B.V.",
+   "MongoDB UK Limited"
+  ],
+  "Monster Energy APAC": [
+   "MONSTER ENERGY COMPANY",
+   "MONSTER ENERGY US LLC",
+   "Monster Energy Europe Limited",
+   "Monster Energy Limited"
+  ],
   "Monzo": [
    "Monzo",
    "Monzo Bank Ltd"
@@ -1830,12 +2058,22 @@
    "Moog B.V."
   ],
   "Morgan Stanley": [
-   "Morgan Stanley Services Canada Corp"
+   "MORGAN STANLEY AND CO LLC",
+   "MORGAN STANLEY CO LLC",
+   "Morgan Stanley Services Canada Corp",
+   "Morgan Stanley UK Limited"
   ],
   "Morningstar": [
    "MORNINGSTAR INC",
    "Morningstar Europe Ltd",
    "Morningstar Holland"
+  ],
+  "Motorola Solutions": [
+   "MOTOROLA SOLUTIONS INC",
+   "Motorola Solutions Ireland Ltd",
+   "Motorola Solutions Ireland Ltd.",
+   "Motorola Solutions Netherlands B.V.",
+   "Motorola Solutions UK Limited"
   ],
   "Motorway": [
    "Motorway Online Limited"
@@ -1876,8 +2114,18 @@
   "Nagarro": [
    "Nagarro Software Ltd"
   ],
+  "Nasdaq": [
+   "NASDAQ INC",
+   "Nasdaq Canada Inc.",
+   "Nasdaq Limited"
+  ],
   "Natilik": [
    "Natilik Limited"
+  ],
+  "National Instruments": [
+   "NATIONAL INSTRUMENTS CORPORATION",
+   "National Instruments Corporation (UK) Ltd",
+   "National Instruments Netherlands B.V."
   ],
   "Navan": [
    "NAVAN INC",
@@ -1911,14 +2159,20 @@
    "NETDOCUMENTS SOFTWARE INC"
   ],
   "Netflix": [
+   "NETFLIX INC",
    "Netflix International B.V.",
    "Netflix Services UK Limited"
   ],
   "Nevis": [
    "NEVIS WEALTH TECHNOLOGY LTD"
   ],
+  "New Era Technology": [
+   "NEW ERA TECHNOLOGY INC"
+  ],
   "New Relic": [
-   "New Relic International Limited"
+   "NEW RELIC INC",
+   "New Relic International Limited",
+   "New Relic UK Limited"
   ],
   "Newmark": [
    "Newmark Holdings Limited"
@@ -1957,6 +2211,9 @@
    "NORDSTROM INC D B A NORDSTROM",
    "NORDSTROM INC DBA NORDSTROM"
   ],
+  "Northern Trust": [
+   "THE NORTHERN TRUST COMPANY"
+  ],
   "Nothing": [
    "NOTHING TECHNOLOGY LIMITED"
   ],
@@ -1965,13 +2222,19 @@
    "Notion Labs, Ireland Limited"
   ],
   "Novartis": [
-   "NOVARTIS SERVICES INC"
+   "NOVARTIS SERVICES INC",
+   "Novartis",
+   "Novartis Ireland Limited"
   ],
   "Numerix": [
    "Numerix Software LTD"
   ],
   "Nutsgroep": [
    "Nuts Groep"
+  ],
+  "Nvidia": [
+   "NVIDIA CORPORATION",
+   "NVIDIA Ltd"
   ],
   "O-I": [
    "O-I Netherlands B.V."
@@ -2062,6 +2325,10 @@
    "Otis Canada, Inc.",
    "Otis Limited"
   ],
+  "Outreach": [
+   "OUTREACH CORPORATION",
+   "Outreach Corporation UK Limited"
+  ],
   "Oxygenhouse": [
    "Oxygen House"
   ],
@@ -2075,6 +2342,9 @@
   "Path": [
    "PATH"
   ],
+  "Pattern": [
+   "PATTERN INC."
+  ],
   "Paxos": [
    "PAXOS TECHNOLOGY SOLUTIONS LLC",
    "Paxos Technology Limited"
@@ -2083,10 +2353,18 @@
    "Paymentology Limited"
   ],
   "PayPal": [
-   "PayPal Europe Services Limited"
+   "PAYPAL INC",
+   "PayPal Canada Co.",
+   "PayPal Europe Services Limited",
+   "PayPal Limited",
+   "PayPal Ltd",
+   "PayPal UK Ltd"
   ],
   "PDT Partners": [
    "PDT Partners UK I Ltd"
+  ],
+  "Pearson": [
+   "Pearson plc"
   ],
   "Peloton": [
    "PELOTON GROUP LLC",
@@ -2108,8 +2386,16 @@
   "Perplexity": [
    "Perplexity AI Ltd"
   ],
+  "Pfizer": [
+   "PFIZER INC",
+   "Pfizer B.V.",
+   "Pfizer Limited"
+  ],
   "Phaidra": [
    "PHAIDRA, LTD"
+  ],
+  "Philips": [
+   "Philips Nederland B.V."
   ],
   "Phreesia": [
    "PHREESIA INC",
@@ -2117,6 +2403,10 @@
   ],
   "Pigment": [
    "Pigment Corp."
+  ],
+  "Ping Identity": [
+   "PING IDENTITY CORPORATION",
+   "Ping Identity Limited"
   ],
   "Pitney Bowes": [
    "PITNEY BOWES INC",
@@ -2126,6 +2416,9 @@
    "PLAID INC",
    "Plaid",
    "Plaid, B.V."
+  ],
+  "Platform Science": [
+   "PLATFORM SCIENCE INC"
   ],
   "Playtech": [
    "Playtech Software Limited"
@@ -2151,6 +2444,12 @@
   ],
   "Power2x": [
    "Power2X Services B.V."
+  ],
+  "Precision for Medicine": [
+   "PRECISION FOR MEDICINE INC"
+  ],
+  "Precision Medicine Group": [
+   "PRECISION MEDICINE GROUP LLC"
   ],
   "Presidents Summit": [
    "Presidents Summit Limited"
@@ -2228,6 +2527,8 @@
    "Quadreal UK Services Limited"
   ],
   "Qualcomm": [
+   "QUALCOMM INCORPORATED",
+   "Qualcomm Canada ULC",
    "Qualcomm Technologies International Ltd",
    "Qualcomm Technologies Netherlands B.V."
   ],
@@ -2278,11 +2579,29 @@
   "Recognisebank": [
    "Recognise Bank Limited"
   ],
+  "Recorded Future": [
+   "RECORDED FUTURE INC",
+   "Recorded Future UK Limited"
+  ],
   "Red Badger": [
    "Red Badger Consulting Limited"
   ],
+  "Red Bull": [
+   "Red Bull Company Limited",
+   "Red Bull Nederland"
+  ],
+  "Red Hat": [
+   "RED HAT INC",
+   "Red Hat B.V.",
+   "Red Hat Limited",
+   "Red Hat UK Ltd"
+  ],
   "Redis": [
    "Redis EMEA Ltd."
+  ],
+  "Redwood Software": [
+   "Redwood Software Nederland B.V.",
+   "Redwood Software UK Ltd"
   ],
   "Reedsy": [
    "Reedsy Limited"
@@ -2337,6 +2656,10 @@
   "REXEL": [
    "REXEL UK LIMITED",
    "REXEL USA INC"
+  ],
+  "Rhombus Power, Inc.": [
+   "RHOMBUS POWER INC",
+   "RHOMBUS POWER, INC."
   ],
   "Rigetti": [
    "RIGETTI UK LIMITED",
@@ -2413,11 +2736,22 @@
   "Rws": [
    "RWS Global UK Limited"
   ],
+  "S&P Global": [
+   "S AND P GLOBAL INC",
+   "S&P Global Limited",
+   "S&P Global UK Limited"
+  ],
   "Sabre": [
    "Sabre Global Technologies Ltd"
   ],
+  "Salary Finance": [
+   "Salary Finance Limited"
+  ],
   "Salesforce": [
-   "SFDC Ireland Limited"
+   "SALESFORCE INC",
+   "SFDC Ireland Limited",
+   "Salesforce UK Limited",
+   "Salesforce.com Canada Corp."
   ],
   "Salsify": [
    "Salsify Global UK Limited"
@@ -2429,6 +2763,10 @@
   "Sambatv": [
    "SAMBA TV INC",
    "SAMBA TV UK LIMITED"
+  ],
+  "Samsonite": [
+   "SAMSONITE LLC",
+   "Samsonite Limited"
   ],
   "Sana Commerce": [
    "Sana Commerce EMEA B.V."
@@ -2454,6 +2792,10 @@
    "SAYARI LABS INC",
    "Sayari Labs Limited"
   ],
+  "Scale AI": [
+   "SCALE AI INC",
+   "Scale AI Limited"
+  ],
   "Schonfeld": [
    "Schonfeld Strategic Advisors (UK) LLP"
   ],
@@ -2476,6 +2818,10 @@
   ],
   "Sedna": [
    "Sedna Systems Europe Limited"
+  ],
+  "Sensor Tower": [
+   "SENSOR TOWER INC",
+   "Sensor Tower UK Ltd"
   ],
   "SGS": [
    "SGS Ireland Limited",
@@ -2539,6 +2885,9 @@
   "Smarsh": [
    "Smarsh Software UK Ltd"
   ],
+  "Smart Working Solutions": [
+   "Smart Working Solutions Limited"
+  ],
   "SmartBear": [
    "SMARTBEAR SOFTWARE INC"
   ],
@@ -2563,12 +2912,18 @@
   "Snaplogic": [
    "SnapLogic UK Limited"
   ],
+  "Snowflake": [
+   "SNOWFLAKE INC"
+  ],
   "SOCOTEC UK & Ireland": [
    "Socotec Ireland LTD",
    "Socotec UK Limited"
   ],
   "Sofarsounds": [
    "SOFAR SOUNDS LIMITED"
+  ],
+  "Soho House & Co.": [
+   "Soho House Limited"
   ],
   "Solvd": [
    "SOLVD INC"
@@ -2595,6 +2950,9 @@
    "SPHERA SOLUTIONS INC",
    "Sphera Solutions",
    "Sphera Solutions UK Limited"
+  ],
+  "Spinnaker Support": [
+   "SPINNAKER SUPPORT LLC"
   ],
   "Sprout Social": [
    "SPROUT SOCIAL INC",
@@ -2640,6 +2998,9 @@
    "Stream.io B.V."
   ],
   "Stripe": [
+   "STRIPE INC",
+   "Stripe",
+   "Stripe Netherlands B.V.",
    "Stripe Payments Europe Limited",
    "Stripe Payments UK Ltd",
    "Stripe Technology Company Limited",
@@ -2657,6 +3018,9 @@
   ],
   "Sumitomoheavyindustries": [
    "Sumitomo Heavy Industries (Europe) B.V."
+  ],
+  "Sumo Logic": [
+   "SUMO LOGIC INC"
   ],
   "SumUp": [
    "SUMUP INC",
@@ -2729,7 +3093,10 @@
    "Tactile Games Limited"
   ],
   "Take-Two Interactive Software, Inc.": [
-   "TAKE-TWO INTERACTIVE CANADA, INC."
+   "TAKE TWO INTERACTIVE SOFTWARE INC",
+   "TAKE-TWO INTERACTIVE CANADA, INC.",
+   "TAKE-TWO INTERACTIVE SOFTWARE INC",
+   "Take-Two Interactive Software Europe Limited"
   ],
   "Talan": [
    "Talan",
@@ -2794,6 +3161,11 @@
   "Terex": [
    "Terex GB Limited"
   ],
+  "Texas Instruments": [
+   "TEXAS INSTRUMENTS INCORPORATED",
+   "Texas Instruments Holland B.V.",
+   "Texas Instruments Limited"
+  ],
   "Teya": [
    "Teya Europe Ltd"
   ],
@@ -2808,9 +3180,15 @@
    "Citco Bank Nederland NV Dublin Branch",
    "Citco Nederland B.V."
   ],
+  "The Knot Worldwide": [
+   "THE KNOT WORLDWIDE INC"
+  ],
   "The New York Times": [
    "New York Times Limited",
    "THE NEW YORK TIMES COMPANY"
+  ],
+  "The Nielsen Company": [
+   "THE NIELSEN COMPANY US LLC"
   ],
   "The Trade Desk": [
    "THE TRADE DESK INC",
@@ -2862,6 +3240,12 @@
    "Toppan Digital Language Ltd",
    "Toppan Security Ireland Teoranta"
   ],
+  "Tower Research Capital": [
+   "TOWER RESEARCH CAPITAL LLC",
+   "Tower Research Capital",
+   "Tower Research Capital Europe B.V.",
+   "Tower Research Capital Europe Limited"
+  ],
   "Tractable": [
    "TRACTABLE LTD",
    "Tractable"
@@ -2875,6 +3259,10 @@
   ],
   "Transavia": [
    "Transavia Airlines"
+  ],
+  "Transmit Security": [
+   "TRANSMIT SECURITY UK LTD",
+   "TRANSMIT SECURITY, INC."
   ],
   "Trimble": [
    "TRIMBLE INC",
@@ -2894,8 +3282,19 @@
   "Turing": [
    "TURING ENTERPRISES INC"
   ],
+  "Turner & Townsend": [
+   "TURNER AND TOWNSEND INC",
+   "TURNER TOWNSEND INC",
+   "Turner & Townsend Canada Inc.",
+   "Turner & Townsend Europe",
+   "Turner & Townsend Limited",
+   "Turner & Townsend Ltd"
+  ],
   "Turo": [
    "TURO INC"
+  ],
+  "Twin Health": [
+   "TWIN HEALTH INC"
   ],
   "Typeform": [
    "Typeform UK Limited"
@@ -2988,7 +3387,9 @@
   ],
   "Verizon": [
    "VERIZON SERVICES CORP",
-   "Verizon Services Ireland Limited"
+   "Verizon Nederland B.V.",
+   "Verizon Services Ireland Limited",
+   "Verizon UK Limited"
   ],
   "Version 1": [
    "Version 1 Software Limited",
@@ -3054,7 +3455,8 @@
    "Wells Fargo Bank International"
   ],
   "Western Digital": [
-   "WESTERN DIGITAL TECHNOLOGIES INC"
+   "WESTERN DIGITAL TECHNOLOGIES INC",
+   "Western Digital (UK) Limited"
   ],
   "Western Union": [
    "WESTERN UNION LLC",
@@ -3089,6 +3491,12 @@
   ],
   "Wordsmith": [
    "Wordsmith AI Ltd"
+  ],
+  "Workday": [
+   "WORKDAY INC",
+   "Workday (UK) Limited",
+   "Workday B.V.",
+   "Workday Limited"
   ],
   "Workiva": [
    "WORKIVA INC",
@@ -3154,6 +3562,10 @@
   "Zeromotorcycles": [
    "ZERO MOTORCYCLES INC",
    "Zero Motorcycles B.V."
+  ],
+  "Zeta Global": [
+   "ZETA GLOBAL CORP",
+   "Zeta Global Ltd"
   ],
   "Zilch": [
    "Zilch Technology Limited"
@@ -3567,6 +3979,9 @@
   "Fractal": [
    "Digital Fractal Technologies Inc.",
    "Fractal Labs Ltd"
+  ],
+  "Fusion Consulting": [
+   "Fusion Consulting Ltd"
   ],
   "Fusion Worldwide": [
    "FUSION GLOBAL SOLUTIONS LLC",

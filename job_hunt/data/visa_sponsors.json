@@ -1,6 +1,6 @@
 {
  "about": "Companies on companies.json that appear in public visa-sponsor sources (T133). A register means the employer can sponsor a visa, not that a given job does. Each match names the source's own entry; loose name matches are kept only when accepted by hand in scripts/visa_sponsor_review.json. Rebuild: python scripts/build_visa_sponsors.py",
- "built": "2026-10-22",
+ "built": "2026-10-23",
  "companies": {
   "12build": [
    {
@@ -11441,17 +11441,6 @@
      }
     },
     "source": "us"
-   }
-  ],
-  "Fusion Consulting": [
-   {
-    "match": "exact",
-    "names": {
-     "Fusion Consulting Ltd": [
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
    }
   ],
   "Futurewhiz": [

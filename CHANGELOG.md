@@ -9,6 +9,12 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed (2026-10-23, T154: the India list's dictionary-word visa records read)
+- The 230 exact matches of India-list companies whose names are dictionary words (120 companies: American Express, Carrier, Better,
+  Expeditors, …), trusted unread until now, were read against the register rows: 229 are the company's own entity and are now
+  accepted in `scripts/visa_sponsor_review.json`; "Fusion Consulting Ltd" (London) is rejected (the board's Fusion Consulting hires
+  in Barcelona, Frankfurt, Lisbon, not the UK). Visa records 1,668 -> 1,667 (UK 1,069 -> 1,068); no other record changed.
+
 ### Changed (2026-10-23, T153: the docs after T133–T152)
 - docs/10 counted 27 companies abroad (921 now) and still listed "any country" and "region company lists" as future goals; they are done,
   and the table now names the gaps left: titles in other languages, more companies abroad (Workable, T160). docs/08: the

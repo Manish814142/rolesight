@@ -559,8 +559,11 @@ the agency check missed. The India list's 184 short-name records were read as we
 Corporation B.V.). Via was then put back by the verifier: the rework had found its UK subsidiary in Via's 10-K, "Via Transportation
 UK Ltd.", which is on the UK register (London, Skilled Worker and Global Business Mobility) but which no name rule links to "Via";
 it is now accepted as Via's alias, so 37 entries left. **Record rebuilt: 1,668 of 2,510 companies** (UK 1,069, Netherlands 486,
-Ireland 145, lists 92, USA 838, Canada 89). What was not read: exact matches of longer, non-dictionary names outside the 141 flagged, and the India list's
-dictionary-word names (230 records).
+Ireland 145, lists 92, USA 838, Canada 89). What was not read then: exact matches of longer, non-dictionary names outside the 141 flagged, and the India list's
+dictionary-word names (230 records). Those 230 (120 companies, American Express to Zeta Global) were read on 2026-10-23 (T154):
+229 are the company's own entity; "Fusion Consulting Ltd" (London) is rejected, since the board's Fusion Consulting hires in Barcelona,
+Frankfurt, Lisbon and nowhere in the UK. **Record rebuilt: 1,667 of 2,510 companies** (UK 1,068). Still not read: exact matches of
+longer names that are not dictionary words, on the India list and outside T144's 141 flagged (T152 asks for a guard for future rebuilds).
 
 **The scan uses it** (T138): with `candidate.countries` set, every job outside your home country gets a **Visa** column in
 the CSV: what the posting says, then this record for its country ([docs/05](05-outputs-and-notifications.md)).
