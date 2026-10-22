@@ -103,3 +103,17 @@ def test_main_writes_the_kept_entries_and_a_report(tmp_path):
 def test_main_without_downloads_stops(tmp_path):
     with pytest.raises(SystemExit, match="nothing downloaded"):
         fbve.main(["--candidates", str(tmp_path / "x.json"), "--out", str(tmp_path / "o.json"), "--sources", str(tmp_path / "empty")])
+
+
+def test_a_weak_match_on_a_record_for_a_country_it_does_not_hire_in_is_not_worth_a_review():
+    idx = _idx(us={"ALLFUNDS INC": {"2024": [1, 1]}}, uk={"Allfunds Bank International SA": ["Skilled Worker"]})
+    decision, evidence, weak = fbve.judge(_e("Allfunds", places=("Netherlands",)), idx, NO_REVIEW, {})
+    assert (decision, weak) == ("drop", [])
+    assert fbve.judge(_e("Allfunds"), idx, NO_REVIEW, {})[2] == ["uk: Allfunds Bank International SA"]      # the UK one is relevant
+
+
+def test_an_alias_accepted_in_the_review_file_is_evidence_for_the_filter():
+    idx = _idx(us={"WAL MART ASSOCIATES INC": {"2024": [900, 800]}})
+    accepted = {"accepted": {"Walmart": ["WAL MART ASSOCIATES INC"]}, "rejected": {}}
+    assert fbve.judge(_e("Walmart", "workday"), idx, NO_REVIEW, {})[0] == "drop"
+    assert fbve.judge(_e("Walmart", "workday"), idx, accepted, {})[:2] == ("keep", ["us: WAL MART ASSOCIATES INC"])

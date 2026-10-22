@@ -357,3 +357,34 @@ def test_a_squashed_match_is_kept_without_a_review_and_a_rejection_still_wins():
     review = {"accepted": {}, "rejected": {"Basicfit": ["Basic-Fit B.V."]}}
     assert bvs.status("Cloudimperiumgames", "Cloud Imperium Games Ltd", "squashed", review) == "kept"
     assert bvs.status("Basicfit", "Basic-Fit B.V.", "squashed", review) == "rejected"
+
+
+# ── T144 (and T145): a name accepted by hand is an alias ─────────────────────────────────────────────────────────
+
+def test_a_name_accepted_by_hand_matches_although_no_rule_proposes_it():
+    idx = bvs.Index({"SFDC Ireland Limited": {"2025": 12}, "WAL MART ASSOCIATES INC": {}, "Salesforce UK Limited": []})
+    assert idx.match("Salesforce") == ("exact", ["Salesforce UK Limited"])                                         # a rule's match
+    assert idx.match("Salesforce", ["SFDC Ireland Limited"]) == ("exact", ["SFDC Ireland Limited", "Salesforce UK Limited"])
+    assert idx.match("Walmart") == (None, [])
+    assert idx.match("Walmart", ["WAL MART ASSOCIATES INC"]) == ("loose", ["WAL MART ASSOCIATES INC"])
+    assert idx.match("Walmart", ["NOT IN THIS SOURCE"]) == (None, [])                      # an alias another source holds
+
+
+def test_the_build_keeps_an_alias_the_review_accepted_and_only_that():
+    review = {"accepted": {"Salesforce": ["SFDC Ireland Limited"]}, "rejected": {}}
+    ie = bvs.Index({"SFDC Ireland Limited": {"2025": 12}, "SFDC Ireland Ltd Other": {"2025": 1}})
+    cands = bvs.candidates([{"name": "Salesforce", "ats": "greenhouse"}], {"ie": ie}, review)
+    assert [(c[0], c[1], c[2], c[3]) for c in cands] == [("Salesforce", "ie", "loose", "SFDC Ireland Limited")]
+    assert bvs.match_companies(cands, review) == {"Salesforce": [{"source": "ie", "match": "loose", "names": {"SFDC Ireland Limited": {"2025": 12}}}]}
+    assert bvs.match_companies(bvs.candidates([{"name": "Salesforce", "ats": "greenhouse"}], {"ie": ie}), review) == {}     # no alias, no match
+
+
+NO_REVIEW = {"accepted": {}, "rejected": {}}
+
+
+def test_build_uses_the_aliases_of_the_review(tmp_path):
+    src = _sources(tmp_path / "src")
+    review = {"accepted": {"Acme": ["Stripe Technology Europe Limited"]}, "rejected": {}}
+    data, _ = bvs.build(src, [{"name": "Acme", "ats": "lever"}], review)
+    assert data["companies"] == {"Acme": [{"source": "ie", "match": "loose", "names": {"Stripe Technology Europe Limited": {"2025": 4}}}]}
+    assert bvs.build(src, [{"name": "Acme", "ats": "lever"}], NO_REVIEW)[0]["companies"] == {}

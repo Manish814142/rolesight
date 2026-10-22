@@ -6,9 +6,10 @@ The list of job boards to scan. It is committed, it is the core of the project, 
 was checked by `autopilot discover` (below) to be live, to belong to the employer it names and to have India jobs (or,
 for the 27 entries that carry `"places"`, jobs in those countries: T139).
 
-**Counts (2026-10-21):** 1,647 boards: Greenhouse 525, Workday 302, Ashby 207, SmartRecruiters 187, Lever 159,
-Oracle HCM 108, Workable 106, Recruitee 41, Eightfold 4, Personio 6, Amazon 1, Phenom 1. The first 224 were curated by
-hand; the rest came from the bulk harvest (T111, T112), and 58 checked for other countries instead of India (T139, T142). Count yours with
+**Counts (2026-10-22):** 2,509 boards: Greenhouse 729, Workday 490, Ashby 393, SmartRecruiters 264, Lever 208,
+Recruitee 186, Oracle HCM 108, Workable 106, Personio 19, Eightfold 4, Amazon 1, Phenom 1. The first 224 were curated by
+hand; 1,365 came from the bulk harvest (T111, T112); 920 were checked for other countries instead of India (T139, T142, T144):
+58 from the community lists and 862 that passed the visa-evidence rule (below). Count yours with
 `python -c "import json,collections;print(collections.Counter(c['ats'] for c in json.load(open('companies.json'))))"`.
 
 `job_hunt/data/companies.json` is the copy `autopilot init` gives a new user. **After any change, copy the list there**
@@ -150,6 +151,41 @@ What to expect (T111, T112, measured 2026-10-16/17):
   publishes one. Every site of a Workday tenant is checked and the one with most India jobs is kept.
 - A board that makes the check raise is an `error` row in the report, not the end of the run.
 
+### 4. Workday employers, by name (T148)
+
+Workday cannot be guessed like the seven other platforms, and the archive cannot list it: for data centres `wd1`, `wd3` and `wd5`
+(about 190 of the first 302 tenants) the Internet Archive and Common Crawl answered HTTP 504 at every size of query, down to one
+month (measured 2026-10-22). What works is Workday itself: a tenant's `https://<tenant>.<data centre>.myworkdayjobs.com/robots.txt`
+lists every career site it has, and a tenant that is not on that data centre answers 422. So the tenant, its data centre and all its
+sites come from the company name alone:
+
+```bash
+# paste names, one per line, with the seed suffix
+Barclays | workday | auto
+Lloyds Banking Group | workday | auto
+autopilot discover --seeds names.txt --places "United Kingdom, Germany, ..." --report /tmp/r.csv --out /tmp/v.json --merge companies.json --no-recheck --workers 20
+```
+
+- **Which tenant names are tried:** the name run together, without its legal form and without "Group"/"Holdings" ("Lloyds Banking
+  Group" -> `lloydsbankinggroup`, `lloydsbanking`), on 16 data centres, wd3 first. **Never a first word alone**: in the prototype
+  `standard` was not Standard Chartered's tenant and `lloyds` was Lloyd's of London.
+- **Whose it is:** up to three postings' text (those in your places first) must name the company; otherwise the report says
+  `identity not confirmed`. A company with no tenant gets the row `no Workday tenant named like it`.
+- **What it found:** of 58 well-known European employers a prototype found 25 (43%); of 1,317 names (every name ever tried plus
+  about 350 big European, Gulf, Asian, US, Canadian and Australian employers) 93 had a tenant, 77 companies passed; of the 2,439
+  biggest visa sponsors in the registers (US H-1B employers, Irish permit holders, Canadian LMIA employers) 71 had one and 62
+  passed (Chevron, Bristol Myers Squibb, Stryker, Kyndryl, Iqvia, Vanguard, Western Union, Zillow, …). Speed: about 11 lookups a
+  second at 30 workers; 1,317 names took 47 minutes, 2,439 took 77.
+- **Recall is limited by the names you give it.** Tenants whose name differs from the company's ("sc" for Standard Chartered) are
+  missed. The websites' own country filter is no alternative: 25 of 60 tenants have none, and the others call it `locationCountry`,
+  `Location_Country` or `locationHierarchy1`. The scan's search by country name never found fewer jobs than that filter (0 of 104
+  tenant-country pairs, measured), so the per-country search of the scanner is sound.
+- **Cost:** a Workday site is checked once per country until one shows a job, so 26 countries cost up to 26 requests per site;
+  a site that does not exist (404/422) costs one.
+
+The bulk harvest (section 3) now runs Lever, SmartRecruiters and Workday as small queries (by first letter, by data centre) and
+keeps the chunks that answer; a chunk that still fails is asked one date span at a time, halved down to a month.
+
 ### Seeds-file formats
 
 One company per line, `#` comments allowed (`scripts/company_seeds.txt` is the record of every name tried):
@@ -160,6 +196,7 @@ Jupiter Money | https://jobs.lever.co/jupiter                    # a careers URL
 Acme | https://jobs.lever.co/acme | exact                        # only this board; the name comes from the board (the harvest writes these)
 BlackBerry | workday | bb | wd3 | BlackBerry                     # Workday: tenant | data centre | site
 Hilton | https://xxxx.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1 | exact
+Barclays | workday | auto                                       # Workday: find the tenant, its data centre and sites from the name (T148)
 Qualcomm | eightfold | qualcomm.eightfold.ai | qualcomm.com       # Eightfold: careers host | employer domain
 BCG | phenom | careers.bcg.com | global/en                       # Phenom: careers host | locale path of its URLs
 ```
@@ -427,6 +464,59 @@ became refusals, every distinct sentence read (citizenship for clearance, ITAR a
 "Visa Ventures" ones became silent; the six earlier countries' counts did not move. Still counted as no clear answer:
 "Visa transfers, including OPT and H1B transfers, are supported" (it helps someone already in the US, not someone abroad) and
 Roblox's "may not be able to ... support future H-1B sponsorship".
+
+### Keeping only companies that sponsor visas (T144)
+
+Manish, 2026-10-22: *keep a company if it sponsors visas, irrespective of a specific job post; otherwise there is no point adding it
+(a company that sponsors no role today may sponsor one later).* So a company added **for other countries** (an entry with `places`)
+must show evidence; the 1,589 India companies need none. `scripts/filter_by_visa_evidence.py` applies it to what `discover`
+verified:
+
+```bash
+python scripts/filter_by_visa_evidence.py --candidates /tmp/v1.json /tmp/v2.json --postings /tmp/posting_evidence.json \
+    --out /tmp/kept.json --report /tmp/filter.csv      # then: autopilot discover's merge, or merge_companies, into companies.json
+```
+
+A company is kept when, for a country it hires in, **one** of these holds: it is on that country's sponsor record (UK register,
+Dutch IND register, Irish permits, US H-1B, Canadian LMIA) by an exact match, a *squashed* match (the same name without spaces,
+six letters or more: "Cloudimperiumgames" = "Cloud Imperium Games Ltd") or a loose match accepted by hand in
+`scripts/visa_sponsor_review.json`; it is on a community list for that country; or one of its postings offers visa sponsorship.
+A record for a country it does not hire in does not count (a Dutch register entry says nothing about a German job); a Workday
+entry records every country checked, so any record counts. **The review file doubles as an alias list**: a name accepted there
+counts although no rule proposes it ("SFDC Ireland Limited" for Salesforce, "WAL MART ASSOCIATES INC" for Walmart; this settles
+T145). Postings that only offer *relocation* do not count (87 companies; add them if you want).
+
+What it did on 2026-10-22 (the sources that had finished; Workable's 12,585 boards were still being checked and go through the same
+filter when done):
+
+| Platform | Verified and new | Kept |
+|---|---|---|
+| Greenhouse | 818 | 204 |
+| Ashby | 757 | 186 |
+| Recruitee | 1,599 | 145 |
+| Personio | 1,385 | 13 |
+| SmartRecruiters | 433 | 77 |
+| Lever | 228 | 49 |
+| Workday | 298 | 188 |
+| **Total** | **5,518** | **862** (list 1,647 -> 2,509) |
+
+By country, new companies kept: United Kingdom 486, Netherlands 257, Germany 166, France 107, Spain 93, Poland 83, Ireland 78,
+Singapore 75, Italy 69, Sweden 68, Portugal 62, Belgium 61, Denmark 54, Switzerland 52, Austria 48, Czechia 44, UAE 44, Norway
+41, Luxembourg 41, Finland 37, Estonia 34, Lithuania 34 (Workday entries record every country and are not counted here). Germany,
+France, Spain and Poland publish no register, so there the evidence is mostly a posting or a list: 166 of the 2,363 German companies
+found were kept.
+
+**The price of the rule, measured.** The 4,190 non-Workday companies dropped had 46,441 jobs in the 22 countries and 1,783 that match
+Manish's title filter, at 836 companies; the 674 kept have 10,404 jobs and 703 title matches at 237 companies. Most title-matching
+jobs in the new boards are at companies with no sign of sponsoring, and the rule leaves them out on purpose. Companies were also
+left out before the filter: 5 job aggregators ("LinkedIn Job Wrapping", "Third-Party Job Posts", "Alumni Network Job Board", AppDirect's
+"Recruitment as a Service", an internal logistics board) and 23 recruitment agencies, whose postings hide the employer; none of the
+637 agency jobs in Europe shared title and city with a job on another board (measured), so duplicates were not the reason.
+The weak name matches (183 companies before the merge, 116 after) were read by hand: 201 register names accepted, 138 rejected
+(common words or another company: "Axiom", "Proton", "Open", "Planet"; "Puma Energy" is not PUMA, "Weber Shandwick" is not Weber),
+and 64 names accepted as aliases for 28 big Workday employers whose register names differ (Walmart, Gilead, Maersk, Repsol, …).
+
+**Record rebuilt (2026-10-22): 1,674 of 2,509 companies** (UK 1,076, Netherlands 479, Ireland 145, lists 93, USA 847, Canada 93).
 
 **The scan uses it** (T138): with `candidate.countries` set, every job outside your home country gets a **Visa** column in
 the CSV: what the posting says, then this record for its country ([docs/05](05-outputs-and-notifications.md)).

@@ -39,22 +39,22 @@ def judge(entry: Dict[str, Any], indexes: Dict[str, "bvs.Index"], review: Dict[s
     evidence: List[str] = []
     weak: List[str] = []
     for source, index in indexes.items():
-        kind, names = index.match(name)
+        kind, names = index.match(name, review["accepted"].get(name, ()))
         if not kind:
             continue
         for source_name in names:
+            where = REGISTER_COUNTRY.get(source)
+            if source == "lists":
+                relevant = entry["ats"] == "workday" or any(_list_covers(index.entries[source_name], c) for c in places)
+            else:
+                relevant = entry["ats"] == "workday" or where in places          # a record for a country it does not hire in says nothing
+            if not relevant:
+                continue
             verdict = bvs.status(name, source_name, kind, review)
             if verdict == "unreviewed":
                 weak.append(f"{source}: {source_name}")
             elif verdict == "kept":
-                where = REGISTER_COUNTRY.get(source)
-                if source == "lists":
-                    details = index.entries[source_name]
-                    relevant = entry["ats"] == "workday" or any(_list_covers(details, c) for c in places)
-                else:
-                    relevant = entry["ats"] == "workday" or where in places
-                if relevant:
-                    evidence.append(f"{source}: {source_name}")
+                evidence.append(f"{source}: {source_name}")
     if postings.get(name, {}).get("visa", {}).get("offered", 0) > 0:
         evidence.append("posting offers visa sponsorship")
     return ("keep" if evidence else "review" if weak else "drop"), evidence, weak

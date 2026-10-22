@@ -9,6 +9,39 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Added (2026-10-22, T144 + T148: a bigger list of companies that sponsor visas, Workday found by name)
+- Manish: "add more companies so make the bigger list", then "if they sponsor a visa then keep them, irrespective of a specific job
+  post ... otherwise no point of adding them". `companies.json` goes from 1,647 to **2,509** boards: 862 companies added for other
+  countries (Europe, the Gulf, Singapore, with the USA, Canada, Australia and New Zealand checked for Workday), each with the
+  countries where it has jobs and **evidence that it sponsors visas** (`scripts/filter_by_visa_evidence.py`): a sponsor record for
+  a country it hires in, a community list, or a posting that offers sponsorship. Of 5,518 verified new boards 862 pass; the rest are
+  left out (the price, measured: they hold 1,783 of the 2,486 title-matching jobs). The India scan still fetches exactly the same
+  1,589 boards; a UK-and-Germany scan fetches 2,351. Visa records: 1,674 of 2,509 companies (UK 1,076, Netherlands 479, Ireland 145,
+  lists 93, USA 847, Canada 93).
+- **Workday by name** (T148): the archive and Common Crawl refuse the wd1/wd3/wd5 queries (HTTP 504 at every size, down to a month),
+  but a tenant's `robots.txt` lists its career sites and a missing tenant answers 422, so a seed `Name | workday | auto` finds the
+  tenant, data centre and sites from the company name, confirms the employer from up to 3 postings' text, and checks the sites for the
+  countries. 188 Workday employers kept (ING, Roche, Unilever, Santander, ASML, Zalando, Rolls-Royce, Walmart, Chevron, …). Full-name
+  tenants only: a first word alone found other companies ("standard" for Standard Chartered, "lloyds" for Lloyd's of London).
+- The bulk harvest runs Lever, SmartRecruiters and Workday as small queries (by first letter, by data centre) and keeps the chunks
+  that answer; a chunk that still fails is asked one date span at a time, halved down to a month. `discover`'s Workday check stops at
+  the first "board not found" (one request instead of 24).
+- A board's entry records only the countries where it has a job (not all 22 asked for), and `country()` is cached: `listed_for`
+  took 6.5 s per scan, India's included, before; now 0.015 s.
+- Matching: names built from a web address match the registers' spaced names ("Cloudimperiumgames" = "Cloud Imperium Games Ltd",
+  six letters or more); a name accepted in `scripts/visa_sponsor_review.json` is an alias even when no rule proposes it ("SFDC
+  Ireland Limited" for Salesforce, T145). 8 existing companies' records changed: Salesforce, Visa, NICE, Shell (their earlier hand
+  acceptances now take effect) and Protolabs, Sumo Logic, TripleLift (squashed matches).
+- Not done: Workable's 12,585 boards were still being checked when this was written; they go through the same filter when done.
+
+### Fixed (2026-10-22, T146 + T147: place misreads found by T144's bulk checks)
+- Nothing is a city or country right after "New " ("New London", "New Britain, CT"); a street address names no city; "London, On" /
+  "Dublin, Oh" are Ontario and Ohio; a city followed by a word that makes it another country's city is not read ("Porto Alegre");
+  "Brasil" is Brazil; "Gulf Shores, AL" is no Gulf region and "SEA" is Seattle (T146: 41 of 13,428 saved locations read differently).
+- Personio writes "office, department": "Hannover, IT" is the IT department, not Italy; `IT`, `HR`, `QA`, `PR`, `AI` and `BI` count as a
+  country at the end of a location only after one of that country's cities (T147; 66 fewer Personio boards verified afterwards: 1,457 -> 1,391).
+  India's decisions are unchanged on 118,330 saved jobs.
+
 ### Fixed (2026-10-21, T147: a department written like a country code)
 - Personio writes "office, department", so "Hannover, IT" (the IT department) counted as Italy, and a person looking in Italy would
   have been shown German IT jobs; `IT`, `HR`, `QA`, `PR`, `AI` and `BI` now count as a country at the end of a location only
