@@ -1021,7 +1021,9 @@ def main(argv: Optional[List[str]] = None) -> None:
     verified, rows = discover(seeds, workers=int(opts["--workers"]))
     write_report(rows, opts["--report"])
     Path(opts["--out"]).write_text(json.dumps(verified, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print(f"\n{len(verified)}/{len(seeds)} companies verified -> {opts['--out']} (report: {opts['--report']})")
+    companies = len({v["name"].lower() for v in verified})     # a Workday tenant's sites are one company; --merge keeps one
+    print(f"\n{companies}/{len(seeds)} companies verified ({len(verified)} boards or sites) -> {opts['--out']} "
+          f"(report: {opts['--report']})")
     if opts["--merge"]:
         target = Path(opts["--merge"])
         existing = json.loads(target.read_text(encoding="utf-8")) if target.exists() else []

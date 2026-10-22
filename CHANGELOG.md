@@ -9,6 +9,12 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed in review (2026-10-22, T148)
+- `discover`'s summary counted a Workday tenant's sites as companies: 15 names, 5 companies found, "8/15 companies verified"
+  (AstraZeneca's 4 sites, Shell's 2). It now says "5/15 companies verified (8 boards or sites)"; `--merge` keeps one per company.
+- A test for a later tenant name ("lloydsbanking" after "lloydsbankinggroup"): a mutant that tried only the first passed every test.
+- docs/04: the identity check confirms the name, not which company of that name was meant (`Clark` found Clark Construction).
+
 ### Added (2026-10-22, T144 + T148: a bigger list of companies that sponsor visas, Workday found by name)
 - Manish: "add more companies so make the bigger list", then "if they sponsor a visa then keep them, irrespective of a specific job
   post ... otherwise no point of adding them". `companies.json` goes from 1,647 to **2,547** boards: 900 companies added for other

@@ -130,6 +130,14 @@ def test_the_tenant_is_found_on_whichever_data_centre_it_is(monkeypatch):
     assert disc.workday_tenant_for("Barclays")[0][:2] == ("barclays", "wd5") and seen == ["wd3", "wd1", "wd5"]
 
 
+def test_a_later_tenant_name_is_tried_when_the_first_answers_nowhere(monkeypatch):
+    """Review (T148): a mutant that tried only the first name ("lloydsbankinggroup") passed every test; the tenant without
+    "Group" must still be found."""
+    monkeypatch.setattr(disc.requests, "get", lambda url, **kw: _resp(200, ROBOTS) if url.startswith("https://lloydsbanking.wd3.")
+                        else _resp(422))
+    assert disc.workday_tenant_for("Lloyds Banking Group")[0][:2] == ("lloydsbanking", "wd3")
+
+
 def test_a_plain_name_and_its_auto_seed_are_two_seeds():
     seeds = disc.parse_seeds("Barclays\nBarclays | workday | auto\n")
     assert [("workday_auto" in s) for s in seeds] == [False, True]
@@ -168,3 +176,15 @@ def test_three_postings_are_read_and_no_more(monkeypatch):
 
 def test_a_name_of_two_letters_is_not_searched_for():
     assert disc.workday_tenant_slugs("GP") == [] and disc.workday_tenant_slugs("ING") == ["ing"]      # too short to be told from others
+
+
+def test_the_summary_counts_companies_not_sites(tmp_path, monkeypatch, capsys):
+    """Review (T148): 15 names, 5 companies found, but AstraZeneca's 4 sites and Shell's 2 made it print "8/15 companies
+    verified". --merge keeps one entry per company, so the summary says both."""
+    seeds = tmp_path / "s.txt"
+    seeds.write_text("AstraZeneca | workday | auto\nShell | workday | auto\nNobody | workday | auto\n")
+    sites = [{"name": "AstraZeneca", "ats": "workday", "tenant": "astrazeneca", "dc": "wd3", "site": s} for s in ("Careers", "Alexion")]
+    monkeypatch.setattr(disc, "discover", lambda s, workers=40: (sites + [{"name": "Shell", "ats": "workday", "tenant": "shell",
+                                                                             "dc": "wd3", "site": "ShellCareers"}], []))
+    disc.main(["--seeds", str(seeds), "--out", str(tmp_path / "v.json"), "--report", str(tmp_path / "r.csv")])
+    assert "2/3 companies verified (3 boards or sites)" in capsys.readouterr().out

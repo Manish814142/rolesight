@@ -170,7 +170,10 @@ autopilot discover --seeds names.txt --places "United Kingdom, Germany, ..." --r
   Group" -> `lloydsbankinggroup`, `lloydsbanking`), on 16 data centres, wd3 first. **Never a first word alone**: in the prototype
   `standard` was not Standard Chartered's tenant and `lloyds` was Lloyd's of London.
 - **Whose it is:** up to three postings' text (those in your places first) must name the company; otherwise the report says
-  `identity not confirmed`. A company with no tenant gets the row `no Workday tenant named like it`.
+  `identity not confirmed`. A company with no tenant gets the row `no Workday tenant named like it`. This confirms the **name**,
+  not which company of that name you meant: the seed `Clark` found the `clark` tenant, Clark Construction (its postings say
+  "Clark"), while the community list that supplied the name meant the Berlin insurer (found in review, 2026-10-22). Give a
+  one-word name in full ("Clark Construction") or check the report's sample titles.
 - **What it found:** of 58 well-known European employers a prototype found 25 (43%); of 1,317 names (every name ever tried plus
   about 350 big European, Gulf, Asian, US, Canadian and Australian employers) 93 had a tenant, 77 companies passed; of the 2,439
   biggest visa sponsors in the registers (US H-1B employers, Irish permit holders, Canadian LMIA employers) 71 had one and 62
