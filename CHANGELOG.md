@@ -68,7 +68,8 @@ reconstructed from git history.
 
 ### Fixed (2026-10-22, T151)
 - `init` says how many companies it wrote and where they hire, from the shipped list itself ("1,647 companies with a live job
-  board: 1,589 hiring in India, 58 only in other countries"); it still said "200+ companies … mostly hiring in India".
+  board: 1,589 hiring in India, 58 checked for other countries"); it still said "200+ companies … mostly hiring in India". (Review:
+  "checked for", not "only in": an entry accepted for other countries was never checked for India, and some hire there too.)
 
 ### Tests added in review (2026-10-22, T147)
 - A department-like code after one of its country's own cities is that country ("Milan, IT", "Doha, QA"): a mutant that never

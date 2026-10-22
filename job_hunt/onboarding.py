@@ -85,9 +85,11 @@ def _scaffold(cwd: Path) -> bool:
         return True
 
     shipped = json.loads(data.joinpath("companies.json").read_text(encoding="utf-8"))
-    abroad = sum(1 for c in shipped if c.get("places"))     # accepted for other countries (T139); the rest for India (T151)
+    # accepted for other countries (T139); the rest for India (T151). "Checked for", not "only in": an entry accepted for other
+    # countries was not checked for India and may hire there too (T144's Workday employers, Infosys among them).
+    abroad = sum(1 for c in shipped if c.get("places"))
     copy("companies.json", cwd / "companies.json", f"companies.json created ({len(shipped):,} companies with a live job board: "
-                                                   f"{len(shipped) - abroad:,} hiring in India, {abroad:,} only in other countries)")
+                                                   f"{len(shipped) - abroad:,} hiring in India, {abroad:,} checked for other countries)")
     created = copy("config.example.json", cwd / "config.json", "config.json created — your settings")
     copy("env_example", cwd / ".env", ".env created — your Gemini API key goes here")
     rubric = cwd / RUBRIC_FILE

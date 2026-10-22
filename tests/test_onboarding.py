@@ -76,8 +76,8 @@ def test_init_says_how_many_companies_it_wrote_and_where_they_hire(workdir, caps
     abroad = sum(1 for c in shipped if c.get("places"))
     out = capsys.readouterr().out
     assert (f"companies.json created ({len(shipped):,} companies with a live job board: {len(shipped) - abroad:,} hiring in "
-            f"India, {abroad:,} only in other countries)") in out
-    assert "200+" not in out
+            f"India, {abroad:,} checked for other countries)") in out
+    assert "200+" not in out and "only in other countries" not in out          # T151 review: not checked for India
 
 
 def test_plain_init_writes_the_rubric_file_the_example_config_names(workdir, capsys):
