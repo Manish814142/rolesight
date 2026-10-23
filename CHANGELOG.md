@@ -9,6 +9,11 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed in review (2026-10-23, T153)
+- docs/10's "titles in other languages" goal named "Développeur backend" as a title the filter drops; it passes today (the English
+  include word "backend"), as does "Backend-Entwickler" (measured with the defaults and Manish's titles). The examples are now
+  titles that are dropped ("Softwareentwickler", "Ingénieur logiciel", "Software Ontwikkelaar"), and the row says mixed ones pass.
+
 ### Documented (2026-10-23, T126: accents in the CSV)
 - A spreadsheet that guesses a legacy encoding shows "MÃ¼nchen" in the CSV; docs/05 and docs/08 now say to open the `.xlsx` beside it
   (it shows them right) or import the CSV as UTF-8. A byte-order mark was measured and not added: LibreOffice 7.3's default import

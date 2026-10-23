@@ -103,7 +103,7 @@ any country (T108, T136–T143) and companies for other countries (T144: 921, ea
 
 | Idea | What it would do | Size |
 |---|---|---|
-| Titles in other languages | German, French, Dutch… titles ("Softwareentwickler", "Développeur backend") pass the title filter; today only the English words match, so such jobs are dropped (how many is not measured) | small to medium |
+| Titles in other languages | German, French, Dutch… titles ("Softwareentwickler", "Ingénieur logiciel", "Software Ontwikkelaar") pass the title filter; today only the English words match, so such jobs are dropped, while a title that keeps an English word passes already ("Développeur backend", "Backend-Entwickler"); how many is not measured | small to medium |
 | Score any job you find | `rolesight score <URL or pasted text>`: a job seen on LinkedIn, Naukri or a referral, scored with the same rubric and kept in the tracker. Covers the boards RoleSight cannot reach, without scraping | small |
 | A short daily list | "Today: 5 to apply" instead of a 100-row CSV, plus a desktop notification when the scan finishes | small |
 | Learn from your decisions | `mark N skip "reason"` next to `applied`: skip reasons point at filter and rubric fixes, and your own marks become the test labels | small to medium |
