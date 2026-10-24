@@ -386,7 +386,7 @@ T11, T12, T14, T15, T16, T17 and T18 were verified 2026-10-07, T66 and T67 on 20
 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
-| T156 | Report name collisions when merging new companies | doing · antigravity · 2026-10-25 | antigravity | S | — |
+| T156 | Report name collisions when merging new companies | review · antigravity · 5c80754 | antigravity | S | — |
 
 **T156 · finding (Inbox text, claude):** **`merge_companies` drops a new entry whose name reduces to an existing one's, even when it is another employer.** The key is `_core_words(name)` (`discovery.py:309`), which drops words like "software", "group" and "india": in T160 Phoenix Software (York, IT reseller) fell to "Phoenix" (Oracle HCM, The Phoenix Mills, India) and Target Group (Cardiff) to "Target India" (the retailer's Workday tenant); both were added by hand in the review. The third T160 drop, Intertek, was the same company. Option: list name collisions in the report with both boards instead of dropping silently; how many past merges lost a company this way was not measured *(measured (T160's three drops, the boards read))*
 
@@ -706,6 +706,7 @@ The implementer adds a row when a task reaches `review`; the verifier removes it
 
 | ID | Commit(s) | Implementer | Evidence (command → result) |
 |---|---|---|---|
+| T156 | a00d3db, 5c80754 | antigravity | Updated `docs/04-companies-and-scanning.md` table row and paragraph to describe collisions between two new entries (`also new <name> (<ats>/<board>)`, first kept) and list what stays silent (same board, another site of a Workday tenant already on list or earlier in run whatever its name, one entry per Oracle HCM host T117); aligned `CHANGELOG.md` T156 entry. Checked against `job_hunt/discovery.py: _merge_and_collisions`. Ran `pytest tests/test_discovery.py tests/test_public_release.py` → 127 passed *(measured)*; `ruff check job_hunt/ tests/ conftest.py` clean *(measured)*. |
 
 ---
 
