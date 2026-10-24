@@ -512,6 +512,15 @@ T23 was verified 2026-10-07 (Done log); nothing open.
 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
+| T157 | Well-funded mid-size companies hiring in India | doing · antigravity · 2026-10-25 | antigravity | L | — |
+
+**T157 · Well-funded mid-size companies hiring in India.** Goal: add well-funded, mid-size companies that hire software engineers in India to `companies.json`. Mid-size companies hire faster than multinationals, and well-funded or established ones have no cash trouble.
+*Criteria:*
+- A technology or product company with an engineering team in India;
+- About 200 to 5,000 employees;
+- And either total funding of US$25M or more with a round in the last 4 years, or profitable and established (8+ years, or listed);
+- Not a staffing or recruitment agency; no IT-services body shop.
+*Done when:* candidate list (300 to 600 names with public source evidence) recorded in `data/t157_candidates.tsv`; deduplication against `companies.json` measured; new names discovered via `--add-file` without `--merge` in batches of ~200 with `--workers 5`; verified rows reviewed for identity/India locations with verdicts in `data/t157_verdicts.tsv`; ATS census on >=100 unfound companies run and platform mix reported; accepted entries merged into `companies.json` and `job_hunt/data/companies.json` (India entries before -> after, entries with places unchanged at 1,177); visa sponsors rebuilt offline with 0 unreviewed; docs and gates updated and passing; ready for review.
 
 T65 was verified 2026-10-08, T26 on 2026-10-10 (Done log).
 
@@ -686,7 +695,7 @@ Which terms would you add?
 
 ## Inbox
 
-New findings go here with the next free ID (next: **T157**; T160 is already taken by the Workable batch, numbered apart so it cannot clash with the review branch's T149-T151), an evidence tag and the
+New findings go here with the next free ID (next: **T158**; T160 is already taken by the Workable batch, numbered apart so it cannot clash with the review branch's T149-T151), an evidence tag and the
 file:line. Manish or the triaging agent moves each one into a priority table.
 
 | ID | Finding | Evidence | Added by |
