@@ -1270,3 +1270,153 @@ def test_discover_merge_reports_name_collision_in_stdout_and_report_file(tmp_pat
     assert collision_row["board"] == "phoenix-software"
 
 
+def test_name_collisions_between_two_new_entries_reported():
+    """T156: Phoenix Software + Phoenix Group, both new -> the second is reported, naming the first's board."""
+    from job_hunt import discovery as d
+    existing = [{"name": "OtherCo", "ats": "greenhouse", "slug": "otherco"}]
+    new = [
+        {"name": "Phoenix Software", "ats": "workable", "slug": "phoenix-software"},
+        {"name": "Phoenix Group", "ats": "greenhouse", "slug": "phoenix-group"},
+    ]
+
+    cols = d.name_collisions(existing, new)
+    assert len(cols) == 1
+    assert cols[0]["seed"] == "Phoenix Group"
+    assert cols[0]["ats"] == "greenhouse"
+    assert cols[0]["board"] == "phoenix-group"
+    assert cols[0]["verdict"] == "name collision: not added; also new Phoenix Software (workable/phoenix-software)"
+    assert cols[0]["existing_name"] == "Phoenix Software"
+    assert cols[0]["existing_board_full"] == "workable/phoenix-software"
+    assert cols[0]["is_existing"] is False
+
+    merged = d.merge_companies(existing, new)
+    assert [c["name"] for c in merged] == ["OtherCo", "Phoenix Software"]
+
+
+def test_name_collisions_two_sites_of_one_workday_tenant_silent():
+    """T156: Two sites of one Workday tenant, both new -> silent."""
+    from job_hunt import discovery as d
+    existing = [{"name": "OtherCo", "ats": "greenhouse", "slug": "otherco"}]
+    new = [
+        {"name": "Puma UK", "ats": "workday", "tenant": "puma", "dc": "wd3", "site": "puma_uk"},
+        {"name": "Puma Germany", "ats": "workday", "tenant": "puma", "dc": "wd3", "site": "puma_de"},
+    ]
+
+    cols = d.name_collisions(existing, new)
+    assert cols == []
+
+    merged = d.merge_companies(existing, new)
+    assert [c["name"] for c in merged] == ["OtherCo", "Puma UK"]
+
+
+def test_name_collisions_property_equals_entries_dropped_by_name():
+    """T156 property test: for a mixed fixture, the set of entries reported equals the set of new entries merge_companies dropped by name."""
+    from job_hunt import discovery as d
+
+    existing = [
+        {"name": "Alpha Corp", "ats": "greenhouse", "slug": "alpha"},
+        {"name": "Workday One", "ats": "workday", "tenant": "wdtenant1", "dc": "wd1", "site": "site1"},
+        {"name": "Oracle One", "ats": "oracle_hcm", "host": "orcl1.oraclecloud.com", "site": "CX_1"},
+    ]
+    new = [
+        {"name": "Alpha Ltd", "ats": "lever", "slug": "alpha-ltd"},                                         # dropped by name (collides with existing Alpha Corp)
+        {"name": "Alpha Corp", "ats": "greenhouse", "slug": "alpha"},                                       # dropped by board (same board as existing Alpha Corp)
+        {"name": "Workday One UK", "ats": "workday", "tenant": "wdtenant1", "dc": "wd1", "site": "site2"}, # dropped by workday tenant (same tenant as Workday One)
+        {"name": "Oracle One UK", "ats": "oracle_hcm", "host": "orcl1.oraclecloud.com", "site": "CX_2"},   # dropped by oracle host (same host as Oracle One)
+        {"name": "Beta Software", "ats": "greenhouse", "slug": "beta-software"},                            # added (new)
+        {"name": "Beta Group", "ats": "workable", "slug": "beta-group"},                                     # dropped by name (collides with new Beta Software)
+        {"name": "Beta Software", "ats": "greenhouse", "slug": "beta-software"},                            # dropped by board (duplicate of new Beta Software)
+        {"name": "Gamma New 1", "ats": "workday", "tenant": "wdtenant2", "dc": "wd2", "site": "siteA"},     # added (new)
+        {"name": "Gamma New 2", "ats": "workday", "tenant": "wdtenant2", "dc": "wd2", "site": "siteB"},     # dropped by workday tenant (same tenant as Gamma New 1)
+        {"name": "Delta New 1", "ats": "oracle_hcm", "host": "orcl2.oraclecloud.com", "site": "CX_A"},     # added (new)
+        {"name": "Delta New 2", "ats": "oracle_hcm", "host": "orcl2.oraclecloud.com", "site": "CX_B"},     # dropped by oracle host (same host as Delta New 1)
+        {"name": "Omega Solo", "ats": "ashby", "slug": "omega"},                                            # added (new)
+    ]
+
+    cols = d.name_collisions(existing, new)
+    merged = d.merge_companies(existing, new)
+
+    kept_new_boards = {(c.get("ats", ""), d._board_ident(c).lower()) for c in merged} - {
+        (c.get("ats", ""), d._board_ident(c).lower()) for c in existing
+    }
+    assert kept_new_boards == {
+        ("greenhouse", "beta-software"),
+        ("workday", "wdtenant2:wd2:sitea"),
+        ("oracle_hcm", "orcl2.oraclecloud.com:cx_a"),
+        ("ashby", "omega"),
+    }
+
+    reported_names = {c["seed"] for c in cols}
+    assert reported_names == {"Alpha Ltd", "Beta Group"}
+
+    seen_boards = {(c.get("ats", ""), d._board_ident(c).lower()) for c in existing}
+    seen_oracle_hosts = {str(c.get("host", "")).lower() for c in existing if c.get("ats") == "oracle_hcm"}
+    seen_workday_tenants = {str(c.get("tenant", "")).lower() for c in existing if c.get("ats") == "workday"}
+
+    dropped_by_name = []
+    for c in new:
+        b_key = (c.get("ats", ""), d._board_ident(c).lower())
+        if b_key in seen_boards:
+            continue
+        o_host = str(c.get("host", "")).lower() if c.get("ats") == "oracle_hcm" else ""
+        if o_host and o_host in seen_oracle_hosts:
+            continue
+        w_tenant = str(c.get("tenant", "")).lower() if c.get("ats") == "workday" else ""
+        if w_tenant and w_tenant in seen_workday_tenants:
+            continue
+        if any(c == m for m in merged):
+            seen_boards.add(b_key)
+            if o_host:
+                seen_oracle_hosts.add(o_host)
+            if w_tenant:
+                seen_workday_tenants.add(w_tenant)
+        else:
+            dropped_by_name.append(c["name"])
+
+    assert reported_names == set(dropped_by_name)
+
+
+def test_discover_merge_reports_collision_between_new_entries(tmp_path, monkeypatch, capsys):
+    """T156: discover --merge prints collision between new entries naming first board."""
+    from job_hunt import discovery as d
+
+    target = tmp_path / "companies.json"
+    target.write_text(json.dumps([
+        {"name": "OtherCo", "ats": "greenhouse", "slug": "otherco"},
+    ], indent=2), encoding="utf-8")
+
+    seeds = tmp_path / "seeds.txt"
+    seeds.write_text("Phoenix Software\nPhoenix Group\n", encoding="utf-8")
+    out = tmp_path / "out.json"
+    report = tmp_path / "report.csv"
+
+    def fake_discover(seeds, workers=40):
+        verified = [
+            {"name": "Phoenix Software", "ats": "workable", "slug": "phoenix-software", "headcount": "Unknown"},
+            {"name": "Phoenix Group", "ats": "greenhouse", "slug": "phoenix-group", "headcount": "Unknown"},
+        ]
+        rows = [
+            {"seed": "Phoenix Software", "verdict": "verified", "ats": "workable", "board": "phoenix-software"},
+            {"seed": "Phoenix Group", "verdict": "verified", "ats": "greenhouse", "board": "phoenix-group"},
+        ]
+        return verified, rows
+
+    monkeypatch.setattr(d, "discover", fake_discover)
+
+    d.main(["--seeds", str(seeds), "--merge", str(target), "--out", str(out), "--report", str(report), "--no-recheck"])
+
+    captured = capsys.readouterr().out
+    assert "name collision: Phoenix Group (greenhouse/phoenix-group) not added; also new Phoenix Software (workable/phoenix-software)" in captured
+
+    saved = json.loads(target.read_text(encoding="utf-8"))
+    assert [c["name"] for c in saved] == ["OtherCo", "Phoenix Software"]
+
+    import csv
+    with open(report, encoding="utf-8") as f:
+        report_rows = list(csv.DictReader(f))
+    collision_row = next((r for r in report_rows if r["seed"] == "Phoenix Group" and "name collision" in r["verdict"]), None)
+    assert collision_row is not None
+    assert collision_row["verdict"] == "name collision: not added; also new Phoenix Software (workable/phoenix-software)"
+
+
+

@@ -10,8 +10,8 @@ reconstructed from git history.
 ## [Unreleased]
 
 ### Fixed (2026-10-25, T156: name collisions in discover --merge are reported, never dropped silently)
-- When `discover --merge` merges new companies into an existing list, new entries whose name key reduces to an existing entry's on a different board (via `_core_words(name)`) are not added automatically, but are reported in the CSV report (`name collision: not added; existing <name> (<ats>/<board>)`) and printed to stdout naming both boards.
-- Same-board duplicates remain silent; existing entries are preserved across all merges and re-checks.
+- When `discover --merge` merges new companies into an existing list, new entries whose name key reduces (via `_core_words(name)`) to an existing entry's or another new entry's on a different board are not added automatically, but are reported in the CSV report (`name collision: not added; existing <name> (<ats>/<board>)` or `also new <name> (<ats>/<board>)`) and printed to stdout naming both boards.
+- Stays silent: the same board twice, several sites of one Workday tenant (same ATS `workday` and same tenant, of which `--merge` keeps one on purpose), and the one-entry-per-Oracle-host rule (T117). Existing entries are preserved across all merges and re-checks.
 
 ### Fixed (2026-10-25, T155: discover never reads a refused or failed request as "no board")
 - Direct ATS adapters (`greenhouse`, `lever`, `ashby`, `recruitee`, `personio`, `workable`) call `mark_incomplete(<reason>)` on any failure other than HTTP 404 (final 429, 5xx, timeout, bad JSON/XML); HTTP 404 remains "no board".

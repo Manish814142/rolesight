@@ -48,7 +48,7 @@ import unicodedata
 from concurrent.futures import ThreadPoolExecutor
 from datetime import date, datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 from urllib.parse import urljoin
 
 import requests
@@ -300,38 +300,12 @@ def accept_board(
     return True, "verified"
 
 
-def merge_companies(existing: List[Dict[str, Any]], new: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    """Existing entries win; a new entry is dropped if its name or board is already present (and, for Oracle HCM, its host)."""
-    def board_key(c: Dict[str, Any]) -> Tuple[str, str]:
-        return c.get("ats", ""), _board_ident(c).lower()
-
-    def name_key(c: Dict[str, Any]) -> str:
-        return " ".join(_core_words(c["name"]))  # "Mindtickle India" == "Mindtickle"
-
-    def oracle_host(c: Dict[str, Any]) -> str:
-        return str(c.get("host", "")).lower() if c.get("ats") == "oracle_hcm" else ""
-
-    out = list(existing)
-    names = {name_key(c) for c in out}
-    boards = {board_key(c) for c in out}
-    # An Oracle HCM host is one employer's tenant and its sites are its career sites: one entry per host, the first given (T117).
-    oracle_hosts = {oracle_host(c) for c in out} - {""}
-    for c in new:
-        if name_key(c) in names or board_key(c) in boards or (oracle_host(c) and oracle_host(c) in oracle_hosts):
-            continue
-        out.append(c)
-        names.add(name_key(c))
-        boards.add(board_key(c))
-        oracle_hosts.add(oracle_host(c))
-    return sorted(out, key=lambda c: (c.get("ats", ""), c["name"].lower()))
-
-
 def _board_ident(c: Dict[str, Any]) -> str:
     """Stable board identifier across ATS kinds (slug, Workday tenant:dc:site, Oracle host:site, Eightfold host:domain, Phenom host:locale)."""
     if c.get("slug"):
         return str(c["slug"])
     if c.get("ats") == "oracle_hcm":
-        return f"{c.get('host')}:{c.get('site')}" if c.get("site") else str(c.get("host", ""))
+        return f"{c.get('host')}:{c.get('site')}"
     if c.get("ats") == "workday":
         return f"{c.get('tenant')}:{c.get('dc')}:{c.get('site')}"
     if c.get("ats") == "eightfold":
@@ -341,10 +315,17 @@ def _board_ident(c: Dict[str, Any]) -> str:
     return str(c.get("ats", ""))
 
 
-def name_collisions(existing: List[Dict[str, Any]], new: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    """Report new companies whose name key reduces to an existing one's on a different board.
+def _merge_and_collisions(
+    existing: List[Dict[str, Any]],
+    new: List[Dict[str, Any]],
+) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
+    """Single engine for merge_companies and name_collisions.
 
-    Same-board duplicates stay silent.
+    Existing entries win; a new entry is dropped if its board is already present, if it shares an
+    Oracle HCM host with an existing or earlier new entry (T117), or if it is another site of a
+    Workday tenant already present (which stay silent).
+    A new entry dropped because its name key reduces to an existing or earlier new entry's is reported
+    as a name collision naming both boards.
     """
     def board_key(c: Dict[str, Any]) -> Tuple[str, str]:
         return c.get("ats", ""), _board_ident(c).lower()
@@ -352,38 +333,85 @@ def name_collisions(existing: List[Dict[str, Any]], new: List[Dict[str, Any]]) -
     def name_key(c: Dict[str, Any]) -> str:
         return " ".join(_core_words(c["name"]))
 
-    existing_boards = {board_key(c) for c in existing}
-    existing_by_name: Dict[str, Dict[str, Any]] = {}
+    def oracle_host(c: Dict[str, Any]) -> str:
+        return str(c.get("host", "")).lower() if c.get("ats") == "oracle_hcm" else ""
+
+    def workday_tenant(c: Dict[str, Any]) -> str:
+        return str(c.get("tenant", "")).lower() if c.get("ats") == "workday" else ""
+
+    out = list(existing)
+    boards = {board_key(c) for c in out}
+    oracle_hosts = {oracle_host(c) for c in out} - {""}
+    workday_tenants = {workday_tenant(c) for c in out} - {""}
+
+    by_name: Dict[str, Tuple[Dict[str, Any], bool]] = {}
     for c in existing:
-        k = name_key(c)
-        if k and k not in existing_by_name:
-            existing_by_name[k] = c
+        nk = name_key(c)
+        if nk and nk not in by_name:
+            by_name[nk] = (c, True)
 
     collisions: List[Dict[str, Any]] = []
-    seen_new_boards: Set[Tuple[str, str]] = set()
+
     for c in new:
         b_key = board_key(c)
-        if b_key in existing_boards or b_key in seen_new_boards:
+        if b_key in boards:
             continue
-        seen_new_boards.add(b_key)
+
+        o_host = oracle_host(c)
+        if o_host and o_host in oracle_hosts:
+            continue
+
+        w_tenant = workday_tenant(c)
+        if w_tenant and w_tenant in workday_tenants:
+            continue
+
         nk = name_key(c)
-        if nk in existing_by_name:
-            ex = existing_by_name[nk]
-            ex_ats = ex.get("ats", "")
-            ex_board = _board_ident(ex)
-            ex_board_full = f"{ex_ats}/{ex_board}"
-            verdict = f"name collision: not added; existing {ex['name']} ({ex_board_full})"
+        if nk and nk in by_name:
+            prior, is_existing = by_name[nk]
+            prior_ats = prior.get("ats", "")
+            prior_board = _board_ident(prior)
+            prior_board_full = f"{prior_ats}/{prior_board}"
+            rel = "existing" if is_existing else "also new"
+            verdict = f"name collision: not added; {rel} {prior['name']} ({prior_board_full})"
             collisions.append({
                 "seed": c["name"],
                 "verdict": verdict,
                 "ats": c.get("ats", ""),
                 "board": _board_ident(c),
                 "accepted": False,
-                "existing_name": ex["name"],
-                "existing_ats": ex_ats,
-                "existing_board": ex_board,
-                "existing_board_full": ex_board_full,
+                "existing_name": prior["name"],
+                "existing_ats": prior_ats,
+                "existing_board": prior_board,
+                "existing_board_full": prior_board_full,
+                "is_existing": is_existing,
             })
+            continue
+
+        out.append(c)
+        boards.add(b_key)
+        if o_host:
+            oracle_hosts.add(o_host)
+        if w_tenant:
+            workday_tenants.add(w_tenant)
+        if nk and nk not in by_name:
+            by_name[nk] = (c, False)
+
+    merged = sorted(out, key=lambda c: (c.get("ats", ""), c["name"].lower()))
+    return merged, collisions
+
+
+def merge_companies(existing: List[Dict[str, Any]], new: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """Existing entries win; a new entry is dropped if its name or board is already present (and, for Oracle HCM, its host)."""
+    merged, _ = _merge_and_collisions(existing, new)
+    return merged
+
+
+def name_collisions(existing: List[Dict[str, Any]], new: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """Report new companies whose name key reduces to an existing or earlier new one's on a different board.
+
+    Same-board duplicates, Oracle HCM host duplicates, and Workday tenant duplicates stay silent.
+    """
+    _, collisions = _merge_and_collisions(existing, new)
     return collisions
 
 
@@ -1151,8 +1179,9 @@ def main(argv: Optional[List[str]] = None) -> None:
                 print(f"  dropping existing {c['name']} ({c['ats']}): {r['verdict']}")
         collisions = name_collisions(kept, verified)
         for col in collisions:
+            rel = "existing" if col.get("is_existing", True) else "also new"
             print(f"  name collision: {col['seed']} ({col['ats']}/{col['board']}) not added; "
-                  f"existing {col['existing_name']} ({col['existing_board_full']})")
+                  f"{rel} {col['existing_name']} ({col['existing_board_full']})")
         write_report(rows + collisions + [{**r, "seed": f"[existing] {r['seed']}"} for r in recheck_rows], opts["--report"])
         merged = merge_companies(kept, verified)
         target.write_text(json.dumps(merged, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
