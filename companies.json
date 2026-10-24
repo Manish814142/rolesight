@@ -17962,6 +17962,15 @@
     ]
   },
   {
+    "name": "Phasecraft",
+    "ats": "workable",
+    "slug": "phasecraft-1",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
     "name": "Plain Concepts",
     "ats": "workable",
     "slug": "plainconcepts",
@@ -18756,9 +18765,27 @@
     ]
   },
   {
+    "name": "Velociti Solutions",
+    "ats": "workable",
+    "slug": "velociti-solutions",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
     "name": "Verisian",
     "ats": "workable",
     "slug": "verisian",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
+    "name": "Visualsoft",
+    "ats": "workable",
+    "slug": "visualsoft",
     "headcount": "Unknown",
     "places": [
       "United Kingdom"

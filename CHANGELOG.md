@@ -12,13 +12,13 @@ reconstructed from git history.
 ### Added (2026-10-24, T160: Workable's 12,585 harvested boards checked across 22 countries)
 - The 12,585 Workable boards harvested from the web (`data/t160_workable/`, split into 13 batches of up to 1,000 seeds) were checked
   against the 22 countries using `.venv/bin/python -m job_hunt discover` with `--workers 3` to respect Workable's rate limits. 1,137 live boards
-  with jobs in the 22 target countries were found and verified across all 13 batches.
-- Filtered by visa sponsorship evidence (`scripts/filter_by_visa_evidence.py`): 202 candidates showed evidence on public sponsor registers
+  with jobs in the 22 target countries were found across all 13 batches, plus a retry pass on 51 throttled boards verified 12 more (1,149 candidates total).
+- Filtered by visa sponsorship evidence (`scripts/filter_by_visa_evidence.py`): 205 candidates showed evidence on public sponsor registers
   (UK Skilled Worker register, Dutch IND register, Irish permits, US H-1B, Canadian LMIA, and community lists).
-- Merged into `companies.json` and `job_hunt/data/companies.json`: 200 new employers added (2 duplicates with existing Oracle HCM entries
-  Intertek and Phoenix Software dropped). `companies.json` 2,510 -> **2,710** (India's 1,589 boards unchanged; companies abroad 921 -> 1,121).
-  Workable boards 106 -> 306. Rebuilt `job_hunt/data/visa_sponsors.json`: 1,867 of 2,710 companies have verified visa sponsor evidence
-  (UK 1,246, NL 503, IE 158, lists 93, US 851, CA 89).
+- Merged into `companies.json` and `job_hunt/data/companies.json`: 203 new employers added (2 duplicates with existing Oracle HCM entries
+  Intertek and Phoenix Software dropped). `companies.json` 2,510 -> **2,713** (India's 1,589 boards unchanged; companies abroad 921 -> 1,124).
+  Workable boards 106 -> 309. Rebuilt `job_hunt/data/visa_sponsors.json`: 1,870 of 2,713 companies have verified visa sponsor evidence
+  (UK 1,249, NL 503, IE 158, lists 93, US 851, CA 89).
 
 ### Fixed in review (2026-10-23, T153)
 - docs/10's "titles in other languages" goal named "Développeur backend" as a title the filter drops; it passes today (the English

@@ -6,10 +6,10 @@ The list of job boards to scan. It is committed, it is the core of the project, 
 was checked by `autopilot discover` (below) to be live, to belong to the employer it names and to have India jobs (or,
 for the 27 entries that carry `"places"`, jobs in those countries: T139).
 
-**Counts (2026-10-24):** 2,710 boards: Greenhouse 733, Workday 481, Ashby 391, Workable 306, SmartRecruiters 264,
+**Counts (2026-10-24):** 2,713 boards: Greenhouse 733, Workday 481, Ashby 391, Workable 309, SmartRecruiters 264,
 Lever 206, Recruitee 195, Oracle HCM 108, Personio 20, Eightfold 4, Amazon 1, Phenom 1. The first 224 were curated by
-hand; 1,365 came from the bulk harvest (T111, T112); 1,121 were checked for other countries instead of India (T139, T142, T144, T160):
-58 from the community lists and 1,062 that passed the visa-evidence rule (862 from T144 and 200 from Workable in T160). Count yours with
+hand; 1,365 came from the bulk harvest (T111, T112); 1,124 were checked for other countries instead of India (T139, T142, T144, T160):
+58 from the community lists and 1,065 that passed the visa-evidence rule (862 from T144 and 203 from Workable in T160). Count yours with
 `python -c "import json,collections;print(collections.Counter(c['ats'] for c in json.load(open('companies.json'))))"`.
 
 `job_hunt/data/companies.json` is the copy `autopilot init` gives a new user. **After any change, copy the list there**

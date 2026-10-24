@@ -22039,6 +22039,17 @@
     "source": "us"
    }
   ],
+  "Phasecraft": [
+   {
+    "match": "exact",
+    "names": {
+     "Phasecraft Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
   "Philips": [
    {
     "match": "exact",
@@ -31844,6 +31855,17 @@
     "source": "uk"
    }
   ],
+  "Velociti Solutions": [
+   {
+    "match": "exact",
+    "names": {
+     "Velociti Solutions Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
   "Velocity Electronics": [
    {
     "match": "exact",
@@ -32324,6 +32346,17 @@
     "names": {
      "Vishay Ltd": [
       "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Visualsoft": [
+   {
+    "match": "exact",
+    "names": {
+     "Visualsoft Limited": [
       "Skilled Worker"
      ]
     },
