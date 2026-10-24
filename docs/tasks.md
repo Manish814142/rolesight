@@ -499,12 +499,13 @@ T23 was verified 2026-10-07 (Done log); nothing open.
 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
-| T160 | Workable: 12,585 harvested boards in batches | doing · antigravity · 2026-10-24 | antigravity | L | — |
+| T160 | Workable: 12,585 harvested boards in batches | review · antigravity · 001dbc0 | antigravity | L | — |
 
 T65 was verified 2026-10-08, T26 on 2026-10-10 (Done log).
 
 **T160 · Workable: 12,585 harvested boards in batches.** Check the 12,585 Workable seeds in `data/t160_workable/` (batches `batch_00.txt` to `batch_12.txt`) across the 22 countries, filter by visa sponsor evidence (`scripts/filter_by_visa_evidence.py`), and merge the verified visa-sponsoring employers into `companies.json` and `job_hunt/data/companies.json`.
 *Done when:* all 13 batches have been run, candidates filtered by visa evidence, kept companies merged cleanly with no regression on India's 1,589 boards or existing entries, documentation updated, and test suite clean.
+**Implemented (antigravity, 2026-10-24, 001dbc0).** All 13 batches (12,585 seeds) run with `.venv/bin/python -m job_hunt discover --workers 3` (safe against Workable rate limits) -> 1,137 live verified boards across the 22 target countries. Filtered by visa sponsorship evidence (`scripts/filter_by_visa_evidence.py`): 202 kept on primary register evidence (UK Skilled Worker, Dutch IND, Irish permits, US H-1B, Canadian LMIA, community lists), 84 review, 851 dropped. Merged into `companies.json` and `job_hunt/data/companies.json`: 200 new employers added (2 duplicates with existing Oracle HCM entries dropped: Intertek, Phoenix Software). `companies.json` 2,510 -> 2,710 (India's 1,589 boards identical and untouched; abroad 921 -> 1,121). Workable boards 106 -> 306. Rebuilt `job_hunt/data/visa_sponsors.json`: 1,867 of 2,710 have evidence. Documentation updated. Gates: `pytest` 2,284 passed, coverage 94.23%; `ruff` and `mypy` clean.
 
 **T25–T27 · New ATS platforms.** (A previous Claude session recorded that Eightfold's PCSX endpoint returns HTTP 403 and Darwinbox needs a tenant session, tried 2026-10-04/05; that note is from memory, not in the repo, so re-check before relying on it.) The census (feb152f) of 458 careers pages found
 Eightfold and Phenom on 7% each and Darwinbox on 6%, while 52% were unidentified (per
@@ -692,6 +693,7 @@ The implementer adds a row when a task reaches `review`; the verifier removes it
 
 | ID | Commit(s) | Implementer | Evidence (command → result) |
 |---|---|---|---|
+| T160 | 001dbc0 | antigravity | `bash data/t160_workable/run_batches.sh` -> 13/13 batches run (12,585 seeds) -> 1,137 verified boards in 22 countries. `python scripts/filter_by_visa_evidence.py --candidates data/t160_workable/out_*.json --out data/t160_workable/workable_kept.json --report data/t160_workable/workable_filter.csv` -> 1,137 candidates: 202 kept, 84 review, 851 dropped. Merged into `companies.json` & `job_hunt/data/companies.json`: 2,510 -> 2,710 (+200 new, 2 duplicates dropped; India 1,589 unchanged; Workable 106 -> 306). Rebuilt `job_hunt/data/visa_sponsors.json`: 1,867 of 2,710 with evidence. `pytest` -> 2,284 passed, coverage 94.23%; `ruff check` and `mypy` clean. |
 
 ---
 
