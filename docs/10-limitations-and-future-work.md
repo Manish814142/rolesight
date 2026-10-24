@@ -99,7 +99,7 @@ the codes boards write, regions, Workday search terms measured on real tenants) 
 ## 2. Future goals
 
 Ideas, not started. The first ones help a job seeker most; the size is a rough estimate. Done since this list was written:
-any country (T108, T136–T143) and companies for other countries (T144: 921, each with visa-sponsor evidence).
+any country (T108, T136–T143) and companies for other countries (T144, T160: 1,121, each with visa-sponsor evidence).
 
 | Idea | What it would do | Size |
 |---|---|---|
@@ -110,7 +110,7 @@ any country (T108, T136–T143) and companies for other countries (T144: 921, ea
 | Referrals | Import your LinkedIn connections export (a CSV LinkedIn lets you download) and show who you know at each company | small to medium |
 | Follow-ups and outcomes | A reminder when an application gets no answer; a weekly count of applied → interview → offer by score band, the real test of the scorer | medium |
 | Interview prep | For a job you reach the interview with: likely topics, the gaps in your resume, questions to ask (drafts only) | small |
-| More companies abroad | Workable's 12,585 harvested boards (T160: Workable throttles a bulk run, so about 1,000 a batch) and the register check of the ~3,800 companies T144 dropped without a title match | medium |
+| More companies abroad | The register check of the ~3,800 companies T144 dropped without a title match (Workable's 12,585 boards done in T160: 200 kept) | medium |
 | More job boards | Adapters for other systems with public APIs (not yet checked: Keka, Zoho Recruit, …) | per board |
 | Re-score after a rubric change | A command that finds the stored scores a scan can still re-score, and resets only those | small |
 | Scheduling on Windows (and launchd on macOS) | Task Scheduler (and launchd) next to the systemd timer and cron; today `schedule on` on Windows only explains the steps | small |
