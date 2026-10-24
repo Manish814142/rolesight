@@ -386,7 +386,7 @@ T11, T12, T14, T15, T16, T17 and T18 were verified 2026-10-07, T66 and T67 on 20
 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
-| T152 | A guard for common-word company names in future rebuilds | doing · antigravity · 2026-10-25 | antigravity | M | — |
+| T152 | A guard for common-word company names in future rebuilds | review · antigravity · b436e79 | antigravity | M | — |
 | T156 | Report name collisions when merging new companies | changes · claude | antigravity | S | — |
 
 **T156 · finding (Inbox text, claude):** **`merge_companies` drops a new entry whose name reduces to an existing one's, even when it is another employer.** The key is `_core_words(name)` (`discovery.py:309`), which drops words like "software", "group" and "india": in T160 Phoenix Software (York, IT reseller) fell to "Phoenix" (Oracle HCM, The Phoenix Mills, India) and Target Group (Cardiff) to "Target India" (the retailer's Workday tenant); both were added by hand in the review. The third T160 drop, Intertek, was the same company. Option: list name collisions in the report with both boards instead of dropping silently; how many past merges lost a company this way was not measured *(measured (T160's three drops, the boards read))*
@@ -705,6 +705,7 @@ The implementer adds a row when a task reaches `review`; the verifier removes it
 
 | ID | Commit(s) | Implementer | Evidence (command → result) |
 |---|---|---|---|
+| T152 | b436e79 | antigravity | `scripts/common_words.LICENSE` added with verbatim SCOWL/WordNet/UKACD/Ispell notices, contact emails removed; `pytest tests/test_public_release.py` → 19 passed *(measured)*. Missing wordlist error: `pytest tests/test_build_visa_sponsors.py -k test_common_words` → 2 passed *(measured)*; mutant with exists() fallback restored fails `test_common_words_raises_when_file_is_missing` *(measured)*. Summary print updated in `scripts/build_visa_sponsors.py` and asserted in `tests/test_build_visa_sponsors.py:207`. Rebuild offline twice: `python3 scripts/build_visa_sponsors.py --offline --report /tmp/t152_rep1.csv` and `rep2.csv` → 1923 of 2766 companies have evidence, 0 unreviewed, `job_hunt/data/visa_sponsors.json` identical to committed file apart from `built` date *(measured)*. Recount: `python3 -c "import csv; from scripts.build_visa_sponsors import common_words, exact_key, SHORT_KEY; cw = common_words(); rows = [r for r in csv.DictReader(open('/tmp/t152_rep1.csv', encoding='utf-8')) if r['Match'] == 'exact' and len(exact_key(r['Company']).replace(' ', '')) > SHORT_KEY and all(w in cw for w in exact_key(r['Company']).split())]; print(len(rows), {s: sum(1 for r in rows if r['Status'] == s) for s in ('kept', 'rejected', 'unreviewed')})"` → 514 {'kept': 475, 'rejected': 39, 'unreviewed': 0} *(measured)*. Gates: `ruff check job_hunt/ tests/ conftest.py` clean, `mypy` clean, `pytest --cov=job_hunt --cov-fail-under=85` → 2299 passed, 94.53% coverage *(measured)*. |
 
 ---
 
