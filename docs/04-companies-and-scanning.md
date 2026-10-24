@@ -229,9 +229,10 @@ fetch (all fixed or decided since; check for them in yours):
 - the same board twice;
 - another site of a Workday tenant that is already on the list or earlier in the run, whatever its name (one entry per tenant: a tenant's sites are one company);
 - one entry per Oracle HCM host (T117).
-Existing entries are never dropped by a merge.
 
-**Adding a collision by hand:** If a reported collision is another employer, add its entry to `companies.json` by hand, then update the packaged copy: `cp companies.json job_hunt/data/companies.json`. Existing name-sharing entries (like Phoenix/Phoenix Software and Target India/Target Group) are preserved across all merges and re-checks.
+A name collision never removes or replaces an entry already on the list. Only the re-check of `discover --merge` removes one, when its own board answers and fails it (a refused or failed request is `not checked` and the entry stays, T155); `--no-recheck` skips the re-check.
+
+**Adding a collision by hand:** If a reported collision is another employer, add its entry to `companies.json` by hand, then update the packaged copy: `cp companies.json job_hunt/data/companies.json`. Entries that share a name key (Phoenix and Phoenix Software, Target India and Target Group) both stay: a later merge never drops either for the collision, and the re-check removes one only when its own board fails it.
 
 **Removing a wrong entry by hand:** delete its object from `companies.json`, `cp companies.json job_hunt/data/companies.json`,
 and, when the board itself is wrong (another employer, a stub), add `(ats, slug)` to `discovery.KNOWN_BAD_BOARDS` with the
