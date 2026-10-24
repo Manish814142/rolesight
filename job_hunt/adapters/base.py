@@ -167,3 +167,14 @@ def mark_incomplete(reason: str) -> None:
 def fetch_incomplete() -> Optional[str]:
     """Why the board fetched since begin_fetch() is incomplete, or None when it ended normally."""
     return getattr(_fetch_state, "incomplete", None)
+
+
+def failure_reason(exc: Exception, resp: Optional[Any] = None) -> str:
+    """A short reason for mark_incomplete when an adapter fetch fails (T155)."""
+    status = getattr(getattr(exc, "response", None), "status_code", None)
+    if not status and resp is not None:
+        status = getattr(resp, "status_code", None)
+    if status and status != 200:
+        return f"HTTP {status}"
+    return str(exc) or type(exc).__name__
+

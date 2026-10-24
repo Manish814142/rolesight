@@ -9,6 +9,14 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed (2026-10-25, T155: discover never reads a refused or failed request as "no board")
+- Direct ATS adapters (`greenhouse`, `lever`, `ashby`, `recruitee`, `personio`, `workable`) call `mark_incomplete(<reason>)` on any failure other than HTTP 404 (final 429, 5xx, timeout, bad JSON/XML); HTTP 404 remains "no board".
+- `evaluate_board` and `evaluate_entry` call `begin_fetch()` before fetching and check `fetch_incomplete()`; 0 jobs with an incomplete fetch yields `not checked: <reason>`, never "no open jobs" or stale.
+- Probes retaining HTTP 429 or failure status (not 404, not 200 with 0 jobs) report `not checked: HTTP <status> on <ats>/<slug>` with a warning logging the board, rather than "no live board on supported ATSs".
+- `reverify_existing` marks `not checked` rows as accepted (same as `error`), so `discover --merge` keeps them and `discover --recheck` neither removes nor re-discovers them.
+- `discover` and `reverify_existing` retry `not checked` entries once more 2 at a time before reporting.
+- Summary lines print count of `not checked` rows.
+
 ### Added (2026-10-24, T152: common-word company name guard for visa sponsors)
 - An exact visa-record match on a company name whose key is made only of common words must be accepted by hand in `scripts/visa_sponsor_review.json` before it counts (`scripts/build_visa_sponsors.py` `status()`, `SHORT_KEY` guard extended). Shipped word list in `scripts/common_words.txt` (SCOWL-50 / Debian wamerican, 73,442 words, 653 KB, MIT/BSD-style licence). Rebuilt offline: 521 exact records sit on long all-common keys, 0 unreviewed (all 521 already have hand verdicts from T144/T160); `companies.json` (2,766 total, 1,589 India, 1,177 abroad) and visa sponsors (1,923 of 2,766) unchanged.
 

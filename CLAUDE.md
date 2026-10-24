@@ -162,8 +162,7 @@ check only that board (no slug guessing on the other ATSs) and name the company 
 keeps every site of a Workday tenant and lets the one with most India jobs win. Run it on chunks of one ATS:
 `autopilot discover --seeds /tmp/seeds.txt --report /tmp/r.csv --out /tmp/v.json --merge companies.json --no-recheck --workers 20`.
 About 3 boards in 100 pass (live, ≥1 India job, a posting ≤180 days old); one board that makes the fetch raise is an `error` row, not the
-end of the run. **Workable refuses about half the requests of a sustained burst with HTTP 429** (measured 2026-10-16: about 800 requests at 20 a second; Recruitee's were seen in a bulk run's log). Every request now waits and asks again after a 429 (T114),
-but a bulk run of Workable or Recruitee boards should still use `--workers 3` (at 20 workers, before the retry existed, 13 of 100 sampled Workable "no live board" verdicts, and 19 of 100 Recruitee, were alive when probed one at a time). Oracle HCM sites are harvested too (T112): the
+end of the run. **Workable refuses about half the requests of a sustained burst with HTTP 429** (measured 2026-10-16: about 800 requests at 20 a second; Recruitee's were seen in a bulk run's log). Every request waits and asks again after a 429 (T114); refused or failed boards are marked `not checked: HTTP 429 …` (never `no board`) and retried once more 2 at a time, keeping existing entries (T155). A bulk run of Workable or Recruitee boards should still use `--workers 3` (at 20 workers, before the retry existed, 13 of 100 sampled Workable "no live board" verdicts, and 19 of 100 Recruitee, were alive when probed one at a time). Oracle HCM sites are harvested too (T112): the
 host is a customer code (`cbcz.fa.us2…`), so the script names each site from its page `<title>`; `discover` keeps one entry per
 host, its busiest site, named by that site's own title (T117). The full guide for people: `docs/04-companies-and-scanning.md`, "Growing the list".
 

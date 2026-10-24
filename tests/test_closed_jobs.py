@@ -231,3 +231,18 @@ def test_a_board_that_stopped_early_counts_no_misses(scan):
     assert _row(b)["last_seen"] > _row(a)["last_seen"]
     scan({"X": [b]}, closed_after=1)                                       # a complete answer without it: closed
     assert _row(a)["closed_at"]
+
+
+def test_a_board_whose_fetch_fails_completely_counts_no_misses(scan):
+    """T155: A newly flagged failure (returning [] with mark_incomplete) leaves missed_scans and closed_at untouched."""
+    from job_hunt.adapters import base
+    a = _job("a")
+    scan({"X": [a]}, closed_after=1)
+
+    def failing_board():
+        base.mark_incomplete("HTTP 503")
+        return []
+
+    scan({"X": failing_board}, closed_after=1)
+    assert (_row(a)["missed_scans"], _row(a)["closed_at"]) == (0, None)
+

@@ -4,7 +4,13 @@ from __future__ import annotations
 import logging
 from typing import List
 
-from job_hunt.adapters.base import DEFAULT_HEADERS, http_get, strip_html
+from job_hunt.adapters.base import (
+    DEFAULT_HEADERS,
+    failure_reason,
+    http_get,
+    mark_incomplete,
+    strip_html,
+)
 from job_hunt.models import JobPosting
 
 logger = logging.getLogger(__name__)
@@ -26,6 +32,7 @@ def fetch_recruitee(slug: str) -> List[JobPosting]:
         data = resp.json()
     except Exception as e:
         logger.warning("Recruitee fetch failed for %s: %s", slug, e)
+        mark_incomplete(failure_reason(e, resp=locals().get("resp")))
         return []
 
     jobs: List[JobPosting] = []

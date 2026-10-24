@@ -376,3 +376,71 @@ def test_greenhouse_board_with_null_fields_does_not_crash_the_fetch(mock_get):
 
     assert [j.title for j in jobs] == ["Backend Engineer", "", "Platform Engineer"]
     assert [j.location for j in jobs] == ["Not specified", "Not specified", "Pune, India"]
+
+
+def test_adapters_mark_incomplete_on_non_404_failures():
+    """T155: Adapters call mark_incomplete on any failure other than 404 (5xx, timeout, bad JSON). 404 stays clean."""
+    import requests
+
+    from job_hunt.adapters import base
+    from job_hunt.adapters.ashby import fetch_ashby
+    from job_hunt.adapters.greenhouse import fetch_greenhouse
+    from job_hunt.adapters.lever import fetch_lever
+    from job_hunt.adapters.personio import fetch_personio
+    from job_hunt.adapters.recruitee import fetch_recruitee
+    from job_hunt.adapters.workable import fetch_workable
+
+    # 1. 404 on greenhouse -> returns [] and leaves fetch_incomplete None
+    base.begin_fetch()
+    resp_404 = MagicMock(status_code=404)
+    with patch("job_hunt.adapters.greenhouse.http_get", return_value=resp_404):
+        assert fetch_greenhouse("stripe") == []
+    assert base.fetch_incomplete() is None
+
+    # 2. 503 on greenhouse -> returns [] and calls mark_incomplete
+    base.begin_fetch()
+    resp_503 = MagicMock(status_code=503)
+    resp_503.raise_for_status.side_effect = requests.HTTPError("503 Server Error")
+    with patch("job_hunt.adapters.greenhouse.http_get", return_value=resp_503):
+        assert fetch_greenhouse("stripe") == []
+    assert "503" in (base.fetch_incomplete() or "")
+
+    # 3. Timeout on lever -> returns [] and calls mark_incomplete
+    base.begin_fetch()
+    with patch("job_hunt.adapters.lever.http_get", side_effect=requests.Timeout("Connection timed out")):
+        assert fetch_lever("spotify") == []
+    assert base.fetch_incomplete() is not None
+
+    # 4. Bad JSON on ashby -> returns [] and calls mark_incomplete
+    base.begin_fetch()
+    resp_bad_json = MagicMock(status_code=200)
+    resp_bad_json.raise_for_status.return_value = None
+    resp_bad_json.json.side_effect = ValueError("Expecting value: line 1 column 1")
+    with patch("job_hunt.adapters.ashby.http_get", return_value=resp_bad_json):
+        assert fetch_ashby("ramp") == []
+    assert base.fetch_incomplete() is not None
+
+    # 5. 500 on recruitee -> returns [] and calls mark_incomplete
+    base.begin_fetch()
+    resp_500 = MagicMock(status_code=500)
+    resp_500.raise_for_status.side_effect = requests.HTTPError("500 Server Error")
+    with patch("job_hunt.adapters.recruitee.http_get", return_value=resp_500):
+        assert fetch_recruitee("bunq") == []
+    assert "500" in (base.fetch_incomplete() or "")
+
+    # 6. Invalid XML on personio -> returns [] and calls mark_incomplete
+    base.begin_fetch()
+    resp_bad_xml = MagicMock(status_code=200, content=b"invalid xml")
+    resp_bad_xml.raise_for_status.return_value = None
+    with patch("job_hunt.adapters.personio.http_get", return_value=resp_bad_xml):
+        assert fetch_personio("personio") == []
+    assert base.fetch_incomplete() is not None
+
+    # 7. Non-429 failure on workable (e.g. 500) -> returns [] and calls mark_incomplete
+    base.begin_fetch()
+    resp_workable_500 = MagicMock(status_code=500)
+    resp_workable_500.raise_for_status.side_effect = requests.HTTPError("500 Server Error")
+    with patch("job_hunt.adapters.workable.http_get", return_value=resp_workable_500):
+        assert fetch_workable("someco") == []
+    assert "500" in (base.fetch_incomplete() or "")
+

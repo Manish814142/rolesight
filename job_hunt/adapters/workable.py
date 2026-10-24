@@ -7,6 +7,7 @@ from typing import Any, Dict, List
 from job_hunt.adapters.base import (
     DEFAULT_HEADERS,
     RATE_LIMIT_PAUSES,
+    failure_reason,
     http_get,
     mark_incomplete,
     strip_html,
@@ -37,6 +38,7 @@ def fetch_workable(slug: str) -> List[JobPosting]:
         data: Dict[str, Any] = resp.json()
     except Exception as e:
         logger.warning("Workable fetch failed for %s: %s", slug, e)
+        mark_incomplete(failure_reason(e, resp=locals().get("resp")))
         return []
 
     jobs: List[JobPosting] = []

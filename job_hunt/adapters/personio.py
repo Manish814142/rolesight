@@ -5,7 +5,13 @@ import logging
 import xml.etree.ElementTree as ET
 from typing import List
 
-from job_hunt.adapters.base import DEFAULT_HEADERS, http_get, strip_html
+from job_hunt.adapters.base import (
+    DEFAULT_HEADERS,
+    failure_reason,
+    http_get,
+    mark_incomplete,
+    strip_html,
+)
 from job_hunt.models import JobPosting
 
 logger = logging.getLogger(__name__)
@@ -27,6 +33,7 @@ def fetch_personio(slug: str) -> List[JobPosting]:
         root = ET.fromstring(resp.content)
     except Exception as e:
         logger.warning("Personio fetch failed for %s: %s", slug, e)
+        mark_incomplete(failure_reason(e, resp=locals().get("resp")))
         return []
 
     jobs: List[JobPosting] = []

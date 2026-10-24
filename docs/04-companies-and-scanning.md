@@ -220,6 +220,9 @@ fetch (all fixed or decided since; check for them in yours):
 | **Same slug, other company** | `ashby/navi`, `ashby/bounce`, `personio/edelweiss` (`discovery.KNOWN_BAD_BOARDS`, never accepted) | Add a board you find wrong to that set, with the reason in the commit |
 | **Wrong name** on an Oracle host with several brands | "ADI" on Resideo's site, "Lutech" on McDermott's (T117, fixed in the script) | Compare the entry's name with its jobs' descriptions |
 | A **one-posting board** that lost its India job a day later | Loopio, Ryansg (T112) | The monthly recheck removes them |
+| A **refused or failed board** (HTTP 429, 5xx, timeout) | 13 of 60 sampled in T160 were refused when re-probed (T155) | Marked `not checked: <reason>` (never "no board"), re-run 2 at a time; existing entries are kept and recheck neither removes nor re-discovers them |
+
+**Refused or failed requests (`not checked`, T155):** Requests refused by rate limiting (HTTP 429) or failing (5xx, timeout, malformed response) are reported as `not checked: <reason>` rather than "no live board" or "no open jobs". They are re-run once more 2 at a time at the end of the pass. Existing entries answering `not checked` are kept in `--merge` and `--recheck` (neither removed nor replaced).
 
 **Removing a wrong entry by hand:** delete its object from `companies.json`, `cp companies.json job_hunt/data/companies.json`,
 and, when the board itself is wrong (another employer, a stub), add `(ats, slug)` to `discovery.KNOWN_BAD_BOARDS` with the

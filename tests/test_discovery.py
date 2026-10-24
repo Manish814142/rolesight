@@ -1036,3 +1036,102 @@ def test_an_add_option_with_no_company_name_stops_too(tmp_path, monkeypatch, arg
         disc.main(["--seeds", str(seeds), *argv, "--out", str(tmp_path / "v.json"), "--report", str(tmp_path / "r.csv")])
     assert stop.value.code not in (0, None) and "no company" in str(stop.value.code).lower()
     assert called == [] and seeds.read_text() == "Stripe\nPlane\n"
+
+
+# ── T155: discover must never read a refused or failed request as "no board" ────
+
+def test_probe_refusal_or_failure_is_not_checked_never_no_board(monkeypatch):
+    """T155: a Workable 429 -> not checked: HTTP 429 ...; 404 -> no live board; 200 (0 jobs) -> no live board."""
+    def mock_probe(method, url, body=None, timeout=None, ats=None):
+        if "throttled" in url:
+            return False, 429
+        if "missing" in url:
+            return False, 404
+        if "empty" in url:
+            return False, "200 (0 jobs)"
+        return True, 200
+
+    import job_hunt.discovery as d
+    monkeypatch.setattr(d, "_probe", mock_probe)
+
+    # 1. 429 probe -> not checked: HTTP 429 ...
+    _, rows = d.discover([{"name": "Throttled", "exact": True, "url": "https://apply.workable.com/throttled"}])
+    assert len(rows) == 1
+    assert rows[0]["verdict"].startswith("not checked: HTTP 429")
+    assert rows[0]["accepted"] is False
+
+    # 2. 404 probe -> no live board on supported ATSs
+    _, rows = d.discover([{"name": "Missing", "exact": True, "url": "https://apply.workable.com/missing"}])
+    assert len(rows) == 1
+    assert rows[0]["verdict"] == "no live board on supported ATSs"
+    assert rows[0]["accepted"] is False
+
+    # 3. 200 with 0 jobs -> no live board on supported ATSs
+    _, rows = d.discover([{"name": "Empty", "exact": True, "url": "https://apply.workable.com/empty"}])
+    assert len(rows) == 1
+    assert rows[0]["verdict"] == "no live board on supported ATSs"
+    assert rows[0]["accepted"] is False
+
+
+def test_discover_merge_keeps_existing_entry_on_429_or_503(tmp_path, monkeypatch):
+    """T155: An existing entry answering 429 (Workable) or 503 (Greenhouse) through discover --merge stays in companies.json."""
+    import job_hunt.discovery as d
+    from job_hunt.adapters import base
+
+    target = tmp_path / "companies.json"
+    initial = [
+        {"name": "ThrottledCo", "ats": "workable", "slug": "throttled"},
+        {"name": "BrokenCo", "ats": "greenhouse", "slug": "broken"},
+    ]
+    target.write_text(json.dumps(initial, indent=2), encoding="utf-8")
+
+    def fake_fetch(c):
+        if c.get("slug") == "throttled":
+            base.mark_incomplete("HTTP 429 from Workable (rate limited)")
+            return []
+        if c.get("slug") == "broken":
+            base.mark_incomplete("HTTP 503")
+            return []
+        return []
+
+    monkeypatch.setattr(d, "fetch_company_jobs", fake_fetch)
+
+    empty_seeds = tmp_path / "seeds.txt"
+    empty_seeds.write_text("", encoding="utf-8")
+    out = tmp_path / "v.json"
+    report = tmp_path / "report.csv"
+
+    d.main(["--seeds", str(empty_seeds), "--merge", str(target), "--out", str(out), "--report", str(report)])
+
+    saved = json.loads(target.read_text(encoding="utf-8"))
+    assert {c["name"] for c in saved} == {"ThrottledCo", "BrokenCo"}
+
+    # Check report rows
+    import csv
+    with open(report, encoding="utf-8") as f:
+        report_rows = list(csv.DictReader(f))
+    verdicts = {r["seed"]: r["verdict"] for r in report_rows}
+    assert "[existing] ThrottledCo" in verdicts
+    assert verdicts["[existing] ThrottledCo"].startswith("not checked")
+    assert "[existing] BrokenCo" in verdicts
+    assert verdicts["[existing] BrokenCo"].startswith("not checked")
+
+
+def test_recheck_companies_neither_removes_nor_replaces_not_checked_entry(monkeypatch):
+    """T155: discover --recheck neither removes nor replaces an entry that answers not checked."""
+    import job_hunt.discovery as d
+    from job_hunt.adapters import base
+
+    entries = [{"name": "ThrottledCo", "ats": "workable", "slug": "throttled"}]
+
+    def fake_fetch(c):
+        base.mark_incomplete("HTTP 429 from Workable (rate limited)")
+        return []
+
+    monkeypatch.setattr(d, "fetch_company_jobs", fake_fetch)
+
+    updated, report_rows = d.recheck_companies(entries)
+    assert [c["name"] for c in updated] == ["ThrottledCo"]
+    assert not any("REMOVED" in r.get("verdict", "") or "REPLACED" in r.get("verdict", "") for r in report_rows)
+    assert any(r.get("verdict", "").startswith("not checked") for r in report_rows)
+

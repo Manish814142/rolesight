@@ -48,13 +48,13 @@ import unicodedata
 from concurrent.futures import ThreadPoolExecutor
 from datetime import date, datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 from urllib.parse import urljoin
 
 import requests
 
 from job_hunt.adapters import detect_ats, fetch_company_jobs
-from job_hunt.adapters.base import DEFAULT_HEADERS
+from job_hunt.adapters.base import DEFAULT_HEADERS, begin_fetch, fetch_incomplete
 from job_hunt.adapters.workday import (
     _fetch_detail,
     fetch_detail_locations,
@@ -389,7 +389,16 @@ def _identity(seed_name: str, ats: str, slug: str, jobs: List[JobPosting], from_
 
 
 def evaluate_board(seed_name: str, ats: str, slug: str, from_url: bool = False) -> Dict[str, Any]:
+    begin_fetch()
     jobs = fetch_company_jobs({"name": seed_name, "ats": ats, "slug": slug})
+    inc = fetch_incomplete()
+    if not jobs and inc:
+        return {
+            "seed": seed_name, "verdict": f"not checked: {inc}", "accepted": False, "ats": ats, "board": slug,
+            "jobs": 0, "place_jobs": 0, "prefilter_pass": 0,
+            "newest_age_days": "", "identity": "not checked",
+            "sample_titles": "", "seen_places": [],
+        }
     india = sum(1 for j in jobs if _in_places(j.location))
     passing = [j for j in jobs if should_evaluate_job(j)[0]]
     identity_ok, how = _identity(seed_name, ats, slug, jobs, from_url) if jobs else (False, "no jobs")
@@ -407,11 +416,21 @@ def evaluate_board(seed_name: str, ats: str, slug: str, from_url: bool = False) 
 def evaluate_entry(seed_name: str, entry: Dict[str, Any]) -> Dict[str, Any]:
     """Verify a board that needs no slug probing (Oracle HCM, Amazon, ...) through its real
     adapter. Identity is trusted: the entry came from the company's own careers URL."""
+    begin_fetch()
     jobs = fetch_company_jobs({**entry, "name": seed_name})
+    inc = fetch_incomplete()
+    ident = _board_ident(entry)
+    if not jobs and inc:
+        return {
+            "seed": seed_name, "verdict": f"not checked: {inc}", "accepted": False, "ats": entry["ats"], "board": ident,
+            "jobs": 0, "place_jobs": 0, "prefilter_pass": 0,
+            "newest_age_days": "", "identity": "careers URL / curated entry",
+            "sample_titles": "",
+            "entry": {"name": seed_name, **entry},
+        }
     india = sum(1 for j in jobs if _in_places(j.location))
     passing = [j for j in jobs if should_evaluate_job(j)[0]]
     age = newest_age_days(jobs)
-    ident = _board_ident(entry)
     ok, verdict = accept_board(entry["ats"], ident, len(jobs), india, True, age)
     return {
         "seed": seed_name, "verdict": verdict, "accepted": ok, "ats": entry["ats"], "board": ident,
@@ -567,11 +586,11 @@ def _probe_pairs(seed: Dict[str, Any]) -> List[Tuple[str, str, bool]]:
     return pairs
 
 
-def _probe_one(args: Tuple[Dict[str, Any], str, str, bool]) -> Optional[Tuple[Dict[str, Any], str, str, bool]]:
+def _probe_one(args: Tuple[Dict[str, Any], str, str, bool]) -> Tuple[Dict[str, Any], str, str, bool, bool, Union[int, str]]:
     seed, ats, slug, from_url = args
     method, url, body = ATS_PROBES[ats](slug)
-    ok, _ = _probe(method, url, body, ats=ats)
-    return (seed, ats, slug, from_url) if ok else None
+    ok, status_info = _probe(method, url, body, ats=ats)
+    return seed, ats, slug, from_url, ok, status_info
 
 
 def _tidy_name(name: str) -> str:
@@ -596,6 +615,14 @@ def _under(places: Places, fn: Any, *args: Any) -> Any:
         return fn(*args)
 
 
+def _is_refused_or_failed_probe(status_info: Union[int, str]) -> bool:
+    if status_info in (404, "404", 200, "200"):
+        return False
+    if str(status_info).startswith("200"):
+        return False
+    return True
+
+
 def discover(seeds: List[Dict[str, Any]], workers: int = 40,
              places: Optional[Places] = None) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
     """Return (verified companies.json entries, report rows for every seed). A board is accepted for `places` (default the
@@ -606,13 +633,34 @@ def discover(seeds: List[Dict[str, Any]], workers: int = 40,
     tasks = [(s, ats, slug, fu) for s in board_seeds for ats, slug, fu in _probe_pairs(s)]
     print(f"Phase 1/3 — probing {len(tasks)} (ATS, slug) pairs for {len(board_seeds)} companies...")
     with ThreadPoolExecutor(max_workers=workers) as ex:
-        hits = [h for h in ex.map(_probe_one, tasks) if h]
+        probe_results = list(ex.map(_probe_one, tasks))
+    hits = [(s, a, sl, fu) for s, a, sl, fu, ok, st in probe_results if ok]
+
+    # One more pass on failed probes: 2 at a time
+    retry_probes = [(idx, tasks[idx]) for idx, res in enumerate(probe_results)
+                    if not res[4] and _is_refused_or_failed_probe(res[5])]
+    if retry_probes:
+        with ThreadPoolExecutor(max_workers=2) as ex:
+            retried = list(ex.map(_probe_one, [t for _, t in retry_probes]))
+            for (idx, _), new_res in zip(retry_probes, retried):
+                probe_results[idx] = new_res
+                if new_res[4]:
+                    hits.append((new_res[0], new_res[1], new_res[2], new_res[3]))
+
     print(f"  {len(hits)} live board(s) found")
 
     print(f"Phase 2/3 — verifying live boards (jobs, identity, {places.label()} presence)...")
     with ThreadPoolExecutor(max_workers=max(1, min(12, workers))) as ex:     # --workers bounds this phase too (T111)
         evaluated = list(ex.map(lambda h: _under(places, _or_error, evaluate_board, h[0]["name"], h[1], h[2], h[0]["name"],
                                                  h[1], h[2], h[3]), hits))
+    # One more pass on not checked evaluated boards: 2 at a time
+    again_eval = [i for i, r in enumerate(evaluated) if str(r.get("verdict", "")).startswith("not checked")]
+    if again_eval:
+        with ThreadPoolExecutor(max_workers=2) as ex:
+            retried_eval = list(ex.map(lambda h: _under(places, _or_error, evaluate_board, h[0]["name"], h[1], h[2],
+                                                        h[0]["name"], h[1], h[2], h[3]), [hits[i] for i in again_eval]))
+            for i, new_r in zip(again_eval, retried_eval):
+                evaluated[i] = new_r
 
     wd_seeds = [s for s in seeds if "workday" in s]
     auto_rows: List[Dict[str, Any]] = []
@@ -648,6 +696,10 @@ def discover(seeds: List[Dict[str, Any]], workers: int = 40,
     by_seed: Dict[str, List[Dict[str, Any]]] = {}
     for r in evaluated:
         by_seed.setdefault(r["seed"], []).append(r)
+    probes_by_seed: Dict[str, List[Tuple[str, str, bool, Union[int, str]]]] = {}
+    for s, ats, slug, fu, ok, status_info in probe_results:
+        probes_by_seed.setdefault(s["name"], []).append((ats, slug, ok, status_info))
+
     for seed in board_seeds:
         cands = by_seed.get(seed["name"], [])
         if seed.get("exact"):             # rows are grouped by name, which exact seeds may share: keep this seed's own board
@@ -656,7 +708,19 @@ def discover(seeds: List[Dict[str, Any]], workers: int = 40,
         rows.extend(cands)
         good = [r for r in cands if r["accepted"]]
         if not cands:
-            rows.append({"seed": seed["name"], "verdict": "no live board on supported ATSs", "accepted": False})
+            pairs = probes_by_seed.get(seed["name"], [])
+            if seed.get("exact"):
+                own = detect_ats(seed["url"])
+                pairs = [p for p in pairs if own and (p[0], p[1]) == tuple(own)]
+            failed = [p for p in pairs if not p[2] and _is_refused_or_failed_probe(p[3])]
+            if failed:
+                f_ats, f_slug, _, f_status = next((p for p in failed if str(p[3]).startswith("429") or "429" in str(p[3])), failed[0])
+                logger.warning("probe of %s/%s for %s was refused or failed: %s", f_ats, f_slug, seed["name"], f_status)
+                status_desc = f"HTTP {f_status}" if isinstance(f_status, int) or str(f_status).isdigit() else str(f_status)
+                rows.append({"seed": seed["name"], "verdict": f"not checked: {status_desc} on {f_ats}/{f_slug}", "accepted": False,
+                             "ats": f_ats, "board": f_slug})
+            else:
+                rows.append({"seed": seed["name"], "verdict": "no live board on supported ATSs", "accepted": False})
         if good:
             best = max(good, key=lambda r: (r["identity"].startswith("slug from"), r["place_jobs"], r["prefilter_pass"]))
             name = display_name(seed["name"])
@@ -696,7 +760,7 @@ def reverify_existing(entries: List[Dict[str, Any]], workers: int = 12) -> Tuple
         # A board that makes our fetch raise is not known to be dead: keep it and say so, never crash the monthly check (T111).
         # Each entry is checked against the places it was accepted for: India, or its "places" (T139).
         row = _under(entry_places(c, active_places().home), _or_error, check_one, c["name"], c.get("ats", ""), _board_ident(c), c)
-        if str(row.get("verdict", "")).startswith("error"):
+        if str(row.get("verdict", "")).startswith(("error", "not checked")):
             row["accepted"] = True
         return row
 
@@ -709,7 +773,8 @@ def reverify_existing(entries: List[Dict[str, Any]], workers: int = 12) -> Tuple
     for i, r in zip(order, done):
         rows[i] = r
     # An empty answer may be a rate limit: ask once more, two at a time. A real answer ("no India jobs") is final.
-    again = [i for i, r in enumerate(rows) if not r["accepted"] and r["verdict"].startswith("no open jobs")]
+    again = [i for i, r in enumerate(rows) if str(r.get("verdict", "")).startswith("not checked")
+             or (not r.get("accepted") and str(r.get("verdict", "")).startswith("no open jobs"))]
     if again:
         with ThreadPoolExecutor(max_workers=2) as ex:
             for i, r in zip(again, ex.map(check, [entries[i] for i in again])):
@@ -994,7 +1059,9 @@ def main(argv: Optional[List[str]] = None) -> None:
         target.write_text(json.dumps(updated, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         for r in changes:
             print(f"  {r['seed']}: {r['verdict']}")
-        print(f"Recheck: {len(existing)} -> {len(updated)} companies ({len(changes)} changed). "
+        not_checked = sum(1 for r in report_rows if str(r.get("verdict", "")).startswith("not checked"))
+        nc_text = f", {not_checked} not checked" if not_checked else ""
+        print(f"Recheck: {len(existing)} -> {len(updated)} companies ({len(changes)} changed{nc_text}). "
               f"Review with: git diff {target}")
         return
 
@@ -1022,7 +1089,9 @@ def main(argv: Optional[List[str]] = None) -> None:
     write_report(rows, opts["--report"])
     Path(opts["--out"]).write_text(json.dumps(verified, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     companies = len({v["name"].lower() for v in verified})     # a Workday tenant's sites are one company; --merge keeps one
-    print(f"\n{companies}/{len(seeds)} companies verified ({len(verified)} boards or sites) -> {opts['--out']} "
+    not_checked = sum(1 for r in rows if str(r.get("verdict", "")).startswith("not checked"))
+    nc_text = f", {not_checked} not checked" if not_checked else ""
+    print(f"\n{companies}/{len(seeds)} companies verified ({len(verified)} boards or sites{nc_text}) -> {opts['--out']} "
           f"(report: {opts['--report']})")
     if opts["--merge"]:
         target = Path(opts["--merge"])
