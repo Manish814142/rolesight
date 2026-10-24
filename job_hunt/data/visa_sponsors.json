@@ -13,6 +13,17 @@
     "source": "uk"
    }
   ],
+  "10x Banking": [
+   {
+    "match": "loose",
+    "names": {
+     "10X Banking Technology Services Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
   "12build": [
    {
     "match": "loose",
@@ -248,6 +259,17 @@
      }
     },
     "source": "ca"
+   }
+  ],
+  "AG Barr": [
+   {
+    "match": "exact",
+    "names": {
+     "A.G. Barr PLC": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
    }
   ],
   "AJ Bell": [
@@ -837,6 +859,17 @@
     "source": "nl"
    }
   ],
+  "Actionstep": [
+   {
+    "match": "loose",
+    "names": {
+     "Actionstep Operations UK Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
   "Acumatica": [
    {
     "match": "exact",
@@ -1059,6 +1092,17 @@
     "match": "exact",
     "names": {
      "Adzuna Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Aegiq": [
+   {
+    "match": "exact",
+    "names": {
+     "AEGIQ LTD": [
       "Skilled Worker"
      ]
     },
@@ -3675,6 +3719,17 @@
     "source": "nl"
    }
   ],
+  "Ballinger Group": [
+   {
+    "match": "loose",
+    "names": {
+     "Ballinger & Co Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
   "Bandwidth": [
    {
     "match": "exact",
@@ -3771,6 +3826,17 @@
      "Basic Fit International B.V.": "34314877"
     },
     "source": "nl"
+   }
+  ],
+  "Bauer Media Outdoor": [
+   {
+    "match": "loose",
+    "names": {
+     "Bauer Media Outdoor International Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
    }
   ],
   "Baya Systems": [
@@ -5079,6 +5145,28 @@
     "source": "ie"
    }
   ],
+  "Broadwick": [
+   {
+    "match": "loose",
+    "names": {
+     "Broadwick Group Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Brocket Hall": [
+   {
+    "match": "loose",
+    "names": {
+     "Brocket Hall (Holding) Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
   "BrowserStack": [
    {
     "match": "exact",
@@ -5493,7 +5581,8 @@
    {
     "match": "exact",
     "names": {
-     "Capula Limited": [
+     "Capula Investment Services Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
       "Skilled Worker"
      ]
     },
@@ -5531,6 +5620,18 @@
      }
     },
     "source": "us"
+   }
+  ],
+  "Carbon Clean": [
+   {
+    "match": "loose",
+    "names": {
+     "CARBON CLEAN SOLUTIONS LIMITED": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
    }
   ],
   "Cardinal Health": [
@@ -5979,7 +6080,7 @@
    {
     "match": "exact",
     "names": {
-     "Charterhouse": [
+     "Charterhouse Voice & Data Limited": [
       "Skilled Worker"
      ]
     },
@@ -6513,6 +6614,18 @@
     "source": "uk"
    }
   ],
+  "CloudFactory": [
+   {
+    "match": "loose",
+    "names": {
+     "CloudFactory International Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
   "Cloudbilling": [
    {
     "match": "exact",
@@ -6726,6 +6839,28 @@
      }
     },
     "source": "us"
+   }
+  ],
+  "Coefficient": [
+   {
+    "match": "loose",
+    "names": {
+     "Coefficient Systems Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Cogna": [
+   {
+    "match": "exact",
+    "names": {
+     "Cogna Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
    }
   ],
   "Cohere": [
@@ -7668,6 +7803,15 @@
     "source": "nl"
    }
   ],
+  "CropX": [
+   {
+    "match": "exact",
+    "names": {
+     "CropX B.V.": "53188772"
+    },
+    "source": "nl"
+   }
+  ],
   "CrowdStrike": [
    {
     "match": "exact",
@@ -8377,6 +8521,17 @@
     "source": "us"
    }
   ],
+  "Dayshape": [
+   {
+    "match": "loose",
+    "names": {
+     "Dayshape Software Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
   "Decagon": [
    {
     "match": "loose",
@@ -8927,27 +9082,6 @@
     "source": "us"
    }
   ],
-  "Digital": [
-   {
-    "match": "exact",
-    "names": {
-     "AND Digital Nederland B.V.": "82470960"
-    },
-    "source": "nl"
-   },
-   {
-    "match": "exact",
-    "names": {
-     "DIGITAL TURBINE INC D B A DIGITAL": {
-      "2024": [
-       2,
-       2
-      ]
-     }
-    },
-    "source": "us"
-   }
-  ],
   "Digital Asset": [
    {
     "match": "loose",
@@ -9123,6 +9257,17 @@
      "Doctolib B.V.": "63858975"
     },
     "source": "nl"
+   }
+  ],
+  "Doctor Care Anywhere": [
+   {
+    "match": "loose",
+    "names": {
+     "Doctor Care Anywhere Group plc": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
    }
   ],
   "Docyt": [
@@ -10859,6 +11004,13 @@
      ]
     },
     "source": "uk"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "Expereo International B.V.": "34226397"
+    },
+    "source": "nl"
    }
   ],
   "Experian": [
@@ -11128,6 +11280,17 @@
      "FeedbackFruits B.V.": "63664682"
     },
     "source": "nl"
+   }
+  ],
+  "Feeld": [
+   {
+    "match": "exact",
+    "names": {
+     "Feeld Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
    }
   ],
   "Fender": [
@@ -13125,6 +13288,15 @@
     "source": "uk"
    }
   ],
+  "Gresb": [
+   {
+    "match": "exact",
+    "names": {
+     "GRESB B.V.": "55416071"
+    },
+    "source": "nl"
+   }
+  ],
   "Griffin": [
    {
     "match": "loose",
@@ -13936,6 +14108,17 @@
     "source": "uk"
    }
   ],
+  "Homey": [
+   {
+    "match": "loose",
+    "names": {
+     "Homey Technology Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
   "Honeywell": [
    {
     "match": "exact",
@@ -14015,6 +14198,28 @@
      ]
     },
     "source": "lists"
+   }
+  ],
+  "Houst": [
+   {
+    "match": "exact",
+    "names": {
+     "Houst Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Huble": [
+   {
+    "match": "loose",
+    "names": {
+     "Huble Digital Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
    }
   ],
   "Hudl India": [
@@ -14329,6 +14534,17 @@
      }
     },
     "source": "us"
+   }
+  ],
+  "ITRS": [
+   {
+    "match": "loose",
+    "names": {
+     "ITRS Group Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
    }
   ],
   "Icertis": [
@@ -14659,6 +14875,29 @@
     "source": "nl"
    }
   ],
+  "Infopro Digital": [
+   {
+    "match": "loose",
+    "names": {
+     "Infopro Digital Services Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "INFOPRO DIGITAL LLC": {
+      "2024": [
+       1,
+       0
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "Informa Group Plc.": [
    {
     "match": "loose",
@@ -14962,29 +15201,6 @@
       "2024": [
        842,
        1678
-      ]
-     }
-    },
-    "source": "us"
-   }
-  ],
-  "Intellect": [
-   {
-    "match": "exact",
-    "names": {
-     "Intellect Ltd": [
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
-   },
-   {
-    "match": "exact",
-    "names": {
-     "INTERNEER INC DBA INTELLECT": {
-      "2024": [
-       0,
-       2
       ]
      }
     },
@@ -15515,6 +15731,20 @@
      }
     },
     "source": "us"
+   }
+  ],
+  "Jagex Limited": [
+   {
+    "match": "exact",
+    "names": {
+     "Jagex Limited": [
+      "Skilled Worker"
+     ],
+     "Jagex Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
    }
   ],
   "Jam City": [
@@ -16093,6 +16323,17 @@
     "source": "nl"
    }
   ],
+  "Kepak": [
+   {
+    "match": "loose",
+    "names": {
+     "Kepak Group Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
   "Kepler Group": [
    {
     "match": "exact",
@@ -16277,6 +16518,17 @@
     "source": "ie"
    }
   ],
+  "Kitt": [
+   {
+    "match": "loose",
+    "names": {
+     "Kitt Technology Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
   "Klaviyo": [
    {
     "match": "exact",
@@ -16351,6 +16603,17 @@
     "names": {
      "KoBold Metals UK Limited": [
       "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Kobalt Music": [
+   {
+    "match": "loose",
+    "names": {
+     "Kobalt Music Group Limited": [
       "Skilled Worker"
      ]
     },
@@ -16533,6 +16796,17 @@
     "source": "us"
    }
   ],
+  "Kroo": [
+   {
+    "match": "loose",
+    "names": {
+     "Kroo Bank Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
   "Ksb": [
    {
     "match": "exact",
@@ -16634,6 +16908,17 @@
     "names": {
      "LVMH Services Limited": [
       "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Laka": [
+   {
+    "match": "exact",
+    "names": {
+     "Laka Ltd": [
       "Skilled Worker"
      ]
     },
@@ -17065,6 +17350,17 @@
     "source": "nl"
    }
   ],
+  "Lgbt Great": [
+   {
+    "match": "exact",
+    "names": {
+     "LGBT Great Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
   "Liberis": [
    {
     "match": "exact",
@@ -17184,6 +17480,17 @@
     "source": "nl"
    }
   ],
+  "Lmax": [
+   {
+    "match": "exact",
+    "names": {
+     "LMAX Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
   "Logex": [
    {
     "match": "exact",
@@ -17235,29 +17542,6 @@
       "2024": [
        0,
        1
-      ]
-     }
-    },
-    "source": "us"
-   }
-  ],
-  "Logistics Uk": [
-   {
-    "match": "exact",
-    "names": {
-     "EUROPE LOGISTICS LIMITED": [
-      "Skilled Worker"
-     ]
-    },
-    "source": "uk"
-   },
-   {
-    "match": "exact",
-    "names": {
-     "UNLIMITED LOGISTICS LLC": {
-      "2024": [
-       1,
-       0
       ]
      }
     },
@@ -17532,6 +17816,18 @@
     "source": "us"
    }
   ],
+  "Lyst": [
+   {
+    "match": "exact",
+    "names": {
+     "Lyst Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
   "Lyten": [
    {
     "match": "exact",
@@ -17551,6 +17847,17 @@
     "match": "exact",
     "names": {
      "M-Kopa UK Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "MLabs": [
+   {
+    "match": "exact",
+    "names": {
+     "MLabs Ltd": [
       "Skilled Worker"
      ]
     },
@@ -17881,6 +18188,17 @@
      "Marvell Netherlands B.V.": "34233879"
     },
     "source": "nl"
+   }
+  ],
+  "Marys Meals": [
+   {
+    "match": "loose",
+    "names": {
+     "Marys Meals International": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
    }
   ],
   "Masabi": [
@@ -18689,6 +19007,29 @@
     "source": "uk"
    }
   ],
+  "Mixam": [
+   {
+    "match": "exact",
+    "names": {
+     "Mixam UK Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "MIXAM INC": {
+      "2024": [
+       0,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "Mixpanel": [
    {
     "match": "exact",
@@ -19442,6 +19783,18 @@
      ]
     },
     "source": "lists"
+   }
+  ],
+  "NALA": [
+   {
+    "match": "loose",
+    "names": {
+     "NALA PAYMENTS LIMITED": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
    }
   ],
   "NBCUniversal": [
@@ -20536,6 +20889,36 @@
     "source": "nl"
    }
   ],
+  "Nuvei": [
+   {
+    "match": "exact",
+    "names": {
+     "NUVEI (UK) LIMITED": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "Nuvei (Netherlands) B.V.": "68866771"
+    },
+    "source": "nl"
+   },
+   {
+    "match": "loose",
+    "names": {
+     "NUVEI TECHNOLOGIES INC": {
+      "2024": [
+       1,
+       1
+      ]
+     }
+    },
+    "source": "us"
+   }
+  ],
   "Nvidia": [
    {
     "match": "exact",
@@ -20889,6 +21272,21 @@
      "ON2IT B.V.": "11062209"
     },
     "source": "nl"
+   }
+  ],
+  "One Of Us": [
+   {
+    "match": "exact",
+    "names": {
+     "One of Us Ltd": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ],
+     "One of Us Ltd.": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
    }
   ],
   "OneTrust": [
@@ -21885,6 +22283,17 @@
     "source": "uk"
    }
   ],
+  "Permutable": [
+   {
+    "match": "loose",
+    "names": {
+     "Permutable Technologies Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
   "Pernod Ricard": [
    {
     "match": "exact",
@@ -22073,6 +22482,17 @@
     "source": "us"
    }
   ],
+  "Phoenix Software": [
+   {
+    "match": "exact",
+    "names": {
+     "Phoenix Software Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
   "PhotoRoom": [
    {
     "match": "exact",
@@ -22120,6 +22540,20 @@
     "source": "ca"
    }
   ],
+  "Pinewood.AI": [
+   {
+    "match": "loose",
+    "names": {
+     "Pinewood Technologies Group PLC": [
+      "Skilled Worker"
+     ],
+     "Pinewood Technologies PLC": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
   "Ping Identity": [
    {
     "match": "exact",
@@ -22154,6 +22588,17 @@
      ]
     },
     "source": "uk"
+   }
+  ],
+  "Pitch": [
+   {
+    "match": "exact",
+    "names": {
+     "Pitch": [
+      "abhi-jha gist: Berlin, Germany"
+     ]
+    },
+    "source": "lists"
    }
   ],
   "Pitney Bowes": [
@@ -23682,6 +24127,17 @@
     "source": "lists"
    }
   ],
+  "Rebellion": [
+   {
+    "match": "loose",
+    "names": {
+     "Rebellion Group Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
   "Recognisebank": [
    {
     "match": "squashed",
@@ -24076,6 +24532,17 @@
      }
     },
     "source": "us"
+   }
+  ],
+  "Rentokil Initial Group": [
+   {
+    "match": "loose",
+    "names": {
+     "Rentokil Initial UK Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
    }
   ],
   "Repligen": [
@@ -24742,6 +25209,35 @@
      ]
     },
     "source": "uk"
+   }
+  ],
+  "Rokt": [
+   {
+    "match": "exact",
+    "names": {
+     "Rokt UK Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   },
+   {
+    "match": "exact",
+    "names": {
+     "ROKT CORP": {
+      "2024": [
+       1,
+       0
+      ]
+     },
+     "ROKT US CORP": {
+      "2024": [
+       7,
+       3
+      ]
+     }
+    },
+    "source": "us"
    }
   ],
   "Roku": [
@@ -25799,7 +26295,7 @@
    {
     "match": "exact",
     "names": {
-     "SECOND NATURE LIMITED": [
+     "Second Nature Healthy Habits Ltd": [
       "Skilled Worker"
      ]
     },
@@ -25903,6 +26399,17 @@
      "Sensara B.V.": "60863463"
     },
     "source": "nl"
+   }
+  ],
+  "SenseOn": [
+   {
+    "match": "loose",
+    "names": {
+     "SENSEON TECH LTD": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
    }
   ],
   "Sensor Tower": [
@@ -26483,6 +26990,17 @@
      }
     },
     "source": "us"
+   }
+  ],
+  "Simprints": [
+   {
+    "match": "loose",
+    "names": {
+     "Simprints Technology Ltd.": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
    }
   ],
   "Sinch": [
@@ -27824,6 +28342,17 @@
     "source": "uk"
    }
   ],
+  "Starling": [
+   {
+    "match": "loose",
+    "names": {
+     "STARLING BANK LIMITED": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
   "Startek®": [
    {
     "match": "loose",
@@ -28238,6 +28767,17 @@
     "source": "uk"
    }
   ],
+  "Suade": [
+   {
+    "match": "loose",
+    "names": {
+     "Suade Labs Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
   "Suitsupply": [
    {
     "match": "squashed",
@@ -28596,6 +29136,18 @@
     "match": "exact",
     "names": {
      "Swissquote Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Sword Group": [
+   {
+    "match": "loose",
+    "names": {
+     "Sword Technology Solutions Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
       "Skilled Worker"
      ]
     },
@@ -29218,6 +29770,17 @@
     "names": {
      "Taptap Send UK Ltd.": [
       "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
+  "Target Group": [
+   {
+    "match": "exact",
+    "names": {
+     "Target Group Limited": [
       "Skilled Worker"
      ]
     },
@@ -32260,6 +32823,17 @@
     "source": "nl"
    }
   ],
+  "Vestd": [
+   {
+    "match": "exact",
+    "names": {
+     "Vestd Ltd": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
   "Via": [
    {
     "match": "exact",
@@ -32965,6 +33539,17 @@
     "source": "uk"
    }
   ],
+  "Winnow": [
+   {
+    "match": "loose",
+    "names": {
+     "Winnow Solutions Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
   "Wintermute Trading": [
    {
     "match": "exact",
@@ -33530,6 +34115,18 @@
     "source": "nl"
    }
   ],
+  "Zaizi": [
+   {
+    "match": "exact",
+    "names": {
+     "Zaizi Limited": [
+      "Global Business Mobility: Senior or Specialist Worker",
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
   "Zalando": [
    {
     "match": "exact",
@@ -34048,6 +34645,17 @@
     "source": "us"
    }
   ],
+  "Zutec": [
+   {
+    "match": "exact",
+    "names": {
+     "Zutec Inc. (UK) Limited": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
+   }
+  ],
   "Zwarttechniek": [
    {
     "match": "squashed",
@@ -34069,6 +34677,17 @@
      }
     },
     "source": "us"
+   }
+  ],
+  "Zyte": [
+   {
+    "match": "loose",
+    "names": {
+     "Zyte Group Limited": {
+      "2026": 1
+     }
+    },
+    "source": "ie"
    }
   ],
   "accesso": [
@@ -34225,6 +34844,17 @@
      }
     },
     "source": "us"
+   }
+  ],
+  "eight&four": [
+   {
+    "match": "loose",
+    "names": {
+     "EIGHT&FOUR GROUP LIMITED": [
+      "Skilled Worker"
+     ]
+    },
+    "source": "uk"
    }
   ],
   "elasticStage": [

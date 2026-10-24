@@ -16181,6 +16181,15 @@
     ]
   },
   {
+    "name": "10x Banking",
+    "ats": "workable",
+    "slug": "10xbanking",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
     "name": "1GLOBAL",
     "ats": "workable",
     "slug": "1global",
@@ -16237,6 +16246,15 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Actionstep",
+    "ats": "workable",
+    "slug": "actionstep",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
     "name": "Activate Talent",
     "ats": "workable",
     "slug": "careersactivatetalent",
@@ -16264,10 +16282,28 @@
     ]
   },
   {
+    "name": "Aegiq",
+    "ats": "workable",
+    "slug": "aegiq",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
     "name": "Aerones",
     "ats": "workable",
     "slug": "aerones",
     "headcount": "Unknown"
+  },
+  {
+    "name": "AG Barr",
+    "ats": "workable",
+    "slug": "ag-barr",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
   },
   {
     "name": "Agility",
@@ -16384,10 +16420,28 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Ballinger Group",
+    "ats": "workable",
+    "slug": "ballingerco",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
     "name": "Base.com",
     "ats": "workable",
     "slug": "base-com",
     "headcount": "Unknown"
+  },
+  {
+    "name": "Bauer Media Outdoor",
+    "ats": "workable",
+    "slug": "bauermediaoutdoor",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
   },
   {
     "name": "BBGC",
@@ -16510,6 +16564,24 @@
     ]
   },
   {
+    "name": "Broadwick",
+    "ats": "workable",
+    "slug": "broadwick",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
+    "name": "Brocket Hall",
+    "ats": "workable",
+    "slug": "brocket-hall-estate",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
     "name": "Bush & Bush Law Group",
     "ats": "workable",
     "slug": "bushand-bush-law-group",
@@ -16566,6 +16638,15 @@
     "places": [
       "United Kingdom",
       "Singapore"
+    ]
+  },
+  {
+    "name": "Carbon Clean",
+    "ats": "workable",
+    "slug": "carbonclean",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
     ]
   },
   {
@@ -16655,6 +16736,20 @@
     ]
   },
   {
+    "name": "CloudFactory",
+    "ats": "workable",
+    "slug": "cloudfactory",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Singapore",
+      "France",
+      "Finland",
+      "Norway"
+    ]
+  },
+  {
     "name": "Cloudlinux",
     "ats": "workable",
     "slug": "cloudlinux-1",
@@ -16670,6 +16765,24 @@
     "name": "Cluttons",
     "ats": "workable",
     "slug": "cluttons",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
+    "name": "Coefficient",
+    "ats": "workable",
+    "slug": "coefficient",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
+    "name": "Cogna",
+    "ats": "workable",
+    "slug": "cogna",
     "headcount": "Unknown",
     "places": [
       "United Kingdom"
@@ -16721,6 +16834,15 @@
     "headcount": "Unknown"
   },
   {
+    "name": "CropX",
+    "ats": "workable",
+    "slug": "cropx",
+    "headcount": "Unknown",
+    "places": [
+      "Netherlands"
+    ]
+  },
+  {
     "name": "CtrlChain",
     "ats": "workable",
     "slug": "ctrlchain",
@@ -16750,6 +16872,15 @@
     "ats": "workable",
     "slug": "d2b-1",
     "headcount": "Unknown"
+  },
+  {
+    "name": "Dayshape",
+    "ats": "workable",
+    "slug": "dayshape",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
   },
   {
     "name": "DC Thomson",
@@ -16822,18 +16953,6 @@
     ]
   },
   {
-    "name": "Digital",
-    "ats": "workable",
-    "slug": "digital-368",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom",
-      "Netherlands",
-      "Ireland",
-      "Singapore"
-    ]
-  },
-  {
     "name": "Digital Catapult",
     "ats": "workable",
     "slug": "digital-catapult",
@@ -16847,6 +16966,15 @@
     "ats": "workable",
     "slug": "digitals",
     "headcount": "Unknown"
+  },
+  {
+    "name": "Doctor Care Anywhere",
+    "ats": "workable",
+    "slug": "doctor-care-anywhere",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
   },
   {
     "name": "Docyt",
@@ -16905,6 +17033,15 @@
       "Netherlands",
       "Ireland",
       "France"
+    ]
+  },
+  {
+    "name": "eight&four",
+    "ats": "workable",
+    "slug": "eight-and-four",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
     ]
   },
   {
@@ -17064,6 +17201,15 @@
     "ats": "workable",
     "slug": "fe-fundinfo",
     "headcount": "Unknown"
+  },
+  {
+    "name": "Feeld",
+    "ats": "workable",
+    "slug": "feeldco",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
   },
   {
     "name": "Fenergo",
@@ -17231,6 +17377,17 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Gresb",
+    "ats": "workable",
+    "slug": "gresb",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Netherlands",
+      "France"
+    ]
+  },
+  {
     "name": "Groundtruth",
     "ats": "workable",
     "slug": "groundtruth",
@@ -17293,10 +17450,40 @@
     ]
   },
   {
+    "name": "Homey",
+    "ats": "workable",
+    "slug": "homey",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
     "name": "Horizontal Digital",
     "ats": "workable",
     "slug": "horizontal-digital",
     "headcount": "Unknown"
+  },
+  {
+    "name": "Houst",
+    "ats": "workable",
+    "slug": "houst",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
+    "name": "Huble",
+    "ats": "workable",
+    "slug": "huble",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Austria",
+      "Belgium"
+    ]
   },
   {
     "name": "iFAST Global Bank Ltd",
@@ -17335,6 +17522,15 @@
     ]
   },
   {
+    "name": "Infopro Digital",
+    "ats": "workable",
+    "slug": "infopro-digital",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
     "name": "Informed Solutions",
     "ats": "workable",
     "slug": "informed-solutions",
@@ -17348,28 +17544,6 @@
     "ats": "workable",
     "slug": "innovaccer-analytics",
     "headcount": "Unknown"
-  },
-  {
-    "name": "Intellect",
-    "ats": "workable",
-    "slug": "intellecthq",
-    "headcount": "Unknown",
-    "places": [
-      "United Kingdom",
-      "United Arab Emirates",
-      "Singapore",
-      "France",
-      "Spain",
-      "Portugal",
-      "Poland",
-      "Sweden",
-      "Norway",
-      "Austria",
-      "Belgium",
-      "Luxembourg",
-      "Italy",
-      "Czechia"
-    ]
   },
   {
     "name": "IONATE",
@@ -17388,6 +17562,25 @@
     "places": [
       "United Kingdom",
       "Ireland"
+    ]
+  },
+  {
+    "name": "ITRS",
+    "ats": "workable",
+    "slug": "itrs",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "France"
+    ]
+  },
+  {
+    "name": "Jagex Limited",
+    "ats": "workable",
+    "slug": "jagex-limited",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
     ]
   },
   {
@@ -17425,6 +17618,17 @@
     ]
   },
   {
+    "name": "Kepak",
+    "ats": "workable",
+    "slug": "kepak",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Ireland",
+      "France"
+    ]
+  },
+  {
     "name": "Keylane",
     "ats": "workable",
     "slug": "keylane",
@@ -17455,10 +17659,37 @@
     ]
   },
   {
+    "name": "Kitt",
+    "ats": "workable",
+    "slug": "kitt",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
     "name": "Knorex",
     "ats": "workable",
     "slug": "knorex",
     "headcount": "Unknown"
+  },
+  {
+    "name": "Kobalt Music",
+    "ats": "workable",
+    "slug": "kobalt-music",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
+    "name": "Kroo",
+    "ats": "workable",
+    "slug": "kroo",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
   },
   {
     "name": "Kurtgeiger",
@@ -17468,6 +17699,17 @@
     "places": [
       "United Kingdom",
       "Ireland"
+    ]
+  },
+  {
+    "name": "Laka",
+    "ats": "workable",
+    "slug": "laka",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Netherlands",
+      "France"
     ]
   },
   {
@@ -17554,6 +17796,15 @@
     ]
   },
   {
+    "name": "Lgbt Great",
+    "ats": "workable",
+    "slug": "lgbt-great",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
     "name": "Lighthouse Games",
     "ats": "workable",
     "slug": "lighthousegames",
@@ -17563,12 +17814,13 @@
     ]
   },
   {
-    "name": "Logistics Uk",
+    "name": "Lmax",
     "ats": "workable",
-    "slug": "logistics-uk",
+    "slug": "lmax",
     "headcount": "Unknown",
     "places": [
-      "United Kingdom"
+      "United Kingdom",
+      "Singapore"
     ]
   },
   {
@@ -17601,6 +17853,15 @@
     ]
   },
   {
+    "name": "Lyst",
+    "ats": "workable",
+    "slug": "lyst",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
     "name": "Macphie Ltd",
     "ats": "workable",
     "slug": "macphie-ltd",
@@ -17624,6 +17885,15 @@
     "name": "Marshalls",
     "ats": "workable",
     "slug": "marshalls",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
+    "name": "Marys Meals",
+    "ats": "workable",
+    "slug": "marys-meals",
     "headcount": "Unknown",
     "places": [
       "United Kingdom"
@@ -17682,6 +17952,32 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Mixam",
+    "ats": "workable",
+    "slug": "mixam",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
+    "name": "MLabs",
+    "ats": "workable",
+    "slug": "mlabs",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "Singapore",
+      "France",
+      "Spain",
+      "Portugal",
+      "Poland",
+      "Luxembourg"
+    ]
+  },
+  {
     "name": "Moonbug Entertainment",
     "ats": "workable",
     "slug": "moonbug-entertainment",
@@ -17736,6 +18032,15 @@
     "name": "Naked Wines",
     "ats": "workable",
     "slug": "naked-wines",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
+    "name": "NALA",
+    "ats": "workable",
+    "slug": "nalamoney",
     "headcount": "Unknown",
     "places": [
       "United Kingdom"
@@ -17805,10 +18110,35 @@
     ]
   },
   {
+    "name": "Nuvei",
+    "ats": "workable",
+    "slug": "nuvei",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "Netherlands",
+      "Singapore",
+      "Poland",
+      "Italy",
+      "Lithuania"
+    ]
+  },
+  {
     "name": "Obran",
     "ats": "workable",
     "slug": "obran",
     "headcount": "Unknown"
+  },
+  {
+    "name": "One Of Us",
+    "ats": "workable",
+    "slug": "one-of-us",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "France"
+    ]
   },
   {
     "name": "Orchard Therapeutics",
@@ -17935,6 +18265,15 @@
     ]
   },
   {
+    "name": "Permutable",
+    "ats": "workable",
+    "slug": "permutable",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
     "name": "PERSUIT",
     "ats": "workable",
     "slug": "persuit-1",
@@ -17968,6 +18307,34 @@
     "headcount": "Unknown",
     "places": [
       "United Kingdom"
+    ]
+  },
+  {
+    "name": "Phoenix Software",
+    "ats": "workable",
+    "slug": "phoenix-software",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
+    "name": "Pinewood.AI",
+    "ats": "workable",
+    "slug": "pinewoodaicareers",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany"
+    ]
+  },
+  {
+    "name": "Pitch",
+    "ats": "workable",
+    "slug": "pitch-software",
+    "headcount": "Unknown",
+    "places": [
+      "Germany"
     ]
   },
   {
@@ -18117,6 +18484,26 @@
     ]
   },
   {
+    "name": "Rebellion",
+    "ats": "workable",
+    "slug": "rebellion",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
+    "name": "Rentokil Initial Group",
+    "ats": "workable",
+    "slug": "rentokil-initial-group",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Ireland",
+      "Singapore"
+    ]
+  },
+  {
     "name": "Resource Guru",
     "ats": "workable",
     "slug": "resource-guru",
@@ -18156,6 +18543,17 @@
     "ats": "workable",
     "slug": "rockstar-3",
     "headcount": "Unknown"
+  },
+  {
+    "name": "Rokt",
+    "ats": "workable",
+    "slug": "rokt",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom",
+      "Germany",
+      "France"
+    ]
   },
   {
     "name": "Runware",
@@ -18228,6 +18626,15 @@
     ]
   },
   {
+    "name": "SenseOn",
+    "ats": "workable",
+    "slug": "senseon",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
     "name": "Serko Ltd",
     "ats": "workable",
     "slug": "serko-ltd",
@@ -18274,6 +18681,15 @@
     "places": [
       "United Kingdom",
       "Poland"
+    ]
+  },
+  {
+    "name": "Simprints",
+    "ats": "workable",
+    "slug": "simprints",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
     ]
   },
   {
@@ -18415,6 +18831,15 @@
     "headcount": "Unknown"
   },
   {
+    "name": "Starling",
+    "ats": "workable",
+    "slug": "starling-bank",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
     "name": "Statom Group Ltd.",
     "ats": "workable",
     "slug": "statom",
@@ -18476,6 +18901,15 @@
     ]
   },
   {
+    "name": "Suade",
+    "ats": "workable",
+    "slug": "suade",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
     "name": "Sur",
     "ats": "workable",
     "slug": "surglobal",
@@ -18491,9 +18925,27 @@
     ]
   },
   {
+    "name": "Sword Group",
+    "ats": "workable",
+    "slug": "sword-group",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
     "name": "Talk Straight",
     "ats": "workable",
     "slug": "talk-straight",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
+    "name": "Target Group",
+    "ats": "workable",
+    "slug": "target-group",
     "headcount": "Unknown",
     "places": [
       "United Kingdom"
@@ -18783,6 +19235,15 @@
     ]
   },
   {
+    "name": "Vestd",
+    "ats": "workable",
+    "slug": "vestd",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
     "name": "Visualsoft",
     "ats": "workable",
     "slug": "visualsoft",
@@ -18832,6 +19293,15 @@
     "name": "Winbro Group Technologies",
     "ats": "workable",
     "slug": "winbro-group-technologies",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
+    "name": "Winnow",
+    "ats": "workable",
+    "slug": "winnow",
     "headcount": "Unknown",
     "places": [
       "United Kingdom"
@@ -18916,6 +19386,15 @@
     ]
   },
   {
+    "name": "Zaizi",
+    "ats": "workable",
+    "slug": "zaizi",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
     "name": "ZeroAvia",
     "ats": "workable",
     "slug": "zeroavia",
@@ -18941,6 +19420,27 @@
     "headcount": "Unknown",
     "places": [
       "United Kingdom"
+    ]
+  },
+  {
+    "name": "Zutec",
+    "ats": "workable",
+    "slug": "zutec",
+    "headcount": "Unknown",
+    "places": [
+      "United Kingdom"
+    ]
+  },
+  {
+    "name": "Zyte",
+    "ats": "workable",
+    "slug": "zyte",
+    "headcount": "Unknown",
+    "places": [
+      "Ireland",
+      "Spain",
+      "Portugal",
+      "Poland"
     ]
   },
   {

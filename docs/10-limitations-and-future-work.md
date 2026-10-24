@@ -14,8 +14,8 @@ them from anyone's resume). What follows is what is still fixed.
 
 **Update 2026-10-21 (T136–T140): this is a setting now.** `candidate.countries` (e.g. `["United Kingdom", "Germany"]`) and
 `candidate.home_country` change all six places below: the filter (country packs in `job_hunt/places.py`), the five
-connectors' searches, rule 1 (with the visa rule), `discover --places`, the summary line, and the list (921 companies checked for other countries, each with
-evidence that it sponsors visas, T144; listed for those countries). See the [user guide](00-user-guide.md#looking-for-jobs-outside-india). What is
+connectors' searches, rule 1 (with the visa rule), `discover --places`, the summary line, and the list (1,177 companies checked for other countries, each with
+evidence that it sponsors visas, T144, T160; listed for those countries). See the [user guide](00-user-guide.md#looking-for-jobs-outside-india). What is
 still limited: since T142 every country has a pack, but a GeoNames one knows only the country's 8 biggest cities (a job that
 names only a smaller city needs the country in its location, or the city in `candidate.cities`), and a name some other country's
 bigger city also has is left to its country word ("Valencia"); postings in
@@ -31,7 +31,7 @@ Before T136, India was built into six places:
 | The scoring rubric, rule 1 | Caps a job that needs on-site work outside India at 30 | `job_hunt/llm_utils.py` (`SCORING_RUBRIC`) |
 | `discover` | Accepts a company only when it has at least one job in India | `job_hunt/discovery.py` |
 | The scan's summary line | Counts the jobs "in India" | `job_hunt/scanner.py` |
-| The company list | 1,589 boards, each checked to have a job in India (plus 921 for other countries, T144) | `companies.json` |
+| The company list | 1,589 boards, each checked to have a job in India (plus 1,177 for other countries, T144, T160) | `companies.json` |
 | Workday employers for other countries | found by company name only (`Name \| workday \| auto`); a tenant whose name differs from the company's (Standard Chartered is `sc`) is missed, and the archive cannot list wd1/wd3/wd5 | `job_hunt/discovery.py` |
 | Company names from web addresses | Workday, Personio and Recruitee entries are named from their address ("Cloudimperiumgames", "Msfoca"), so the CSV's Company column can look odd | `companies.json` |
 
@@ -99,7 +99,7 @@ the codes boards write, regions, Workday search terms measured on real tenants) 
 ## 2. Future goals
 
 Ideas, not started. The first ones help a job seeker most; the size is a rough estimate. Done since this list was written:
-any country (T108, T136–T143) and companies for other countries (T144, T160: 1,124, each with visa-sponsor evidence).
+any country (T108, T136–T143) and companies for other countries (T144, T160: 1,177, each with visa-sponsor evidence).
 
 | Idea | What it would do | Size |
 |---|---|---|
@@ -110,7 +110,7 @@ any country (T108, T136–T143) and companies for other countries (T144, T160: 1
 | Referrals | Import your LinkedIn connections export (a CSV LinkedIn lets you download) and show who you know at each company | small to medium |
 | Follow-ups and outcomes | A reminder when an application gets no answer; a weekly count of applied → interview → offer by score band, the real test of the scorer | medium |
 | Interview prep | For a job you reach the interview with: likely topics, the gaps in your resume, questions to ask (drafts only) | small |
-| More companies abroad | The register check of the ~3,800 companies T144 dropped without a title match (Workable's 12,585 boards done in T160: 203 kept) | medium |
+| More companies abroad | The register check of the ~3,800 companies T144 dropped without a title match (Workable's 12,585 boards done in T160: 256 kept) | medium |
 | More job boards | Adapters for other systems with public APIs (not yet checked: Keka, Zoho Recruit, …) | per board |
 | Re-score after a rubric change | A command that finds the stored scores a scan can still re-score, and resets only those | small |
 | Scheduling on Windows (and launchd on macOS) | Task Scheduler (and launchd) next to the systemd timer and cron; today `schedule on` on Windows only explains the steps | small |

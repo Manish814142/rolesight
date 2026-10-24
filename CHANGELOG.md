@@ -10,15 +10,36 @@ reconstructed from git history.
 ## [Unreleased]
 
 ### Added (2026-10-24, T160: Workable's 12,585 harvested boards checked across 22 countries)
-- The 12,585 Workable boards harvested from the web (`data/t160_workable/`, split into 13 batches of up to 1,000 seeds) were checked
-  against the 22 countries using `.venv/bin/python -m job_hunt discover` with `--workers 3` to respect Workable's rate limits. 1,137 live boards
-  with jobs in the 22 target countries were found across all 13 batches, plus a retry pass on 51 throttled boards verified 12 more (1,149 candidates total).
-- Filtered by visa sponsorship evidence (`scripts/filter_by_visa_evidence.py`): 205 candidates showed evidence on public sponsor registers
-  (UK Skilled Worker register, Dutch IND register, Irish permits, US H-1B, Canadian LMIA, and community lists).
-- Merged into `companies.json` and `job_hunt/data/companies.json`: 203 new employers added (2 duplicates with existing Oracle HCM entries
-  Intertek and Phoenix Software dropped). `companies.json` 2,510 -> **2,713** (India's 1,589 boards unchanged; companies abroad 921 -> 1,124).
-  Workable boards 106 -> 309. Rebuilt `job_hunt/data/visa_sponsors.json`: 1,870 of 2,713 companies have verified visa sponsor evidence
-  (UK 1,249, NL 503, IE 158, lists 93, US 851, CA 89).
+- The 12,585 Workable boards harvested from the web (13 batches of up to 1,000 seeds) were checked for 22 countries (the UK,
+  Germany, the Netherlands, Ireland, the UAE, Singapore and 16 more in Europe) with `autopilot discover --places … --no-recheck
+  --workers 3`. The first batch's results were written at 03:21, the last at 15:12: batches 01–03 took 7–9 minutes each,
+  the later ones 46–114 while Workable throttled (HTTP 429).
+  1,137 boards had jobs in those countries; the 51 boards still refused while their jobs were fetched were checked again, and 11
+  more passed (a 12th, V2, refused again, was added to the candidates by hand; the visa filter dropped it).
+- Kept only with visa-sponsor evidence (`scripts/filter_by_visa_evidence.py`, then read by hand: see below): 257 kept, 892 dropped.
+  Merged: 256 new entries (Intertek was already on the list as an Oracle HCM board). `companies.json` 2,510 -> **2,766** (India's
+  1,589 boards unchanged; 921 -> 1,177 for other countries); Workable 106 -> 362. A scan for the UK and Germany now fetches 2,587
+  boards (2,344 before). `job_hunt/data/visa_sponsors.json` rebuilt: 1,923 of 2,766 companies have a record (UK 1,299, NL 506,
+  IE 159, lists 94, US 852, CA 89).
+
+### Fixed in review (2026-10-24, T160)
+- **6 of the 205 entries the filter kept rested on another employer's record**, found by reading every record whose name is
+  made only of dictionary words, matched squashed, or is short, against the board's own description and jobs, the register's
+  town and, where still unsure, Companies House: "Digital" (a marketing agency hiring in the USA and the Philippines) on AND
+  Digital's Dutch entity; "Intellect" (a Singapore mental-health company) on Intellect Ltd of Bristol; "Logistics Uk" (the trade
+  body) on Europe Logistics Limited of Leicester; Charterhouse (a telecoms firm) on Charterhouse, the school; Capula (the hedge
+  fund) on Capula Limited of Stone; Second Nature (the weight-loss programme) on a printing firm of 1981. The first three left
+  the list; the other three now carry their own entity (Charterhouse Voice & Data Limited, Capula Investment Services Limited,
+  Second Nature Healthy Habits Ltd), accepted as aliases in `scripts/visa_sponsor_review.json`.
+- **The 84 weak matches the filter left for review were decided**, which the first pass had not done: 54 accepted (the company's
+  own entity: Jagex, Lyst, Kroo Bank, LMAX, Rokt, …), 29 rejected (another employer, or not tellable apart by name), and for
+  Starling the bank accepted and another Starling company rejected. Also the 11 records the rebuild listed as unreviewed (for
+  countries outside the entries' places). 0 unreviewed now.
+- **Two other employers were dropped as duplicates** because their names reduce to an existing entry's: Phoenix Software (York)
+  to "Phoenix" (The Phoenix Mills, India) and Target Group (Cardiff) to "Target India". Both are on the list now, the second
+  under its seed's name, since its board calls itself "Target" (T156).
+- Docs: the counts in README, ARCHITECTURE, docs/00, docs/04 (also its "27 entries that carry places", stale since T139) and
+  docs/10.
 
 ### Fixed in review (2026-10-23, T153)
 - docs/10's "titles in other languages" goal named "Développeur backend" as a title the filter drops; it passes today (the English

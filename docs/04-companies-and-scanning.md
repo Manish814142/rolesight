@@ -4,12 +4,12 @@
 
 The list of job boards to scan. It is committed, it is the core of the project, and it is meant to be grown: every entry
 was checked by `autopilot discover` (below) to be live, to belong to the employer it names and to have India jobs (or,
-for the 27 entries that carry `"places"`, jobs in those countries: T139).
+for the 1,177 entries that carry `"places"`, jobs in those countries: T139).
 
-**Counts (2026-10-24):** 2,713 boards: Greenhouse 733, Workday 481, Ashby 391, Workable 309, SmartRecruiters 264,
+**Counts (2026-10-24):** 2,766 boards: Greenhouse 733, Workday 481, Ashby 391, Workable 362, SmartRecruiters 264,
 Lever 206, Recruitee 195, Oracle HCM 108, Personio 20, Eightfold 4, Amazon 1, Phenom 1. The first 224 were curated by
-hand; 1,365 came from the bulk harvest (T111, T112); 1,124 were checked for other countries instead of India (T139, T142, T144, T160):
-58 from the community lists and 1,065 that passed the visa-evidence rule (862 from T144 and 203 from Workable in T160). Count yours with
+hand; 1,365 came from the bulk harvest (T111, T112); 1,177 were checked for other countries instead of India (T139, T142, T144, T160):
+58 from the community lists and 1,119 that passed the visa-evidence rule (863 from T144 and 256 from Workable in T160). Count yours with
 `python -c "import json,collections;print(collections.Counter(c['ats'] for c in json.load(open('companies.json'))))"`.
 
 `job_hunt/data/companies.json` is the copy `autopilot init` gives a new user. **After any change, copy the list there**
@@ -142,6 +142,10 @@ What to expect (T111, T112, measured 2026-10-16/17):
   hours.
 - **Workable and Recruitee refuse bursts** (HTTP 429: Workable refused about half of ~800 requests sent at 20 a second).
   Every request now waits 2, 5 and 12 s and asks again (T114), but run those two with **`--workers 3`**.
+- **Workable's 12,585 boards (T160, 2026-10-24)** took about 12 hours at `--workers 3` in batches of 1,000: 7–9 minutes a
+  batch at first, 46–114 once Workable throttled. 1,148 had jobs in the 22 countries asked; 256 showed visa-sponsor evidence
+  and were added (below). A board still refused after the retries is named in the log only while its jobs are fetched
+  (`answered HTTP 429`), so it can be checked again; in the first step it becomes a `no live board` row like a dead one (T155).
 - **Oracle HCM hosts are customer codes** (`cbcz.fa.us2.oraclecloud.com`), so the script reads each site's page and takes
   the employer's name from its `<title>` ("Hilton", "Careers \| BXP" → "BXP"); a site whose title names nobody is not a
   seed. A host is one employer: `discover` keeps one entry per host, its busiest site, named by that site's own title
@@ -564,6 +568,18 @@ dictionary-word names (230 records). Those 230 (120 companies, American Express 
 229 are the company's own entity; "Fusion Consulting Ltd" (London) is rejected, since the board's Fusion Consulting hires in Barcelona,
 Frankfurt, Lisbon and nowhere in the UK. **Record rebuilt: 1,667 of 2,510 companies** (UK 1,068). Still not read: exact matches of
 longer names that are not dictionary words, on the India list and outside T144's 141 flagged (T152 asks for a guard for future rebuilds).
+
+**Workable's boards (T160, 2026-10-24).** Of the 1,148 Workable boards with jobs in the 22 countries (and one added by hand), the filter kept 205 and
+listed 84 weak matches for review, which were left unread at first. In review, every kept record whose name is made only of
+dictionary words, matched squashed or is short was read against the register's town, the board's own description and jobs and,
+where still unsure, Companies House: **6 named another employer** ("Digital", a marketing agency, on AND Digital's Dutch entity;
+Intellect, the Singapore mental-health company, on Intellect Ltd of Bristol; Logistics UK on Europe Logistics Limited; Charterhouse,
+a telecoms firm, on the school; Capula, the hedge fund, on Capula Limited of Stone; Second Nature on a printing firm). Three had
+their own entity on the register too, now accepted as aliases; Digital, Intellect and Logistics UK left. Of the 84 weak matches,
+54 were accepted and 29 rejected (Starling: the bank accepted, another Starling company rejected). Two employers the merge had
+dropped as duplicates of other companies' names were added (Phoenix Software, Target Group: T156). 256 entries added.
+**Record rebuilt: 1,923 of 2,766 companies** (UK 1,299, Netherlands 506, Ireland 159, lists 94, USA 852, Canada 89), 0
+unreviewed. Read by name only: the 121 new entries whose record is an exact match of a longer, non-dictionary name.
 
 **The scan uses it** (T138): with `candidate.countries` set, every job outside your home country gets a **Visa** column in
 the CSV: what the posting says, then this record for its country ([docs/05](05-outputs-and-notifications.md)).
