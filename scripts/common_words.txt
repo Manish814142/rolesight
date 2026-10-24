@@ -1,6 +1,7 @@
 # Source: SCOWL (Spell Checker Oriented Word Lists, size 50) via Debian wamerican
 # Maintained by Kevin Atkinson
 # SF project: http://wordlist.sourceforge.net/
+# Full copyright and permission text: see scripts/common_words.LICENSE
 #
 # Copyright 2000-2011 by Kevin Atkinson
 # Permission to use, copy, modify, distribute and sell these word lists,

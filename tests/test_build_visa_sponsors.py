@@ -132,6 +132,24 @@ def test_load_review_without_a_file_means_no_verdicts(tmp_path):
     assert bvs.load_review(tmp_path / "missing.json") == {"accepted": {}, "rejected": {}}
 
 
+def test_common_words_loads_shipped_list():
+    bvs.common_words.cache_clear()
+    words = bvs.common_words()
+    assert len(words) > 70000
+    assert "harmonic" in words and "jigsaw" in words
+
+
+def test_common_words_raises_when_file_is_missing(monkeypatch, tmp_path):
+    missing = tmp_path / "does_not_exist.txt"
+    monkeypatch.setattr(bvs, "COMMON_WORDS_FILE", missing)
+    bvs.common_words.cache_clear()
+    try:
+        with pytest.raises(FileNotFoundError):
+            bvs.common_words()
+    finally:
+        bvs.common_words.cache_clear()
+
+
 def _sources(d: Path) -> Path:
     d.mkdir()
     (d / "uk_register.csv").write_text("Organisation Name,Town/City,County,Type & Rating,Route\n"
@@ -186,7 +204,7 @@ def test_main_offline_writes_the_file_report_and_seeds(tmp_path, capsys):
     assert bvs.main(["--offline", "--sources", str(src), "--companies", str(tmp_path / "companies.json"), "--out", str(out),
                      "--review", str(tmp_path / "none.json"), "--report", str(report), "--emit-seeds", str(seeds)]) == 0
     printed = capsys.readouterr().out
-    assert "2 of 4 companies have evidence" in printed and "unreviewed (loose, or exact on a short name) (not used" in printed
+    assert "2 of 4 companies have evidence" in printed and "unreviewed (loose, or exact on a short or common-word name) (not used" in printed
     assert set(json.loads(out.read_text(encoding="utf-8"))["companies"]) == {"Stripe", "Mollie"}
     assert report.read_text(encoding="utf-8").splitlines()[0] == "Status,Company,ATS,Source,Match,Source's name,Detail"
     assert "unreviewed,Phoenix,ashby,uk,loose,Phoenix Software Limited" in report.read_text(encoding="utf-8")

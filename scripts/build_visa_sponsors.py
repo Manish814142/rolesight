@@ -446,8 +446,6 @@ COMMON_WORDS_FILE = ROOT / "scripts" / "common_words.txt"
 @lru_cache(maxsize=1)
 def common_words() -> Set[str]:
     """Words that commonly name things other than a specific company (T152, SCOWL-50 / wamerican)."""
-    if not COMMON_WORDS_FILE.exists():
-        return set()
     with open(COMMON_WORDS_FILE, encoding="utf-8") as f:
         return {line.strip() for line in f if line.strip() and not line.startswith("#")}
 
@@ -563,7 +561,7 @@ def main(argv=None) -> int:
     print(f"{len(data['companies'])} of {len(companies)} companies have evidence ({', '.join(f'{k} {v}' for k, v in by.items())}); "
           f"wrote {args.out}")
     counts = {s: sum(status(c, n, k, review) == s for c, _, k, n, _ in cands) for s in ("kept", "rejected", "unreviewed")}
-    print(f"matches: {counts['kept']} kept, {counts['rejected']} rejected by hand, {counts['unreviewed']} unreviewed (loose, or exact on a short name)"
+    print(f"matches: {counts['kept']} kept, {counts['rejected']} rejected by hand, {counts['unreviewed']} unreviewed (loose, or exact on a short or common-word name)"
           + (" (not used: read them with --report, then accept or reject them in the review file)" if counts["unreviewed"] else ""))
     if args.report:
         print(f"{write_report(args.report, cands, review, companies)} matches in {args.report}")
