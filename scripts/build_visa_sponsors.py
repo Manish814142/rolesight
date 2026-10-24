@@ -40,7 +40,7 @@ import sys
 import unicodedata
 from functools import lru_cache
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Tuple
+from typing import Any, Dict, Iterable, List, Optional, Set, Tuple
 
 ROOT = Path(__file__).resolve().parent.parent
 UA = {"User-Agent": "Mozilla/5.0 (RoleSight visa-sponsor builder)"}
@@ -439,17 +439,36 @@ def load_review(path: Path) -> Dict[str, Dict[str, List[str]]]:
 
 
 SHORT_KEY = 5     # an exact key this short ("river", "med", "eon") names many businesses: read it first (T144 review)
+COMMON_WORDS_FILE = ROOT / "scripts" / "common_words.txt"
+# an exact key made only of common words ("harmonic", "growth kitchen") names many businesses: read it first (T152)
 
 
-def status(company: str, source_name: str, match: str, review: Dict[str, Dict[str, List[str]]]) -> str:
+@lru_cache(maxsize=1)
+def common_words() -> Set[str]:
+    """Words that commonly name things other than a specific company (T152, SCOWL-50 / wamerican)."""
+    if not COMMON_WORDS_FILE.exists():
+        return set()
+    with open(COMMON_WORDS_FILE, encoding="utf-8") as f:
+        return {line.strip() for line in f if line.strip() and not line.startswith("#")}
+
+
+def status(company: str, source_name: str, match: str, review: Dict[str, Dict[str, List[str]]],
+           words: Optional[Set[str]] = None) -> str:
     """"kept" (an exact or squashed match, or a loose one or a short exact one accepted by hand), "rejected" by hand, or
-    "unreviewed" (a loose match, or an exact one on a key of SHORT_KEY letters or fewer, until someone reads it)."""
+    "unreviewed" (a loose match, an exact one on a key of SHORT_KEY letters or fewer, or one made only of common words,
+    until someone reads it)."""
     if source_name in review["rejected"].get(company, []):
         return "rejected"
     if source_name in review["accepted"].get(company, []):
         return "kept"
-    if match == "squashed" or (match == "exact" and len(exact_key(company).replace(" ", "")) > SHORT_KEY):
+    if match == "squashed":
         return "kept"
+    if match == "exact":
+        key = exact_key(company)
+        cw = words if words is not None else common_words()
+        tokens = key.split()
+        if len(key.replace(" ", "")) > SHORT_KEY and any(w not in cw for w in tokens):
+            return "kept"
     return "unreviewed"
 
 
@@ -489,7 +508,8 @@ def build(src: Path, companies: List[Dict[str, Any]], review: Dict[str, Dict[str
     cands = candidates(companies, indexes, review)
     return ({"about": "Companies on companies.json that appear in public visa-sponsor sources (T133). A register means the "
                       "employer can sponsor a visa, not that a given job does. Each match names the source's own entry; "
-                      "loose name matches are kept only when accepted by hand in scripts/visa_sponsor_review.json. "
+                      "loose name matches are kept only when accepted by hand in scripts/visa_sponsor_review.json, as are "
+                      "exact matches on short names (SHORT_KEY) or all-common-word names (T152). "
                       "Rebuild: python scripts/build_visa_sponsors.py",
              "built": dt.date.today().isoformat(), "sources": meta, "companies": match_companies(cands, review)}, cands)
 

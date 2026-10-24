@@ -42,6 +42,15 @@ def test_an_exact_match_on_a_short_name_is_for_review_until_somebody_accepts_it(
     assert fbve.judge(river, idx, {"accepted": {}, "rejected": {"River": ["RIVERSIDE HOSPITAL INC D B A RIVER"]}}, {})[0] == "drop"
 
 
+def test_an_exact_match_on_a_common_word_name_is_for_review_until_somebody_accepts_it():
+    """T152: an exact match on a name made only of common words is for review until accepted."""
+    idx = _idx(uk={"Harmonic Limited": ["Skilled Worker"], "First Mile LTD": ["Skilled Worker"]})
+    assert fbve.judge(_e("Harmonic"), idx, NO_REVIEW, {})[:3] == ("review", [], ["uk: Harmonic Limited"])
+    assert fbve.judge(_e("Harmonic"), idx, {"accepted": {"Harmonic": ["Harmonic Limited"]}, "rejected": {}}, {})[0] == "keep"
+    assert fbve.judge(_e("First Mile"), idx, NO_REVIEW, {})[:3] == ("review", [], ["uk: First Mile LTD"])
+    assert fbve.judge(_e("First Mile"), idx, {"accepted": {"First Mile": ["First Mile LTD"]}, "rejected": {}}, {})[0] == "keep"
+
+
 def test_a_name_from_a_web_address_matches_as_squashed():
     idx = _idx(uk={"Cloud Imperium Games Ltd": ["Skilled Worker"]})
     assert fbve.judge(_e("Cloudimperiumgames", "personio"), idx, NO_REVIEW, {})[:2] == ("keep", ["uk: Cloud Imperium Games Ltd"])

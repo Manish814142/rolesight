@@ -9,6 +9,9 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Added (2026-10-24, T152: common-word company name guard for visa sponsors)
+- An exact visa-record match on a company name whose key is made only of common words must be accepted by hand in `scripts/visa_sponsor_review.json` before it counts (`scripts/build_visa_sponsors.py` `status()`, `SHORT_KEY` guard extended). Shipped word list in `scripts/common_words.txt` (SCOWL-50 / Debian wamerican, 73,442 words, 653 KB, MIT/BSD-style licence). Rebuilt offline: 521 exact records sit on long all-common keys, 0 unreviewed (all 521 already have hand verdicts from T144/T160); `companies.json` (2,766 total, 1,589 India, 1,177 abroad) and visa sponsors (1,923 of 2,766) unchanged.
+
 ### Added (2026-10-24, T160: Workable's 12,585 harvested boards checked across 22 countries)
 - The 12,585 Workable boards harvested from the web (13 batches of up to 1,000 seeds) were checked for 22 countries (the UK,
   Germany, the Netherlands, Ireland, the UAE, Singapore and 16 more in Europe) with `autopilot discover --places … --no-recheck

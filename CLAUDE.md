@@ -178,7 +178,7 @@ uscis.gov refuses scripts; `--us-h1b FILE` for a newer export) and Canada's posi
 relocate.me's CC0 one, T141; a list entry counts only for its places), each with the source's own entry; the UAE, Singapore, Germany, the
 USA, Canada, Australia and New Zealand also get their official rule in the note unless the posting refuses (`visa.COUNTRY_RULE`). Built by
 `scripts/build_visa_sponsors.py` (downloads into `data/visa_sources/`; `--offline` reuses them). A loose name match (generic words dropped),
-and an exact one on a name of five letters or fewer (`SHORT_KEY`, T144 review), counts only when accepted in `scripts/visa_sponsor_review.json`, which also holds the rejections: after a rebuild, read the report's
+and an exact one on a name of five letters or fewer (`SHORT_KEY`, T144 review) or made only of common words (T152), counts only when accepted in `scripts/visa_sponsor_review.json`, which also holds the rejections: after a rebuild, read the report's
 `unreviewed` rows. Why: 72–98% of engineering postings in the UK, DE, NL, IE, UAE and SG never state a visa policy (measured 2026-10-21,
 `scripts/measure_visa_wording.py`); and 17 of the 44 UK companies whose postings refuse sponsorship are licensed, so a posting's own refusal wins.
 The scan writes it per job abroad as the CSV's Visa column (`job_hunt/visa.py`, T138). Guide: `docs/04-companies-and-scanning.md`, "Visa sponsorship".

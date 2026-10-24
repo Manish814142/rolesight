@@ -335,7 +335,11 @@ accepted there (the other 598 kept are exact). An exact match is not proof eithe
 a Bristol coachbuilder (Companies House), while the list's Tgs board is TransPerfect's games testing; it is rejected in the
 review file (found in review, 2026-10-21). The rejected
 ones are mostly names that are ordinary words (Phoenix, Shift, Mesh, Healthcare, Lighthouse) and other firms with the same
-name ("Pico Technology" is not Pico Quantitative Trading). The verdicts went by name, the company's job-board slug and general
+name ("Pico Technology" is not Pico Quantitative Trading). An exact match on a name of five letters or fewer (`SHORT_KEY = 5`,
+T144 review) or on a key made only of common words (`scripts/common_words.txt`, T152) also counts only when accepted in the
+review file. The shipped common word list is derived from SCOWL (Spell Checker Oriented Word Lists, size 50; Kevin Atkinson,
+MIT/BSD-style licence) via Debian's `wamerican`. After a rebuild, all `unreviewed` rows in the report must be read by hand.
+The verdicts went by name, the company's job-board slug and general
 knowledge, not by company records; unsure ones were rejected. One independent check: every company whose UK, Dutch or Irish
 postings offer sponsorship and that is on that country's record was found (10 of 10). The other 4 are on no record under
 their own name.
@@ -492,7 +496,8 @@ python scripts/filter_by_visa_evidence.py --candidates /tmp/v1.json /tmp/v2.json
 A company is kept when, for a country it hires in, **one** of these holds: it is on that country's sponsor record (UK register,
 Dutch IND register, Irish permits, US H-1B, Canadian LMIA) by an exact match, a *squashed* match (the same name without spaces,
 six letters or more: "Cloudimperiumgames" = "Cloud Imperium Games Ltd") or a loose match accepted by hand in
-`scripts/visa_sponsor_review.json`, where an exact match on a name of five letters or fewer must be accepted too (T144 review:
+`scripts/visa_sponsor_review.json`, where an exact match on a name of five letters or fewer (`SHORT_KEY`, T144 review) or made
+only of common words (`scripts/common_words.txt`, T152) must be accepted too (T144 review:
 "River" matched a hospital's trade name, "UK-Med" a software firm's); it is on a community list for that country; or one of its postings offers visa sponsorship.
 A record for a country it does not hire in does not count (a Dutch register entry says nothing about a German job); a Workday
 entry records every country checked, so any record counts. **The review file doubles as an alias list**: a name accepted there

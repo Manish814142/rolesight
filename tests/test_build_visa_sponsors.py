@@ -109,6 +109,25 @@ def test_an_exact_match_on_a_name_of_five_letters_or_fewer_counts_only_when_acce
     assert bvs.status("Moss", "AB MOSS LIMITED", "exact", {"accepted": {}, "rejected": {"Moss": ["AB MOSS LIMITED"]}}) == "rejected"
 
 
+def test_an_exact_match_on_a_name_made_only_of_common_words_counts_only_when_accepted():
+    """T152: an exact match on a name made only of common words must be read by hand before it counts."""
+    review = {"accepted": {"Harmonic": ["Harmonic Limited"]}, "rejected": {"Harmonic": ["Harmonic (UK) Ltd."]}}
+    # "Harmonic" exact on "Harmonic Limited" -> unreviewed without a verdict
+    assert bvs.status("Harmonic", "Harmonic Limited", "exact", {"accepted": {}, "rejected": {}}) == "unreviewed"
+    # Same record with "Harmonic Limited" accepted for Harmonic -> kept
+    assert bvs.status("Harmonic", "Harmonic Limited", "exact", review) == "kept"
+    # "Logistics UK" exact on "EUROPE LOGISTICS LIMITED" -> unreviewed (the key after dropped words is "logistics")
+    assert bvs.status("Logistics UK", "EUROPE LOGISTICS LIMITED", "exact", {"accepted": {}, "rejected": {}}) == "unreviewed"
+    # A two-word all-common key ("First Mile" on "First Mile LTD") -> unreviewed
+    assert bvs.status("First Mile", "First Mile LTD", "exact", {"accepted": {}, "rejected": {}}) == "unreviewed"
+    # A long key with a word not on the list (e.g. "Deliveroo" on "Deliveroo Ltd") -> kept
+    assert bvs.status("Deliveroo", "Deliveroo Ltd", "exact", {"accepted": {}, "rejected": {}}) == "kept"
+    # Rejected still wins over the new rule
+    assert bvs.status("Harmonic", "Harmonic (UK) Ltd.", "exact", review) == "rejected"
+    # Squashed is unchanged: a squashed match stays kept
+    assert bvs.status("Harmonic", "Harmonic Limited", "squashed", {"accepted": {}, "rejected": {}}) == "kept"
+
+
 def test_load_review_without_a_file_means_no_verdicts(tmp_path):
     assert bvs.load_review(tmp_path / "missing.json") == {"accepted": {}, "rejected": {}}
 
@@ -239,6 +258,9 @@ def test_the_shipped_dataset_and_review_file_are_well_formed():
     for company, ev in data["companies"].items():           # nothing rejected by hand made it into the file
         assert not {n for e in ev for n in e["names"]} & set(review["rejected"].get(company, []))
         if len(bvs.exact_key(company).replace(" ", "")) <= bvs.SHORT_KEY:      # a short name's exact match was read (T144 review)
+            assert all(n in review["accepted"].get(company, []) for e in ev if e["match"] == "exact" for n in e["names"]), company
+        tokens = bvs.exact_key(company).split()
+        if tokens and all(w in bvs.common_words() for w in tokens):             # an all-common-word name's exact match was read (T152)
             assert all(n in review["accepted"].get(company, []) for e in ev if e["match"] == "exact" for n in e["names"]), company
 
 
