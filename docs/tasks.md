@@ -387,7 +387,7 @@ T11, T12, T14, T15, T16, T17 and T18 were verified 2026-10-07, T66 and T67 on 20
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
 | T152 | A guard for common-word company names in future rebuilds | review · antigravity · b436e79 | antigravity | M | — |
-| T156 | Report name collisions when merging new companies | changes · claude | antigravity | S | — |
+| T156 | Report name collisions when merging new companies | doing · antigravity · 2026-10-25 | antigravity | S | — |
 
 **T156 · finding (Inbox text, claude):** **`merge_companies` drops a new entry whose name reduces to an existing one's, even when it is another employer.** The key is `_core_words(name)` (`discovery.py:309`), which drops words like "software", "group" and "india": in T160 Phoenix Software (York, IT reseller) fell to "Phoenix" (Oracle HCM, The Phoenix Mills, India) and Target Group (Cardiff) to "Target India" (the retailer's Workday tenant); both were added by hand in the review. The third T160 drop, Intertek, was the same company. Option: list name collisions in the report with both boards instead of dropping silently; how many past merges lost a company this way was not measured *(measured (T160's three drops, the boards read))*
 
