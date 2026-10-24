@@ -9,6 +9,10 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Fixed (2026-10-25, T156: name collisions in discover --merge are reported, never dropped silently)
+- When `discover --merge` merges new companies into an existing list, new entries whose name key reduces to an existing entry's on a different board (via `_core_words(name)`) are not added automatically, but are reported in the CSV report (`name collision: not added; existing <name> (<ats>/<board>)`) and printed to stdout naming both boards.
+- Same-board duplicates remain silent; existing entries are preserved across all merges and re-checks.
+
 ### Fixed (2026-10-25, T155: discover never reads a refused or failed request as "no board")
 - Direct ATS adapters (`greenhouse`, `lever`, `ashby`, `recruitee`, `personio`, `workable`) call `mark_incomplete(<reason>)` on any failure other than HTTP 404 (final 429, 5xx, timeout, bad JSON/XML); HTTP 404 remains "no board".
 - `evaluate_board` and `evaluate_entry` call `begin_fetch()` before fetching and check `fetch_incomplete()`; 0 jobs with an incomplete fetch yields `not checked: <reason>`, never "no open jobs" or stale.

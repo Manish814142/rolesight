@@ -48,7 +48,7 @@ import unicodedata
 from concurrent.futures import ThreadPoolExecutor
 from datetime import date, datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Set, Tuple, Union
 from urllib.parse import urljoin
 
 import requests
@@ -331,7 +331,7 @@ def _board_ident(c: Dict[str, Any]) -> str:
     if c.get("slug"):
         return str(c["slug"])
     if c.get("ats") == "oracle_hcm":
-        return f"{c.get('host')}:{c.get('site')}"
+        return f"{c.get('host')}:{c.get('site')}" if c.get("site") else str(c.get("host", ""))
     if c.get("ats") == "workday":
         return f"{c.get('tenant')}:{c.get('dc')}:{c.get('site')}"
     if c.get("ats") == "eightfold":
@@ -339,6 +339,52 @@ def _board_ident(c: Dict[str, Any]) -> str:
     if c.get("ats") == "phenom":
         return f"{c.get('host')}:{c.get('locale')}"
     return str(c.get("ats", ""))
+
+
+def name_collisions(existing: List[Dict[str, Any]], new: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """Report new companies whose name key reduces to an existing one's on a different board.
+
+    Same-board duplicates stay silent.
+    """
+    def board_key(c: Dict[str, Any]) -> Tuple[str, str]:
+        return c.get("ats", ""), _board_ident(c).lower()
+
+    def name_key(c: Dict[str, Any]) -> str:
+        return " ".join(_core_words(c["name"]))
+
+    existing_boards = {board_key(c) for c in existing}
+    existing_by_name: Dict[str, Dict[str, Any]] = {}
+    for c in existing:
+        k = name_key(c)
+        if k and k not in existing_by_name:
+            existing_by_name[k] = c
+
+    collisions: List[Dict[str, Any]] = []
+    seen_new_boards: Set[Tuple[str, str]] = set()
+    for c in new:
+        b_key = board_key(c)
+        if b_key in existing_boards or b_key in seen_new_boards:
+            continue
+        seen_new_boards.add(b_key)
+        nk = name_key(c)
+        if nk in existing_by_name:
+            ex = existing_by_name[nk]
+            ex_ats = ex.get("ats", "")
+            ex_board = _board_ident(ex)
+            ex_board_full = f"{ex_ats}/{ex_board}"
+            verdict = f"name collision: not added; existing {ex['name']} ({ex_board_full})"
+            collisions.append({
+                "seed": c["name"],
+                "verdict": verdict,
+                "ats": c.get("ats", ""),
+                "board": _board_ident(c),
+                "accepted": False,
+                "existing_name": ex["name"],
+                "existing_ats": ex_ats,
+                "existing_board": ex_board,
+                "existing_board_full": ex_board_full,
+            })
+    return collisions
 
 
 def _is_india(location: str) -> bool:
@@ -1103,7 +1149,11 @@ def main(argv: Optional[List[str]] = None) -> None:
         for c, r in zip(existing, recheck_rows):
             if not r["accepted"]:
                 print(f"  dropping existing {c['name']} ({c['ats']}): {r['verdict']}")
-        write_report(rows + [{**r, "seed": f"[existing] {r['seed']}"} for r in recheck_rows], opts["--report"])
+        collisions = name_collisions(kept, verified)
+        for col in collisions:
+            print(f"  name collision: {col['seed']} ({col['ats']}/{col['board']}) not added; "
+                  f"existing {col['existing_name']} ({col['existing_board_full']})")
+        write_report(rows + collisions + [{**r, "seed": f"[existing] {r['seed']}"} for r in recheck_rows], opts["--report"])
         merged = merge_companies(kept, verified)
         target.write_text(json.dumps(merged, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         print(f"Merged into {target}: {len(existing)} existing ({len(kept)} still valid) -> {len(merged)} companies")

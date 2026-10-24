@@ -221,8 +221,13 @@ fetch (all fixed or decided since; check for them in yours):
 | **Wrong name** on an Oracle host with several brands | "ADI" on Resideo's site, "Lutech" on McDermott's (T117, fixed in the script) | Compare the entry's name with its jobs' descriptions |
 | A **one-posting board** that lost its India job a day later | Loopio, Ryansg (T112) | The monthly recheck removes them |
 | A **refused or failed board** (HTTP 429, 5xx, timeout) | 13 of 60 sampled in T160 were refused when re-probed (T155) | Marked `not checked: <reason>` (never "no board"), re-run 2 at a time; existing entries are kept and recheck neither removes nor re-discovers them |
+| A **name collision** (new company reduces to an existing name) | Phoenix Software vs Phoenix, Target Group vs Target India (T156) | Reported as `name collision: not added; existing <name> (<ats>/<board>)` (never dropped silently); add by hand if it is another employer |
 
 **Refused or failed requests (`not checked`, T155):** Requests refused by rate limiting (HTTP 429) or failing (5xx, timeout, malformed response) are reported as `not checked: <reason>` rather than "no live board" or "no open jobs". They are re-run once more 2 at a time at the end of the pass. Existing entries answering `not checked` are kept in `--merge` and `--recheck` (neither removed nor replaced).
+
+**Name collisions on merge (T156):** `merge_companies` keys companies by `_core_words(name)` (dropping suffixes and words like "software", "group", "india"). When a newly discovered company shares a name key with an existing entry on a different board (such as Phoenix Software on Workable vs Phoenix on Oracle HCM), it is not added automatically, but it is flagged in the report as `name collision: not added; existing <name> (<ats>/<board>)` and printed to stdout naming both boards. Same-board duplicates stay silent.
+
+**Adding a collision by hand:** If a reported collision is another employer, add its entry to `companies.json` by hand, then update the packaged copy: `cp companies.json job_hunt/data/companies.json`. Existing name-sharing entries (like Phoenix/Phoenix Software and Target India/Target Group) are preserved across all merges and re-checks.
 
 **Removing a wrong entry by hand:** delete its object from `companies.json`, `cp companies.json job_hunt/data/companies.json`,
 and, when the board itself is wrong (another employer, a stub), add `(ats, slug)` to `discovery.KNOWN_BAD_BOARDS` with the

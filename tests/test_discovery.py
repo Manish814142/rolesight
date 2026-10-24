@@ -1135,3 +1135,138 @@ def test_recheck_companies_neither_removes_nor_replaces_not_checked_entry(monkey
     assert not any("REMOVED" in r.get("verdict", "") or "REPLACED" in r.get("verdict", "") for r in report_rows)
     assert any(r.get("verdict", "").startswith("not checked") for r in report_rows)
 
+
+# ── T156: Name collisions when merging new companies ─────────────────────────
+
+def test_name_collisions_phoenix_software_against_phoenix():
+    """T156: 'Phoenix Software' (workable) against existing 'Phoenix' (oracle_hcm) -> not added, reported with both boards."""
+    from job_hunt import discovery as d
+    existing = [{"name": "Phoenix", "ats": "oracle_hcm", "host": "egeg.fa.em3.oraclecloud.com", "site": "CX_1"}]
+    new = [{"name": "Phoenix Software", "ats": "workable", "slug": "phoenix-software"}]
+
+    cols = d.name_collisions(existing, new)
+    assert len(cols) == 1
+    assert cols[0]["seed"] == "Phoenix Software"
+    assert cols[0]["ats"] == "workable"
+    assert cols[0]["board"] == "phoenix-software"
+    assert cols[0]["verdict"] == "name collision: not added; existing Phoenix (oracle_hcm/egeg.fa.em3.oraclecloud.com:CX_1)"
+
+    merged = d.merge_companies(existing, new)
+    assert [c["name"] for c in merged] == ["Phoenix"]
+
+
+def test_name_collisions_mindtickle_india_against_mindtickle():
+    """T156: 'Mindtickle India' against 'Mindtickle' -> reported too."""
+    from job_hunt import discovery as d
+    existing = [{"name": "Mindtickle", "ats": "greenhouse", "slug": "mindtickle"}]
+    new = [{"name": "Mindtickle India", "ats": "lever", "slug": "mindtickle-india"}]
+
+    cols = d.name_collisions(existing, new)
+    assert len(cols) == 1
+    assert cols[0]["seed"] == "Mindtickle India"
+    assert cols[0]["ats"] == "lever"
+    assert cols[0]["board"] == "mindtickle-india"
+    assert cols[0]["verdict"] == "name collision: not added; existing Mindtickle (greenhouse/mindtickle)"
+
+    merged = d.merge_companies(existing, new)
+    assert [c["name"] for c in merged] == ["Mindtickle"]
+
+
+def test_name_collisions_same_board_twice_stays_silent():
+    """T156: The same board twice -> silent, as today."""
+    from job_hunt import discovery as d
+    existing = [{"name": "Stripe", "ats": "greenhouse", "slug": "stripe"}]
+    new = [
+        {"name": "Stripe", "ats": "greenhouse", "slug": "stripe"},
+        {"name": "Stripe Duplicate", "ats": "greenhouse", "slug": "stripe"},
+    ]
+
+    cols = d.name_collisions(existing, new)
+    assert cols == []
+
+
+def test_name_collisions_t160_replay_fixture():
+    """T156: Replaying T160 drops drops exactly Intertek and Phoenix Software as name collisions."""
+    from job_hunt import discovery as d
+    existing = [
+        {"name": "Intertek", "ats": "oracle_hcm", "host": "hcog.fa.em2.oraclecloud.com", "site": "CX_2001"},
+        {"name": "Phoenix", "ats": "oracle_hcm", "host": "egeg.fa.em3.oraclecloud.com", "site": "CX_1"},
+        {"name": "OtherCo", "ats": "greenhouse", "slug": "otherco"},
+    ]
+    new = [
+        {"name": "Intertek", "ats": "workable", "slug": "intertek"},
+        {"name": "Phoenix Software", "ats": "workable", "slug": "phoenix-software"},
+        {"name": "FreshCo", "ats": "workable", "slug": "freshco"},
+    ]
+
+    cols = d.name_collisions(existing, new)
+    assert len(cols) == 2
+    assert {c["seed"] for c in cols} == {"Intertek", "Phoenix Software"}
+    assert cols[0]["verdict"] == "name collision: not added; existing Intertek (oracle_hcm/hcog.fa.em2.oraclecloud.com:CX_2001)"
+    assert cols[1]["verdict"] == "name collision: not added; existing Phoenix (oracle_hcm/egeg.fa.em3.oraclecloud.com:CX_1)"
+
+    merged = d.merge_companies(existing, new)
+    assert {c["name"] for c in merged} == {"Intertek", "Phoenix", "OtherCo", "FreshCo"}
+
+
+def test_merge_into_todays_list_keeps_both_phoenix_and_both_target_entries():
+    """T156: A merge into today's list keeps both Phoenix entries and both Target entries."""
+    from pathlib import Path
+
+    from job_hunt import discovery as d
+    target_path = Path("companies.json")
+    if not target_path.exists():
+        pytest.skip("companies.json not found")
+    today_list = json.loads(target_path.read_text(encoding="utf-8"))
+
+    phoenix_initial = [c["name"] for c in today_list if "phoenix" in c["name"].lower()]
+    target_initial = [c["name"] for c in today_list if "target" in c["name"].lower()]
+    assert set(phoenix_initial) == {"Phoenix", "Phoenix Software"}
+    assert set(target_initial) == {"Target Group", "Target India"}
+
+    merged = d.merge_companies(today_list, [])
+    assert {c["name"] for c in merged if "phoenix" in c["name"].lower()} == {"Phoenix", "Phoenix Software"}
+    assert {c["name"] for c in merged if "target" in c["name"].lower()} == {"Target Group", "Target India"}
+
+
+def test_discover_merge_reports_name_collision_in_stdout_and_report_file(tmp_path, monkeypatch, capsys):
+    """T156: discover --merge prints the collision naming both boards and writes report row."""
+    from job_hunt import discovery as d
+
+    target = tmp_path / "companies.json"
+    target.write_text(json.dumps([
+        {"name": "Phoenix", "ats": "oracle_hcm", "host": "egeg.fa.em3.oraclecloud.com", "site": "CX_1"},
+    ], indent=2), encoding="utf-8")
+
+    seeds = tmp_path / "seeds.txt"
+    seeds.write_text("Phoenix Software\n", encoding="utf-8")
+    out = tmp_path / "out.json"
+    report = tmp_path / "report.csv"
+
+    def fake_discover(seeds, workers=40):
+        verified = [{"name": "Phoenix Software", "ats": "workable", "slug": "phoenix-software", "headcount": "Unknown"}]
+        rows = [{"seed": "Phoenix Software", "verdict": "verified", "ats": "workable", "board": "phoenix-software"}]
+        return verified, rows
+
+    monkeypatch.setattr(d, "discover", fake_discover)
+
+    d.main(["--seeds", str(seeds), "--merge", str(target), "--out", str(out), "--report", str(report), "--no-recheck"])
+
+    captured = capsys.readouterr().out
+    assert "name collision: Phoenix Software (workable/phoenix-software) not added; existing Phoenix (oracle_hcm/egeg.fa.em3.oraclecloud.com:CX_1)" in captured
+
+    # Existing was not modified/replaced
+    saved = json.loads(target.read_text(encoding="utf-8"))
+    assert [c["name"] for c in saved] == ["Phoenix"]
+
+    # Report has collision row
+    import csv
+    with open(report, encoding="utf-8") as f:
+        report_rows = list(csv.DictReader(f))
+    collision_row = next((r for r in report_rows if r["seed"] == "Phoenix Software" and "name collision" in r["verdict"]), None)
+    assert collision_row is not None
+    assert collision_row["verdict"] == "name collision: not added; existing Phoenix (oracle_hcm/egeg.fa.em3.oraclecloud.com:CX_1)"
+    assert collision_row["ats"] == "workable"
+    assert collision_row["board"] == "phoenix-software"
+
+
