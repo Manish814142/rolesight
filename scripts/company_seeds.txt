@@ -1662,3 +1662,454 @@ ePages
 foodspring
 movingimage
 straiv
+
+# ── added via discover --add (2026-10-25) ──
+5ire
+Absolute
+Ace2Three
+Adopt AI
+ADPList
+Aemon Ai
+Agilitas Sports
+Agrani Labs
+AI Rudder
+AIR Trading
+Airblack
+Alex
+Allo Health
+Alma
+Amaani
+Ambak
+Amnic
+Animall
+Apna Mart
+ApnaKlub
+Aramya
+Aretto
+Arintra
+Arkin Net
+Arta Finance
+ASG Eye Hospital
+Asknicely
+Aspire
+Assetplus
+Astro
+Atomic Work
+Atomicwork
+Attentive.ai
+Aukera Jewellery
+Auquan
+Aurva Io
+Avataar
+Awfis
+Axio
+Aye Finance
+Bajaj Holdings
+BambooBox
+BazaarNow
+Beam Checkout
+BeautyHaul
+Belong
+Bifrost
+BiteSpeed
+Biz2Credit
+Blacksmith
+Blend
+Bluejay
+Bluestone
+Bobobox
+Bolt New
+BookMyShow
+Boomerang AI
+Boxs
+Brainfish
+Brick & Bolt
+Bright
+Brightpoint Studios
+Brite
+Browser Use
+BUD
+C2i Semiconductors
+Calyx Global
+Canary Mail
+Capgrid
+Captain Fresh
+Care.Fi
+Cashflo
+Catalyst
+Charlotte Tilbury
+Checkbox
+Chocolate Finance
+Circle Store
+Cirkla
+Citrus Payment
+Claimhealth
+ClearFeed
+Climes
+Cloud
+Cloudphysician
+Clouted
+Clover Health
+Cognida Ai
+Cognizant Technology
+CoinSwitch Kuber
+Comet
+Companion Labs
+Confido
+Contrario
+Convosight
+Coral
+Costream
+Covvalent
+Creditvidya
+Creliohealth
+Curatio Healthcare
+Curelink
+Cybrilla
+Daloopa
+Dashverse
+Deep Cogito
+Detect Technologies
+Dextr AI
+Dezerv
+Dezy
+Diri Care
+Distyl
+Ditto
+Doola
+DrinkPrime
+Drools
+Droom
+Dubbing AI
+Durianpay
+Dynamoai
+Edelweiss
+Elasticbox
+Elecbits
+Elivaas
+Ember
+Emversity
+Equilibrium
+Equitas
+Ethereal Machines
+Everstage
+Exaforce
+Eyeq
+Fableroom
+Factors.ai
+Famapp
+Farmart
+Fashinza
+Felo AI
+Finarkein Analytics
+Fingerprint
+Finnable
+Finova Capital
+Finster AI
+Fintellix
+Firecrawl
+FirstClub
+Fitbudd
+Fittr
+Five Star Business Finance
+Five Star Finance
+Flecks Labs
+Flip
+FloBiz
+Foodics
+ForgeCode
+Freehand
+FreeUp
+Frnd
+Gale
+GameStock
+Gan.ai
+General Autonomy
+GlobalBees
+GlobalLogic
+Go Colors
+Goodera
+
+# ── added via discover --add (2026-10-25) ──
+GoodScore
+Greylabs
+GreyLabs AI
+Gumlet
+Haast
+Haber Water
+Harper
+Heads Up For Tails
+HealthKart
+Hector Beverages
+Helion
+HeyMax
+High Street Essentials
+Hightouch
+Hike Messenger
+Hippo Video
+Horizon Quantum Computing
+Hubble
+Huspy
+Hyou
+HYOU Fine Jewelry
+Hyperbound
+Hyperbrowser
+Hyuga Life
+ICRA
+Idea Cellular
+Ignosis AI
+IIMMPACT
+Impetus Technologies
+InCore Semiconductors
+India Shelter Finance
+Indigo Paints
+IndustryBuying
+Inferless (fka Peak Performer)
+Infina
+Infinyte Club
+Inprime
+Insider One
+InspectMind
+InVideo
+Itzcash
+Jeh Aerospace
+Jodo
+Journeyfront
+Just Dial
+JustAI
+K12 Techno Services
+Kast
+Kello
+Kodex
+Kula.ai
+La Renon
+Last9
+Lean Technologies
+Lemonilo
+LightMetrics
+Liminal
+LingoAce
+Loadshare
+Locad
+Loophealth
+Loophole Labs
+Lovable
+Luma
+Luminai
+Lyskraft
+Mahaveer Finance
+Manappuram
+Manatal
+Manufact
+MarqVision
+MasterChow
+Maxim AI
+MedGenome
+Mem0
+Mensa Brands
+Meragi
+Mesa School of Business
+Metastable Materials
+Metropolitan Stock Exchange of India
+Micromax
+Mindgrove
+Mintifi
+MOC Cancer Care & Research Centre
+Mokobara
+Moladin
+Molbio Diagnostics
+Moolchand
+Moonfrog
+Mosaic Wellness
+Mswipe
+Murf
+Murf.ai
+MyGlamm
+Nakad
+Nanonets
+NatHabit
+Naukri
+NEAU
+Neo Wealth
+Neptune Robotics
+Neude Skin
+Neurowyzr
+Newtrace
+Nimbbl
+Nirmata
+NSE
+Octro
+Okara
+Ola Consumer
+OlaCabs
+One Championship
+OneAssist
+OnFinance AI
+Oolka
+OpenBorder
+Opensecret
+OrbitShift
+Osfin
+Oto
+Oxyzo
+Oziva
+Pagarbook
+Paras
+Park
+Parseable
+PayGlocal
+Persistent
+PierSight
+PingSafe
+Pintarnya
+Pix.ai
+PlaySimple
+Plazza
+Polygon Labs
+Polygon Technology
+Polymerize
+Powerplay
+PowerUp Money
+Prataap Snacks
+Prayaan Capital
+Pre6
+Presolv360
+Primer
+Primetrace
+Prismforce
+Prizm
+Procol
+Profit.co
+Progcap
+Pulse Energy
+Qbeast
+Quick Heal
+Quikr
+RapidCanvas
+
+# ── added via discover --add (2026-10-25) ──
+Relevance AI
+ReNew Power
+Reo.dev
+RevenueHero
+Rigi
+Rilo
+Ringg AI
+Rork
+Rosella
+Round1 AI
+Rove Miles
+Rukita
+Sahi
+SalarySe
+SarvaGram
+Scalekit
+Scaler Academy
+ScanPay
+Scapia
+Schmooze
+SCIO Health Analytics
+SEDEMAC
+Seeds
+Seekho
+Semaai
+ShopClues
+ShopDeck
+ShopUp
+Sifthub
+SigIQ
+Sirion
+SixSense
+Skillmatics
+Skydo
+Snabbit
+Snapdeal
+SolarSquare
+SpeakX
+Spill Games
+SquareX
+Sri Mandir (AppsForBharat)
+Star Health
+Stashaway
+Stovekraft
+Sunrate
+Supanote
+Superleap
+SuperOps
+Superops Ai
+Sweet Karam Coffee
+Synthio Labs
+tanX
+Tazapay
+Tentang Anak
+Thanks
+The Health Factory
+The Prompting Company
+The Souled Store
+Theta
+Timee
+Toddle
+Tonbo
+tonik
+TourHero
+Tracxn
+Triple A
+TrueFoundry
+Turnip
+TWID
+Ujjivan
+UnifyApps
+Unravel Carbon
+Vaaree
+Vapi
+Variational
+Vasan Eye Care
+Vault
+Veera Health
+Vegapay
+Vegrow
+Vini Cosmetics
+Virbhumi
+Virtual Internships
+VoidZero
+Von
+Vridhi Home Finance
+Wakefit
+Watchtowr
+WATI
+Weaver Services
+Wildcraft
+Wishlink
+Wispr Flow
+Wizcommerce
+Wootz Work
+Yogabar
+YourDOST
+Zamp
+Zanskar
+Zarget
+Zeni
+Zenyum
+Zet
+ZFunds
+Zilo
+Zippmat
+Zoca
+Zomentum
+Zoop
+Zopper
+Zupee Gold
+Zuper
+
+# ── added via discover --add (2026-10-25) ──
+Bifrost | https://jobs.ashbyhq.com/bifrost
+Blacksmith | https://jobs.ashbyhq.com/Blacksmith/604cabdf-a54d-4dba-8dee-904e88ed5f16
+Claimhealth | https://jobs.ashbyhq.com/claim-health
+Clouted | https://jobs.ashbyhq.com/clouted/embed?version=2
+Distyl | https://jobs.ashbyhq.com/Distyl
+Haast | https://jobs.ashbyhq.com/Haast
+Harper | https://jobs.ashbyhq.com/harperinsure
+Helion | https://jobs.ashbyhq.com/helion/0cbe8d0c-3a85-483f-b9e0-7460d6f3bd1b
+Hyperbound | https://jobs.ashbyhq.com/Hyperbound
+Insider One | https://jobs.lever.co/useinsider?team=Customer%20Success
+Kodex | https://jobs.ashbyhq.com/kodex?ashby_jid=3e8d81f2-cf74-42aa-b56a-53cf028b576d

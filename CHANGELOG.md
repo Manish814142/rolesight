@@ -9,6 +9,11 @@ reconstructed from git history.
 
 ## [Unreleased]
 
+### Added (2026-10-25, T157: mid-size well-funded companies hiring in India census and candidate evaluation)
+- Gathered 597 candidates from public investor portfolios (Peak XV, Elevation Capital, Matrix Partners/Z47, Nexus Venture Partners), Wikipedia Indian unicorns, and Entrackr growth reports into `data/t157_candidates.tsv`. 50 were already on the list (measured via `name_matches` and `_core_words`), 547 new names discovered without `--merge` via `--workers 5` across 3 batches.
+- Evaluated the 6 verified boards in `data/t157_verdicts.tsv`: `Freehand` and `Insider One` were confirmed as genuine companies but rejected due to lacking software engineering teams in India (Freehand engineering in US, Insider in Turkey). `Seekho` ($35M total, $28M Series B in Sep 2025) and `Apna` ($193.5M total, unicorn) pass mid-size/funding criteria with engineering teams in India; `TrueFoundry` ($21.3M) passes at $10M threshold; `Reo.dev` ($1.2M seed) rejected.
+- Conducted ATS census on 169 unfound careers pages (`data/t157_careers.txt`): 74.0% (125) custom/JS-only/unidentified, 7.1% (12) supported ATSs (Ashby 10, Workday 1, Lever 1), Darwinbox 3.6% (6), Keka 3.0% (5), Kula 3.0% (5), fetch failed 2.4% (4), job boards 3.0% (5), Zoho Recruit 1.2% (2), PeopleStrong 1.2% (2), Freshteam 0.6% (1), Recruiterflow 0.6% (1), SuccessFactors 0.6% (1).
+
 ### Fixed (2026-10-25, T156: name collisions in discover --merge are reported, never dropped silently)
 - When `discover --merge` merges new companies into an existing list, new entries whose name key reduces (via `_core_words(name)`) to an existing entry's or another new entry's on a different board are not added automatically, but are reported in the CSV report (`name collision: not added; existing <name> (<ats>/<board>)` or `also new <name> (<ats>/<board>)`) and printed to stdout naming both boards.
 - Stays silent: the same board twice, another site of a Workday tenant already on the list or earlier in the run, whatever its name (one entry per tenant: a tenant's sites are one company), and the one-entry-per-Oracle-host rule (T117). A collision never removes or replaces an entry already on the list (the re-check of `discover --merge` still removes one whose own board fails it).

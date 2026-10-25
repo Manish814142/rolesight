@@ -515,12 +515,28 @@ T23 was verified 2026-10-07 (Done log); nothing open.
 | T157 | Well-funded mid-size companies hiring in India | doing · antigravity · 2026-10-25 | antigravity | L | — |
 
 **T157 · Well-funded mid-size companies hiring in India.** Goal: add well-funded, mid-size companies that hire software engineers in India to `companies.json`. Mid-size companies hire faster than multinationals, and well-funded or established ones have no cash trouble.
+Candidates (597 names recorded in `data/t157_candidates.tsv`) were taken from investor portfolios (Peak XV, Elevation Capital, Matrix Partners/Z47, Nexus Venture Partners), Wikipedia Indian unicorns, and published funding lists; criteria (funding and size) were not checked for each company at that stage. Criteria are checked only for companies discover verifies.
 *Criteria:*
 - A technology or product company with an engineering team in India;
 - About 200 to 5,000 employees;
 - And either total funding of US$25M or more with a round in the last 4 years, or profitable and established (8+ years, or listed);
 - Not a staffing or recruitment agency; no IT-services body shop.
 *Done when:* candidate list (300 to 600 names with public source evidence) recorded in `data/t157_candidates.tsv`; deduplication against `companies.json` measured; new names discovered via `--add-file` without `--merge` in batches of ~200 with `--workers 5`; verified rows reviewed for identity/India locations with verdicts in `data/t157_verdicts.tsv`; ATS census on >=100 unfound companies run and platform mix reported; accepted entries merged into `companies.json` and `job_hunt/data/companies.json` (India entries before -> after, entries with places unchanged at 1,177); visa sponsors rebuilt offline with 0 unreviewed; docs and gates updated and passing; ready for review.
+**Implemented (antigravity, 2026-10-25).**
+- *Step 2 candidates:* 597 candidates recorded in `data/t157_candidates.tsv` from public investor portfolios (Peak XV 335, Elevation Capital 81, Matrix Partners/Z47 62, Nexus VP India 37), Wikipedia Indian unicorns (80), and Entrackr reports. Per instructions, size left blank unless explicitly stated on page; criteria not checked at candidate stage.
+- *Step 3 deduplication:* Measured against `companies.json` (2,766 entries): 50 already on list, 547 not on list (measured).
+- *Step 4 discovery:* 547 names run in 3 batches (`data/t157_names_01.txt` 200, `t157_names_02.txt` 200, `t157_names_03.txt` 147) with `--workers 5` without `--merge`: 6 verified (`apna`, `freehand`, `insiderone`, `reo-dev`, `seekho`, `truefoundry`). 2 throttled probes on Workable re-checked and confirmed 404 (0 stayed not checked).
+- *Step 5 identity checks & verdicts:* Recorded in `data/t157_verdicts.tsv`.
+  - Freehand (`ashby/freehand`): Confirmed Freehand AI (Nexus VP), but rejected because software engineering is US-based in SF (India roles: SDR in Chennai, Designer).
+  - Insider One (`lever/insiderone`): Confirmed Insider (Peak XV), but rejected because engineering HQ is in Turkey (India roles: commercial/sales only in Bengaluru).
+  - Seekho (`workable/seekho`): Confirmed Seekho.ai (Elevation/Lightspeed/Bessemer), ~$35M total funding ($28M Series B Sep 2025), ~150-200 employees, active SWE in Bengaluru. Passes at $10M and $25M; fails at $50M; round in last 3 years (Sep 2025).
+  - Apna (`workable/apna`): Confirmed Apna Time Tech, $193.5M total funding (unicorn), ~800 employees, active SWE in Bengaluru. Passes at $10M, $25M, $50M; last round Sep 2021 (>3 years ago).
+  - TrueFoundry (`greenhouse/truefoundry`): Confirmed TrueFoundry (Peak XV Surge/Intel Capital), $21.3M total funding ($19M Series A Feb 2025), ~60-80 employees, active SWE in Bengaluru. Passes at $10M; fails at $25M, $50M; round in last 3 years (Feb 2025).
+  - Reo.dev (`ashby/reo-dev`): Confirmed Reo.dev, $1.2M seed, ~20 employees, 0 open SWE roles -> rejected.
+  - Threshold summary: At $10M: 3 pass (Apna, Seekho, TrueFoundry); At $25M: 2 pass (Apna, Seekho); At $50M: 1 passes (Apna). Seekho and TrueFoundry have rounds in last 3 years. Per instructions, `companies.json` merge withheld pending Manish's threshold choice.
+- *Step 6 careers-page census (main result):* Probed 169 careers URLs (`data/t157_careers.txt`) via `.venv/bin/autopilot discover --census data/t157_careers.txt --report data/t157_census.csv --emit-seeds data/t157_census_seeds.txt`: 74.0% (125) custom/JS-only/unknown, 7.1% (12) supported ATSs, 3.6% (6) Darwinbox, 3.0% (5) Keka, 3.0% (5) Kula, 3.0% (5) Job boards, 2.4% (4) fetch failed, 1.2% (2) Zoho Recruit, 1.2% (2) PeopleStrong, 0.6% (1) Freshteam, 0.6% (1) Recruiterflow, 0.6% (1) SuccessFactors. The 11 supported ATS seeds had no India jobs (10) or commercial only (1, Insider).
+- *Step 8 visa rebuild:* `scripts/build_visa_sponsors.py --offline` -> 1,923 of 2,766 have evidence, 0 unreviewed.
+- *Gates:* `pytest` 2,303 passed (coverage 94.54%), `ruff` and `mypy` clean.
 
 T65 was verified 2026-10-08, T26 on 2026-10-10 (Done log).
 

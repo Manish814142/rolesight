@@ -112,6 +112,8 @@ name" (T132; before that it fell back to checking every line of `scripts/company
 Workday 17%, Greenhouse 9%, Eightfold and Phenom 7% each, Oracle HCM and Darwinbox 6% each; **52% were JavaScript-only
 pages or an unknown platform**. That last group is where most of the missing companies are (see "Where to grow next").
 
+**T157 mid-size India companies census (2026-10-25):** 169 careers pages of candidates from Peak XV, Elevation, and investor portfolios were fingerprinted (`autopilot discover --census data/t157_careers.txt --report data/t157_census.csv`). Results: **74.0% (125) were unknown, custom, or JavaScript-only**; 7.1% (12) were on supported ATSs (Ashby 10, Workday 1, Lever 1); Darwinbox 3.6% (6), Keka 3.0% (5), Kula 3.0% (5), fetch failed 2.4% (4), job boards 3.0% (LinkedIn 3, Wellfound 2), Zoho Recruit 1.2% (2), PeopleStrong 1.2% (2), Freshteam 0.6% (1), Recruiterflow 0.6% (1), SuccessFactors 0.6% (1). Domestic platforms Darwinbox (ClearTax, 1mg, Digit Insurance, FarEye, HomeLane) and Keka (Awfis, FloBiz, GoKwik, Jupiter) are the top candidates for future adapters.
+
 ### 3. In bulk: every board the web has seen
 
 You want many companies whose names you would never think to type. `scripts/harvest_board_urls.py` asks the Internet
