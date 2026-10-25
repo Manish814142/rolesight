@@ -111,7 +111,7 @@ any country (T108, T136–T143) and companies for other countries (T144, T160: 1
 | Follow-ups and outcomes | A reminder when an application gets no answer; a weekly count of applied → interview → offer by score band, the real test of the scorer | medium |
 | Interview prep | For a job you reach the interview with: likely topics, the gaps in your resume, questions to ask (drafts only) | small |
 | More companies abroad | The register check of the ~3,800 companies T144 dropped without a title match (Workable's 12,585 boards done in T160: 256 kept) | medium |
-| More job boards | Adapters for other systems with public APIs (T157 census: Darwinbox 6, Keka 5, Kula 5, Zoho Recruit 2, Freshteam 1; 74% custom/JS) | per board |
+| More job boards | Adapters for other systems with public APIs (T157 census of 118 careers pages: Darwinbox 18, Keka 11, Kula 6, Zoho Recruit 3, Freshteam 2; 54.2% custom/unknown) | per board |
 | Re-score after a rubric change | A command that finds the stored scores a scan can still re-score, and resets only those | small |
 | Scheduling on Windows (and launchd on macOS) | Task Scheduler (and launchd) next to the systemd timer and cron; today `schedule on` on Windows only explains the steps | small |
 

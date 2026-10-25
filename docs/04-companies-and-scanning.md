@@ -6,7 +6,7 @@ The list of job boards to scan. It is committed, it is the core of the project, 
 was checked by `autopilot discover` (below) to be live, to belong to the employer it names and to have India jobs (or,
 for the 1,177 entries that carry `"places"`, jobs in those countries: T139).
 
-**Counts (2026-10-24):** 2,766 boards: Greenhouse 733, Workday 481, Ashby 391, Workable 362, SmartRecruiters 264,
+**Counts (2026-10-25):** 2,769 boards: Greenhouse 734, Workday 481, Ashby 391, Workable 364, SmartRecruiters 264,
 Lever 206, Recruitee 195, Oracle HCM 108, Personio 20, Eightfold 4, Amazon 1, Phenom 1. The first 224 were curated by
 hand; 1,365 came from the bulk harvest (T111, T112); 1,177 were checked for other countries instead of India (T139, T142, T144, T160):
 58 from the community lists and 1,119 that passed the visa-evidence rule (863 from T144 and 256 from Workable in T160). Count yours with
@@ -112,7 +112,7 @@ name" (T132; before that it fell back to checking every line of `scripts/company
 Workday 17%, Greenhouse 9%, Eightfold and Phenom 7% each, Oracle HCM and Darwinbox 6% each; **52% were JavaScript-only
 pages or an unknown platform**. That last group is where most of the missing companies are (see "Where to grow next").
 
-**T157 mid-size India companies census (2026-10-25):** 169 careers pages of candidates from Peak XV, Elevation, and investor portfolios were fingerprinted (`autopilot discover --census data/t157_careers.txt --report data/t157_census.csv`). Results: **74.0% (125) were unknown, custom, or JavaScript-only**; 7.1% (12) were on supported ATSs (Ashby 10, Workday 1, Lever 1); Darwinbox 3.6% (6), Keka 3.0% (5), Kula 3.0% (5), fetch failed 2.4% (4), job boards 3.0% (LinkedIn 3, Wellfound 2), Zoho Recruit 1.2% (2), PeopleStrong 1.2% (2), Freshteam 0.6% (1), Recruiterflow 0.6% (1), SuccessFactors 0.6% (1). Domestic platforms Darwinbox (ClearTax, 1mg, Digit Insurance, FarEye, HomeLane) and Keka (Awfis, FloBiz, GoKwik, Jupiter) are the top candidates for future adapters.
+**T157 mid-size India companies census (2026-10-25):** The candidate list (597 names from investor portfolios and unicorn lists) and the careers-page list were built by one-off scripts kept outside the repo in `data/t157/`. Probing candidates with verified careers pages and engineering teams in India (`autopilot discover --census data/t157_careers.txt --report data/t157_census.csv`) on **118 real careers pages** (N = 118, dropping homepages and US/foreign-only startups) showed: **54.2% (64) were unknown or custom**; Darwinbox 15.3% (18), Keka 9.3% (11), Kula 5.1% (6), job boards 5.1% (LinkedIn 6), supported ATSs 2.5% (3: Ashby 1, Lever 1, Recruitee 1), Zoho Recruit 2.5% (3), Freshteam 1.7% (2), Recruiterflow 1.7% (2), PeopleStrong 0.8% (1), Param 0.8% (1), Skillate 0.8% (1). Domestic platforms Darwinbox (ClearTax, 1mg, Digit Insurance, FarEye, HomeLane, Lenskart, Hector Beverages, Eruditus) and Keka (Awfis, GoKwik, Jupiter) are the top candidates for future adapters.
 
 ### 3. In bulk: every board the web has seen
 
@@ -500,7 +500,7 @@ Roblox's "may not be able to ... support future H-1B sponsorship".
 
 Manish, 2026-10-22: *keep a company if it sponsors visas, irrespective of a specific job post; otherwise there is no point adding it
 (a company that sponsors no role today may sponsor one later).* So a company added **for other countries** (an entry with `places`)
-must show evidence; the 1,589 India companies need none. `scripts/filter_by_visa_evidence.py` applies it to what `discover`
+must show evidence; the 1,592 India companies need none. `scripts/filter_by_visa_evidence.py` applies it to what `discover`
 verified:
 
 ```bash
@@ -598,7 +598,7 @@ a telecoms firm, on the school; Capula, the hedge fund, on Capula Limited of Sto
 their own entity on the register too, now accepted as aliases; Digital, Intellect and Logistics UK left. Of the 84 weak matches,
 54 were accepted and 29 rejected (Starling: the bank accepted, another Starling company rejected). Two employers the merge had
 dropped as duplicates of other companies' names were added (Phoenix Software, Target Group: T156). 256 entries added.
-**Record rebuilt: 1,923 of 2,766 companies** (UK 1,299, Netherlands 506, Ireland 159, lists 94, USA 852, Canada 89), 0
+**Record rebuilt: 1,923 of 2,769 companies** (UK 1,299, Netherlands 506, Ireland 159, lists 94, USA 852, Canada 89), 0
 unreviewed. Read by name only: the 121 new entries whose record is an exact match of a longer, non-dictionary name.
 
 **The scan uses it** (T138): with `candidate.countries` set, every job outside your home country gets a **Visa** column in

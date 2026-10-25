@@ -1,6 +1,6 @@
 {
  "about": "Companies on companies.json that appear in public visa-sponsor sources (T133). A register means the employer can sponsor a visa, not that a given job does. Each match names the source's own entry; loose name matches are kept only when accepted by hand in scripts/visa_sponsor_review.json, as are exact matches on short names (SHORT_KEY) or all-common-word names (T152). Rebuild: python scripts/build_visa_sponsors.py",
- "built": "2026-10-25",
+ "built": "2026-10-24",
  "companies": {
   "1000heads": [
    {
