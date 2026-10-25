@@ -246,7 +246,7 @@ What changes:
 5. **Companies.** All 1,592 India companies are scanned (many big employers hire in your countries too: 474 of 1,036
    fetched boards had UK jobs on 2026-10-21), plus 1,177 that hire abroad and not in India, each with **evidence that it
    sponsors visas** (T144, T160): Monzo, N26, ASML, ING, Roche, Unilever, Zalando, Santander, Vanguard, … A scan for the UK and Germany
-   fetches 2,587 boards, one for Spain 1,911; your India scan still fetches the same 1,592. `rolesight discover --add-file names.txt --merge companies.json` adds more: it checks your countries (or
+   fetches 2,590 boards, one for Spain 1,914; your India scan still fetches the same 1,592. `rolesight discover --add-file names.txt --merge companies.json` adds more: it checks your countries (or
    `--places "…"`).
 
 Limits: postings in another language (Japanese or German titles) do not match the English title words; Germany, the UAE,
