@@ -512,7 +512,7 @@ T23 was verified 2026-10-07 (Done log); nothing open.
 
 | ID | Task | Status | Owner | Size | Needs |
 |---|---|---|---|---|---|
-| T157 | Well-funded mid-size companies hiring in India | doing · antigravity · 2026-10-25 | antigravity | L | — |
+| T157 | Well-funded mid-size companies hiring in India | review · antigravity · 49da83a | antigravity | L | — |
 
 **T157 · Well-funded mid-size companies hiring in India.** Goal: add well-funded, mid-size companies that hire software engineers in India to `companies.json`. Mid-size companies hire faster than multinationals, and well-funded or established ones have no cash trouble.
 Candidates (597 names recorded in `data/t157_candidates.tsv`) were taken from investor portfolios (Peak XV, Elevation Capital, Matrix Partners/Z47, Nexus Venture Partners), Wikipedia Indian unicorns, and published funding lists; criteria (funding and size) were not checked for each company at that stage. Criteria are checked only for companies discover verifies.
@@ -730,6 +730,7 @@ The implementer adds a row when a task reaches `review`; the verifier removes it
 
 | ID | Commit(s) | Implementer | Evidence (command → result) |
 |---|---|---|---|
+| T157 | 49da83a | antigravity | Step 2 candidates: 597 names recorded in `data/t157_candidates.tsv` from Peak XV, Elevation, Matrix/Z47, Nexus VP, and Wikipedia unicorns; size left blank unless stated; criteria not evaluated at candidate stage. Step 3 dedupe: 50 candidates already on list (measured), 547 not on list (measured). Step 4 discovery: 547 names run in 3 batches at `--workers 5` without `--merge` -> 6 verified (`apna`, `freehand`, `insiderone`, `reo-dev`, `seekho`, `truefoundry`), 0 stayed not checked (throttled probes confirmed 404). Step 5 identity & criteria in `data/t157_verdicts.tsv`: Freehand (US engineering only) & Insider One (Turkey engineering only) rejected. Threshold breakdown: at $10M 3 pass (Apna, Seekho, TrueFoundry); at $25M 2 pass (Apna, Seekho); at $50M 1 passes (Apna). Round in last 3 years: 2 pass (Seekho, TrueFoundry). `companies.json` merge withheld pending Manish's threshold choice. Step 6 careers census: `discover --census data/t157_careers.txt --report data/t157_census.csv` on 169 careers pages: 74.0% custom/JS/unknown (125), 7.1% supported ATSs (12), Darwinbox 3.6% (6), Keka 3.0% (5), Kula 3.0% (5), job boards 3.0% (5), fetch failed 2.4% (4), Zoho Recruit 1.2% (2), PeopleStrong 1.2% (2), Freshteam 0.6% (1), Recruiterflow 0.6% (1), SuccessFactors 0.6% (1). 11 census seeds run -> 0 India SWE boards. Step 8 visa rebuild: `build_visa_sponsors.py --offline` -> 1,923 of 2,766 have evidence, 0 unreviewed. Gates: `pytest` 2,303 passed (coverage 94.54%), `ruff` and `mypy` clean. |
 
 ---
 
